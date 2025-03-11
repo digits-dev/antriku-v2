@@ -337,6 +337,11 @@
                         }, function(){
                            location.reload();
                         });
+                    }else if(status_id == 10){
+                        swal({ title: "Info!", text: "STATUS: FOR CALL-OUT MAIL-IN", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                        }, function(){
+                            window.location.href = window.location.origin+"/admin/to_diagnose";
+                        });
                     }
                 }                    
             });
@@ -379,6 +384,8 @@
         $(this).find(':submit').attr('disabled','disabled');
     });
 
+    
+ 
     // warranty status name
     function WarrantyStatusChange(warranty)
 	{
@@ -390,5 +397,16 @@
 			$("#warranty_status").val("SPECIAL");
 		}
 	}
+
+    function toggleCallOut(callout)
+	{
+        if (callout === 'CARRY-IN') {
+            $("#call_out_mail_in").prop("disabled", true);
+        }
+        else {
+            $("#call_out_mail_in").prop("disabled", false);
+        }
+    }
+   
 
 </script>

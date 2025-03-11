@@ -43,11 +43,11 @@
                         <label><span class="requiredField">*</span>Case:</label>
                     </div>
                     <div class="col-md-3" style="margin-top:7px;">
-                        <label class="radio-inline control-label text-success"><input type="radio" name="case" value="CARRY-IN" required {{ $transaction_details->case == 'CARRY-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 9 ? 'disabled' : ''}}><strong>CARRY-IN</strong></label>
+                        <label class="radio-inline control-label text-success"><input type="radio" name="case" value="CARRY-IN" onchange="return toggleCallOut('CARRY-IN')" required {{ $transaction_details->case == 'CARRY-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 9 ? 'disabled' : ''}}><strong>CARRY-IN</strong></label>
                         <br>
                     </div>
                     <div class="col-md-3" style="margin-top:7px;">
-                        <label class="radio-inline control-label text-danger"><input type="radio" name="case" value="MAIL-IN"  required {{ $transaction_details->case == 'MAIL-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 9 ? 'disabled' : ''}}><strong>MAIL-IN</strong></label>
+                        <label class="radio-inline control-label text-danger"><input type="radio" name="case" value="MAIL-IN" onchange="return toggleCallOut('MAIL-IN')"  required {{ $transaction_details->case == 'MAIL-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 9 ? 'disabled' : ''}}><strong>MAIL-IN</strong></label>
                         <br>
                     </div>
                 </div>
@@ -116,6 +116,15 @@
                     <label class="control-label col-md-2" style="margin-top:7px;"><span class="requiredField">*</span>Resolution:</label>
                     <div class="col-md-10" style="margin-top:7px;">
                         <textarea placeholder="Type your resolution here" name="resolution" rows="2" class="form-control" required {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>{{ $transaction_details->resolution }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">    
+                <div class="col-md-12">
+                    <label class="control-label col-md-2" style="margin-top:7px;"><span class="requiredField">*</span>Parts Replacement Cost:</label>
+                    <div class="col-md-10" style="margin-top:7px;">
+                        <textarea placeholder="Type your Parts Replacement Cost here" name="replacement_cost" rows="2" class="form-control" required {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>{{ $transaction_details->parts_replacement_cost }}</textarea>
                     </div>
                 </div>
             </div>

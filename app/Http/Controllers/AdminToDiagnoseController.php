@@ -619,6 +619,7 @@
                     'problem_details'			=> $ProblemDetails,
                     'problem_details_other'		=> $all_data['problem_details_other'],    
                     'other_remarks'		        => $all_data['other_remarks'],
+					'parts_replacement_cost'	=> $all_data['replacement_cost'],
 					'case'						=> $all_data['case'],
                     'warranty_status' 			=> $all_data['warranty_status'],
 					'memo_no' 					=> $all_data['memo_number'],
@@ -734,7 +735,7 @@
             } 
 			// *********************************************************************************************
 
-		    $status_array = [1,2,3,4,5,6,7,8,9];
+		    $status_array = [1,2,3,4,5,6,7,8,9,10];
 		    if(in_array($request->status_id, $status_array)){
 		    	DB::table('returns_header')->where('id',$request->header_id)->update([
 				'repair_status' 			=> $request->status_id,
