@@ -265,6 +265,8 @@
 					$column_value = '<span class="label label-success">'.$column_value.'</span>';
 				}elseif($column_value == 'TO PAY DIAGNOSTIC'){
 					$column_value = '<span class="label label-primary">'.$column_value.'</span>';
+				}elseif($column_value == 'ONGOING DIAGNOSIS'){
+					$column_value = '<span class="label label-warning">'.$column_value.'</span>';
 				}
 			}
 			

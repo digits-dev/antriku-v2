@@ -23,7 +23,7 @@
 			$this->button_action_style = "button_icon";     
 			$this->button_add          = FALSE;
 			$this->button_delete       = TRUE;
-			$this->button_edit         = TRUE;
+			$this->button_edit         = FALSE;
 			$this->button_detail       = TRUE;
 			$this->button_show         = TRUE;
 			$this->button_filter       = TRUE;        
@@ -43,6 +43,7 @@
 			$this->col[] = ["label"=>"Downpayment URL","name"=>"down_payment_url"];
 			$this->col[] = ["label"=>"Date Received","name"=>"level2_personnel_edited"];
 			$this->col[] = ["label"=>"Updated By","name"=>"updated_by"];
+			$this->col[] = ["label"=>"Technician","name"=>"technician_id", 'join' => 'cms_users,name'];
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 			# OLD START FORM
@@ -113,6 +114,32 @@
 	        | 
 	        */
 	        $this->addaction = array();
+			if (CRUDBooster::myPrivilegeId() == 8) {
+				$this->addaction[] = [
+					'title'   => 'Assign Technician',
+					'icon'    => 'fa fa-user',
+					'url'     => 'javascript:handleSwal([id], '.json_encode("[reference_no]").', [technician_id])', 
+					'color'   => 'success',
+					'showIf'  => '[repair_status] == 1',
+				];
+			}
+			if (CRUDBooster::myPrivilegeId() == 4) {
+				$this->addaction[] = [
+					'title'   => 'Accept Job',
+					'icon'    => 'fa fa-check',
+					'url'     => 'javascript:handleAcceptJob([id])', 
+					'color'   => 'success',
+					'showIf'  => '[repair_status] == 1',
+				];
+				$this->addaction[] = [
+					'title'   => 'Edit Data',
+					'url'   => CRUDBooster::mainpath('edit/[id]'),
+					'icon'  => 'fa fa-pencil',
+					'color' => 'success',
+					'showIf'  => '[repair_status] == 9',
+				];
+			}
+
 
 
 	        /* 
@@ -175,6 +202,7 @@
 	        $this->index_statistic = array();
 
 	        /*
+			/admin/to_diagnose/GetTechnicians
 	        | ---------------------------------------------------------------------- 
 	        | Add javascript at body 
 	        | ---------------------------------------------------------------------- 
@@ -182,7 +210,15 @@
 	        | $this->script_js = "function() { ... }";
 	        |
 	        */
-	        $this->script_js = NULL;
+	        // $this->script_js = NULL;
+			$this->script_js = "
+			function handleSwal(id, reference_no, technician_id) {
+			assignTechnician(id, reference_no, technician_id);
+			}
+			function handleAcceptJob(id) {
+			acceptJob(id);
+			}
+			";
 
             /*
 	        | ---------------------------------------------------------------------- 
@@ -202,7 +238,11 @@
 	        | $this->post_index_html = "<p>test</p>";
 	        |
 	        */
-	        $this->post_index_html = null;
+			$this->post_index_html = '
+			<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+			<script src="'.asset('js/jobActions.js').'"></script>
+		';
+		
 	        
 	        /*
 	        | ---------------------------------------------------------------------- 
@@ -222,7 +262,12 @@
 	        | $this->style_css = ".style{....}";
 	        |
 	        */
-	        $this->style_css = NULL;
+			$this->style_css = "
+			.swal2-popup {
+				font-size: unset !important;
+			}
+			";
+
 	        
 	        /*
 	        | ---------------------------------------------------------------------- 
@@ -336,9 +381,13 @@
 	    */
 	    public function hook_query_index(&$query) {
 			//Your code here
-			if(CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6){
+		
+			if(CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6 || CRUDBooster::myPrivilegeId() == 8){
 			    $query->where('repair_status', 1)->orderBy('id', 'asc'); 
-			}else{
+			}else if (CRUDBooster::myPrivilegeId() == 4){
+				$query->whereIn('repair_status', [1,9])->where('technician_id', CRUDBooster::myId())->orderBy('id', 'asc');
+			}
+			else{
 			    $query->where('repair_status', 1)->where('branch', CRUDBooster::me()->branch_id); 
 
 				if(!empty(Session::get('toggle')) && Session::get('toggle') == "ON")
@@ -367,6 +416,7 @@
 			$void = DB::table('transaction_status')->where('id','5')->first();
 			$complete = DB::table('transaction_status')->where('id','6')->first();
 			$pick_up = DB::table('transaction_status')->where('id','7')->first();
+			$ongoing_diagnosis = DB::table('transaction_status')->where('id','9')->first();
 
 			if($column_index == 1){
 				if($column_value == $pending->id){
@@ -381,6 +431,8 @@
 					$column_value = '<span class="label label-danger">'.$void->status_name.'</span>';
 				}elseif($column_value == $pick_up->id){
 					$column_value = '<span class="label label-success">'.$pick_up->status_name.'</span>';
+				}elseif($column_value == $ongoing_diagnosis->id){
+					$column_value = '<span class="label label-warning">'.$ongoing_diagnosis->status_name.'</span>';
 				}
 			}
 
@@ -556,7 +608,7 @@
 					$status_final_payment = $all_data['warranty_status'];
 				}
 			}
-            if($transaction_details[0]->repair_status == 1)
+            if($transaction_details[0]->repair_status == 9)
 			{
 				$ProblemDetails = implode(",", $all_data['problem_details']);
                 DB::table('returns_header')->where('id',$all_data['header_id'])->update([
@@ -567,6 +619,7 @@
                     'problem_details'			=> $ProblemDetails,
                     'problem_details_other'		=> $all_data['problem_details_other'],    
                     'other_remarks'		        => $all_data['other_remarks'],
+					'case'						=> $all_data['case'],
                     'warranty_status' 			=> $all_data['warranty_status'],
 					'memo_no' 					=> $all_data['memo_number'],
                     'device_issue_description' 	=> $all_data['device_issue_description'],
@@ -681,7 +734,7 @@
             } 
 			// *********************************************************************************************
 
-		    $status_array = [1,2,3,4,5,6,7,8];
+		    $status_array = [1,2,3,4,5,6,7,8,9];
 		    if(in_array($request->status_id, $status_array)){
 		    	DB::table('returns_header')->where('id',$request->header_id)->update([
 				'repair_status' 			=> $request->status_id,
@@ -750,10 +803,10 @@
 				$data['parts_cost'] = $parts_cost;
 				
 				if($request->warranty_status == 'OUT OF WARRANTY'){
-					CRUDBooster::sendEmail(['to'=>$email,'data'=>$data, 'template'=>'send_payment_link_for_downpayment_email','attachments'=>[]]);
-					DB::table('returns_header')->where('id',$request->header_id)->update([
-						'send_down_payment_link' => 'YES'
-					]);
+					// CRUDBooster::sendEmail(['to'=>$email,'data'=>$data, 'template'=>'send_payment_link_for_downpayment_email','attachments'=>[]]);
+					// DB::table('returns_header')->where('id',$request->header_id)->update([
+					// 	'send_down_payment_link' => 'YES'
+					// ]);
 				}
 			}
 			
@@ -793,7 +846,7 @@
 				} catch (\Exception $e) {
 					DB::rollback();
 				}
-				CRUDBooster::sendEmail(['to'=>$email, 'data'=>$transaction_details[0], 'template'=>'repair_in_process_email','attachments'=>[]]);
+				// CRUDBooster::sendEmail(['to'=>$email, 'data'=>$transaction_details[0], 'template'=>'repair_in_process_email','attachments'=>[]]);
 			}
 
 			//To Pick Up
@@ -834,7 +887,7 @@
 				}
 				
 				$email = $transaction_details[0]->email;
-				CRUDBooster::sendEmail(['to'=> $email  ,'data' => $datalink, 'template'=>'customer_feedback','attachments'=>[]]);
+				// CRUDBooster::sendEmail(['to'=> $email  ,'data' => $datalink, 'template'=>'customer_feedback','attachments'=>[]]);
 			}
 	
 			// To Close For Complete or To Close For Cancel
@@ -876,7 +929,7 @@
 				}
 				$data['parts_cost'] = $parts_cost;
 				if($request->warranty_status == 'OUT OF WARRANTY'){
-					CRUDBooster::sendEmail(['to'=>$email,'data'=>$data, 'template'=>'send_payment_link_for_final_payment_email','attachments'=>[]]);
+					// CRUDBooster::sendEmail(['to'=>$email,'data'=>$data, 'template'=>'send_payment_link_for_final_payment_email','attachments'=>[]]);
 				}
 			}
 			return ($all_data);
@@ -943,4 +996,77 @@
 			$data = DB::table('parts_item_master')->where('spare_parts', 'like', '%'.$request->spare_part.'%')->get();
 			return($data);
 		}
+
+		public function GetTechnicians() {
+			$technicians = DB::table('cms_users')->where('id_cms_privileges', 4)->where('status', 'ACTIVE')->select('id', 'name')->get();
+			return response()->json($technicians);
+		}
+
+		public function AssignTechnician(Request $request){
+	
+			try {
+				$technicianId = DB::table('returns_header')
+					->where('id', $request->id)
+					->value('technician_id');
+			
+				if (!$technicianId) {
+					// No existing technician, insert new assignment
+					DB::table('case_assignments')->insert([
+						'returns_header_id'   => $request->id,
+						'lead_technician_id'  => CRUDBooster::myId(),
+						'technician_id'       => $request->technician_id,
+						'start_date'          => now(),
+					]);
+				} else {
+					// Get the latest assignment
+					$latestAssignment = DB::table('case_assignments')
+						->where('returns_header_id', $request->id)
+						->latest('id') // Gets the latest entry based on ID
+						->first();
+			
+					if ($latestAssignment) {
+						// Update the latest assignment by setting end_date
+						DB::table('case_assignments')
+							->where('id', $latestAssignment->id)
+							->update(['end_date' => now()]);
+					}
+			
+					// Insert the new assignment with start_date
+					DB::table('case_assignments')->insert([
+						'returns_header_id'   => $request->id,
+						'lead_technician_id'  => CRUDBooster::myId(),
+						'technician_id'       => $request->technician_id,
+						'start_date'          => now(),
+					]);
+				}
+
+				DB::table('returns_header')->where('id', $request->id)->update([
+					'lead_technician_id'		=> CRUDBooster::myId(),
+					'technician_id'				=> $request->technician_id,
+					'technician_assigned_at'    => date('Y-m-d H:i:s'),
+				]);
+				
+				return response()->json(['success' => true]);
+			
+			} catch (\Exception $e) {
+				
+				\Log::error('Error updating case_assignments: ' . $e->getMessage());
+				return response()->json(['success' => false]);
+			}
+		}
+
+		 public function AcceptJob (Request $request) {
+			try {
+				DB::table('returns_header')->where('id', $request->id)->update([
+					// to ongoing diagnosis
+					'repair_status' => 9,
+				]);
+			}  catch (\Exception $e) {
+				\Log::error('Error Accepting Job: ' . $e->getMessage());
+				return response()->json(['success' => false]);
+			}
+		
+
+			return response()->json(['success' => true]);
+		 }
 	}

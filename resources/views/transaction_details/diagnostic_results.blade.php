@@ -7,7 +7,7 @@
                 </div> 
             </div> 
         </div> 
-        @if($transaction_details->repair_status == 1 && CRUDBooster::getModulePath() == "to_diagnose" && request()->segment(3) == "edit")
+        @if($transaction_details->repair_status == 9 && CRUDBooster::getModulePath() == "to_diagnose" && request()->segment(3) == "edit")
             <div class="row" style="margin-top:7px;"> 
                 <div class="col-md-12">
                     <div class="col-md-12">
@@ -24,7 +24,7 @@
                                     <th width="40%" class="text-center table-bordered-display" style="padding: 5px !important;border-width: 1px !important;" colspan="4">Result:</th>
                                 </tr>
 
-                                @if($transaction_details->repair_status != 1)
+                                @if($transaction_details->repair_status != 9)
                                     @foreach($data['TechTesting'] ?? [] as $key=>$dt)
                                         <?php 
                                             $ModelGroupTech = explode(",", $dt->model_group_id);
@@ -114,7 +114,7 @@
                 <div class="col-md-12">
                     <label class="control-label col-md-2" style="margin-top:7px;"><span class="requiredField">*</span>Other Diagnostic Information:</label>
                     <div class="col-md-10">
-                        <textarea placeholder="Type your other diagnostic information here" name="other_diagnostic" rows="2" class="form-control" required {{ $transaction_details->repair_status != 1 ? 'readonly' : ''}}>{{ $transaction_details->other_diagnostic }}</textarea>
+                        <textarea placeholder="Type your other diagnostic information here" name="other_diagnostic" rows="2" class="form-control" required {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>{{ $transaction_details->other_diagnostic }}</textarea>
                     </div>
                 </div>
             </div>

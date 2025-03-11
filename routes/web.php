@@ -36,8 +36,12 @@ Route::group(['middleware' => ['web']], function() {
     Route::post('/admin/to_diagnose/changeTransactionStatus','AdminToDiagnoseController@changeTransactionStatus')->name('change-status');  // CHANGE STATUS OF TRANSACTION
     Route::post('/admin/to_diagnose/CheckGSX','AdminToDiagnoseController@CheckGSX')->name('check-gsx');    
     Route::post('/admin/to_diagnose/SearchSparePartNo','AdminToDiagnoseController@SearchSparePartNo')->name('search-sparepart');    
+    Route::get('/admin/to_diagnose/GetTechnicians','AdminToDiagnoseController@GetTechnicians');
+    Route::post('/admin/to_diagnose/AssignTechnician','AdminToDiagnoseController@AssignTechnician');  
+    Route::post('/admin/to_diagnose/AcceptJob','AdminToDiagnoseController@AcceptJob');  
+    
 
-    Route::post('/admin/pay_diagnostic/edit-transaction-process/{id}','AdminReturnsHeaderController@EditTransactionProcess');
+    Route::get('/admin/pay_diagnostic/edit-transaction-process/{id}','AdminReturnsHeaderController@EditTransactionProcess');
     // Route::post('/admin/to_pay_parts/diagnose-transaction-process/{id}','AdminToDiagnoseController@DiagnoseTransactionProcess');
     // Route::post('/admin/repair_in_process/diagnose-transaction-process/{id}','AdminToDiagnoseController@DiagnoseTransactionProcess');
     // Route::post('/admin/pick_up/diagnose-transaction-process/{id}','AdminToDiagnoseController@DiagnoseTransactionProcess');
@@ -63,6 +67,7 @@ Route::group(['middleware' => ['web']], function() {
     Route::get('/admin/to_diagnose/PrintTechnicalReport/{id}','AdminReturnsHeaderController@PrintTechnicalReport');
     Route::get('/admin/to_diagnose/PrintReleaseForm/{id}','AdminReturnsHeaderController@PrintReleaseForm');
     Route::get('/admin/to_diagnose/PrintSameDayReleaseForm/{id}','AdminReturnsHeaderController@PrintSameDayReleaseForm');
+ 
 
     //TO PAY
     Route::get('/admin/to_pay_parts/PrintReceivingForm/{id}','AdminReturnsHeaderController@PrintReceivingForm');

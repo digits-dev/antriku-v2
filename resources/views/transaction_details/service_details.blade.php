@@ -25,7 +25,7 @@
                             </td>
                         </tr>
                         <tr>
-                            @if(request()->segment(3) == "edit" && CRUDBooster::getModulePath() == "to_diagnose" && $transaction_details->repair_status == 1 && CRUDBooster::myPrivilegeId() != 2)
+                            @if(request()->segment(3) == "edit" && CRUDBooster::getModulePath() == "to_diagnose" && $transaction_details->repair_status == 9 && CRUDBooster::myPrivilegeId() != 2)
                                 <td class="table-bordered-display" style="padding: 5px !important;">
                                     <label class="control-label col-md-12" style="margin-top:7px;"><span class="requiredField">*</span>{{ trans('labels.form-label.warranty_expiration_date') }}</label>
                                 </td>

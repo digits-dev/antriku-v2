@@ -521,7 +521,7 @@
 			$transaction_details = DB::table('returns_header')->where('id',$request->id)->first();
 
 			if(!empty($transaction_details->diagnostic_fee_payment_url)){
-				if($transaction_details->repair_status == 1){
+				if($transaction_details->repair_status == 9){
 					$status_diagnostic_fee = 'PAID';
 				}else if($transaction_details->diagnostic_fee_status == 'PAID'){
 					$status_diagnostic_fee = 'PAID';

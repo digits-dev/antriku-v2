@@ -182,7 +182,7 @@
                                         </td>
                                         <td class="table-bordered-display" style="padding: 5px !important;">
                                             <div class="col-md-12" style="margin-top:7px;">
-                                                <input type="input" name="warranty_expiration_date" placeholder="MM/DD/YYYY" id="warranty_expiration_date" value="{{ date('m/d/Y', strtotime($transaction_details->warranty_expiration_date)) }}" class="form-control" autocomplete="off" required {{ $transaction_details->repair_status != 1 ? 'readonly' : ''}}/>                        
+                                                <input type="input" name="warranty_expiration_date" placeholder="MM/DD/YYYY" id="warranty_expiration_date" value="{{ date('m/d/Y', strtotime($transaction_details->warranty_expiration_date)) }}" class="form-control" autocomplete="off" required {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}/>                        
                                             </div>
                                         </td>
                                     </tr>
@@ -258,15 +258,15 @@
                             </div>
                             <input type="hidden" id="warranty_status" value="{{$transaction_details->warranty_status}}">
                             <div class="col-md-3" style="margin-top:7px;">
-                                <label class="radio-inline control-label text-success"><input type="radio" name="warranty_status" value="IN WARRANTY" onchange="return WarrantyStatusChange(1)" required {{ $transaction_details->warranty_status == 'IN WARRANTY' ? 'checked' : ''}} {{ $transaction_details->repair_status != 1 ? 'disabled' : ''}}><strong>IN WARRANTY</strong></label>
+                                <label class="radio-inline control-label text-success"><input type="radio" name="warranty_status" value="IN WARRANTY" onchange="return WarrantyStatusChange(1)" required {{ $transaction_details->warranty_status == 'IN WARRANTY' ? 'checked' : ''}} {{ $transaction_details->repair_status != 9 ? 'disabled' : ''}}><strong>IN WARRANTY</strong></label>
                                 <br>
                             </div>
                             <div class="col-md-3" style="margin-top:7px;">
-                                <label class="radio-inline control-label text-danger"><input type="radio" name="warranty_status" value="OUT OF WARRANTY" onchange="return WarrantyStatusChange(2)" required {{ $transaction_details->warranty_status == 'OUT OF WARRANTY' ? 'checked' : ''}} {{ $transaction_details->repair_status != 1 ? 'disabled' : ''}}><strong>OUT OF WARRANTY</strong></label>
+                                <label class="radio-inline control-label text-danger"><input type="radio" name="warranty_status" value="OUT OF WARRANTY" onchange="return WarrantyStatusChange(2)" required {{ $transaction_details->warranty_status == 'OUT OF WARRANTY' ? 'checked' : ''}} {{ $transaction_details->repair_status != 9 ? 'disabled' : ''}}><strong>OUT OF WARRANTY</strong></label>
                                 <br>
                             </div>
                             <div class="col-md-3" style="margin-top:7px;">
-                                <label class="radio-inline control-label text-warning"><input type="radio" name="warranty_status" value="SPECIAL" onchange="return WarrantyStatusChange(3)" required {{ $transaction_details->warranty_status == 'SPECIAL' ? 'checked' : ''}} {{ $transaction_details->repair_status != 1 ? 'disabled' : ''}}><strong>SPECIAL</strong></label>
+                                <label class="radio-inline control-label text-warning"><input type="radio" name="warranty_status" value="SPECIAL" onchange="return WarrantyStatusChange(3)" required {{ $transaction_details->warranty_status == 'SPECIAL' ? 'checked' : ''}} {{ $transaction_details->repair_status != 9 ? 'disabled' : ''}}><strong>SPECIAL</strong></label>
                                 <br>
                             </div>
                         </div>
@@ -295,7 +295,7 @@
                             <div class="col-md-12">
                                 <label class="control-label col-md-2" style="margin-top:7px;"><span class="requiredField">*</span>Other Problem Details:</label>
                                 <div class="col-md-10" style="margin-top:7px;">
-                                    <input type="text" class="form-control" name="problem_details_other" value="{{$transaction_details->problem_details_other}}" placeholder="Type your other problem details here" {{ $transaction_details->repair_status != 1 ? 'readonly' : '' }}>
+                                    <input type="text" class="form-control" name="problem_details_other" value="{{$transaction_details->problem_details_other}}" placeholder="Type your other problem details here" {{ $transaction_details->repair_status != 9 ? 'readonly' : '' }}>
                                 </div>
                             </div>
                         </div>
@@ -307,7 +307,7 @@
                         <div class="col-md-12">
                             <label class="control-label col-md-2" style="margin-top:7px;">Other Remarks:</label>
                             <div class="col-md-10" style="margin-top:7px;">
-                                <textarea placeholder="Type your other remarks here" name="other_remarks" rows="2" class="form-control" {{ $transaction_details->repair_status != 1 ? 'readonly' : '' }}>{{ $transaction_details->other_remarks }}</textarea>
+                                <textarea placeholder="Type your other remarks here" name="other_remarks" rows="2" class="form-control" {{ $transaction_details->repair_status != 9 ? 'readonly' : '' }}>{{ $transaction_details->other_remarks }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -316,7 +316,7 @@
                         <div class="col-md-12">
                             <label class="control-label col-md-2" style="margin-top:7px;"><span class="requiredField">*</span>Device Issue Description:</label>
                             <div class="col-md-10" style="margin-top:7px;">
-                                <textarea placeholder="Type your device issue description here" name="device_issue_description" rows="2" class="form-control" required {{ $transaction_details->repair_status != 1 ? 'readonly' : '' }}>{{ $transaction_details->device_issue_description }}</textarea>
+                                <textarea placeholder="Type your device issue description here" name="device_issue_description" rows="2" class="form-control" required {{ $transaction_details->repair_status != 9 ? 'readonly' : '' }}>{{ $transaction_details->device_issue_description }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -325,7 +325,7 @@
                         <div class="col-md-12">
                             <label class="control-label col-md-2" style="margin-top:7px;"><span class="requiredField">*</span>Findings:</label>
                             <div class="col-md-10" style="margin-top:7px;">
-                                <textarea placeholder="Type your findings here" name="findings" rows="2" class="form-control" required {{ $transaction_details->repair_status != 1 ? 'readonly' : ''}}>{{ $transaction_details->findings }}</textarea>
+                                <textarea placeholder="Type your findings here" name="findings" rows="2" class="form-control" required {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>{{ $transaction_details->findings }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -334,7 +334,7 @@
                         <div class="col-md-12">
                             <label class="control-label col-md-2" style="margin-top:7px;"><span class="requiredField">*</span>Resolution:</label>
                             <div class="col-md-10" style="margin-top:7px;">
-                                <textarea placeholder="Type your resolution here" name="resolution" rows="2" class="form-control" required {{ $transaction_details->repair_status != 1 ? 'readonly' : ''}}>{{ $transaction_details->resolution }}</textarea>
+                                <textarea placeholder="Type your resolution here" name="resolution" rows="2" class="form-control" required {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>{{ $transaction_details->resolution }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -367,7 +367,7 @@
                                             <th width="40%" class="text-center table-bordered-display" style="padding: 5px !important;border-width: 1px !important;" colspan="4">Result:</th>
                                         </tr>
 
-                                        @if($transaction_details->repair_status != 1)
+                                        @if($transaction_details->repair_status != 9)
                                             @foreach($data['TechTesting']  as $key=>$dt)
                                                 <?php 
                                                     $ModelGroupTech = explode(",", $dt->model_group_id);
@@ -457,7 +457,7 @@
                         <div class="col-md-12">
                             <label class="control-label col-md-2" style="margin-top:7px;"><span class="requiredField">*</span>Other Diagnostic Information:</label>
                             <div class="col-md-10">
-                                <textarea placeholder="Type your other diagnostic information here" name="other_diagnostic" rows="2" class="form-control" required {{ $transaction_details->repair_status != 1 ? 'readonly' : ''}}>{{ $transaction_details->other_diagnostic }}</textarea>
+                                <textarea placeholder="Type your other diagnostic information here" name="other_diagnostic" rows="2" class="form-control" required {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>{{ $transaction_details->other_diagnostic }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -482,7 +482,7 @@
                                         <div class="col-md-12">
                                             <label class="col-md-4 control-label"  style="font-size: 1.1em;"><strong>Memo Number: </strong></label>
                                             <div class="col-md-8">
-                                                <input class="form-control" style="font-weight:bolder;font-size: 1.2em;" type="text" name="memo_number" value="{{$transaction_details->memo_no}}" {{ $transaction_details->memo_no != null && $transaction_details->repair_status == 1 ? 'readonly' : ''}} {{ $transaction_details->repair_status != 1 ? 'readonly' : ''}}> 
+                                                <input class="form-control" style="font-weight:bolder;font-size: 1.2em;" type="text" name="memo_number" value="{{$transaction_details->memo_no}}" {{ $transaction_details->memo_no != null && $transaction_details->repair_status == 9 ? 'readonly' : ''}} {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}> 
                                             </div>
                                         </div>
                                     </div>
@@ -492,7 +492,7 @@
                                             <label class="col-md-4 control-label" style="font-size: 1.1em;"><strong>Software Fee: </strong></label>
                                             <div class="col-md-8 input-icon">
                                                 <input type="hidden" value="{{ number_format($transaction_details->software_fee, 2, '.', '') }}" id="diagnostic_payment_fee">
-                                                <input class="form-control" style="font-weight:bolder;font-size: 1.2em;" type="text" id="software_cost" name="software_cost" onblur="AutoFormatPrice()" value="{{ number_format($transaction_details->software_cost, 2, '.', '') }}" {{ $transaction_details->repair_status != 1 ? 'readonly' : ''}}> 
+                                                <input class="form-control" style="font-weight:bolder;font-size: 1.2em;" type="text" id="software_cost" name="software_cost" onblur="AutoFormatPrice()" value="{{ number_format($transaction_details->software_cost, 2, '.', '') }}" {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}> 
                                                 <i>₱</i>
                                             </div>
                                         </div>
@@ -542,19 +542,19 @@
                                                     @foreach($data['quotation'] as $qt)
                                                         <tr class="nr row_num" id="rowID{{$qt->id}}">
                                                             <input type="hidden"class="getidValue" value="{{$qt->id}}">
-                                                            <td style="padding: 1px !important;"><input class="form-control text-center getscValue" type="text" id="service_code_{{$qt->id}}" oninput="gsx_data('{{$qt->id}}')" value="{{ $qt->service_code }}" placeholder="Enter Spare Part Number" readonly {{ $transaction_details->repair_status != 1 ? 'readonly' : ''}}></td>
-                                                            <td style="padding: 1px !important;"><input class="form-control text-center getgsxValue" type="text" id="gsx_code_{{$qt->id}}"  value="{{ $qt->gsx_ref }}" placeholder="Enter GSX Reference" {{ $transaction_details->repair_status != 1 ? 'readonly' : ''}}></td>
-                                                            <td style="padding: 1px !important;"><input class="form-control text-center getcsValue" type="text" id="cs_code_{{$qt->id}}" value="{{ $qt->cs_code }}" placeholder="Enter CS Code" {{ $transaction_details->repair_status != 1 ? 'readonly' : ''}}></td>
-                                                            <td style="padding: 1px !important;"><input class="form-control text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter Serial Number" {{ $transaction_details->repair_status != 1 ? 'readonly' : ''}}></td>
-                                                            <td style="padding: 1px !important;"><input class="form-control text-center getdcValue" type="text" id="digits_code_{{$qt->id}}" value="{{ $qt->digits_code }}" placeholder="Enter Item Code" readonly {{ $transaction_details->repair_status != 1 ? 'readonly' : ''}}></td>
-                                                            <td style="padding: 1px !important;"><input class="form-control text-center getitemValue" type="text" id="item_desc_{{$qt->id}}" value="{{ $qt->item_description }}" placeholder="Enter Item Description" readonly {{ $transaction_details->repair_status != 1 ? 'readonly' : ''}}></td>
-                                                            <td style="padding: 1px !important;"><input class="form-control text-center getcostValue" type="number" onblur="AutoFormatCost('{{$qt->id}}')" id="price_{{$qt->id}}" value="{{ $qt->cost }}" min="0" max="9999" step="any" placeholder="Enter Price" {{ $transaction_details->repair_status != 1 ? 'readonly' : ''}}></td> 
-                                                            @if($transaction_details->repair_status == 1) <td style="padding: 5px !important;" class="text-center"><a onclick="RemoveRow('{{$qt->id}}')"><i class="fa fa-close fa-2x remove" style="color:red"></i></a></td> @endif
+                                                            <td style="padding: 1px !important;"><input class="form-control text-center getscValue" type="text" id="service_code_{{$qt->id}}" oninput="gsx_data('{{$qt->id}}')" value="{{ $qt->service_code }}" placeholder="Enter Spare Part Number" readonly {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}></td>
+                                                            <td style="padding: 1px !important;"><input class="form-control text-center getgsxValue" type="text" id="gsx_code_{{$qt->id}}"  value="{{ $qt->gsx_ref }}" placeholder="Enter GSX Reference" {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}></td>
+                                                            <td style="padding: 1px !important;"><input class="form-control text-center getcsValue" type="text" id="cs_code_{{$qt->id}}" value="{{ $qt->cs_code }}" placeholder="Enter CS Code" {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}></td>
+                                                            <td style="padding: 1px !important;"><input class="form-control text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter Serial Number" {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}></td>
+                                                            <td style="padding: 1px !important;"><input class="form-control text-center getdcValue" type="text" id="digits_code_{{$qt->id}}" value="{{ $qt->digits_code }}" placeholder="Enter Item Code" readonly {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}></td>
+                                                            <td style="padding: 1px !important;"><input class="form-control text-center getitemValue" type="text" id="item_desc_{{$qt->id}}" value="{{ $qt->item_description }}" placeholder="Enter Item Description" readonly {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}></td>
+                                                            <td style="padding: 1px !important;"><input class="form-control text-center getcostValue" type="number" onblur="AutoFormatCost('{{$qt->id}}')" id="price_{{$qt->id}}" value="{{ $qt->cost }}" min="0" max="9999" step="any" placeholder="Enter Price" {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}></td> 
+                                                            @if($transaction_details->repair_status == 9) <td style="padding: 5px !important;" class="text-center"><a onclick="RemoveRow('{{$qt->id}}')"><i class="fa fa-close fa-2x remove" style="color:red"></i></a></td> @endif
                                                         </tr>
                                                     @endforeach
                                                 @endif
                                             </tr>
-                                            <tr class="nr row_num" {{ $transaction_details->repair_status != 1 ? 'hidden' : ''}}>
+                                            <tr class="nr row_num" {{ $transaction_details->repair_status != 9 ? 'hidden' : ''}}>
                                                 <input type="hidden"class="getidValue" value="">
                                                 <td style="padding: 1px !important;position: relative;">
                                                     <input class="form-control text-center getscValue"  type="text" value="" id="service_code" oninput="gsx_data('service_code')" placeholder="Enter Spere Part Number">
@@ -593,10 +593,10 @@
             <br>    
             <div class="panel-footer">
                 <input type="hidden" name="mainpath" id="mainpath" value="{{CRUDBooster::mainpath()}}"/>
-                @if($transaction_details->repair_status == 1)
+                @if($transaction_details->repair_status == 9)
                     <input type="submit" id="save" onclick="return changeStatus(0)" class="btn btn-primary pull-right buttonSubmit" value="SAVE" style="margin-left: 20px;"/>
                 @endif
-                @if($transaction_details->repair_status == 1 || $transaction_details->repair_status == 2)
+                @if($transaction_details->repair_status == 9 || $transaction_details->repair_status == 2)
                     <a href="{{ CRUDBooster::mainpath() }}" class="btn btn-default pull-left" id="back">BACK</a>
                     <input type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" value="CANCEL" style="margin-left: 20px;"/>
                     <input type="submit" id="repair" onclick="return changeStatus(2)" class="btn btn-success pull-right buttonSubmit" name="send_quote" value="SEND QUOTATION" style="margin-left: 20px;{{ $transaction_details->repair_status == 2 ? 'display:none' : ''}}"/>
