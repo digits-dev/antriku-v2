@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CmsModuleSeeder extends Seeder
 {
@@ -24,7 +25,10 @@ class CmsModuleSeeder extends Seeder
         ];
 
         foreach ($modules as $module) {
-            CmsModule::updateOrInsert(['name' => $module['name']], $module);
+            DB::table('cms_moduls')->updateOrInsert(
+                ['name' => $module['name']], 
+                $module
+            );
         }
 
         $this->command->info('Seeder finished seeding modules.');

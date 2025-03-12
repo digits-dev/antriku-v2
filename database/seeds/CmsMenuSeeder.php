@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CmsMenuSeeder extends Seeder
 {
@@ -27,7 +28,10 @@ class CmsMenuSeeder extends Seeder
         ];
     
         foreach ($menus as $menu) {
-            CmsMenu::updateOrCreate(['name' => $menu['name']], $menu);
+            DB::table('cms_menus')->updateOrInsert(
+                ['name' => $menu['name']], 
+                $menu
+            );
         }
         
         $this->command->info('Seeder finished seeding menus.');
