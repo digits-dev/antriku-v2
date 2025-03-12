@@ -1,30 +1,61 @@
-
+// Function to assign a technician
 function assignTechnician(id, reference_no, technician_id) {
-    // Fetch dynamic technicians
-    fetch('to_diagnose/GetTechnicians') // Change this to your actual endpoint
+    fetch('to_diagnose/GetTechnicians')
         .then(response => response.json())
         .then(data => {
-            let inputOptions = {};
+            let optionsHtml = `<select id="technicianSelect" class="js-example-basic-single" name="technician" style="width: 100%;">`;
+            optionsHtml += `<option value="">Choose a technician</option>`;
+
+            // Group technicians based on branch_id
+            let groupedTechnicians = {
+                "VMALL": [],
+                "GREENHILLS": []
+            };
 
             data.forEach(technician => {
                 if (technician.id !== technician_id) { 
-                    inputOptions[technician.id] = technician.name;
+                    let branchGroup = technician.branch_id === 1 ? "Greenhills VMall" : "Bonifacio High Street Central";
+
+                    if (!groupedTechnicians[branchGroup]) {
+                        groupedTechnicians[branchGroup] = [];
+                    }
+
+                    groupedTechnicians[branchGroup].push(`<option value="${technician.id}">${technician.name}</option>`);
                 }
             });
 
-            // Show the SweetAlert select input
+            // Build optgroups
+            for (let branch in groupedTechnicians) {
+                if (groupedTechnicians[branch].length > 0) {
+                    optionsHtml += `<optgroup label="${branch}">`;
+                    optionsHtml += groupedTechnicians[branch].join('');
+                    optionsHtml += `</optgroup>`;
+                }
+            }
+
+            optionsHtml += `</select>`;
+
+            // Show SweetAlert modal with Select2
             Swal.fire({
                 title: technician_id ? 'Do you want to reassign?' : 'Select Technician to Assign',
-                text: technician_id ? `Warning: the reference: ${reference_no} has already assigned technician` : `Reference No: ${reference_no}`,
-                icon: technician_id ? 'warning':'question',
+                html: `
+                    <p>${technician_id ? `Warning: the reference: ${reference_no} has already assigned a technician` : `Reference No: ${reference_no}`}</p>
+                    ${optionsHtml}
+                `,
+                icon: technician_id ? 'warning' : 'question',
                 width: '40rem',
-                input: 'select',
-                inputOptions: inputOptions,
-                inputPlaceholder: 'Choose a technician',
                 showCancelButton: true,
                 confirmButtonText: 'Assign',
-                reverseButtons: true,
-                preConfirm: (technicianId) => {
+                didOpen: () => {
+                    // Initialize Select2 inside SweetAlert after the modal is rendered
+                    $('#technicianSelect').select2({
+                        dropdownParent: $('.swal2-popup'), // Prevents dropdown from hiding behind modal
+                        placeholder: 'Choose a technician',
+                        allowClear: true
+                    });
+                },
+                preConfirm: () => {
+                    let technicianId = $('#technicianSelect').val();
                     if (!technicianId) {
                         Swal.showValidationMessage('You need to select a technician');
                     }
@@ -46,7 +77,7 @@ function assignTechnician(id, reference_no, technician_id) {
                     .then(data => {
                         if (data.success) {
                             Swal.fire('Success!', 'Technician assigned successfully.', 'success').then(() => {
-                                location.reload(); // Reload the page after successful assignment
+                                location.reload(); 
                             });
                         } else {
                             Swal.fire('Error!', 'Failed to assign technician.', 'error');
@@ -61,7 +92,7 @@ function assignTechnician(id, reference_no, technician_id) {
         });
 }
 
-
+// Function to accept a job
 function acceptJob(id) {
     Swal.fire({
         title: "Are you sure?",
@@ -78,7 +109,7 @@ function acceptJob(id) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // Ensure CSRF token is included
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 },
                 body: JSON.stringify({ id: id })
             })
@@ -99,4 +130,3 @@ function acceptJob(id) {
         }
     });
 }
-

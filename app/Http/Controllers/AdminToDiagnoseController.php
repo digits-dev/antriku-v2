@@ -999,7 +999,7 @@
 		}
 
 		public function GetTechnicians() {
-			$technicians = DB::table('cms_users')->where('id_cms_privileges', 4)->where('status', 'ACTIVE')->select('id', 'name')->get();
+			$technicians = DB::table('cms_users')->where('id_cms_privileges', 4)->where('status', 'ACTIVE')->select('id', 'name', 'branch_id')->get();
 			return response()->json($technicians);
 		}
 
@@ -1062,6 +1062,19 @@
 					// to ongoing diagnosis
 					'repair_status' => 9,
 				]);
+
+				$latestAssignment = DB::table('case_assignments')
+				->where('returns_header_id', $request->id)
+				->latest('id') // Gets the latest entry based on ID
+				->first();
+	
+				if ($latestAssignment) {
+					// Update the latest assignment by setting end_date
+					DB::table('case_assignments')
+						->where('id', $latestAssignment->id)
+						->update(['accepted_date' => now()]);
+				}
+
 			}  catch (\Exception $e) {
 				\Log::error('Error Accepting Job: ' . $e->getMessage());
 				return response()->json(['success' => false]);

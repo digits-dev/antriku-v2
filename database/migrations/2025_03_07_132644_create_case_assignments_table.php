@@ -20,6 +20,7 @@ class CreateCaseAssignmentsTable extends Migration
             $table->integer('technician_id')->nullable();
             $table->timestamp('start_date')->nullable();
             $table->timestamp('end_date')->nullable();
+            $table->timestamp('accepted_date')->nullable();
             $table->timestamps();
         });
     }

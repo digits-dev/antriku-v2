@@ -101,6 +101,20 @@
         });
     }
 
+    function validateBeforeChangeStatus(status_id) {
+        let form = document.getElementById("SubmitTransactionForm"); // Adjust to your form ID
+
+        // Check if form fields are valid
+        if (!form.checkValidity()) {
+            form.reportValidity(); // Trigger browser validation messages
+            return false; // Stop execution if validation fails
+        }
+
+        // If validation passes, trigger the existing function
+        return changeStatus(status_id);
+    }
+
+
     // validation for submitting form
     function changeStatus(status_id)
     {

@@ -313,8 +313,8 @@
                     @if($transaction_details->repair_status == 8 && CRUDBooster::getModulePath() == "pay_diagnostic")
                         <button type="submit" id="paid" onclick="return changeStatus(1)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o"></i> PAID</button>
                     @elseif($transaction_details->repair_status == 9 && CRUDBooster::getModulePath() == "to_diagnose")
-                        <button type="submit" id="call_out_mail_in" onclick="return changeStatus(10)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">CALL OUT</button>
-                        <button type="submit" id="save" onclick="return changeStatus('save')" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-floppy-o" aria-hidden="true"></i> SAVE</button>
+                        <button type="submit" id="call_out_mail_in" onclick="return validateBeforeChangeStatus(10)" class="btn btn-primary pull-right buttonSubmit" {{ $transaction_details->case == 'CARRY-IN' ? 'disabled' : '' }} style="margin-left: 20px;">CALL OUT</button>
+                        <button type="submit" id="save"  buttonSubmit onclick="return validateBeforeChangeStatus('save')" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-floppy-o" aria-hidden="true"></i> SAVE</button>
                         <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
                         <button type="submit" id="repair" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o" aria-hidden="true"></i> SEND QUOTATION</button>
                         <button type="submit" id="pay_diagnostic" onclick="return changeStatus(8)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-backward" aria-hidden="true"></i> REWIND</button>
