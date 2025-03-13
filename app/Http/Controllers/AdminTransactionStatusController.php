@@ -267,6 +267,20 @@
 					$column_value = '<span class="label label-primary">'.$column_value.'</span>';
 				}elseif($column_value == 'ONGOING DIAGNOSIS'){
 					$column_value = '<span class="label label-warning">'.$column_value.'</span>';
+				}elseif($column_value == 'FOR CALL-OUT MAIL-IN'){
+					$column_value = '<span class="label label-warning">'.$column_value.'</span>';
+				}elseif($column_value == 'PENDING MAIL-IN SHIPMENT'){
+					$column_value = '<span class="label label-warning">'.$column_value.'</span>';
+				}elseif($column_value == 'MAIL-IN SHIPPED'){
+					$column_value = '<span class="label label-warning">'.$column_value.'</span>';
+				}elseif($column_value == 'ONGOING REPAIR'){
+					$column_value = '<span class="label label-warning">'.$column_value.'</span>';
+				}elseif($column_value == 'PENDING SPARE PARTS'){
+					$column_value = '<span class="label label-warning">'.$column_value.'</span>';
+				}elseif($column_value == 'SPARE PARTS RECEIVED / AWAITING REPAIR'){
+					$column_value = '<span class="label label-warning">'.$column_value.'</span>';
+				}elseif($column_value == 'FOR CALL-OUT (GOOD UNIT)'){
+					$column_value = '<span class="label label-warning">'.$column_value.'</span>';
 				}
 			}
 			

@@ -414,12 +414,16 @@
 
     function toggleCallOut(callout)
 	{
-        if (callout === 'CARRY-IN') {
-            $("#call_out_mail_in").prop("disabled", true);
-        }
-        else {
-            $("#call_out_mail_in").prop("disabled", false);
-        }
+    if (callout === 'CARRY-IN') {
+        $("#call_out_mail_in").hide(); 
+        $("#ongoing_repair").show(); 
+        $("#pending_spare_parts").show();
+    } else {
+        $("#call_out_mail_in").show(); 
+        $("#ongoing_repair").hide(); 
+        $("#pending_spare_parts").hide();  
+    }
+
     }
    
 
