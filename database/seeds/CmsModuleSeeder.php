@@ -22,6 +22,15 @@ class CmsModuleSeeder extends Seeder
                 'is_protected' => 0,
                 'is_active'    => 0,
             ],
+            [
+                'name'         => 'Pending Mail-In Shipment',
+                'icon'         => 'fa fa-glass',
+                'path'         => 'pending_mail_in_shipment',
+                'table_name'   => 'returns_header',
+                'controller'   => 'AdminPendingMailInShipmentController',
+                'is_protected' => 0,
+                'is_active'    => 0,
+            ],
         ];
 
         foreach ($modules as $module) {

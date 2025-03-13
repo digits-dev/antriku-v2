@@ -25,6 +25,18 @@ class CmsMenuSeeder extends Seeder
                 'id_cms_privileges' => 1,
                 'sorting'           => 12
             ],
+            [
+                'name'              => 'Pending Mail-In Shipment',
+                'type'              => 'Route',
+                'path'              => 'AdminPendingMailInShipmentControllerGetIndex',
+                'color'             => 'normal',
+                'icon'              => 'fa fa-glass',
+                'parent_id'         => 0,
+                'is_active'         => 1,
+                'is_dashboard'      => 0,
+                'id_cms_privileges' => 1,
+                'sorting'           => 13
+            ],
         ];
     
         foreach ($menus as $menu) {
