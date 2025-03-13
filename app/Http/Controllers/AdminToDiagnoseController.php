@@ -735,7 +735,7 @@
             } 
 			// *********************************************************************************************
 
-		    $status_array = [1,2,3,4,5,6,7,8,9,10];
+		    $status_array = [1,2,3,4,5,6,7,8,9,10,11,12,16];
 		    if(in_array($request->status_id, $status_array)){
 		    	DB::table('returns_header')->where('id',$request->header_id)->update([
 				'repair_status' 			=> $request->status_id,
@@ -933,6 +933,17 @@
 					// CRUDBooster::sendEmail(['to'=>$email,'data'=>$data, 'template'=>'send_payment_link_for_final_payment_email','attachments'=>[]]);
 				}
 			}
+
+			// 
+			if($request->status_id == 11){
+				DB::table('returns_header')->where('id',$request->header_id)->update([
+					'call_out_mail_in_by'   => CRUDBooster::myId(),
+					'call_out_mail_in_at'   => date('Y-m-d H:i:s'),
+				]);
+			}
+
+
+
 			return ($all_data);
 		}
 

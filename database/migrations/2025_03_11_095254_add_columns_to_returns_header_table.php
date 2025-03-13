@@ -15,6 +15,11 @@ class AddColumnsToReturnsHeaderTable extends Migration
     {
         Schema::table('returns_header', function (Blueprint $table) {
             $table->longText('parts_replacement_cost')->nullable()->after('other_remarks');
+            $table->integer('call_out_mail_in_by')->nullable()->after('technician_assigned_at');
+            $table->timestamp('call_out_mail_in_at')->nullable()->after('call_out_mail_in_by');
+            $table->timestamp('mail_in_shipped_by')->nullable()->after('call_out_mail_in_at');
+            $table->timestamp('mail_in_shipped_at')->nullable()->after('mail_in_shipped_by');
+
         });
     }
 
@@ -26,7 +31,7 @@ class AddColumnsToReturnsHeaderTable extends Migration
     public function down()
     {
         Schema::table('returns_header', function (Blueprint $table) {
-            $table->dropColumn(['parts_replacement_cost']);
+            $table->dropColumn(['parts_replacement_cost', 'call_out_mail_in_by', 'call_out_mail_in_at', 'mail_in_shipped_by', 'mail_in_shipped_at']);
         });
     }
 }

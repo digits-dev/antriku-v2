@@ -17,7 +17,7 @@
                                 <div class="col-md-12">
                                     <label class="col-md-4 control-label"  style="font-size: 1.1em;"><strong>Memo Number: </strong></label>
                                     <div class="col-md-8">
-                                        <input class="form-control" style="font-weight:bolder;font-size: 1.2em;" type="text" name="memo_number" value="{{$transaction_details->memo_no}}" {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}> 
+                                        <input class="form-control" style="font-weight:bolder;font-size: 1.2em;" type="text" name="memo_number" value="{{$transaction_details->memo_no}}" {{ !in_array($transaction_details->repair_status, [9]) ? 'readonly' : ''}}> 
                                     </div>
                                 </div>
                             </div>
@@ -27,12 +27,12 @@
                                     <label class="col-md-4 control-label" style="font-size: 1.1em;"><strong>Software Fee: </strong></label>
                                     <div class="col-md-8 input-icon">
                                         <input type="hidden" value="{{ number_format($transaction_details->software_fee, 2, '.', '') }}" id="diagnostic_payment_fee">
-                                        <input class="form-control" style="font-weight:bolder;font-size: 1.2em;" type="text" id="software_cost" name="software_cost" onblur="AutoFormatPrice()" value="{{ number_format($transaction_details->software_cost, 2, '.', '') }}" {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}> 
+                                        <input class="form-control" style="font-weight:bolder;font-size: 1.2em;" type="text" id="software_cost" name="software_cost" onblur="AutoFormatPrice()" value="{{ number_format($transaction_details->software_cost, 2, '.', '') }}" {{ !in_array($transaction_details->repair_status, [9]) ? 'readonly' : ''}}> 
                                         <i>₱</i>
                                     </div>
                                 </div>
                             </div>
-                            @if($transaction_details->repair_status == 9)
+                            @if(in_array($transaction_details->repair_status, [9]))
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="col-md-8 pull-right">
@@ -47,7 +47,7 @@
                 </div>
             </div>
             <br>
-            @if($transaction_details->repair_status == 9)
+            @if(in_array($transaction_details->repair_status, [9, 12]))
                 <div class="row">
                     <div class="col-md-12">
                         <div class="col-md-12 ">
@@ -83,24 +83,24 @@
                                             @foreach($data['quotation'] as $qt)
                                                 <tr class="nr row_num" id="rowID{{$qt->id}}">
                                                     <input type="hidden"class="getidValue" value="{{$qt->id}}">
-                                                    <td style="padding: 1px !important;"><input class="form-control text-center getscValue" type="text" id="service_code_{{$qt->id}}" oninput="gsx_data('{{$qt->id}}')" value="{{ $qt->service_code }}" placeholder="Enter Spare Part Number" readonly {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}></td>
+                                                    <td style="padding: 1px !important;"><input class="form-control text-center getscValue" type="text" id="service_code_{{$qt->id}}" oninput="gsx_data('{{$qt->id}}')" value="{{ $qt->service_code }}" placeholder="Enter Spare Part Number" readonly {{ !in_array($transaction_details->repair_status, [9, 12]) ? 'readonly' : ''}}></td>
                                                     <td style="padding: 1px !important;">
                                                         @if(CRUDBooster::getModulePath() == "to_pay_parts" && CRUDBooster::myPrivilegeId() == 1)
                                                             <input class="form-control text-center getgsxValue" type="text" id="gsx_code_{{$qt->id}}"  value="{{ $qt->gsx_ref }}" placeholder="Enter GSX Reference">
                                                         @elseif(CRUDBooster::getModulePath() == "to_pay_parts" && CRUDBooster::myPrivilegeId() == 4)
                                                             <input class="form-control text-center getgsxValue" type="text" id="gsx_code_{{$qt->id}}"  value="{{ $qt->gsx_ref }}" placeholder="Enter GSX Reference">
                                                         @else
-                                                            <input class="form-control text-center getgsxValue" type="text" id="gsx_code_{{$qt->id}}"  value="{{ $qt->gsx_ref }}" placeholder="Enter GSX Reference" {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>
+                                                            <input class="form-control text-center getgsxValue" type="text" id="gsx_code_{{$qt->id}}"  value="{{ $qt->gsx_ref }}" placeholder="Enter GSX Reference" {{ !in_array($transaction_details->repair_status, [9, 12]) ? 'readonly' : ''}}>
                                                         @endif
                                                     </td>
-                                                    <td style="padding: 1px !important;"><input class="form-control text-center getcsValue" type="text" id="cs_code_{{$qt->id}}" value="{{ $qt->cs_code }}" placeholder="Enter CS Code" {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}></td>
+                                                    <td style="padding: 1px !important;"><input class="form-control text-center getcsValue" type="text" id="cs_code_{{$qt->id}}" value="{{ $qt->cs_code }}" placeholder="Enter CS Code" {{ !in_array($transaction_details->repair_status, [9, 12]) ? 'readonly' : ''}}></td>
                                                     <!--<td style="padding: 1px !important;">-->
                                                     <!--    @if(CRUDBooster::getModulePath() == "to_close" && CRUDBooster::myPrivilegeId() == 1)-->
                                                     <!--        <input class="form-control text-center getapValue" type="text" id="apple_parts_{{$qt->id}}" value="{{ $qt->apple_parts }}" placeholder="Enter Apple Parts Number">-->
                                                     <!--    @elseif(CRUDBooster::getModulePath() == "to_close" && CRUDBooster::myPrivilegeId() == 2)-->
                                                     <!--        <input class="form-control text-center getapValue" type="text" id="apple_parts_{{$qt->id}}" value="{{ $qt->apple_parts }}" placeholder="Enter Apple Parts Number">-->
                                                     <!--    @else-->
-                                                    <!--        <input class="form-control text-center getapValue" type="text" id="apple_parts_{{$qt->id}}" value="{{ $qt->apple_parts }}" placeholder="Enter Apple Parts Number" {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>-->
+                                                    <!--        <input class="form-control text-center getapValue" type="text" id="apple_parts_{{$qt->id}}" value="{{ $qt->apple_parts }}" placeholder="Enter Apple Parts Number" {{ !in_array($transaction_details->repair_status, [9, 12]) ? 'readonly' : ''}}>-->
                                                     <!--    @endif-->
                                                     <!--</td>-->
                                                     <td style="padding: 1px !important;">
@@ -112,26 +112,26 @@
                                                         @elseif(CRUDBooster::getModulePath() == "to_close" && CRUDBooster::myPrivilegeId() == 2)
                                                             <input class="form-control text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter Apple Parts Number">
                                                         @else
-                                                            <!--<input class="form-control text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter Apple Parts Number" {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>-->
+                                                            <!--<input class="form-control text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter Apple Parts Number" {{ !in_array($transaction_details->repair_status, [9, 12]) ? 'readonly' : ''}}>-->
                                                              @if(CRUDBooster::getModulePath() == "repair_in_process" && CRUDBooster::myPrivilegeId() == 1)
                                                                 <input class="form-control text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter Apple Parts Number">
                                                             @elseif(CRUDBooster::getModulePath() == "repair_in_process" && CRUDBooster::myPrivilegeId() == 2)
                                                                 <input class="form-control text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter Apple Parts Number">
                                                             @else
-                                                                <input class="form-control text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter Apple Parts Number" {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>
+                                                                <input class="form-control text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter Apple Parts Number" {{ !in_array($transaction_details->repair_status, [9, 12]) ? 'readonly' : ''}}>
                                                             @endif
                                                         @endif
                                                         
                                                     </td>
-                                                    <!--<td style="padding: 1px !important;"><input class="form-control text-center getdcValue" type="text" id="digits_code_{{$qt->id}}" value="{{ $qt->digits_code }}" placeholder="Enter Item Code" readonly {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}></td>-->
-                                                    <td style="padding: 1px !important;"><input class="form-control text-center getitemValue" type="text" id="item_desc_{{$qt->id}}" value="{{ $qt->item_description }}" placeholder="Enter Item Description" readonly {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}></td>
-                                                    <td style="padding: 1px !important;"><input class="form-control text-center getcostValue" type="number" onblur="AutoFormatCost('{{$qt->id}}')" id="price_{{$qt->id}}" value="{{ $qt->cost }}" min="0" max="9999" step="any" placeholder="Enter Price" {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}></td> 
-                                                    @if($transaction_details->repair_status == 9) <td style="padding: 5px !important;" class="text-center"><a onclick="RemoveRow('{{$qt->id}}')"><i class="fa fa-close fa-2x remove" style="color:red"></i></a></td> @endif
+                                                    <!--<td style="padding: 1px !important;"><input class="form-control text-center getdcValue" type="text" id="digits_code_{{$qt->id}}" value="{{ $qt->digits_code }}" placeholder="Enter Item Code" readonly {{ !in_array($transaction_details->repair_status, [9, 12]) ? 'readonly' : ''}}></td>-->
+                                                    <td style="padding: 1px !important;"><input class="form-control text-center getitemValue" type="text" id="item_desc_{{$qt->id}}" value="{{ $qt->item_description }}" placeholder="Enter Item Description" readonly {{ !in_array($transaction_details->repair_status, [9, 12]) ? 'readonly' : ''}}></td>
+                                                    <td style="padding: 1px !important;"><input class="form-control text-center getcostValue" type="number" onblur="AutoFormatCost('{{$qt->id}}')" id="price_{{$qt->id}}" value="{{ $qt->cost }}" min="0" max="9999" step="any" placeholder="Enter Price" {{ !in_array($transaction_details->repair_status, [9, 12]) ? 'readonly' : ''}}></td> 
+                                                    @if(in_array($transaction_details->repair_status, [9, 12])) <td style="padding: 5px !important;" class="text-center"><a onclick="RemoveRow('{{$qt->id}}')"><i class="fa fa-close fa-2x remove" style="color:red"></i></a></td> @endif
                                                 </tr>
                                             @endforeach
                                         @endif
                                     </tr>
-                                    <tr class="nr row_num" {{ $transaction_details->repair_status != 9 ? 'hidden' : ''}}>
+                                    <tr class="nr row_num" {{ !in_array($transaction_details->repair_status, [9, 12]) ? 'hidden' : ''}}>
                                         <input type="hidden"class="getidValue" value="">
                                         <td style="padding: 1px !important;position: relative;">
                                             <input class="form-control text-center getscValue"  type="text" value="" id="service_code" oninput="gsx_data('service_code')" placeholder="Enter Spare Part Number">

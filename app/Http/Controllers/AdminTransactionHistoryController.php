@@ -443,6 +443,15 @@
 			$complete = DB::table('transaction_status')->where('id','6')->first();
 			$pick_up = DB::table('transaction_status')->where('id','7')->first();
 			$pay_diagnose = DB::table('transaction_status')->where('id','8')->first();
+			$ongoing_diagnosis = DB::table('transaction_status')->where('id','9')->first();
+			$for_call_out_mail_in = DB::table('transaction_status')->where('id','10')->first();
+			$pending_mail_in_shipment = DB::table('transaction_status')->where('id','11')->first();
+			$mail_in_shipped = DB::table('transaction_status')->where('id','12')->first();
+			$ongoing_repair = DB::table('transaction_status')->where('id','13')->first();
+			$pending_spare_parts = DB::table('transaction_status')->where('id','14')->first();
+			$spare_sparts_received = DB::table('transaction_status')->where('id','15')->first();
+			$for_call_out_good_unit = DB::table('transaction_status')->where('id','16')->first();
+
 
 			if($column_index == 1){
 				if($column_value == $pending->id){
@@ -461,6 +470,22 @@
 					$column_value = '<span class="label label-success">'.$complete->status_name.'</span>';
 				}elseif($column_value == $pay_diagnose->id){
 					$column_value = '<span class="label label-primary">'.$pay_diagnose->status_name.'</span>';
+				}elseif($column_value == $ongoing_diagnosis->id){
+					$column_value = '<span class="label label-success">'.$ongoing_diagnosis->status_name.'</span>';
+				}elseif($column_value == $for_call_out_mail_in->id){
+					$column_value = '<span class="label label-warning">'.$for_call_out_mail_in->status_name.'</span>';
+				}elseif($column_value == $pending_mail_in_shipment->id){
+					$column_value = '<span class="label label-warning">'.$pending_mail_in_shipment->status_name.'</span>';
+				}elseif($column_value == $mail_in_shipped->id){
+					$column_value = '<span class="label label-success">'.$mail_in_shipped->status_name.'</span>';
+				}elseif($column_value == $ongoing_repair->id){
+					$column_value = '<span class="label label-success">'.$ongoing_repair->status_name.'</span>';
+				}elseif($column_value == $pending_spare_parts->id){
+					$column_value = '<span class="label label-warning">'.$pending_spare_parts->status_name.'</span>';
+				}elseif($column_value == $spare_sparts_received->id){
+					$column_value = '<span class="label label-success">'.$spare_sparts_received->status_name.'</span>';
+				}elseif($column_value == $for_call_out_good_unit->id){
+					$column_value = '<span class="label label-warning">'.$for_call_out_good_unit->status_name.'</span>';
 				}
 			}
 

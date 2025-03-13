@@ -356,6 +356,21 @@
                         }, function(){
                             window.location.href = window.location.origin+"/admin/to_diagnose";
                         });
+                    } else if(status_id == 11){
+                        swal({ title: "Info!", text: "STATUS: PENDING MAIL-IN SHIPMENT", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                        }, function(){
+                            window.location.href = window.location.origin+"/admin/call_out";
+                        });
+                    }else if(status_id == 12){
+                        swal({ title: "Info!", text: "STATUS: MAIL-IN SHIPPED", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                        }, function(){
+                            window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
+                        });
+                    }else if(status_id == 16){
+                        swal({ title: "Info!", text: "STATUS: FOR CALL OUT (GOOD UNIT)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                        }, function(){
+                            window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
+                        });
                     }
                 }                    
             });

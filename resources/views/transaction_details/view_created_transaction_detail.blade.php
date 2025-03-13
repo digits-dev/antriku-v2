@@ -335,6 +335,16 @@
                             <button type="submit" id="send" onclick="return changeStatus('send')" class="btn btn-primary pull-right buttonSubmit"><i class="fa fa-envelope"></i> SEND PAYMENT LINK</button>
                         @endif 
                     @endif 
+                    @if ($transaction_details->repair_status == 10 && CRUDBooster::getModulePath() == "call_out")
+                        <button type="submit" id="save" onclick="return changeStatus(11)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-floppy-o" aria-hidden="true"></i> APPROVE</button>
+                        <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
+                    @endif
+                    @if ($transaction_details->repair_status == 11 && CRUDBooster::getModulePath() == "pending_mail_in_shipment")
+                        <button type="submit" id="save" onclick="return changeStatus(12)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-paper-plane" aria-hidden="true"></i> MAIL-IN SHIPPED</button>
+                    @endif
+                    @if ($transaction_details->repair_status == 12 && CRUDBooster::getModulePath() == "pending_mail_in_shipment")
+                        <button type="submit" id="save" onclick="return changeStatus(16)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-phone" aria-hidden="true"></i> FOR CALL-OUT</button>
+                    @endif
                 @endif
             </div>
             @if(request()->segment(3) == "edit") </form> @endif 

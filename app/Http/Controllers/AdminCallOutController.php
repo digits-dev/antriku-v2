@@ -20,7 +20,7 @@
 			$this->button_action_style = "button_icon";     
 			$this->button_add          = FALSE;
 			$this->button_delete       = TRUE;
-			$this->button_edit         = FALSE;
+			$this->button_edit         = TRUE;
 			$this->button_detail       = TRUE;
 			$this->button_show         = TRUE;
 			$this->button_filter       = TRUE;        
@@ -372,7 +372,7 @@
 	    */
 	    public function hook_query_index(&$query) {
 	        //Your code here
-			$query->where('repair_status', 10)->where('branch', CRUDBooster::me()->branch_id); 
+			$query->whereIn('repair_status', [10,16])->where('branch', CRUDBooster::me()->branch_id); 
 	    }
 
 	    /*
@@ -383,10 +383,14 @@
 	    */    
 	    public function hook_row_index($column_index,&$column_value) {	        
 	    	$pending_customes_approval = DB::table('transaction_status')->where('id','10')->first();
+	    	$for_call_out = DB::table('transaction_status')->where('id','16')->first();
 
 			if($column_index == 1){
 				if($column_value == $pending_customes_approval->id){
 					$column_value = '<span class="label label-warning">'.$pending_customes_approval->status_name.'</span>';
+				}
+				if($column_value == $for_call_out->id){
+					$column_value = '<span class="label label-info">'.$for_call_out->status_name.'</span>';
 				}
 			}
 			if($column_index == 3){
@@ -409,82 +413,86 @@
 			}
 	    }
 
-	    /*
-	    | ---------------------------------------------------------------------- 
-	    | Hook for manipulate data input before add data is execute
-	    | ---------------------------------------------------------------------- 
-	    | @arr
-	    |
-	    */
-	    public function hook_before_add(&$postdata) {        
-	        //Your code here
+		public function cbView($template, $data)
+		{
+			$this->cbLoader();
+			echo view($template, $data)->with('data', $data);
+		}
 
-	    }
+		public function getDetail($id) 
+		{
+			if(!CRUDBooster::isRead() && $this->global_privilege==FALSE) {    
+			  CRUDBooster::redirect(CRUDBooster::adminPath(),trans("crudbooster.denied_access"));
+			}
+			
+			$data = [];
+			$data['page_title'] = "Diagnose Transactions";
+			$data['transaction_details'] = DB::table('returns_header')
+				->leftJoin('model', 'returns_header.model', '=', 'model.id')
+				->leftJoin('model_group', 'model.model_group', '=', 'model_group.id')
+				->select('returns_header.*', 'returns_header.id as header_id', 'returns_header.created_by as user_id', 'model.id as model_id', 'model_name', 'model_photo', 'model_status', 'diagnostic_fee', 'software_fee', 'model_group')
+				->where('returns_header.id',$id)->first();
 
-	    /* 
-	    | ---------------------------------------------------------------------- 
-	    | Hook for execute command after add public static function called 
-	    | ---------------------------------------------------------------------- 
-	    | @id = last insert id
-	    | 
-	    */
-	    public function hook_after_add($id) {        
-	        //Your code here
+			$data['Comment'] = DB::table('returns_comments')
+				->leftJoin('cms_users', 'returns_comments.created_by', '=', 'cms_users.id')
+				->leftJoin('cms_privileges', 'cms_users.id_cms_privileges', '=', 'cms_privileges.id')
+				->select('returns_comments.returns_header_id as header_id', 'returns_comments.comments as comment', 'returns_comments.created_at as comment_date', 'cms_users.name as name', 'cms_users.id as userid', 'cms_users.photo as userimg', 'cms_privileges.name as role')
+				->where('returns_comments.returns_header_id',$id)->orderBy('comment_date', 'DESC')->get();
 
-	    }
+			$data['diagnostic_test'] = DB::table('returns_diagnostic_test')->leftJoin('tech_testing', 'returns_diagnostic_test.test_type', '=', 'tech_testing.id')
+				->select('returns_diagnostic_test.*','tech_testing.description as diagnostic_desc')
+				->where('returns_diagnostic_test.returns_header_id',$id)->orderBy('returns_diagnostic_test.created_at', 'ASC')->get();
 
-	    /* 
-	    | ---------------------------------------------------------------------- 
-	    | Hook for manipulate data input before update data is execute
-	    | ---------------------------------------------------------------------- 
-	    | @postdata = input post data 
-	    | @id       = current id 
-	    | 
-	    */
-	    public function hook_before_edit(&$postdata,$id) {        
-	        //Your code here
+			$data['TechTesting'] = DB::table('tech_testing')->where('test_type_status', 'ACTIVE')->where('model_group_id','!=',NULL)->orderBy('description', 'ASC')->get();
+			$data['quotation'] = DB::table('returns_body_item')->leftJoin('returns_serial', 'returns_body_item.id', '=', 'returns_serial.returns_body_item_id')
+				->select('returns_body_item.*', 'returns_body_item.returns_header_id as header_id', 'returns_serial.returns_header_id as serial_header_id', 'returns_serial.returns_body_item_id as serial_body_item_id', 'returns_serial.serial_number as serial_no')
+				->where('returns_body_item.returns_header_id',$id)->get();
 
-	    }
+			$data['Branch'] = DB::table('branch')->leftJoin('cms_users', 'branch.id', '=', 'cms_users.branch_id')->where('cms_users.id',$data['transaction_details']->user_id)->first();
+			$data['imfs'] = DB::table('product_item_master')->where('status', 'ACTIVE')->get();
+			$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
+			$data['TechTesting'] = DB::table('tech_testing')->where('test_type_status', 'ACTIVE')->where('model_group_id','!=',NULL)->orderBy('description', 'ASC')->get();
+			
+			$this->cbView('transaction_details.view_created_transaction_detail',$data);
+		}
 
-	    /* 
-	    | ---------------------------------------------------------------------- 
-	    | Hook for execute command after edit public static function called
-	    | ----------------------------------------------------------------------     
-	    | @id       = current id 
-	    | 
-	    */
-	    public function hook_after_edit($id) {
-	        //Your code here 
+		public function getEdit($id) 
+		{
+			if(!CRUDBooster::isUpdate() && $this->global_privilege==FALSE || $this->button_edit==FALSE) {    
+			  	CRUDBooster::redirect(CRUDBooster::adminPath(),trans("crudbooster.denied_access"));
+			}
+			
+			$data = [];
+			$data['page_title'] = "Diagnose Transactions";
+			$data['transaction_details'] = DB::table('returns_header')
+				->leftJoin('model', 'returns_header.model', '=', 'model.id')
+				->leftJoin('model_group', 'model.model_group', '=', 'model_group.id')
+				->select('returns_header.*', 'returns_header.id as header_id', 'returns_header.created_by as user_id', 'model.id as model_id', 'model_name', 'model_photo', 'model_status', 'diagnostic_fee', 'software_fee', 'model_group')
+				->where('returns_header.id',$id)->first();
 
-	    }
+			$data['Comment'] = DB::table('returns_comments')
+				->leftJoin('cms_users', 'returns_comments.created_by', '=', 'cms_users.id')
+				->leftJoin('cms_privileges', 'cms_users.id_cms_privileges', '=', 'cms_privileges.id')
+				->select('returns_comments.returns_header_id as header_id', 'returns_comments.comments as comment', 'returns_comments.created_at as comment_date', 'cms_users.name as name', 'cms_users.id as userid', 'cms_users.photo as userimg', 'cms_privileges.name as role')
+				->where('returns_comments.returns_header_id',$id)->orderBy('comment_date', 'DESC')->get();
 
-	    /* 
-	    | ---------------------------------------------------------------------- 
-	    | Hook for execute command before delete public static function called
-	    | ----------------------------------------------------------------------     
-	    | @id       = current id 
-	    | 
-	    */
-	    public function hook_before_delete($id) {
-	        //Your code here
+			$data['diagnostic_test'] = DB::table('returns_diagnostic_test')->leftJoin('tech_testing', 'returns_diagnostic_test.test_type', '=', 'tech_testing.id')
+				->select('returns_diagnostic_test.*','tech_testing.description as diagnostic_desc')
+				->where('returns_diagnostic_test.returns_header_id',$id)->orderBy('returns_diagnostic_test.created_at', 'ASC')->get();
 
-	    }
+			$data['TechTesting'] = DB::table('tech_testing')->where('test_type_status', 'ACTIVE')->where('model_group_id','!=',NULL)->orderBy('description', 'ASC')->get();
+			$data['quotation'] = DB::table('returns_body_item')->leftJoin('returns_serial', 'returns_body_item.id', '=', 'returns_serial.returns_body_item_id')
+				->select('returns_body_item.*', 'returns_body_item.returns_header_id as header_id', 'returns_serial.returns_header_id as serial_header_id', 'returns_serial.returns_body_item_id as serial_body_item_id', 'returns_serial.serial_number as serial_no')
+				->where('returns_body_item.returns_header_id',$id)->get();
 
-	    /* 
-	    | ---------------------------------------------------------------------- 
-	    | Hook for execute command after delete public static function called
-	    | ----------------------------------------------------------------------     
-	    | @id       = current id 
-	    | 
-	    */
-	    public function hook_after_delete($id) {
-	        //Your code here
+			$data['Branch'] = DB::table('branch')->leftJoin('cms_users', 'branch.id', '=', 'cms_users.branch_id')->where('cms_users.id',$data['transaction_details']->user_id)->first();
+			$data['imfs'] = DB::table('product_item_master')->where('status', 'ACTIVE')->get();
+			$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
+			$data['TechTesting'] = DB::table('tech_testing')->where('test_type_status', 'ACTIVE')->where('model_group_id','!=',NULL)->orderBy('description', 'ASC')->get();
 
-	    }
+			$this->cbView('transaction_details.view_created_transaction_detail',$data);
+		}
 
-
-
-	    //By the way, you can still create your own method in here... :) 
-
+	  
 
 	}
