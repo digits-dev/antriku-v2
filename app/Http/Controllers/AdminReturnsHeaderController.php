@@ -1,10 +1,13 @@
 <?php namespace App\Http\Controllers;
 
 	use Illuminate\Http\Request;
+	use GuzzleHttp\Client;
 	use Session;
 	use DB;
 	use URL;
 	use CRUDBooster;
+	use Illuminate\Support\Facades\Storage;
+	use Illuminate\Support\Facades\Mail;
 
 	class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controllers\CBController {
 
@@ -233,6 +236,7 @@
 			$data['imfs'] = DB::table('product_item_master')->get();
 			$data['Model'] = DB::table('model')->where('model_status', 'ACTIVE')->orderBy('model_name', 'ASC')->get();
 			$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
+			$data['country'] = DB::table('refcountry')->get();
 			
 			$data['transaction_details'] = DB::table('returns_header')
 				->leftJoin('returns_body_item', 'returns_header.id', '=', 'returns_body_item.returns_header_id')
@@ -246,7 +250,24 @@
                 $data['success'] = "";
             }
             
+
 			$this->cbView("frontliner.create_transactions", $data);
+		}
+
+		public function getProvinces(Request $request)
+		{
+			$provinces = DB::table('refprovince')->where('country_id', $request->input('country_id'))->get(); 
+			return response()->json($provinces);
+		}
+
+		public function getCities(Request $request){
+			$cities = DB::table('refcitymun')->where('provCode', $request->input('prov_code'))->get(); 
+			return response()->json($cities);
+		}
+
+		public function getBrgy(Request $request){
+			$barangays = DB::table('refbrgy')->where('provCode', $request->input('prov_code'))->where('citymunCode',$request->input('city_mun_code'))->get(); 
+			return response()->json($barangays);
 		}
 
 		public function getEdit($id) 
@@ -472,7 +493,7 @@
 
 			date_default_timezone_set('Asia/Manila');
 			$headerID = DB::table('returns_header')->insertGetId([
-				'repair_status' 			=> 8,
+				'repair_status' 			=> ($data['warranty_status'] === "OUT OF WARRANTY") ? 8 : 1,
 				'last_name'   				=> $data['last_name'],
 				'first_name'   				=> $data['first_name'],
  				'email'   					=> $data['email'],
@@ -513,7 +534,7 @@
 				'header_id' => $headerID,
 			]);
 			
-            return(array(['header_id' => $headerID, 'ref_no' => $tracking_number]));
+            return(array(['header_id' => $headerID, 'ref_no' => $tracking_number, 'warranty_status' => $data['warranty_status']]));
 		}
 
 		public function EditTransactionProcess(Request $request)
@@ -633,6 +654,7 @@
 			$data['message']   ='No Item Found!';
 			$data['items'] = array();
 			$items = DB::table('product_item_master')
+				->orWhere('product_item_master.digits_code','LIKE','%'.$request->search.'%')
 				->orWhere('product_item_master.upc_code','LIKE','%'.$request->search.'%')
 				->orWhere('product_item_master.item_description','LIKE','%'.$request->search.'%')
 				->orWhere('product_item_master.upc_code2','LIKE','%'.$request->search.'%')
@@ -649,6 +671,7 @@
 				$i = 0;
 				foreach ($items as $key => $value) {
 				$return_data[$i]['id'] = $value->id;
+				$return_data[$i]['digits_code'] = $value->digits_code ;
 				$return_data[$i]['upc_code'] = $value->upc_code;
 				$return_data[$i]['item_description'] = $value->item_description;
 				$i++;
@@ -800,20 +823,87 @@
 			
 			if($data['print_form_type'] == 1){
 				DB::table('returns_header')->where('id',$header_id)->update([
-					'print_receive_form' 		=> "YES",
-					'updated_by'	     		=> CRUDBooster::myId()
+					'print_receive_form' => "YES",
+					'updated_by' => CRUDBooster::myId()
 				]);
 			}elseif($data['print_form_type'] == 2){
 				DB::table('returns_header')->where('id',$header_id)->update([
-					'print_technical_report'	=> "YES",
-					'updated_by'	     		=> CRUDBooster::myId()
+					'print_technical_report' => "YES",
+					'updated_by' => CRUDBooster::myId()
 				]);
 			}elseif($data['print_form_type'] == 3){
 				DB::table('returns_header')->where('id',$header_id)->update([
-					'print_release_form' 	 	=> "YES",
-					'updated_by'	     		=> CRUDBooster::myId()
+					'print_release_form' => "YES",
+					'updated_by' => CRUDBooster::myId()
 				]);
 			}
 			return($data);   
 		}
+
+	public function verfiyEmail(Request $request)
+	{
+		$email = $request->input('email');
+		$apiKey = "b7b56faaa6eec3f22d39f55d68155f79";
+		$url = "http://apilayer.net/api/check?access_key={$apiKey}&email={$email}&smtp=1&format=1";
+
+		$client = new Client();
+		$response = $client->request('GET', $url);
+		$result = json_decode($response->getBody(), true);
+
+		if ($result['format_valid'] && $result['smtp_check']) {
+			return response()->json([
+				'valid_email' => 'Valid and active email.'
+			]);
+		} else {
+			return response()->json([
+				'invalid_email' => 'Invalid email or non-existent!'
+			]);
+		}
 	}
+
+	public function uploadPdf(Request $request)
+    {
+        // Validate
+        $request->validate([
+            'pdf' => 'required|mimes:pdf|max:10240', // Max 10MB
+        ]);
+
+        $file = $request->file('pdf');
+
+        $fileName = time() . '_' . $file->getClientOriginalName();
+
+        // Store the file on Google Drive
+        $filePath = Storage::disk('google')->put($fileName, file_get_contents($file));
+
+        if ($filePath) {
+            return response()->json(['message' => 'File uploaded successfully!', 'file_name' => $fileName]);
+        }
+
+        return response()->json(['error' => 'Failed to upload file'], 500);
+    }
+
+	public function sendPdf(Request $request){
+		 // Validate input
+		 $request->validate([
+			'email' => 'required|email',
+			'pdf' => 'required|file|mimes:pdf|max:10240', 
+		]);
+	
+		// Store the uploaded file temporarily
+		$pdfFile = $request->file('pdf');
+		$pdfPath = $pdfFile->store('temp_pdfs'); 
+	
+		// Send email with PDF attachment
+		Mail::send([], [], function ($message) use ($request, $pdfPath) {
+			$message->to($request->email)
+				->subject('Signed PDF Copy')
+				->setBody('Please find the signed PDF attached.', 'text/html')
+				->attach(Storage::path($pdfPath)); 
+		});
+	
+		// Delete the file after sending
+		Storage::delete($pdfPath);
+	
+		return response()->json(['message' => 'PDF sent successfully!'], 200);
+	}
+}

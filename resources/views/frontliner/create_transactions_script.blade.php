@@ -103,6 +103,7 @@
                                     response($.map(data, function (item) {
                                         return {
                                             id: item.id,
+                                            digits_code: item.digits_code,
                                             stock_upc: item.upc_code,
                                             value: item.item_description,
                                         }
@@ -136,10 +137,11 @@
                             problem_loop++;
                             stack.push(e.stock_upc);                    
                             var new_row = '<tr class="nr" id="rowid' + e.id + '">' +
-                                '<td><input class="form-control text-center" type="text" name="upc_code" readonly value="' + e.stock_upc + '"></td>' +
-                                '<td><input class="form-control" type="text" name="item_description" readonly value="' + e.value + '"></td>' +
-                                '<td><input class="form-control text-center" type="text" name="serial_no" id="serial_no"></td>' +
-                                '<td style="padding: 5px !important;" class="text-center"><a onclick="RemoveRow('+ e.id +')"><i class="fa fa-close fa-2x remove" style="color:red"></i></a></td>' +
+                                '<td><input class="input-cus text-center" type="text" name="digits_code" readonly value="' + e.digits_code + '"></td>' +
+                                '<td><input class="input-cus text-center" type="text" name="upc_code" readonly value="' + e.stock_upc + '"></td>' +
+                                '<td><input class="input-cus" type="text" name="item_description" readonly value="' + e.value + '"></td>' +
+                                '<td><input class="input-cus text-center" type="text" name="serial_no" id="serial_no"></td>' +
+                                '<td style="padding: 5px !important; padding-top: 15px !important" class="text-center"><a onclick="RemoveRow('+ e.id +')"><i class="fa fa-close fa-2x remove" style="color:red"></i></a></td>' +
                                 '</tr>';
                             $(new_row).insertAfter($('table tr.dynamicRows:last'));
                             $('.js-example-basic-multiple').select2();
@@ -235,7 +237,9 @@
                 var img = "{{ URL::to('/') }}/" + result[0].model_photo;
                 var showData = "<img src=" + img + " style='border: 1px solid slategray; width: 100%;'/>";
                 
-                jQuery("#Photo").html(showData);              
+                jQuery("#Photo").html(showData); 
+                $('.item-img-hov').hide();
+                $('#Photo').show();             
             }
         });
     }
@@ -306,8 +310,7 @@
             swal('Warning!','Serial Number is required!','warning');
         }else{
             $(".buttonSubmit").attr("disabled", "disable");
-            $.ajax
-            ({ 
+            $.ajax({ 
                 url: "{{ route('add-transaction') }}",
                 type: "POST",
                 data: {
@@ -316,14 +319,19 @@
                     },
                 success: function(result)
                 {
-                     swal({ 
+                    swal({ 
                         title: result[0].ref_no, 
                         text: "This is your Reference Number.", 
-                        type: "info", confirmButtonColor: "#5CB85C", 
-                        confirmButtonText: "Proceed To Payment", 
+                        type: "info", 
+                        confirmButtonColor: "#5CB85C", 
+                        confirmButtonText: `Proceed To ${result[0].warranty_status === "OUT OF WARRANTY" ? "Payment" : "Print"}`, 
                         closeOnConfirm: false
                     }, function(){
-                        window.location.href = base_url+"/admin/pay_diagnostic/edit/"+result[0].header_id;
+                        if(result[0].warranty_status === "OUT OF WARRANTY"){
+                            window.location.href = base_url+"/admin/pay_diagnostic/edit/"+result[0].header_id;
+                        } else {
+                            window.location.href = base_url+"/admin/returns_header/PrintReceivingForm/"+result[0].header_id;
+                        }
                     });
                 }                    
             });

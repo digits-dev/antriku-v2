@@ -1,15 +1,17 @@
 
 @extends('crudbooster::admin_template')
 @push('head')
+<link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endpush
 @section('content')
     @if(g('return_url'))
-        <p class="noprint"><a title="Return" href='{{g("return_url")}}'><i class='fa fa-chevron-circle-left '></i> &nbsp; {{trans("crudbooster.form_back_to_list",['module'=>CRUDBooster::getCurrentModule()->name])}}</a></p>       
+        <p class="no-print"><a title="Return" href='{{g("return_url")}}'><i class='fa fa-chevron-circle-left '></i> &nbsp; {{trans("crudbooster.form_back_to_list",['module'=>CRUDBooster::getCurrentModule()->name])}}</a></p>       
     @else
-        <p class="noprint"><a title='Main Module' href='{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}'><i class='fa fa-chevron-circle-left '></i> &nbsp; {{trans("crudbooster.form_back_to_list",['module'=>CRUDBooster::getCurrentModule()->name])}}</a></p>       
+        <p class="no-print"><a title='Main Module' href='{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}'><i class='fa fa-chevron-circle-left '></i> &nbsp; {{trans("crudbooster.form_back_to_list",['module'=>CRUDBooster::getCurrentModule()->name])}}</a></p>       
     @endif
-    <div class="panel panel-default">
-        <div class='panel-heading'>
+    <div class="panel panel-default" id="main-pannel">
+        <div class='panel-heading no-print'>
             <div class="row">
                 <div class="col-md-8">
                     Print Receiving Form
@@ -36,58 +38,62 @@
                     p { margin: 0 0 3px !important; }
                 </style>
                 <table width="100%">
-                    <tr>
-                        <th colspan="4" style="text-align:center;">
-                            <img src="{{asset('img/btblogo.png')}}" style="align:middle;width:40%;height:auto;">
-                        </th>
-                    </tr>   
-                    <tr>
-                        <td width="35%" style="padding-right:50px;">
-                            <div class="row">
-                                <span class="control-label col-md-12">{{ $data['Branch']->branch_name }}</span>
-                            </div>
-                            <div class="row">
-                                <span class="control-label col-md-12">{{ $data['Branch']->branch_address }}</span>
-                            </div>
-                            <div class="row">
-                                <span class="control-label col-md-12">
-                                    {{ $data['Branch']->branch_contact1 }} / {{ $data['Branch']->branch_contact2 }} / {{ $data['Branch']->branch_contact3 }} <br>
-                                    http://beyondthebox.ph/
-                                </span>
-                            </div>
-                        </td>
-                        <td width="30%" colspan="2" style="text-align:center;">
-                            <h4 style="margin-top: 17px;text-align-last: center;"><strong>RECEIVING FORM</strong></h4> 
-                        </td>
-                        <td width="100%" style="padding-left:110px;">
-                            <div class="row">
-                                <span class="control-label col-md-12"><strong>Return Reference#: </strong>{{$data['transaction_details']->reference_no}}</span>
-                            </div>
-                            <div class="row">
-                                <span class="control-label col-md-12"><strong>Date Received: </strong>{{ date('Y-m-d') }}</span>
-                            </div>
-                            <div class="row">
-                                <span class="control-label col-md-12"><strong>Prepared By: </strong>{{ CRUDBooster::myName() }}</span>
-                            </div>
-                        </td>
-                    </tr> 
+                    <thead>
+                        <tr>
+                            <th colspan="4" style="text-align:center;">
+                                <img src="{{asset('img/btblogo.png')}}" style="align:middle;width:40%;height:auto;">
+                            </th>
+                        </tr>   
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td width="35%" style="padding-right:50px;">
+                                <div class="row">
+                                    <span class="control-label col-md-12" id="left-label">{{ $data['Branch']->branch_name }}</span>
+                                </div>
+                                <div class="row">
+                                    <span class="control-label col-md-12" id="left-label">{{ $data['Branch']->branch_address }}</span>
+                                </div>
+                                <div class="row">
+                                    <span class="control-label col-md-12" id="left-label">
+                                        {{ $data['Branch']->branch_contact1 }} / {{ $data['Branch']->branch_contact2 }} / {{ $data['Branch']->branch_contact3 }} <br>
+                                        http://beyondthebox.ph/
+                                    </span>
+                                </div>
+                            </td>
+                            <td width="30%" colspan="2" style="text-align:center;">
+                                <h4 style="margin-top: 17px;text-align-last: center;"><strong>RECEIVING FORM</strong></h4> 
+                            </td>
+                            <td width="100%" style="padding-left:110px;">
+                                <div class="row">
+                                    <span class="control-label col-md-12" id="right-label"><strong>Return Reference#: </strong> {{$data['transaction_details']->reference_no}} </span>
+                                </div>
+                                <div class="row">
+                                    <span class="control-label col-md-12" id="right-label"><strong>Date Received: </strong>{{ date('Y-m-d') }}</span>
+                                </div>
+                                <div class="row">
+                                    <span class="control-label col-md-12" id="right-label"><strong>Prepared By: </strong>{{ CRUDBooster::myName() }}</span>
+                                </div>
+                            </td>
+                        </tr> 
+                    </tbody>
                 </table>  
 
                 <table class="print-friendly" width="100%">
                     <tr style="font-size: 18px;">
                         <td colspan="4" style="width:100%;background:#595959;color:white;padding:3px;">
-                            <label class="control-label col-md-12" style="margin-bottom:unset !important;">Customer Information</label>
+                            <label class="control-label col-md-12" id="left-label" style="margin-bottom:unset !important;">Customer Information</label>
                         </td>
                     </tr>
                     <tr style="font-size: 13px;">
                         <td width="20%" style="vertical-align: top;">
-                            <label class="control-label col-md-12"><strong>Full Name:<strong></label>
+                            <label class="control-label col-md-12" id="left-label"><strong>Full Name:<strong></label>
                         </td>
                         <td width="40%">
                             <p>{{$data['transaction_details']->last_name}}, {{$data['transaction_details']->first_name}}</p>
                         </td>
                         <td width="20%" style="vertical-align: top;">
-                            <label class="control-label col-md-12"><strong>Email Address:<strong></label>
+                            <label class="control-label col-md-12" id="left-label"><strong>Email Address:<strong></label>
                         </td>
                         <td width="40%">
                             <p>{{$data['transaction_details']->email}}</p>
@@ -95,30 +101,30 @@
                     </tr>                                  
                     <tr style="font-size: 13px;">
                         <td width="20%" style="vertical-align: top;">
-                            <label class="control-label col-md-12"><strong>Contact#:<strong></label>
+                            <label class="control-label col-md-12" id="left-label"><strong>Contact#:<strong></label>
                         </td>
                         <td width="40%">
-                            <p>{{$data['transaction_details']->contact_no}}</p>
+                            <p id="left-label">{{$data['transaction_details']->contact_no}}</p>
                         </td>
                         <td width="20%" style="vertical-align: top;">
-                            <label class="control-label col-md-12"><strong>Address:<strong></label>
+                            <label class="control-label col-md-12" id="left-label"><strong>Address:<strong></label>
                         </td>
                         <td width="40%">
-                            <p>{{$data['transaction_details']->address}}</p>
+                            <p id="left-label">{{$data['transaction_details']->address}}</p>
                         </td>
                     </tr>
                     <tr style="font-size: 13px;">
                         <td width="20%" style="vertical-align: top;">
-                            <label class="control-label col-md-12"><strong>Company Name:<strong></label>
+                            <label class="control-label col-md-12" id="left-label"><strong>Company Name:<strong></label>
                         </td>
                         <td width="40%">
-                            <p>{{$data['transaction_details']->company_name}}</p>
+                            <p id="left-label">{{$data['transaction_details']->company_name}}</p>
                         </td>
-                        <td width="20%" style="vertical-align: top;">
-                            <label class="control-label col-md-12"><strong>Company Contact#:<strong></label>
+                        <td width="25%" style="vertical-align: top;">
+                            <label class="control-label col-md-12" id="left-label"><strong>Company Contact#:<strong></label>
                         </td>
                         <td width="40%">
-                            <p>{{$data['transaction_details']->company_contact_no}}</p>
+                            <p id="left-label">{{$data['transaction_details']->company_contact_no}}</p>
                         </td>
                     </tr>
                     <tr></tr>
@@ -228,10 +234,20 @@
                 </table>
                 <div style="page-break-after: always !important;"></div>
                 <div style="text-align:justify;font-size: 11px;">
-                    <h4 align="center" style="margin-top: 17px;"><strong>TERMS & CONDITIONS</strong></h4> 
+                    <h4 align="center" style="margin-top: 17px; margin-bottom: 0px;"><strong>TERMS & CONDITIONS</strong></h4> 
                     @include('include.terms_and_condition')
+                        <div style="display: flex; align-items: center; justify-content: center;" id="signature_container">
+                            <canvas id="signature-pad" class="signature-pad" width="500" height="130" 
+                                style="border: 1px solid #ddd; margin: 0 auto;">
+                            </canvas>
+                        </div>
+                        <center>
+                            <p>Customer’s Signature over Printed Name</p> 
+                            <button type="button" id="clear-signature" class="no-print">Clear Signature</button>
+                            <input type="hidden" name="signatureData" id="signatureData">
+                        </center>
                 </div>
-                <div style="page-break-after: always !important;"></div>
+                {{-- <div style="page-break-after: always !important;"></div> --}}
                 <div style="text-align:justify;font-size: 11px;">
                     <h4 align="center" style="margin-top: 17px;"><strong>DATA PRIVACY CONSENT FORM</strong></h4> 
                     @include('include.data_privacy_act')
@@ -239,25 +255,213 @@
             </div>
         </div>          
     </div>
-    <div class='panel-footer'>                         
-        
-    </div>
 
-   
-@endsection
-
+    {{-- <form id="uploadPdfForm" enctype="multipart/form-data" class="no-print">
+        @csrf
+        <input type="file" name="pdf" id="pdfFile" required>
+        <button type="submit">Upload PDF</button>
+    </form> --}}
+    @endsection
+    
 @push('bottom')
-<script type="text/javascript">
-    function printDivision(divName) {
-        alert('Please print 2 copies!');
-        var generator = window.open(",'printableArea,");
-        var layertext = document.getElementById(divName);
-        generator.document.write(layertext.innerHTML.replace("Print Me"));
-        generator.document.close();
-        generator.print();
-        generator.close();
-    }      
+<!-- signaturePad CDN -->
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script type="text/javascript">  
 
+    document.addEventListener("DOMContentLoaded", function () {
+        $('.main-footer').addClass("no-print");
+        $('body').addClass("sidebar-collapse");
+    });
+
+    // Preven ctrl + p
+    document.addEventListener("keydown", function (event) {
+        if (event.ctrlKey && event.key === "p") {
+            event.preventDefault();
+        }
+    });
+    
+    // Prevent page reload
+    window.onbeforeunload = function(event) {
+        if (isSwalOpen) {
+            event.preventDefault();
+            event.returnValue = '';
+        } else  {
+            event.preventDefault();
+            event.returnValue = '';
+        }
+    };
+
+    // Prevent right-click
+    window.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+    });
+
+    let isSwalOpen = false;
+    function printDivision() {
+        isSwalOpen = true;
+        alert('Please print 2 copies.');
+
+        // Get the canvas element
+        let canvas = document.getElementById("signature-pad");
+
+        if (canvas) {
+            let ctx = canvas.getContext("2d");
+            let blank = document.createElement("canvas");
+            blank.width = canvas.width;
+            blank.height = canvas.height;
+
+            // Check if the canvas is empty
+            if (canvas.toDataURL() === blank.toDataURL()) {
+                Swal.fire({
+                    title: "Signature Requirement",
+                    text: "Please sign before printing!",
+                    icon: "warning",
+                });
+                return; 
+            } else {
+                window.print();
+            }
+        }
+    }
+
+    window.onafterprint = function() {
+        if (isSwalOpen) {
+            Swal.fire({
+                icon: 'question',
+                title: 'Was the document printed?',
+                html: `If the form is printed, please confirm it by clicking <br> "Yes, it was printed". 
+                        Then if it is not printed yet, please click "Not yet, print again" <b>NOTE:</b> 
+                        this print works only once within the day, <br> please make sure that it is printed 
+                        before confirming it is printed already. Thank You.`,
+                showCancelButton: true,
+                confirmButtonText: 'Yes, it was printed',
+                cancelButtonText: 'Not yet, print again',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false
+            }).then((result) => {
+
+                if (!result.isConfirmed) { 
+                    setTimeout(() => {
+                        $('#print').trigger('click');
+                    }, 500);
+                } else {
+                    isSwalOpen = false;  
+
+                    Swal.fire({
+                        title: "Upload PDF To Google Drive",
+                        html: `
+                            <form id="uploadPdfForm" enctype="multipart/form-data">
+                                @csrf
+                                <input type="file" name="pdf" id="pdfFile" required class="input-cus">
+                                <button type="submit" id="uploadBtn" class="swal2-confirm swal2-styled">Upload PDF</button>
+                            </form>
+                        `,
+                        showCancelButton: false,
+                        showConfirmButton: false, 
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        allowEnterKey: false,
+                        didOpen: () => {
+                            document.getElementById("uploadPdfForm").addEventListener("submit", function (e) {
+                                e.preventDefault();
+
+                                let formData = new FormData(this);
+                                $.ajax({
+                                    url: "{{ route('upload_pdf') }}",
+                                    type: "POST",
+                                    data: formData,
+                                    processData: false,
+                                    contentType: false,
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    },
+                                    beforeSend: function () {
+                                        Swal.showLoading();
+                                    },
+                                    success: function (response) {
+                                        Swal.fire({
+                                            icon: "success",
+                                            title: "Upload Successful",
+                                            text: response.message,
+                                            confirmButtonText: "Proceed to Send PDF",
+                                            allowOutsideClick: false,
+                                            allowEscapeKey: false,
+                                            allowEnterKey: false,
+                                        }).then(() => {
+                                            // Open second Swal after the first success
+                                            Swal.fire({
+                                                title: "Send Signed PDF Copy to Email",
+                                                html: `
+                                                    <form id="sendPdfForm" enctype="multipart/form-data">
+                                                        @csrf
+                                                        <input type="email" name="email" class="input-cus" value="{{$data['transaction_details']->email}}" style="margin-bottom:10px">
+                                                        <br>
+                                                        <input type="file" name="pdf" id="emailPdfFile" required class="input-cus">
+                                                        <button type="submit" id="sendBtn" class="swal2-confirm swal2-styled">Send PDF</button>
+                                                    </form>
+                                                `,
+                                                showCancelButton: false,
+                                                showConfirmButton: false,
+                                                allowOutsideClick: false,
+                                                allowEscapeKey: false,
+                                                allowEnterKey: false,
+                                                didOpen: () => {
+                                                    document.getElementById("sendPdfForm").addEventListener("submit", function (e) {
+                                                        e.preventDefault();
+
+                                                        let emailFormData = new FormData(this);
+                                                        $.ajax({
+                                                            url: "{{ route('send_pdf_email') }}",
+                                                            type: "POST",
+                                                            data: emailFormData,
+                                                            processData: false,
+                                                            contentType: false,
+                                                            headers: {
+                                                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                                            },
+                                                            beforeSend: function () {
+                                                                Swal.showLoading();
+                                                            },
+                                                            success: function (response) {
+                                                                Swal.fire({
+                                                                    icon: "success",
+                                                                    title: "Email Sent Successfully!",
+                                                                    text: response.message
+                                                                });
+                                                            },
+                                                            error: function () {
+                                                                Swal.fire({
+                                                                    icon: "error",
+                                                                    title: "Email Sending Failed",
+                                                                    text: "Something went wrong. Please try again."
+                                                                });
+                                                            }
+                                                        });
+                                                    });
+                                                }
+                                            });
+                                        });
+                                    },
+                                    error: function () {
+                                        Swal.fire({
+                                            icon: "error",
+                                            title: "Upload Failed",
+                                            text: "Something went wrong. Please try again."
+                                        });
+                                    }
+                                });
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    };
+
+
+    // update print status
     $(document).on('click', '#print', function(e) {
         var data = $('#myform').serialize();
         $.ajax
@@ -273,7 +477,58 @@
             }
         });
         return true;
-    });          
+    });  
+    
+    // for digital Signature
+    document.addEventListener("DOMContentLoaded", function () {
+        const canvas = document.getElementById("signature-pad");
+        const clearButton = document.getElementById("clear-signature");
+        const signatureDataInput = document.getElementById("signatureData");
+        const form = document.getElementById("myform");
+
+        if (!canvas || !clearButton || !signatureDataInput || !form) {
+            console.error("Missing required elements for signature pad.");
+            return;
+        }
+
+        // Initialize SignaturePad
+        if (typeof SignaturePad !== "undefined") {
+            const signaturePad = new SignaturePad(canvas);
+
+            // Hide clear button initially
+            clearButton.style.display = "none";
+
+            // Show clear button when user starts drawing
+            canvas.addEventListener("mousedown", () => {
+                clearButton.style.display = "inline-block"; 
+            });
+
+            // Show clear button when drawing on mobile (touch event)
+            canvas.addEventListener("touchstart", () => {
+                clearButton.style.display = "inline-block"; 
+            });
+
+            // Form submission validation
+            form.addEventListener("submit", function (e) {
+                if (signaturePad.isEmpty()) {
+                    e.preventDefault();
+                    Swal.fire("Signature Requirement", "Please sign before printing!", "warning");
+                } else {
+                    const signatureImage = signaturePad.toDataURL(); // Converts to Base64
+                    signatureDataInput.value = signatureImage; // Store in hidden input
+                }
+            });
+
+            // Clear signature and hide button
+            clearButton.addEventListener("click", function () {
+                signaturePad.clear();
+                clearButton.style.display = "none"; // Hide button after clearing
+            });
+
+        } else {
+            console.error("SignaturePad library is not loaded.");
+        }
+    });
 </script>
 @endpush
 

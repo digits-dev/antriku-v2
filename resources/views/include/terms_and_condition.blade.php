@@ -92,6 +92,7 @@
 
 	the estimated amount will include all parts, labor, and diagnostic fees required for the repair or replacement of the part or product.
 	<br><br>
+    <div style="page-break-after: always !important;"></div>
 	7. <b>Payment Methods.</b> For service requiring partial payment to proceed with repair or replacement of part or product, Beyond the Box allows you to
 
 	settle the charges using credit card, check order, or cash through direct payment to Beyond the Box or via bank deposit, subject to verification and
@@ -118,6 +119,7 @@
 	<br><br>
 	<center><b>I agree to all the terms and conditions listed above, and authorize Beyond the Box to service my Apple product.</b></center>
 	<br><br>
-	<center>___________________________________________</center>
+	{{-- <center>___________________________________________</center>
 
-	<center>Customer’s Signature over Printed Name</center>
+	<center>Customer’s Signature over Printed Name</center> --}}
+

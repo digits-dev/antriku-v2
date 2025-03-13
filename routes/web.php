@@ -41,7 +41,7 @@ Route::group(['middleware' => ['web']], function() {
     Route::post('/admin/to_diagnose/AcceptJob','AdminToDiagnoseController@AcceptJob');  
     
 
-    Route::get('/admin/pay_diagnostic/edit-transaction-process/{id}','AdminReturnsHeaderController@EditTransactionProcess');
+    Route::post('/admin/pay_diagnostic/edit-transaction-process/{id}','AdminReturnsHeaderController@EditTransactionProcess');
     // Route::post('/admin/to_pay_parts/diagnose-transaction-process/{id}','AdminToDiagnoseController@DiagnoseTransactionProcess');
     // Route::post('/admin/repair_in_process/diagnose-transaction-process/{id}','AdminToDiagnoseController@DiagnoseTransactionProcess');
     // Route::post('/admin/pick_up/diagnose-transaction-process/{id}','AdminToDiagnoseController@DiagnoseTransactionProcess');
@@ -103,5 +103,13 @@ Route::group(['middleware' => ['web']], function() {
     Route::post('/admin/transaction_history/ExportData','AdminTransactionHistoryController@getExportData')->name('exportData');
     Route::get('/admin/returns_appointment/getTime','AdminReturnsAppointmentController@getTime')->name('get_time'); 
     Route::get('/admin/transaction_history/getDetailView/{id}','AdminTransactionHistoryController@getDetailView')->name('getDetailView');
-    
+   
+    //get Address submasters
+    Route::post('/admin/returns_header/getProvinces','AdminReturnsHeaderController@getProvinces')->name('get_provinces');
+    Route::post('/admin/returns_header/getCities','AdminReturnsHeaderController@getCities')->name('get_cities');
+    Route::post('/admin/returns_header/getBrgy','AdminReturnsHeaderController@getBrgy')->name('get_brgy');
+
+    Route::post('/admin/returns_header/verifyEmail','AdminReturnsHeaderController@verfiyEmail')->name('verify_email');
+    Route::post('/admin/returns_header/uploadPdf','AdminReturnsHeaderController@uploadPdf')->name('upload_pdf');
+    Route::post('/admin/returns_header/sendPdf','AdminReturnsHeaderController@sendPdf')->name('send_pdf_email');
 });
