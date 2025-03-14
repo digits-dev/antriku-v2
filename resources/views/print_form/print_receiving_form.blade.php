@@ -22,16 +22,17 @@
                         <input type="hidden" value="1" name="print_form_type">
                         <!-- <a href="{{ CRUDBooster::mainpath() }}" class="btn btn-default pull-right">Cancel</a> -->
                         <a href="{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}" class="btn btn-default pull-right">Cancel</a>
-                        <button class="btn btn-primary pull-right" style="margin-right: 18px;" type="submit" id="print" onclick="printDivision('printableArea')"> 
+                        <button class="btn btn-primary pull-right" style="margin-right: 18px;" type="button" id="print" onclick="printDivision('printableArea')"> 
                             <i class="fa fa-print"></i> Print as PDF 
                         </button>
                     </form>
+                    <button class="btn btn-primary" id="download-btn" style="display: none"></button>
                 </div>
             </div>
         </div>
         <!-- <div class="row"></div> -->
-        <div class='panel-body'>    
-            <div id="printableArea"> 
+        <div class='panel-body'id="printableArea">    
+            <div> 
                 <style> 
                     .table-bordered-display { border: 1px solid #B8B8B8 !important; } 
                     table.print-friendly { page-break-inside: avoid; }
@@ -235,6 +236,7 @@
                 <div style="page-break-after: always !important;"></div>
                 <div style="text-align:justify;font-size: 11px;">
                     <h4 align="center" style="margin-top: 17px; margin-bottom: 0px;"><strong>TERMS & CONDITIONS</strong></h4> 
+                    <br>
                     @include('include.terms_and_condition')
                         <div style="display: flex; align-items: center; justify-content: center;" id="signature_container">
                             <canvas id="signature-pad" class="signature-pad" width="500" height="130" 
@@ -248,6 +250,7 @@
                         </center>
                 </div>
                 {{-- <div style="page-break-after: always !important;"></div> --}}
+                <br>
                 <div style="text-align:justify;font-size: 11px;">
                     <h4 align="center" style="margin-top: 17px;"><strong>DATA PRIVACY CONSENT FORM</strong></h4> 
                     @include('include.data_privacy_act')
@@ -255,20 +258,13 @@
             </div>
         </div>          
     </div>
-
-    {{-- <form id="uploadPdfForm" enctype="multipart/form-data" class="no-print">
-        @csrf
-        <input type="file" name="pdf" id="pdfFile" required>
-        <button type="submit">Upload PDF</button>
-    </form> --}}
-    @endsection
+@endsection
     
 @push('bottom')
 <!-- signaturePad CDN -->
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script type="text/javascript">  
-
     document.addEventListener("DOMContentLoaded", function () {
         $('.main-footer').addClass("no-print");
         $('body').addClass("sidebar-collapse");
@@ -295,6 +291,116 @@
     // Prevent right-click
     window.addEventListener('contextmenu', function(event) {
         event.preventDefault();
+    });
+
+    $("#download-btn").click(function () {
+        let element = document.getElementById("printableArea");
+        let button = document.getElementById("clear-signature");
+        let canvas = document.getElementById("signature-pad");
+
+        if (button) button.style.display = "none";
+        if (canvas) canvas.style.width = "220px";
+
+        let email_add = "{{$data['transaction_details']->email}}";
+        let file_name = "{{$data['transaction_details']->reference_no}}_SIGNED_FORM.pdf";
+
+        let options = {
+            margin: 7,
+            filename: file_name,
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, allowTaint: true },
+            jsPDF: { unit: "mm", format: "letter", orientation: "portrait" }
+        };
+
+        html2pdf().from(element).set(options).outputPdf("blob").then((pdfBlob) => {
+            let formData = new FormData();
+            formData.append("email", email_add);
+            formData.append("pdf", pdfBlob, file_name);
+
+            // Save PDF to drive 
+            $.ajax({
+                url: "{{ route('upload_pdf') }}",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                beforeSend: function () {
+                    Swal.fire({
+                        icon: "info",
+                        title: "Saving PDF copy to Drive",
+                        text: "Please wait...",
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+                },
+                success: function (response) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Upload Successful",
+                        html: response.message + '<br>' + response.file_name + "<br> <br>Please wait again...",
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        timer: 2000,
+                        didOpen: () => Swal.showLoading()
+                    });
+
+                    setTimeout(() => {
+                        // Send PDF to Email
+                        $.ajax({
+                            url: "{{ route('send_pdf_email') }}",
+                            type: "POST",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            beforeSend: function () {
+                                Swal.fire({
+                                    title: "Sending PDF copy via Email",
+                                    text: "Please wait...",
+                                    icon: "info",
+                                    allowOutsideClick: false,
+                                    didOpen: () => Swal.showLoading()
+                                });
+                            },
+                            success: function (emailResponse) {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Email Sent Successfully!",
+                                    html: emailResponse.message + "<br>" + "<b>To: </b>" + emailResponse.email,
+                                });
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error Sending Email",
+                                    text: "An error occurred while sending the email. Please try again.",
+                                });
+                            }
+                        });
+                    }, 2000);
+                },
+                error: function (xhr, error) {
+                    // console.error(xhr.responseText);
+                    Swal.close();
+                    Swal.fire({
+                        title: "Can't save this file again!",
+                        html: xhr.responseJSON?.error + '<br>' + xhr.responseJSON?.file_name || "Something went wrong!",
+                        icon: "error",
+                        timer: 3000,
+                        didOpen: () => Swal.showLoading()
+                    });setTimeout(() => {
+                    },3000)
+                }
+            });
+
+            if (button) button.style.display = "block";
+        });
     });
 
     let isSwalOpen = false;
@@ -324,140 +430,9 @@
             }
         }
     }
-
+    
     window.onafterprint = function() {
-        if (isSwalOpen) {
-            Swal.fire({
-                icon: 'question',
-                title: 'Was the document printed?',
-                html: `If the form is printed, please confirm it by clicking <br> "Yes, it was printed". 
-                        Then if it is not printed yet, please click "Not yet, print again" <b>NOTE:</b> 
-                        this print works only once within the day, <br> please make sure that it is printed 
-                        before confirming it is printed already. Thank You.`,
-                showCancelButton: true,
-                confirmButtonText: 'Yes, it was printed',
-                cancelButtonText: 'Not yet, print again',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                allowEnterKey: false
-            }).then((result) => {
-
-                if (!result.isConfirmed) { 
-                    setTimeout(() => {
-                        $('#print').trigger('click');
-                    }, 500);
-                } else {
-                    isSwalOpen = false;  
-
-                    Swal.fire({
-                        title: "Upload PDF To Google Drive",
-                        html: `
-                            <form id="uploadPdfForm" enctype="multipart/form-data">
-                                @csrf
-                                <input type="file" name="pdf" id="pdfFile" required class="input-cus">
-                                <button type="submit" id="uploadBtn" class="swal2-confirm swal2-styled">Upload PDF</button>
-                            </form>
-                        `,
-                        showCancelButton: false,
-                        showConfirmButton: false, 
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        allowEnterKey: false,
-                        didOpen: () => {
-                            document.getElementById("uploadPdfForm").addEventListener("submit", function (e) {
-                                e.preventDefault();
-
-                                let formData = new FormData(this);
-                                $.ajax({
-                                    url: "{{ route('upload_pdf') }}",
-                                    type: "POST",
-                                    data: formData,
-                                    processData: false,
-                                    contentType: false,
-                                    headers: {
-                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                    },
-                                    beforeSend: function () {
-                                        Swal.showLoading();
-                                    },
-                                    success: function (response) {
-                                        Swal.fire({
-                                            icon: "success",
-                                            title: "Upload Successful",
-                                            text: response.message,
-                                            confirmButtonText: "Proceed to Send PDF",
-                                            allowOutsideClick: false,
-                                            allowEscapeKey: false,
-                                            allowEnterKey: false,
-                                        }).then(() => {
-                                            // Open second Swal after the first success
-                                            Swal.fire({
-                                                title: "Send Signed PDF Copy to Email",
-                                                html: `
-                                                    <form id="sendPdfForm" enctype="multipart/form-data">
-                                                        @csrf
-                                                        <input type="email" name="email" class="input-cus" value="{{$data['transaction_details']->email}}" style="margin-bottom:10px">
-                                                        <br>
-                                                        <input type="file" name="pdf" id="emailPdfFile" required class="input-cus">
-                                                        <button type="submit" id="sendBtn" class="swal2-confirm swal2-styled">Send PDF</button>
-                                                    </form>
-                                                `,
-                                                showCancelButton: false,
-                                                showConfirmButton: false,
-                                                allowOutsideClick: false,
-                                                allowEscapeKey: false,
-                                                allowEnterKey: false,
-                                                didOpen: () => {
-                                                    document.getElementById("sendPdfForm").addEventListener("submit", function (e) {
-                                                        e.preventDefault();
-
-                                                        let emailFormData = new FormData(this);
-                                                        $.ajax({
-                                                            url: "{{ route('send_pdf_email') }}",
-                                                            type: "POST",
-                                                            data: emailFormData,
-                                                            processData: false,
-                                                            contentType: false,
-                                                            headers: {
-                                                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                                            },
-                                                            beforeSend: function () {
-                                                                Swal.showLoading();
-                                                            },
-                                                            success: function (response) {
-                                                                Swal.fire({
-                                                                    icon: "success",
-                                                                    title: "Email Sent Successfully!",
-                                                                    text: response.message
-                                                                });
-                                                            },
-                                                            error: function () {
-                                                                Swal.fire({
-                                                                    icon: "error",
-                                                                    title: "Email Sending Failed",
-                                                                    text: "Something went wrong. Please try again."
-                                                                });
-                                                            }
-                                                        });
-                                                    });
-                                                }
-                                            });
-                                        });
-                                    },
-                                    error: function () {
-                                        Swal.fire({
-                                            icon: "error",
-                                            title: "Upload Failed",
-                                            text: "Something went wrong. Please try again."
-                                        });
-                                    }
-                                });
-                            });
-                        }
-                    });
-                }
-            });
-        }
+        $("#download-btn").trigger('click');
     };
 
 

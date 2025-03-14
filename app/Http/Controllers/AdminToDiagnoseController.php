@@ -958,6 +958,22 @@
 				}
 			}
 
+			if($request->status_id == 13){
+				DB::table('returns_header')->where('id',$request->header_id)->update([
+					'repair_status' => 13,
+					'ongoing_repair_by'   => CRUDBooster::myId(),
+					'ongoing_repair_at'   => date('Y-m-d H:i:s'),
+				]);
+			}
+
+			if($request->status_id == 14){
+				DB::table('returns_header')->where('id',$request->header_id)->update([
+					'repair_status' => 14,
+					'pending_spare_parts_by'   => CRUDBooster::myId(),
+					'pending_spare_parts_at'   => date('Y-m-d H:i:s'),
+				]);
+			}
+
 			return ($all_data);
 		}
 

@@ -541,9 +541,11 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
     }
 
     #signature-pad{
-        width: 250px;
+        width: 220px;
+        border: none;
     }
 }
+
 
 
 

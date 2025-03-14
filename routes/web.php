@@ -109,7 +109,12 @@ Route::group(['middleware' => ['web']], function() {
     Route::post('/admin/returns_header/getCities','AdminReturnsHeaderController@getCities')->name('get_cities');
     Route::post('/admin/returns_header/getBrgy','AdminReturnsHeaderController@getBrgy')->name('get_brgy');
 
+    // email verifier
     Route::post('/admin/returns_header/verifyEmail','AdminReturnsHeaderController@verfiyEmail')->name('verify_email');
+    
+    // save PDF to drive
     Route::post('/admin/returns_header/uploadPdf','AdminReturnsHeaderController@uploadPdf')->name('upload_pdf');
+    
+    // send PDF to customer email
     Route::post('/admin/returns_header/sendPdf','AdminReturnsHeaderController@sendPdf')->name('send_pdf_email');
 });

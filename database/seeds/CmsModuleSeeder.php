@@ -31,6 +31,33 @@ class CmsModuleSeeder extends Seeder
                 'is_protected' => 0,
                 'is_active'    => 0,
             ],
+            [
+                'name'         => 'Pending Repair',
+                'icon'         => 'fa fa-gears',
+                'path'         => 'pending_repair',
+                'table_name'   => 'returns_header',
+                'controller'   => 'AdminPendingRepairController',
+                'is_protected' => 0,
+                'is_active'    => 0,
+            ],
+            [
+                'name'         => 'Pending Spare Parts',
+                'icon'         => 'fa fa-circle-o',
+                'path'         => 'pending_spare_parts',
+                'table_name'   => 'returns_header',
+                'controller'   => 'AdminPendingSparePartsController',
+                'is_protected' => 0,
+                'is_active'    => 0,
+            ],
+            [
+                'name'         => 'Spare Parts Received',
+                'icon'         => 'fa fa-hand-o-right',
+                'path'         => 'spare_parts_received',
+                'table_name'   => 'returns_header',
+                'controller'   => 'AdminSparePartsReceivedController',
+                'is_protected' => 0,
+                'is_active'    => 0,
+            ],
         ];
 
         foreach ($modules as $module) {

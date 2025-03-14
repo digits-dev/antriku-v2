@@ -37,6 +37,42 @@ class CmsMenuSeeder extends Seeder
                 'id_cms_privileges' => 1,
                 'sorting'           => 13
             ],
+            [
+                'name'              => 'Pending Repair',
+                'type'              => 'Route',
+                'path'              => 'AdminPendingRepairControllerGetIndex',
+                'color'             => 'normal',
+                'icon'              => 'fa fa-gears',
+                'parent_id'         => 0,
+                'is_active'         => 1,
+                'is_dashboard'      => 0,
+                'id_cms_privileges' => 1,
+                'sorting'           => 15
+            ],
+            [
+                'name'              => 'Pending Spare Parts',
+                'type'              => 'Route',
+                'path'              => 'AdminPendingSparePartsControllerGetIndex',
+                'color'             => 'normal',
+                'icon'              => 'fa fa-circle-o',
+                'parent_id'         => 0,
+                'is_active'         => 1,
+                'is_dashboard'      => 0,
+                'id_cms_privileges' => 1,
+                'sorting'           => 16
+            ],
+            [
+                'name'              => 'Spare Parts Received',
+                'type'              => 'Route',
+                'path'              => 'AdminSparePartsReceivedControllerGetIndex',
+                'color'             => 'normal',
+                'icon'              => 'fa fa-hand-o-right',
+                'parent_id'         => 0,
+                'is_active'         => 1,
+                'is_dashboard'      => 0,
+                'id_cms_privileges' => 1,
+                'sorting'           => 17
+            ],
         ];
     
         foreach ($menus as $menu) {

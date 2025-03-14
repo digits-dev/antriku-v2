@@ -20,6 +20,10 @@ class AddColumnsToReturnsHeaderTable extends Migration
             $table->timestamp('mail_in_shipped_by')->nullable()->after('call_out_mail_in_at');
             $table->timestamp('mail_in_shipped_at')->nullable()->after('mail_in_shipped_by');
 
+            $table->integer('ongoing_repair_by')->nullable();
+            $table->timestamp('ongoing_repair_at')->nullable();
+            $table->integer('pending_spare_parts_by')->nullable();
+            $table->timestamp('pending_spare_parts_at')->nullable();
         });
     }
 
