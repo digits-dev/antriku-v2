@@ -119,15 +119,17 @@
                     </div>
                 </div>
             </div>
-            <br>
-            <div class="row">    
-                <div class="col-md-12">
-                    <label class="control-label col-md-2" style="margin-top:7px;"><span class="requiredField">*</span>Parts Replacement Cost:</label>
-                    <div class="col-md-10" style="margin-top:7px;">
-                        <textarea placeholder="Type your Parts Replacement Cost here" name="replacement_cost" rows="2" class="form-control" required {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>{{ $transaction_details->parts_replacement_cost }}</textarea>
+           <br>
+            @if ($transaction_details->warranty_status == "OUT OF WARRANTY")
+                <div class="row">    
+                    <div class="col-md-12">
+                        <label class="control-label col-md-2" style="margin-top:7px;"><span class="requiredField">*</span>Parts Replacement Cost:</label>
+                        <div class="col-md-10" style="margin-top:7px;">
+                            <textarea placeholder="Type your Parts Replacement Cost here" name="replacement_cost" rows="2" class="form-control" required {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>{{ $transaction_details->parts_replacement_cost }}</textarea>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
         @else
             <div class="row" style="margin-top: 10px;">
                 <?php 
@@ -153,6 +155,16 @@
                                                 @elseif($transaction_details->warranty_status == "SPECIAL")
                                                     <span class="text-warning"><strong>{{ $transaction_details->warranty_status }}</strong></span>
                                                 @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="table-bordered-display" style="padding: 5px !important;">
+                                            <label class="control-label col-md-12" style="margin-top:7px;">Case:</label>
+                                        </td>
+                                        <td class="table-bordered-display" style="padding: 5px !important;">
+                                            <div class="col-md-12" style="margin-top:7px;">
+                                                    <span class="text-warning"><strong>{{ $transaction_details->case }}</strong></span>
                                             </div>
                                         </td>
                                     </tr>
@@ -206,6 +218,16 @@
                                             <div class="col-md-12" style="margin-top:7px;">{{ $transaction_details->resolution ?? 'N/A' }}</div>
                                         </td>
                                     </tr>
+                                    @if ($transaction_details->warranty_status == "OUT OF WARRANTY")
+                                    <tr>
+                                        <td class="table-bordered-display" style="padding: 5px !important;">
+                                            <label class="control-label col-md-12" style="margin-top:7px;">Parts Replacement Cost:</label>
+                                        </td>
+                                        <td class="table-bordered-display" style="padding: 5px !important;">
+                                            <div class="col-md-12" style="margin-top:7px;">{{ $transaction_details->parts_replacement_cost ?? 'N/A' }}</div>
+                                        </td>
+                                    </tr>
+                                    @endif
                                 </tbody>
                             </table>
                         </div>

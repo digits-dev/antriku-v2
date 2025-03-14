@@ -32,20 +32,26 @@
 			$this->col = [];
 			$this->col[] = ["label"=>"Spare Parts","name"=>"spare_parts"];
 			$this->col[] = ["label"=>"Item Description","name"=>"item_description"];
+			$this->col[] = ["label"=>"Quantity","name"=>"qty"];
 			// $this->col[] = ["label"=>"Cost","name"=>"cost"];
 			$this->col[] = ["label"=>"Status","name"=>"gsx_item_status"];
-			$this->col[] = ["label"=>"Date Created","name"=>"created_at"];
+			$this->col[] = ["label"=>"Date Created","name"=>"created_at" ];
 			$this->col[] = ["label"=>"Date Updated","name"=>"updated_at"];
-			$this->col[] = ["label"=>"Created By","name"=>"created_by"];
-			$this->col[] = ["label"=>"Updated By","name"=>"updated_by"];
+			$this->col[] = ["label"=>"Created By","name"=>"created_by", 'join' => 'cms_users,name'];
+			$this->col[] = ["label"=>"Updated By","name"=>"updated_by", 'join' => 'cms_users,name'];
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 			# START FORM DO NOT REMOVE THIS LINE
 			$this->form = [];
-			$this->form[] = ['label'=>'Spare Parts','name'=>'spare_parts','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-7'];
-			$this->form[] = ['label'=>'Item Description','name'=>'item_description','type'=>'text','validation'=>'required|string|min:5|max:5000','width'=>'col-sm-7'];
-			// $this->form[] = ['label'=>'Cost','name'=>'cost','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-7'];
-			$this->form[] = ['label'=>'Status','name'=>'gsx_item_status','type'=>'select','validation'=>'required','width'=>'col-sm-7','dataenum'=>'ACTIVE;INACTIVE'];
+			if (CRUDBooster::MyPrivilegeId() == 9) {
+				$this->form[] = ['label'=>'Quantity','name'=>'qty','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-7'];
+			}else {
+				$this->form[] = ['label'=>'Spare Parts','name'=>'spare_parts','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-7'];
+				$this->form[] = ['label'=>'Item Description','name'=>'item_description','type'=>'text','validation'=>'required|string|min:5|max:5000','width'=>'col-sm-7'];
+				$this->form[] = ['label'=>'Quantity','name'=>'qty','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-7'];
+				// $this->form[] = ['label'=>'Cost','name'=>'cost','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-7'];
+				$this->form[] = ['label'=>'Status','name'=>'gsx_item_status','type'=>'select','validation'=>'required','width'=>'col-sm-7','dataenum'=>'ACTIVE;INACTIVE'];
+			}
 			# END FORM DO NOT REMOVE THIS LINE
 
 			/* 
@@ -225,9 +231,9 @@
 			// }
 			
 			if($column_index == 3){
-				if($column_value == 'INACTIVE'){
+				if($column_value ==  0){
 					$column_value = '<span style="color: #F93154"><strong>'.$column_value.'</strong></span>';
-				}elseif($column_value == 'ACTIVE'){
+				}else{
 					$column_value = '<span style="color: #00B74A"><strong>'.$column_value.'</strong></span>';
 				}
 			}

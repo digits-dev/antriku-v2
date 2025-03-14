@@ -372,7 +372,110 @@
 	    */
 	    public function hook_query_index(&$query) {
 	        //Your code here
-			$query->whereIn('repair_status', [10,16])->where('branch', CRUDBooster::me()->branch_id); 
+			if (CRUDBooster::myPrivilegeId() == 3) {
+				$query->whereIn('repair_status', [10,16])->where('branch', CRUDBooster::me()->branch_id); 
+			}else {
+				$query->whereIn('repair_status', [10,16]);
+			}
+	    }
+
+	    /*
+	    | ---------------------------------------------------------------------- 
+	    | Hook for manipulate query of index result 
+	    | ---------------------------------------------------------------------- 
+	    | @query = current sql query 
+	    |
+	    */
+	    public function hook_query_detail(&$query) {
+	        //Your code here
+	    }
+
+	    /*
+	    | ---------------------------------------------------------------------- 
+	    | Hook for manipulate html of index table 
+	    | ---------------------------------------------------------------------- 
+	    | @html = current html 
+	    |
+	    */
+	    public function hook_index_table(&$html) {
+	        //Your code here
+	    }
+
+	    /*
+	    | ---------------------------------------------------------------------- 
+	    | Hook for manipulate html of detail table 
+	    | ---------------------------------------------------------------------- 
+	    | @html = current html 
+	    |
+	    */
+	    public function hook_detail_table(&$html) {
+	        //Your code here
+	    }
+
+	    /*
+	    | ---------------------------------------------------------------------- 
+	    | Hook for manipulate html of detail tab 
+	    | ---------------------------------------------------------------------- 
+	    | @tab_name = tab name 
+	    | @html = current html 
+	    |
+	    */
+	    public function hook_detail_tab($tab_name,&$html) {
+	        //Your code here
+	    }
+
+	    /*
+	    | ---------------------------------------------------------------------- 
+	    | Hook for manipulate html of detail tab 
+	    | ---------------------------------------------------------------------- 
+	    | @tab_name = tab name 
+	    | @html = current html 
+	    |
+	    */
+	    public function hook_detail_tab2($tab_name,&$html) {
+	        //Your code here
+	    }
+
+	    /*
+	    | ---------------------------------------------------------------------- 
+	    | Hook for manipulate html of detail tab 
+	    | ---------------------------------------------------------------------- 
+	    | @tab_name = tab name 
+	    | @html = current html 
+	    |
+	    */
+	    public function hook_detail_tab3($tab_name,&$html) {
+	        //Your code here
+	    }
+
+	    /*
+	    | ---------------------------------------------------------------------- 
+	    | Hook for manipulate html of form 
+	    | ---------------------------------------------------------------------- 
+	    | @html = current html 
+	    |
+	    */
+	    public function hook_form(&$html) {
+	        //Your code here
+	    }
+
+	    /*
+	    | ---------------------------------------------------------------------- 
+	    | Hook for manipulate html of form 
+	    | ---------------------------------------------------------------------- 
+	    | @html = current html 
+	    |
+	    */
+	    public function hook_form_add(&$html) {
+	        //Your code here
+	    }
+
+	    /*
+	    | ---------------------------------------------------------------------- 
+	    | Hook for manipulate html of form 
+	    | ---------------------------------------------------------------------- 
+	    | @html
+			}
 	    }
 
 	    /*

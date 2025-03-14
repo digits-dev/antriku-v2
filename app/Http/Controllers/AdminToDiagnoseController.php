@@ -934,7 +934,7 @@
 				}
 			}
 
-			// 
+			//  To Pending Mail-In Shipment
 			if($request->status_id == 11){
 				DB::table('returns_header')->where('id',$request->header_id)->update([
 					'call_out_mail_in_by'   => CRUDBooster::myId(),
@@ -942,7 +942,21 @@
 				]);
 			}
 
-
+			if($request->status_id == 16){
+			
+				$latestAssignment = DB::table('case_assignments')
+				->where('returns_header_id', $request->header_id)
+				->where('technician_id', $transaction_details[0]->technician_id)
+				->latest('id') 
+				->first();
+	
+				if ($latestAssignment) {
+				// Update the latest assignment by setting end_date
+				DB::table('case_assignments')
+					->where('id', $latestAssignment->id)
+					->update(['end_date' => now()]);
+				}
+			}
 
 			return ($all_data);
 		}
