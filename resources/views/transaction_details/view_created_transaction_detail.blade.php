@@ -296,6 +296,7 @@
                         <input type="hidden" name="mainpath" id="mainpath" value="{{CRUDBooster::mainpath()}}">
                         <input type="hidden" id="warranty_status" value="{{$transaction_details->warranty_status}}">
                         <input type="hidden" name="action" id="action" value="">
+                        <input type="hidden" id="case_type" value="{{$transaction_details->case}}">
                     @endif
 
                     @if(CRUDBooster::myPrivilegeId() == 2 && $transaction_details->repair_status == 4 && CRUDBooster::getModulePath() == "repair_in_process")
@@ -343,7 +344,16 @@
                         <button type="submit" id="save" onclick="return changeStatus(12)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-paper-plane" aria-hidden="true"></i> MAIL-IN SHIPPED</button>
                     @endif
                     @if ($transaction_details->repair_status == 12 && CRUDBooster::getModulePath() == "pending_mail_in_shipment")
-                        <button type="submit" id="save" onclick="return changeStatus(16)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-phone" aria-hidden="true"></i> FOR CALL-OUT</button>
+                        <button type="submit" id="save" onclick="return changeStatus(21)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-phone" aria-hidden="true"></i> FOR CALL-OUT</button>
+                    @endif
+                    @if ($transaction_details->repair_status == 13 && CRUDBooster::getModulePath() == "pending_repair")
+                        <button type="submit" id="save" onclick="return changeStatus(21)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check" aria-hidden="true"></i> Repair Completed</button>
+                    @endif
+                    @if ($transaction_details->repair_status == 14 && CRUDBooster::getModulePath() == "pending_spare_parts")
+                        <button type="submit" id="save" onclick="return changeStatus(15)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check" aria-hidden="true"></i> Spare Parts Received</button>
+                    @endif
+                    @if ($transaction_details->repair_status == 15 && CRUDBooster::getModulePath() == "spare_parts_received")
+                        <button type="submit" id="save" onclick="return changeStatus(13)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-circle-o" aria-hidden="true"></i> Ongoing Repair</button>
                     @endif
                 @endif
             </div>

@@ -17,33 +17,34 @@
                     <h1 class="h1-cus">Create Transactions</h1>
                     <p class="p-cus">Complete the form below to submit your transaction request</p>
                 </div>
-                <div class="theme-toggle-cus" style="display: ">
-                    <span class="light-icon">☀️</span>
+                <div class="theme-toggle-cus" style="display">
+                    {{-- <span class="light-icon">☀️</span>
                     <label class="switch-cus">
                         <input type="checkbox" id="theme-switch" class="inputs-cus">
                         <span class="slider-cus round"></span>
                     </label>
-                    <span class="dark-icon">🌙</span>
+                    <span class="dark-icon">🌙</span> --}}
+                    <img src="https://cdn-icons-png.flaticon.com/128/4763/4763152.png" alt="" width="45px">
                 </div>
             </div>
 
             <div class="progress-section-cus">
                 <div class="progress-text-cus">
                     <span>Form Progress</span>
-                    <span id="progress-percentage">14% Complete</span>
+                    <span id="progress-percentage">0% Complete</span>
                 </div>
                 <div class="progress-bar-cus">
-                    <div class="progress-fill-cus" style="width: 14%"></div>
+                    <div class="progress-fill-cus" style="width: 0%"></div>
                 </div>
             </div>
 
             <div class="steps-indicator-cus">
-                <div class="step-cus active">
+                <div style="cursor: pointer" class="step-cus active">
                     <div class="step-number-cus">1</div>
                     <div class="step-label-cus">Customer Details</div>
                 </div>
                 <div class="step-line-cus"></div>
-                <div class="step-cus">
+                <div style="cursor: pointer" class="step-cus">
                     <div class="step-number-cus">2</div>
                     <div class="step-label-cus">Service Details</div>
                 </div>
@@ -182,13 +183,39 @@
                         </div>
                         <div class="form-column-cus">
                             <div class="form-group-cus">
-                                <label for="model" class="label-cus">Model</label>
-                                <select name="model" autocomplete="off" class="js-example-basic-single input-cus" id="model" onchange="SelectedModel()" required> 
-                                    <option value="" selected disabled>Choose Model here...</option>
-                                    @foreach($data['Model'] as $key=>$model)
-                                        <option value="{{ $model->id }}">{{ $model->model_name }}</option>
-                                    @endforeach      
-                                </select> 
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <label for="model" class="label-cus">Model</label>
+                                        <select name="model" autocomplete="off" class="js-example-basic-single input-cus" id="model" onchange="SelectedModel()" required> 
+                                            <option value="" selected disabled>Choose Model here...</option>
+                                            @foreach($data['Model'] as $key=>$model)
+                                                <option value="{{ $model->id }}">{{ $model->model_name }}</option>
+                                            @endforeach      
+                                        </select> 
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="model" class="label-cus">Unit Type</label>
+                                        <select name="unit_type" autocomplete="off" class="js-example-basic-single input-cus" id="model" onchange="SelectedModel()" required> 
+                                            <option value="" selected disabled>Choose Model here...</option>
+                                            <option value="iMac">iMac</option>      
+                                            <option value="iPhone">iPhone</option>      
+                                            <option value="macbook">MacBook</option>      
+                                            <option value="mac mini">Mac Mini</option>      
+                                            <option value="airpods">AirPods</option>      
+                                            <option value="keyboard">Keyboard</option>      
+                                            <option value="mouse">Mouse</option>      
+                                            <option value="iPad">iPad</option>      
+                                            <option value="Apple watch">Apple Watch</option>      
+                                            <option value="trackpad">TrackPad</option>      
+                                            <option value="apple tv">Apple TV</option>      
+                                            <option value="studio display">Studio Display</option>      
+                                            <option value="MAC Pro">MAC Pro</option>      
+                                            <option value="Mac Studio">Mac Studio</option>      
+                                            <option value="beats headphones">Beats Headphones</option>      
+                                            <option value="beats earphone">Beats Earphones</option>      
+                                        </select> 
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group-cus">
                                 <div class="item-photo-cus">
@@ -289,10 +316,6 @@
         swal("{{ $data['success'] }}");
     @endif
 
-    $('#photo').click(function(){
-        alert('gg');
-    });
-
     $(document).ready(function() {
         $('.js-example-basic-single').select2();
     });
@@ -391,29 +414,29 @@
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-    $('.content-header').hide();
+        $('.content-header').hide();
 
-    // Theme toggle functionality
-    const themeSwitch = document.getElementById("theme-switch")
+    // // Theme toggle functionality
+    // const themeSwitch = document.getElementById("theme-switch")
 
-    // Check for saved theme preference or use preferred color scheme
-    const savedTheme = localStorage.getItem("theme")
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+    // // Check for saved theme preference or use preferred color scheme
+    // const savedTheme = localStorage.getItem("theme")
+    // const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
 
-    if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
-        document.body.classList.add("dark-theme")
-        themeSwitch.checked = true
-    }
+    // if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+    //     document.body.classList.add("dark-theme")
+    //     themeSwitch.checked = true
+    // }
 
-    themeSwitch.addEventListener("change", function () {
-        if (this.checked) {
-        document.body.classList.add("dark-theme")
-        localStorage.setItem("theme", "dark")
-        } else {
-        document.body.classList.remove("dark-theme")
-        localStorage.setItem("theme", "light")
-        }
-    })
+    // themeSwitch.addEventListener("change", function () {
+    //     if (this.checked) {
+    //     document.body.classList.add("dark-theme")
+    //     localStorage.setItem("theme", "dark")
+    //     } else {
+    //     document.body.classList.remove("dark-theme")
+    //     localStorage.setItem("theme", "light")
+    //     }
+    // })
 
     // Multi-step form functionality
     const nextButton = document.getElementById("next-button")
@@ -491,10 +514,6 @@
         // Update steps indicator
         steps[0].classList.remove("active")
         steps[1].classList.add("active")
-
-        // Update progress
-        progressFill.style.width = "50%"
-        progressPercentage.textContent = "50% Complete"
     })
 
     prevButton.addEventListener("click", () => {
@@ -505,10 +524,6 @@
         // Update steps indicator
         steps[1].classList.remove("active")
         steps[0].classList.add("active")
-
-        // Update progress
-        progressFill.style.width = "14%"
-        progressPercentage.textContent = "14% Complete"
     })
 
     // Add input validation styling
@@ -524,6 +539,61 @@
             })
         })
     })
+
+    document.addEventListener("DOMContentLoaded", () => {
+        let progressFill = document.querySelector(".progress-fill-cus");
+        let progressPercentage = document.getElementById("progress-percentage");
+
+        // field names 
+        const fields = [
+            "first_name", "last_name", "email", "company_name", "company_contact_no", 
+            "country", "province", "city", "barangay", "address_line"
+        ];
+
+        function updateProgress() {
+            let filledCount = 0;
+
+            // Count filled fields
+            fields.forEach(field => {
+                let input = $(`[name="${field}"]`);
+                if (input.is("select")) {
+                    // Check if a value is selected in a <select> field
+                    if (input.val() && input.val() !== "") {
+                        filledCount++;
+                    }
+                } else {
+                    // Check for text input fields
+                    if (input.val().trim().length > 0) {
+                        filledCount++;
+                    }
+                }
+            });
+
+            // Calculate progress dynamically
+            let progress = (filledCount / fields.length) * 50;
+
+            // Update progress bar
+            progressFill.style.width = `${progress}%`;
+            progressPercentage.textContent = `${progress.toFixed(1)}% Complete`;
+        }
+
+        // Attach event listeners for text inputs
+        fields.forEach(field => {
+            let input = $(`[name="${field}"]`);
+
+            if (input.is("select")) {
+                // For standard <select> elements
+                input.on("change", updateProgress);
+                
+                // If using Select2, listen for the Select2-specific event
+                input.on("select2:select", updateProgress);
+            } else {
+                // For text inputs
+                input.on("input", updateProgress);
+            }
+        });
+    });
+
 </script>
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">

@@ -974,6 +974,14 @@
 				]);
 			}
 
+			if($request->status_id == 15){
+				DB::table('returns_header')->where('id',$request->header_id)->update([
+					'repair_status' => 15,
+					'updated_by'   => CRUDBooster::myId(),
+					'updated_at'   => date('Y-m-d H:i:s'),
+				]);
+			}
+
 			return ($all_data);
 		}
 

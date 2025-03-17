@@ -127,6 +127,7 @@
         var serial_no = document.getElementById("serial_no").value;
         var item_desc = document.getElementById("item_desc").value;
         var cost = document.getElementById("cost").value;
+        var case_type = document.getElementById("case_type").value;
         let stop = false;
         let proceed = false;
 
@@ -376,10 +377,19 @@
                         }, function(){
                             window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
                         });
-                    }else if(status_id == 16){
+                    }else if(status_id == 15){
+                        swal({ title: "Info!", text: "STATUS: SPARE PARTS RECEIVED / AWAITING REPAIR", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                        }, function(){
+                            window.location.href = window.location.origin+"/admin/pending_spare_parts";
+                        });
+                    }else if(status_id == 21){
                         swal({ title: "Info!", text: "STATUS: FOR CALL OUT (GOOD UNIT)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
                         }, function(){
-                            window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
+                            if(case_type === "CARRY-IN"){
+                                window.location.href = window.location.origin+"/admin/pending_repair";
+                            } else {
+                                window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
+                            }
                         });
                     }
                 }                    

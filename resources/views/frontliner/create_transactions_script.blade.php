@@ -239,7 +239,20 @@
                 
                 jQuery("#Photo").html(showData); 
                 $('.item-img-hov').hide();
-                $('#Photo').show();             
+                $('#Photo').show();
+                            
+                $('#Photo').click(function(){
+                    Swal.fire({
+                        html: showData,
+                        width: '70%',
+                        heightAuto: true,
+                        padding: '1em',
+                        confirmButtonText: 'Close Preview',
+                        customClass: {
+                            popup: 'fixed-size-modal' 
+                        }
+                    });
+                });
             }
         });
     }
