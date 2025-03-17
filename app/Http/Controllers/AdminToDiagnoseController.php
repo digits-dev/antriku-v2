@@ -735,7 +735,7 @@
             } 
 			// *********************************************************************************************
 
-		    $status_array = [1,2,3,4,5,6,7,8,9,10,11,12,16];
+		    $status_array = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21];
 		    if(in_array($request->status_id, $status_array)){
 		    	DB::table('returns_header')->where('id',$request->header_id)->update([
 				'repair_status' 			=> $request->status_id,
@@ -942,7 +942,7 @@
 				]);
 			}
 
-			if($request->status_id == 16){
+			if($request->status_id == 21){
 			
 				$latestAssignment = DB::table('case_assignments')
 				->where('returns_header_id', $request->header_id)
@@ -960,7 +960,6 @@
 
 			if($request->status_id == 13){
 				DB::table('returns_header')->where('id',$request->header_id)->update([
-					'repair_status' => 13,
 					'ongoing_repair_by'   => CRUDBooster::myId(),
 					'ongoing_repair_at'   => date('Y-m-d H:i:s'),
 				]);
@@ -968,19 +967,17 @@
 
 			if($request->status_id == 14){
 				DB::table('returns_header')->where('id',$request->header_id)->update([
-					'repair_status' => 14,
 					'pending_spare_parts_by'   => CRUDBooster::myId(),
 					'pending_spare_parts_at'   => date('Y-m-d H:i:s'),
 				]);
 			}
 
-			if($request->status_id == 15){
-				DB::table('returns_header')->where('id',$request->header_id)->update([
-					'repair_status' => 15,
-					'updated_by'   => CRUDBooster::myId(),
-					'updated_at'   => date('Y-m-d H:i:s'),
-				]);
-			}
+			// if($request->status_id == 15){
+			// 	DB::table('returns_header')->where('id',$request->header_id)->update([
+			// 		'updated_by'   => CRUDBooster::myId(),
+			// 		'updated_at'   => date('Y-m-d H:i:s'),
+			// 	]);
+			// }
 
 			return ($all_data);
 		}
