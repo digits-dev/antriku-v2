@@ -39,7 +39,7 @@
 			$this->col[] = ["label"=>"Downpayment Status","name"=>"downpayment_status"];
 			$this->col[] = ["label"=>"Downpayment URL","name"=>"down_payment_url"];
 			$this->col[] = ["label"=>"Date Received","name"=>"level2_personnel_edited"];
-			$this->col[] = ["label"=>"Updated By","name"=>"updated_by"];
+			$this->col[] = ["label"=>"Updated By","name"=>"updated_by", 'join' => 'cms_users,name'];
 			$this->col[] = ["label"=>"Technician","name"=>"technician_id", 'join' => 'cms_users,name'];
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
@@ -373,9 +373,9 @@
 	    public function hook_query_index(&$query) {
 	        //Your code here
 			if (CRUDBooster::myPrivilegeId() == 3) {
-				$query->whereIn('repair_status', [10,16])->where('branch', CRUDBooster::me()->branch_id); 
+				$query->whereIn('repair_status', [10,17,21])->where('branch', CRUDBooster::me()->branch_id); 
 			}else {
-				$query->whereIn('repair_status', [10,16]);
+				$query->whereIn('repair_status', [10,17, 21]);
 			}
 	    }
 
@@ -486,7 +486,8 @@
 	    */    
 	    public function hook_row_index($column_index,&$column_value) {	        
 	    	$pending_customes_approval = DB::table('transaction_status')->where('id','10')->first();
-	    	$for_call_out = DB::table('transaction_status')->where('id','16')->first();
+	    	$pending_customer_payment = DB::table('transaction_status')->where('id','17')->first();
+	    	$for_call_out = DB::table('transaction_status')->where('id','21')->first();
 
 			if($column_index == 1){
 				if($column_value == $pending_customes_approval->id){
@@ -494,6 +495,9 @@
 				}
 				if($column_value == $for_call_out->id){
 					$column_value = '<span class="label label-info">'.$for_call_out->status_name.'</span>';
+				}
+				if($column_value == $pending_customer_payment->id){
+					$column_value = '<span class="label label-info">'.$pending_customer_payment->status_name.'</span>';
 				}
 			}
 			if($column_index == 3){

@@ -279,6 +279,16 @@
 					$column_value = '<span class="label label-warning">'.$column_value.'</span>';
 				}elseif($column_value == 'SPARE PARTS RECEIVED / AWAITING REPAIR'){
 					$column_value = '<span class="label label-warning">'.$column_value.'</span>';
+				}elseif($column_value == 'SHIPPED MAIL-IN'){
+					$column_value = '<span class="label label-warning">'.$column_value.'</span>';
+				}elseif($column_value == "PENDING CUSTOMER'S PAYMENT"){
+					$column_value = '<span class="label label-warning">'.$column_value.'</span>';
+				}elseif($column_value == 'REPLACEMENT PARTS PAID'){
+					$column_value = '<span class="label label-warning">'.$column_value.'</span>';
+				}elseif($column_value == 'FOR PARTS ORDERING'){
+					$column_value = '<span class="label label-warning">'.$column_value.'</span>';
+				}elseif($column_value == 'REPLACEMENT PARTS RECEIVED'){
+					$column_value = '<span class="label label-warning">'.$column_value.'</span>';
 				}elseif($column_value == 'FOR CALL-OUT (GOOD UNIT)'){
 					$column_value = '<span class="label label-warning">'.$column_value.'</span>';
 				}

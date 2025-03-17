@@ -136,7 +136,7 @@
 					'url'   => CRUDBooster::mainpath('edit/[id]'),
 					'icon'  => 'fa fa-pencil',
 					'color' => 'success',
-					'showIf'  => '[repair_status] == 9',
+					'showIf'  => '[repair_status] == 9 or [repair_status] == 16',
 				];
 			}
 
@@ -385,7 +385,7 @@
 			if(CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6 || CRUDBooster::myPrivilegeId() == 8){
 			    $query->where('repair_status', 1)->orderBy('id', 'asc'); 
 			}else if (CRUDBooster::myPrivilegeId() == 4){
-				$query->whereIn('repair_status', [1,9])->where('technician_id', CRUDBooster::myId())->orderBy('id', 'asc');
+				$query->whereIn('repair_status', [1,9,16])->where('technician_id', CRUDBooster::myId())->orderBy('id', 'asc');
 			}
 			else{
 			    $query->where('repair_status', 1)->where('branch', CRUDBooster::me()->branch_id); 
@@ -417,6 +417,7 @@
 			$complete = DB::table('transaction_status')->where('id','6')->first();
 			$pick_up = DB::table('transaction_status')->where('id','7')->first();
 			$ongoing_diagnosis = DB::table('transaction_status')->where('id','9')->first();
+			$shipped_mail_in = DB::table('transaction_status')->where('id','16')->first();
 
 			if($column_index == 1){
 				if($column_value == $pending->id){
@@ -433,6 +434,8 @@
 					$column_value = '<span class="label label-success">'.$pick_up->status_name.'</span>';
 				}elseif($column_value == $ongoing_diagnosis->id){
 					$column_value = '<span class="label label-warning">'.$ongoing_diagnosis->status_name.'</span>';
+				}elseif($column_value == $shipped_mail_in->id){
+					$column_value = '<span class="label label-warning">'.$shipped_mail_in->status_name.'</span>';
 				}
 			}
 

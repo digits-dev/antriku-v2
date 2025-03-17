@@ -382,7 +382,17 @@
                         }, function(){
                             window.location.href = window.location.origin+"/admin/pending_spare_parts";
                         });
-                    }else if(status_id == 21){
+                    }else if(status_id == 16){
+                        swal({ title: "Info!", text: "STATUS: SHIPPED MAIL-IN", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                        }, function(){
+                            window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
+                        });
+                    }else if(status_id == 17){
+                        swal({ title: "Info!", text: "STATUS: PENDING CUSTOMER'S PAYMENT", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                        }, function(){
+                            window.location.href = window.location.origin+"/admin/to_diagnose";
+                        });
+                    } else if(status_id == 21){
                         swal({ title: "Info!", text: "STATUS: FOR CALL OUT (GOOD UNIT)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
                         }, function(){
                             if(case_type === "CARRY-IN"){
