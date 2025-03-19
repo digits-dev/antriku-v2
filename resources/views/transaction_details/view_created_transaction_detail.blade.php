@@ -365,8 +365,8 @@
                         <button type="submit" id="save" onclick="return changeStatus(17)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-circle-o" aria-hidden="true"></i> PENDING CUSTOMER'S PAYMENT</button>
                     @endif
                     @if ($transaction_details->repair_status == 17 && CRUDBooster::getModulePath() == "call_out")
-                        <button type="submit" id="save" onclick="return changeStatus(18)" class="btn btn-success pull-right buttonSubmit available_btn" style="margin-left: 20px;"><i class="fa fa-money" style="margin-right: 3px" aria-hidden="true"></i> Replacement Parts Paid</button>
-                        <button type="submit" id="save" onclick="return changeStatus(19)" class="btn btn-primary pull-right buttonSubmit unavailable_btn" style="margin-left: 20px;"><i class="fa fa-money" style="margin-right: 3px" aria-hidden="true"></i> Replacement Parts Paid</button>
+                        <button type="submit" id="save" onclick="return validateBeforeChangeStatus(18)" class="btn btn-success pull-right buttonSubmit available_btn" style="margin-left: 20px;"><i class="fa fa-money" style="margin-right: 3px" aria-hidden="true"></i> Replacement Parts Paid</button>
+                        <button type="submit" id="save" onclick="return validateBeforeChangeStatus(19)" class="btn btn-primary pull-right buttonSubmit unavailable_btn" style="margin-left: 20px;"><i class="fa fa-money" style="margin-right: 3px" aria-hidden="true"></i> Replacement Parts Paid</button>
                     @endif
                     @if ($transaction_details->repair_status == 18 && CRUDBooster::getModulePath() == "pending_repair")
                         <button type="submit" id="save" onclick="return changeStatus(13)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px; {{ $transaction_details->warranty_status == 'OUT OF WARRANTY' && $transaction_details->case == 'CARRY-IN' ? '' : 'display: none;' }}"><i class="fa fa-circle-o" style="margin-right: 3px" aria-hidden="true"></i> Ongoing Repair</button>
@@ -395,7 +395,7 @@
                 return $(this).val().trim().toLowerCase(); 
             }).get(); 
 
-            if (all_item_qty.includes("unavailable")) {
+            if (all_item_qty.includes("unavailable") && {{$transaction_details->case == 'CARRY-IN'}}) {
                 $('.unavailable_btn').show();
                 $('.available_btn').hide();
             } else {
