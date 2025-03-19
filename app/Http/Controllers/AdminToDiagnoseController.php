@@ -976,6 +976,18 @@
 					'pending_spare_parts_at'   => date('Y-m-d H:i:s'),
 				]);
 			}
+			if($request->status_id == 18){
+
+				if ($request->hasFile('input_file')) {
+					$file = $request->file('input_file');
+					$filename =    time() .  '_' . $request->header_id . '_' . $file->getClientOriginalName() ;
+					$path = $file->storeAs('public/receipts', $filename);
+					
+					DB::table('returns_header')->where('id',$request->header_id)->update([
+						'receipt'   => $filename,
+					]);
+				}
+			}
 
 			// if($request->status_id == 15){
 			// 	DB::table('returns_header')->where('id',$request->header_id)->update([

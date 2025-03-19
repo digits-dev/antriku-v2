@@ -128,11 +128,14 @@
         var item_desc = document.getElementById("item_desc").value;
         var cost = document.getElementById("cost").value;
         var case_type = document.getElementById("case_type").value;
+        var input_file = document.getElementById("input-file").value;
         let stop = false;
         let proceed = false;
 
         //****************QUOTATION************************************/
         var row_num = $('.row_num').length;
+        $("#number_of_rows").val(row_num);
+        var row_num = $('.input_file').length;
         $("#number_of_rows").val(row_num);
 
         var getidValue = $('.getidValue').map((_,el) => el.value).get()
@@ -287,21 +290,23 @@
             }else{
                 $(".buttonSubmit").attr("disabled", "disable");
             }
-
+            var formData = new FormData();
+            formData.append("all_data", $("#SubmitTransactionForm").serialize());
+            formData.append("header_id", header_id);
+            formData.append("status_id", status_id);
+            formData.append("warranty_status", warranty_status);
+            formData.append("all_cost", all_cost);
+            formData.append("all_item_desc", all_item_desc);
+            formData.append("software_cost", software_cost);
+            formData.append("input_file", $("#input-file")[0].files[0]); // Add file
+            formData.append("_token", '{!! csrf_token() !!}');
             $.ajax
             ({ 
                 url: "{{ route('change-status') }}",
                 type: "POST",
-                data: {
-                    'all_data': $("#SubmitTransactionForm").serialize(),
-                    'header_id': header_id,
-                    'status_id': status_id,
-                    'warranty_status': warranty_status,
-                    'all_cost': all_cost,
-                    'all_item_desc' : all_item_desc,
-                    'software_cost': software_cost,
-                    _token: '{!! csrf_token() !!}'
-                    },
+                data: formData,
+                processData: false,  // Important: Prevent jQuery from processing data
+                contentType: false,  // Important: Prevent jQuery from setting content type
                 success: function(result)
                 {   
                     if(status_id == 2){

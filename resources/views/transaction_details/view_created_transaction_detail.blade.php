@@ -278,8 +278,9 @@
                 <br>
                 @include('transaction_details.quotation')
                 <br>
+                @include('transaction_details.uploade_receipt')
             @endif
-
+            {{-- <input required id="input-file" name="receipt" multiple type="file"> --}}
             <div class="panel-footer">
                 @if(request()->segment(3) == "getDetailView" || CRUDBooster::getModulePath() == "returns_header")
                 <a href="{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}" style="margin-left:20px;" class="btn btn-default pull-right"><i class="fa fa-chevron-circle-left"></i> BACK</a>
