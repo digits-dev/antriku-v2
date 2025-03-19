@@ -68,6 +68,7 @@
         document.getElementById("service_code").disabled = false;
         // document.getElementById("digits_code").disabled = false;
         document.getElementById("item_desc").disabled = false;
+        document.getElementById("item_qty").disabled = false;
         document.getElementById("cost").disabled = false;
 
         var header_id = document.getElementById("header_id").value;
@@ -78,6 +79,7 @@
         var serial_no = document.getElementById("serial_no").value;
         // var digits_code = document.getElementById("digits_code").value;
         var item_desc = document.getElementById("item_desc").value;
+        var item_qty = document.getElementById("item_qty").value;
         var cost = document.getElementById("cost").value;
         let stop = false;
 
@@ -89,7 +91,7 @@
             return false;
         }
 
-        if(isEmptyOrSpaces(gsx_ref) == false || isEmptyOrSpaces(cs_code) == false || isEmptyOrSpaces(service_code) == false || isEmptyOrSpaces(serial_no) == false || isEmptyOrSpaces(item_desc) == false || isEmptyOrSpaces(cost) == false)
+        if(isEmptyOrSpaces(gsx_ref) == false || isEmptyOrSpaces(cs_code) == false || isEmptyOrSpaces(service_code) == false || isEmptyOrSpaces(serial_no) == false || isEmptyOrSpaces(item_desc) == false || isEmptyOrSpaces(item_qty) == false || isEmptyOrSpaces(cost) == false)
         {
             if(isEmptyOrSpaces(service_code) == false){
                 $.ajax({
@@ -120,14 +122,19 @@
             }else if(isEmptyOrSpaces(item_desc) == true)
             {
                 swal('Info!','Item Description is required.');
-            }else if(isEmptyOrSpaces(cost) == true){
+            }
+            else if(isEmptyOrSpaces(item_qty) == true)
+            {
+                swal('Info!','Qty is required.');
+            }
+            else if(isEmptyOrSpaces(cost) == true){
                 swal('Info!','Price is required.');
             }else{
                 $.ajax
                 ({ 
                     url: "{{ route('add-quotation') }}",
                     type: "POST",
-                    data: {'id' : header_id, 'gsx_ref' : gsx_ref, 'cs_code' : cs_code, 'service_code' : service_code, 'serial_no' : serial_no, 'item_desc' : item_desc, 'cost' : cost, _token: '{!! csrf_token() !!}'},
+                    data: {'id' : header_id, 'gsx_ref' : gsx_ref, 'cs_code' : cs_code, 'service_code' : service_code, 'serial_no' : serial_no, 'item_desc' : item_desc, 'item_qty' : item_qty, 'cost' : cost, _token: '{!! csrf_token() !!}'},
                     success: function(result)
                     {
                         var showData = '';
@@ -140,6 +147,7 @@
                         showData += '<td style="padding: 1px !important;"><input class="form-control text-center getserialValue" type="text" value="'+ result.quotation.serial_no +'" placeholder="Enter Apple Parts Number"/></td>';
                         // showData += '<td style="padding: 1px !important;"><input class="form-control text-center getdcValue" type="text" id="digits_code_'+ result.quotation.id +'" value="'+ result.quotation.digits_code +'" placeholder="Enter Item Code" readonly /></td>';
                         showData += '<td style="padding: 1px !important;"><input class="form-control text-center getitemValue" type="text" id="item_desc_'+ result.quotation.id +'" value="'+ result.quotation.item_description +'" placeholder="Enter Item Description" readonly /></td>';
+                        showData += '<td style="padding: 1px !important;"><input class="form-control text-center getqtyValue" type="text" id="item_desc_'+ result.quotation.id +'" value="'+ result.quotation.qty +'" placeholder="Qty" readonly /></td>';
                         showData += '<td style="padding: 1px !important;"><input class="form-control text-center getcostValue" type="number" onblur="AutoFormatCost('+ result.quotation.id +')" id="price_'+ result.quotation.id +'" value="'+ result.quotation.cost +'" min="0" max="9999" step="any" placeholder="Enter Price"></td>';
                         showData += '<td style="padding: 5px !important;" class="text-center"><a onclick="RemoveRow('+ result.quotation.id +')"><i class="fa fa-close fa-2x remove" style="color:red"></i></a></td>';
                         showData += '</tr>';
@@ -151,8 +159,9 @@
                         $("#serial_no").val('');
                         // $("#digits_code").val('');
                         $("#item_desc").val('');
+                        $("#item_qty").val('');
                         $("#cost").val('');
-                        $('table .nr:last').before(showData);   
+                        $('table .nr:last').before(showData);
                     }
                 });
             }
@@ -194,11 +203,14 @@
                     if(result.length > 0){
                         // $("#digits_code").val(result[0].digits_code);
                         $("#item_desc").val(result[0].item_description);
+                        $("#item_qty").val(result[0].qty); 
+                        $("#item_qty").css('color', result[0].qty == 0 ? 'red' : 'limegreen');
                         $("#cost").val(result[0].cost);
 
                         document.getElementById("service_code").disabled = true;
                         // document.getElementById("digits_code").disabled = true;
                         document.getElementById("item_desc").disabled = true;
+                        document.getElementById("item_qty").disabled = true;
                     }
                 }
             });
@@ -217,11 +229,13 @@
                     if(result.length > 0){
                         // $("#digits_code_"+row_id).val(result[0].digits_code);
                         $("#item_desc_"+row_id).val(result[0].item_description);
+                        $("#item_qty_"+row_id).val(result[0].qty);
                         $("#price_"+row_id).val(result[0].cost);
 
                         document.getElementById("service_code_"+row_id).disabled = true;
                         // document.getElementById("digits_code_"+row_id).disabled = true;
                         document.getElementById("item_desc_"+row_id).disabled = true;
+                        document.getElementById("item_qty_"+row_id).disabled = true;
                     }
                 }
             });
@@ -341,5 +355,4 @@
     //     $("#software_cost").val('0.00');
     //     return false;
     // }
-
 </script>

@@ -707,6 +707,7 @@
 							'gsx_ref'			=> $gsx_ref[$i],
 							'cs_code'			=> $cs_code[$i],
 							'item_description'	=> $parts_item_description[0]->item_description,
+							'qty' 				=> $parts_item_description[0]->qty > 0 ? 'Available' : 'Unavailable',
 							'cost'				=> $cost[$i],
 							'updated_by'		=> CRUDBooster::myId()
 						]);
@@ -722,6 +723,7 @@
                             'gsx_ref'			=> $gsx_ref[$i],
                             'cs_code'			=> $cs_code[$i],
                             'item_description'	=> $parts_item_description[0]->item_description,
+							'qty' 				=> $parts_item_description[0]->qty > 0 ? 'Available' : 'Unavailable',
                             'cost'				=> $cost[$i],
                             'created_by'		=> CRUDBooster::myId(),
                             'updated_by'		=> CRUDBooster::myId()
@@ -994,6 +996,7 @@
 			if(!empty($request->cs_code)){ $cs_code = $request->cs_code; }else{ $cs_code = ''; }
 			if(!empty($request->serial_no)){ $serial_no = $request->serial_no; }else{ $serial_no = ''; }
 			if(!empty($request->item_desc)){ $item_desc = $request->item_desc; }else{ $item_desc = ''; }
+			if(empty($request->item_qty) || $request->item_qty == 0){ $item_qty = 'Unavailable'; }else{ $item_qty = 'Available'; }
 			if(!empty($request->cost)){ $cost = $request->cost; }else{ $cost = ''; }
 			
 			$bodyItemID = DB::table('returns_body_item')->insertGetId([
@@ -1002,6 +1005,7 @@
 				'gsx_ref'			=> $gsx_ref,
 				'cs_code'			=> $cs_code,
 				'item_description'	=> $item_desc,
+				'qty'				=> $item_qty,
 				'cost'				=> $cost,
 				'created_by'		=> CRUDBooster::myId(),
 				'updated_by'		=> CRUDBooster::myId()

@@ -254,6 +254,13 @@
                 <div style="text-align:justify;font-size: 11px;">
                     <h4 align="center" style="margin-top: 17px;"><strong>DATA PRIVACY CONSENT FORM</strong></h4> 
                     @include('include.data_privacy_act')
+                        By signing this form, you acknowledge and consent to the collection and use of your personal data as described. If you have any questions, feel free to contact us at service@beyondthebox.ph.
+                        <br>
+                        Customer Name: <span><u> {{$data['transaction_details']->last_name}}, {{$data['transaction_details']->first_name}} </u></span>
+                        <br>
+                        Signature: <span id="e_signed"></span>
+                        <br>
+                        Date: <span> <u>{{now()}}</u> </span>
                 </div>
             </div>
         </div>          
@@ -301,6 +308,9 @@
         if (button) button.style.display = "none";
         if (canvas) canvas.style.width = "220px";
 
+        let contact_no = "{{$data['transaction_details']->contact_no}}";
+        let first_name = "{{$data['transaction_details']->first_name}}";
+        let last_name = "{{$data['transaction_details']->last_name}}";
         let email_add = "{{$data['transaction_details']->email}}";
         let file_name = "{{$data['transaction_details']->reference_no}}_SIGNED_FORM.pdf";
 
@@ -314,9 +324,11 @@
 
         html2pdf().from(element).set(options).outputPdf("blob").then((pdfBlob) => {
             let formData = new FormData();
+            formData.append("contact_no", contact_no);
+            formData.append("first_name", first_name);
+            formData.append("last_name", last_name);
             formData.append("email", email_add);
             formData.append("pdf", pdfBlob, file_name);
-
             // Save PDF to drive 
             $.ajax({
                 url: "{{ route('upload_pdf') }}",
@@ -504,6 +516,38 @@
             console.error("SignaturePad library is not loaded.");
         }
     });
+</script>
+<script>
+    const canvas = document.getElementById("signature-pad");
+    const ctx = canvas.getContext("2d");
+    let isDrawing = false;
+    let img = document.createElement("img"); // Create a single image element
+    document.getElementById("e_signed").appendChild(img);
+
+    canvas.addEventListener("mousedown", (e) => {
+        isDrawing = true;
+        ctx.beginPath();
+        ctx.moveTo(e.offsetX, e.offsetY);
+    });
+
+    canvas.addEventListener("mousemove", (e) => {
+        if (!isDrawing) return;
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
+        updateSignature(); // Update signature real-time
+    });
+
+    canvas.addEventListener("mouseup", () => {
+        isDrawing = false;
+    });
+
+    function updateSignature() {
+        img.src = canvas.toDataURL("image/png"); 
+        img.style.border = "0px solid #ddd";
+        img.style.marginTop = "1px";
+        img.style.width = "5%";
+        img.style.height = "5%";
+    }
 </script>
 @endpush
 

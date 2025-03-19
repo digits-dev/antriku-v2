@@ -30,7 +30,7 @@
         }
 
         .email-container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 20px auto;
             background-color: #f2f2f4;
             border-radius: 12px;
@@ -178,9 +178,15 @@
             <a href="#" class="logo">
                 <div class="logo-container">
                     <div class="logo-main">
-                        <div class="logo-text">Beyond The Box</div>
+                        <div class="logo-text">
+                            <img src="https://antriku.beyondthebox.ph/uploads/2021-08/7490c5fe894ec42ddfd9eacbf01e958b.png" width="300" alt="Service Center Logo">
+                            <br>
+                            Beyond The Box
+                        </div>
                     </div>
-                    <div class="logo-tagline">SERVICE CENTER</div>
+                    <div class="logo-tagline">
+                        SERVICE CENTER
+                    </div>
                 </div>
             </a>
         </div>
@@ -188,15 +194,25 @@
         <div class="email-content">
             <p class="greeting">Dear Customer,</p>
 
-            <p class="message">Please find the attached signed PDF copy of your document.</p>
+            <p class="message">Please find the attached ZIP file for the signed PDF copy of your document.</p>
+            <p class="message"><strong>Zip Key 🔑</strong>: 
+                <span>{{ str_repeat('*', strlen($zipPassword)) }}</span>
+                <ul style="list-style:square">
+                    <p style="color: #333336; font-size: 15px;">Follow the pattern below to get your Zip Key:</p>
+                    <li>Last 4 digits of your Contact No.</li>
+                    <li>First letter of your First Name (UPPERCASE)</li>
+                    <li>First letter of your Last Name (UPPERCASE)</li>
+                    <li>Last letter of your Last Name (UPPERCASE)</li>
+                </ul>
+            </p>
 
             <div class="attachment-info">
                 <div class="attachment-icon">
-                    <span>📄</span>
+                    <span> 🗃️</span>
                 </div>
                 <div class="attachment-text">
-                    <strong>{{ $filename }}</strong> 
-                    <span>PDF Document</span>
+                    <strong>{{ $zipFileName }}</strong> 
+                    <span>ZIP PDF Document</span>
                 </div>
             </div>            
 

@@ -392,7 +392,17 @@
                         }, function(){
                             window.location.href = window.location.origin+"/admin/to_diagnose";
                         });
-                    } else if(status_id == 21){
+                    }else if(status_id == 18){
+                        swal({ title: "Info!", text: "STATUS: REPLACEMENT PARTS PAID", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                        }, function(){
+                            window.location.href = window.location.origin+"/admin/call_out";
+                        });
+                    }else if(status_id == 19){
+                        swal({ title: "Info!", text: "STATUS: FOR PARTS ORDERING", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                        }, function(){
+                            window.location.href = window.location.origin+"/admin/call_out";
+                        });
+                    }else if(status_id == 21){
                         swal({ title: "Info!", text: "STATUS: FOR CALL OUT (GOOD UNIT)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
                         }, function(){
                             if(case_type === "CARRY-IN"){
@@ -459,14 +469,21 @@
 
     function toggleCallOut(callout)
 	{
-    if (callout === 'CARRY-IN') {
+    const warranty_status = $('input[name="warranty_status"]:checked').val();
+    
+    if (callout === 'CARRY-IN' && warranty_status !== 'OUT OF WARRANTY') {
         $("#call_out_mail_in").hide(); 
         $("#ongoing_repair").show(); 
         $("#pending_spare_parts").show();
+        
+    } else if(callout === 'CARRY-IN' && warranty_status === 'OUT OF WARRANTY') {
+        $("#for_customer_payment").show();
+
     } else {
         $("#call_out_mail_in").show(); 
         $("#ongoing_repair").hide(); 
-        $("#pending_spare_parts").hide();  
+        $("#pending_spare_parts").hide(); 
+        $("#for_customer_payment").hide();
     }
 
     }

@@ -12,14 +12,18 @@ class EmailReceivePrintForm extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $pdfPath;
+    public $zipPath;
+    public $zipFileName;
+    public $zipPassword;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($pdfPath)
+    public function __construct($zipPath, $zipFileName, $zipPassword)
     {
-        $this->pdfPath = $pdfPath;
+        $this->zipPath = $zipPath;
+        $this->zipFileName = $zipFileName;
+        $this->zipPassword = $zipPassword;
     }
 
     /**
@@ -27,10 +31,15 @@ class EmailReceivePrintForm extends Mailable
      */
     public function build()
     {
-        $filename = basename($this->pdfPath); // Get the actual file name
-
-        return $this->subject('Signed Received Form PDF Copy')
-            ->view('email.received_form', ['filename' => $filename]) // Pass filename to view
-            ->attach(Storage::path($this->pdfPath));
+        return $this->subject('Signed Received Form - Encrypted PDF')
+            ->view('email.received_form', [
+                'zipFileName' => $this->zipFileName,
+                'zipPassword' => $this->zipPassword
+            ])
+            ->attach(Storage::path('temp_pdfs/' . $this->zipFileName), [
+                'as' => $this->zipFileName,
+                'mime' => 'application/zip',
+            ]);
     }
 }
+

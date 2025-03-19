@@ -65,7 +65,7 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 
 	public function hook_query_index(&$query)
 	{
-		$query->whereIn('repair_status', [13])
+		$query->whereIn('repair_status', [13, 18, 19])
 			->where('branch', CRUDBooster::me()->branch_id);
 	}
 

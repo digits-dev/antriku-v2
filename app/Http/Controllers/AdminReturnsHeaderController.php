@@ -8,7 +8,7 @@ use GuzzleHttp\Client;
 use Session;
 use DB;
 use URL;
-use Str;
+use ZipArchive;
 use CRUDBooster;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
@@ -909,32 +909,68 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 
 	public function sendPdf(Request $request)
 	{
-		// Validate
+		// Validate the request
 		$request->validate([
+			'contact_no' => 'required',
+			'first_name' => 'required',
+			'last_name' => 'required',
 			'email' => 'required|email',
 			'pdf' => 'required|file|mimes:pdf|max:25600',
 		]);
 
-		// Store as temp_file
 		$pdfFile = $request->file('pdf');
 		$fileName = date('Y-m-d') . '_' . $pdfFile->getClientOriginalName();
-		$pdfPath = $pdfFile->storeAs('temp_pdfs', $fileName); 
+		$pdfPath = storage_path('app/temp_pdfs/' . $fileName);
 
-		// send PDF & delete Temp file
-		Mail::to($request->email)->send(new EmailReceivePrintForm($pdfPath));
-		Storage::delete($pdfPath);
+		// Move file to storage
+		$pdfFile->storeAs('temp_pdfs', $fileName);
 
+		// Define ZIP file path
+		$zipFileName = pathinfo($fileName, PATHINFO_FILENAME) . '.zip';
+		$zipFilePath = storage_path('app/temp_pdfs/' . $zipFileName);
+
+		// Set encryption ZIP key
+		$contactNo = $request->contact_no;
+		$lastFourDigits = substr($contactNo, -4); 
+		$firstLetterFirstName = strtoupper(substr($request->first_name, 0, 1)); 
+		$firstLetterLastName = strtoupper(substr($request->last_name, 0, 1)); 
+		$lastLetterLastName = strtoupper(substr($request->last_name, -1)); 
+		$zipPassword = $lastFourDigits . $firstLetterFirstName . $firstLetterLastName . $lastLetterLastName;
+
+		// ZIP archive and add the PDF with encryption
+		$zip = new ZipArchive();
+		if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
+			$zip->setPassword($zipPassword);
+			$zip->addFile($pdfPath, $fileName);
+			$zip->setEncryptionName($fileName, ZipArchive::EM_AES_256);
+			$zip->close();
+		} else {
+			return response()->json(['message' => 'Failed to create ZIP file.'], 500);
+		}
+
+		// Send Email in ZIP Attachment
+		Mail::to($request->email)->send(new EmailReceivePrintForm($zipFilePath, $zipFileName, $zipPassword));
+
+		// Delete tempt files
+		Storage::delete('temp_pdfs/' . $fileName);
+		Storage::delete('temp_pdfs/' . $zipFileName);
+
+		// Update Database Tracking
 		$track_pdf_file = DB::table('pdf_files_tracker')->where('pdf_file_name', $fileName)->first();
 
-		if($track_pdf_file){
+		if ($track_pdf_file) {
 			$updated = DB::table('pdf_files_tracker')->where('pdf_file_name', $fileName)->update([
 				'send_email' => 1,
 				'send_email_by' => CRUDBooster::myId(),
 				'send_email_at' => now(),
 			]);
 
-			if($updated){
-				return response()->json(['message' => 'PDF sent successfully!','email' => $request->email,'file_name' => $fileName], 200);
+			if ($updated) {
+				return response()->json([
+					'message' => 'PDF sent successfully!',
+					'email' => $request->email,
+					'file_name' => $fileName
+				], 200);
 			}
 		}
 	}

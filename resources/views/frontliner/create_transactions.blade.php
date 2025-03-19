@@ -136,7 +136,6 @@
                         <div class="form-column-cus">
                             <div class="form-group-cus">
                                 <label class="require label-cus"><span class="requiredField">*</span>Warranty Status:</label> 
-                                
                                 <div class="warranty-options-cus">
                                     <label class="warranty-option-cus">
                                         <div class="radio-container-cus">
@@ -184,7 +183,7 @@
                         <div class="form-column-cus">
                             <div class="form-group-cus">
                                 <div class="row">
-                                    <div class="col-md-8">
+                                    <div class="col-md-12" id="model_class">
                                         <label for="model" class="label-cus">Model</label>
                                         <select name="model" autocomplete="off" class="js-example-basic-single input-cus" id="model" onchange="SelectedModel()" required> 
                                             <option value="" selected disabled>Choose Model here...</option>
@@ -193,10 +192,10 @@
                                             @endforeach      
                                         </select> 
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="" id="unitt_type_class" style="display: none;">
                                         <label for="model" class="label-cus">Unit Type</label>
                                         <select name="unit_type" autocomplete="off" class="js-example-basic-single input-cus" id="model" onchange="SelectedModel()" required> 
-                                            <option value="" selected disabled>Choose Model here...</option>
+                                            <option value="" selected disabled>Choose Unit type here...</option>
                                             <option value="iMac">iMac</option>      
                                             <option value="iPhone">iPhone</option>      
                                             <option value="macbook">MacBook</option>      
@@ -318,6 +317,20 @@
 
     $(document).ready(function() {
         $('.js-example-basic-single').select2();
+    });
+
+    $(document).ready(function () {
+        $('input[name="warranty_status"]').change(function () {
+            const warranty_status = $('input[name="warranty_status"]:checked').val();
+
+            if (warranty_status === "OUT OF WARRANTY") {
+                $('#model_class').removeClass('col-md-12').addClass('col-md-7');
+                $('#unitt_type_class').addClass('col-md-5').show();
+            } else {
+                $('#model_class').removeClass('col-md-7').addClass('col-md-12');
+                $('#unitt_type_class').removeClass('col-md-5').hide(); // Fix 'removedClass' typo
+            }
+        });
     });
 
     // get provinces
