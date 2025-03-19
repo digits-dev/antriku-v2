@@ -128,7 +128,6 @@
         var item_desc = document.getElementById("item_desc").value;
         var cost = document.getElementById("cost").value;
         var case_type = document.getElementById("case_type").value;
-        var input_file = document.getElementById("input-file").value;
         let stop = false;
         let proceed = false;
 
@@ -298,7 +297,9 @@
             formData.append("all_cost", all_cost);
             formData.append("all_item_desc", all_item_desc);
             formData.append("software_cost", software_cost);
-            formData.append("input_file", $("#input-file")[0].files[0]); // Add file
+            if(status_id == 17){
+                formData.append("input_file", $("#input-file")[0].files[0]); 
+            }
             formData.append("_token", '{!! csrf_token() !!}');
             $.ajax
             ({ 
@@ -415,6 +416,11 @@
                             } else {
                                 window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
                             }
+                        });
+                    }else if(status_id == 22){
+                        swal({ title: "Info!", text: "STATUS: PENDING FOR GOOD UNIT", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                        }, function(){
+                            window.location.href = window.location.origin+"/admin/pending_repair";
                         });
                     }
                 }                    
