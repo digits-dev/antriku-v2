@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $ongoingRepairCount = DB::table('returns_header')->where('repair_status', 13)->count();
+        $ongoingRepairCount = DB::table('returns_header')->whereIn('repair_status', [13, 18, 19])->count();
         View::share('ongoing_repair_count', $ongoingRepairCount);
 
         $sparePartsReceiveCount = DB::table('returns_header')->where('repair_status', 15)->count();

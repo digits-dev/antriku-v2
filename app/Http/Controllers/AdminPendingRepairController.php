@@ -22,7 +22,7 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 		$this->button_bulk_action = true;
 		$this->button_action_style = "button_icon";
 		$this->button_add = false;
-		$this->button_edit = true;
+		$this->button_edit = false;
 		$this->button_delete = false;
 		$this->button_detail = false;
 		$this->button_show = true;
@@ -49,28 +49,78 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 		$this->form = [];
 
 		$this->sub_module = array();
-		$this->addaction = array();
 		$this->button_selected = array();
 		$this->alert        = array();
 		$this->index_button = array();
 		$this->table_row_color = array();
 		$this->index_statistic = array();
-		$this->script_js = NULL;
 		$this->pre_index_html = null;
-		$this->post_index_html = null;
 		$this->load_js = array();
 		$this->style_css = NULL;
 		$this->load_css = array();
+
+		$this->addaction = array();
+		if (CRUDBooster::myPrivilegeId() == 8) {
+			$this->addaction[] = [
+				'title'   => 'Assign Technician',
+				'icon'    => 'fa fa-user',
+				'url'     => 'javascript:handleSwal([id], '.json_encode("[reference_no]").', [technician_id])', 
+				'color'   => 'success',
+			];
+		}
+		if (CRUDBooster::myPrivilegeId() == 4) {
+		
+			$this->addaction[] = [
+				'title'   => 'Edit Data',
+				'url'   => CRUDBooster::mainpath('edit/[id]'),
+				'icon'  => 'fa fa-pencil',
+				'color' => 'success',
+			];
+		}
+
+		$this->script_js = "
+		function handleSwal(id, reference_no, technician_id) {
+		assignTechnician(id, reference_no, technician_id);
+		}
+		";
+
+		$this->post_index_html = '
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+		<script src="'.asset('js/jobActions.js').'"></script>
+	';
+
+
 	}
+
+	
 
 	public function hook_query_index(&$query)
 	{
-		$query->whereIn('repair_status', [13, 18, 19])
+		if (CRUDBooster::myPrivilegeId() == 4) {
+			$query->where('technician_id', CRUDBooster::myId())->whereIn('repair_status', [13, 18, 19])
 			->where('branch', CRUDBooster::me()->branch_id);
+		}else {
+			$query->whereIn('repair_status', [13, 18, 19]);
+		}
+		
 	}
 
-	public function hook_row_index($column_index, &$column_value)
+	public function hook_row_index($column_index,&$column_value) 
 	{
+		$ongoing_repair = DB::table('transaction_status')->where('id','13')->first();
+		$replacement_parts_paid = DB::table('transaction_status')->where('id','18')->first();
+		$for_parts_ordering = DB::table('transaction_status')->where('id','19')->first();
+		
+		if($column_index == 1){
+			if($column_value == $ongoing_repair->id){
+				$column_value = '<span class="label label-warning">'.$ongoing_repair->status_name.'</span>';
+			}elseif($column_value == $replacement_parts_paid->id){
+				$column_value = '<span class="label label-warning">'.$replacement_parts_paid->status_name.'</span>';
+			}elseif($column_value == $for_parts_ordering->id){
+				$column_value = '<span class="label label-warning">'.$for_parts_ordering->status_name.'</span>';
+			}
+		}
+
 		if ($column_index == 3) {
 			$models = DB::table('model')->where('id', $column_value)->first();
 			if ($models) {

@@ -120,7 +120,7 @@
 					'icon'    => 'fa fa-user',
 					'url'     => 'javascript:handleSwal([id], '.json_encode("[reference_no]").', [technician_id])', 
 					'color'   => 'success',
-					'showIf'  => '[repair_status] == 1',
+					'showIf'  => '[repair_status] == 1 or [repair_status] == 16',
 				];
 			}
 			if (CRUDBooster::myPrivilegeId() == 4) {
@@ -383,7 +383,7 @@
 			//Your code here
 		
 			if(CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6 || CRUDBooster::myPrivilegeId() == 8){
-			    $query->where('repair_status', 1)->orderBy('id', 'asc'); 
+			    $query->whereIn('repair_status', [1,16])->orderBy('id', 'asc'); 
 			}else if (CRUDBooster::myPrivilegeId() == 4){
 				$query->whereIn('repair_status', [1,9,16])->where('technician_id', CRUDBooster::myId())->orderBy('id', 'asc');
 			}
