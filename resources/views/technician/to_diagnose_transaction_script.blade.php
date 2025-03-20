@@ -414,7 +414,11 @@
                             if(case_type === "CARRY-IN"){
                                 window.location.href = window.location.origin+"/admin/pending_repair";
                             } else {
-                                window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
+                                if (warranty_status === "OUT OF WARRANTY") {
+                                    window.location.href = window.location.origin+"/admin/pending_good_unit";
+                                } else {
+                                    window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
+                                }
                             }
                         });
                     }else if(status_id == 22){
