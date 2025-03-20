@@ -14,5 +14,6 @@ class DatabaseSeeder extends Seeder
         // $this->call(UsersTableSeeder::class);
         $this->call(CmsMenuSeeder::class);
         $this->call(CmsModuleSeeder::class);
+        $this->call(TransactionStatus::class);
     }
 }

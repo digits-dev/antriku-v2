@@ -383,6 +383,9 @@
                     @if ($transaction_details->repair_status == 19 && CRUDBooster::getModulePath() == "pending_repair")
                         <button type="submit" id="pending_spare_parts" onclick="return validateBeforeChangeStatus(14)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-circle-o"></i> PENDING SPARE PARTS</button>
                     @endif
+                    @if ($transaction_details->repair_status == 22 && CRUDBooster::getModulePath() == "pending_good_unit")
+                    <button type="submit" id="save" onclick="return changeStatus(21)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-circle-o"></i> FOR CALL-OUT (GOOD UNIT)</button>
+                @endif
                 @endif
             </div>
             @if(request()->segment(3) == "edit") </form> @endif 

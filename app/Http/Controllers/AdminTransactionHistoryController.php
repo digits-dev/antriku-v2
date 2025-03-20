@@ -456,6 +456,7 @@
 			$for_parts_ordering = DB::table('transaction_status')->where('id','19')->first();
 			$replacement_parts_received = DB::table('transaction_status')->where('id','20')->first();
 			$for_call_out_good_unit = DB::table('transaction_status')->where('id','21')->first();
+			$pending_good_unit = DB::table('transaction_status')->where('id','22')->first();
 
 
 
@@ -502,6 +503,8 @@
 					$column_value = '<span class="label label-warning">'.$replacement_parts_received->status_name.'</span>';
 				}elseif($column_value == $for_call_out_good_unit->id){
 					$column_value = '<span class="label label-warning">'.$for_call_out_good_unit->status_name.'</span>';
+				}elseif($column_value == $pending_good_unit->id){
+					$column_value = '<span class="label label-warning">'.$pending_good_unit->status_name.'</span>';
 				}
 			}
 
