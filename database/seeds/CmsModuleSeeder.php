@@ -58,6 +58,15 @@ class CmsModuleSeeder extends Seeder
                 'is_protected' => 0,
                 'is_active'    => 0,
             ],
+            [
+                'name'         => 'Pending Good Unit',
+                'icon'         => 'fa fa-inbox',
+                'path'         => 'pending_good_unit',
+                'table_name'   => 'returns_header',
+                'controller'   => 'AdminPendingGoodUnitController',
+                'is_protected' => 0,
+                'is_active'    => 0,
+            ],
         ];
 
         foreach ($modules as $module) {

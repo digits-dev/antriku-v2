@@ -73,6 +73,18 @@ class CmsMenuSeeder extends Seeder
                 'id_cms_privileges' => 1,
                 'sorting'           => 17
             ],
+            [
+                'name'              => 'Pending Good Unit',
+                'type'              => 'Route',
+                'path'              => 'AdminPendingGoodUnitControllerGetIndex',
+                'color'             => 'normal',
+                'icon'              => 'fa fa-inbox',
+                'parent_id'         => 0,
+                'is_active'         => 1,
+                'is_dashboard'      => 0,
+                'id_cms_privileges' => 1,
+                'sorting'           => 18
+            ],
         ];
     
         foreach ($menus as $menu) {
