@@ -18,7 +18,7 @@ class AddColumnsToReturnsHeaderTable extends Migration
             $table->string('receipt')->nullable()->after('parts_replacement_cost');
             $table->integer('call_out_mail_in_by')->nullable()->after('technician_assigned_at');
             $table->timestamp('call_out_mail_in_at')->nullable()->after('call_out_mail_in_by');
-            $table->timestamp('mail_in_shipped_by')->nullable()->after('call_out_mail_in_at');
+            $table->integer('mail_in_shipped_by')->nullable()->after('call_out_mail_in_at');
             $table->timestamp('mail_in_shipped_at')->nullable()->after('mail_in_shipped_by');
 
             $table->integer('ongoing_repair_by')->nullable();
