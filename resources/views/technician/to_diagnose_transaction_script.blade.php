@@ -297,7 +297,7 @@
             formData.append("all_cost", all_cost);
             formData.append("all_item_desc", all_item_desc);
             formData.append("software_cost", software_cost);
-            if(status_id == 17){
+            if(status_id == 18){
                 formData.append("input_file", $("#input-file")[0].files[0]); 
             }
             formData.append("_token", '{!! csrf_token() !!}');
