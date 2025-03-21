@@ -120,7 +120,7 @@
 					'icon'    => 'fa fa-user',
 					'url'     => 'javascript:handleSwal([id], '.json_encode("[reference_no]").', [technician_id])', 
 					'color'   => 'success',
-					'showIf'  => '[repair_status] == 1 or [repair_status] == 16',
+					'showIf'  => '[repair_status] == 1 or [repair_status] == 9 or [repair_status] == 16',
 				];
 			}
 			if (CRUDBooster::myPrivilegeId() == 4) {
@@ -383,7 +383,7 @@
 			//Your code here
 		
 			if(CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6 || CRUDBooster::myPrivilegeId() == 8){
-			    $query->whereIn('repair_status', [1,16])->orderBy('id', 'asc'); 
+			    $query->whereIn('repair_status', [1,9,16])->orderBy('id', 'asc'); 
 			}else if (CRUDBooster::myPrivilegeId() == 4){
 				$query->whereIn('repair_status', [1,9,16])->where('technician_id', CRUDBooster::myId())->orderBy('id', 'asc');
 			}
@@ -939,28 +939,28 @@
 				}
 			}
 
-			//  To Pending Mail-In Shipment
-			if($request->status_id == 11){
+			//  FOR CALL-OUT MAIL-IN
+			if($request->status_id == 10){
 				DB::table('returns_header')->where('id',$request->header_id)->update([
-					'call_out_mail_in_by'   => CRUDBooster::myId(),
-					'call_out_mail_in_at'   => date('Y-m-d H:i:s'),
+					'diagnose_by'   => CRUDBooster::myId(),
+					'diagnose_at'   => date('Y-m-d H:i:s'),
 				]);
 			}
 
-			if($request->status_id == 21){
-			
-				$latestAssignment = DB::table('case_assignments')
-				->where('returns_header_id', $request->header_id)
-				->where('technician_id', $transaction_details[0]->technician_id)
-				->latest('id') 
-				->first();
-	
-				if ($latestAssignment) {
-				// Update the latest assignment by setting end_date
-				DB::table('case_assignments')
-					->where('id', $latestAssignment->id)
-					->update(['end_date' => now()]);
-				}
+			// FOR PENDING MAIL-IN SHIPMENT
+			if($request->status_id == 11){
+				DB::table('returns_header')->where('id',$request->header_id)->update([
+					'approved_by'   => CRUDBooster::myId(),
+					'approved_at'   => date('Y-m-d H:i:s'),
+				]);
+			}
+
+			// MAIL-IN SHIPPED
+			if($request->status_id == 12){
+				DB::table('returns_header')->where('id',$request->header_id)->update([
+					'mail_in_shipped_by'   => CRUDBooster::myId(),
+					'mail_in_shipped_at'   => date('Y-m-d H:i:s'),
+				]);
 			}
 
 			if($request->status_id == 13){
@@ -976,6 +976,24 @@
 					'pending_spare_parts_at'   => date('Y-m-d H:i:s'),
 				]);
 			}
+
+			// SHIPPED
+			if($request->status_id == 16){
+				DB::table('returns_header')->where('id',$request->header_id)->update([
+					'shipped_by'   => CRUDBooster::myId(),
+					'shipped_at'   => date('Y-m-d H:i:s'),
+				]);
+			}
+
+			// FOR PENDING CUSTOMER'S PAYMENT
+			if($request->status_id == 17){
+				DB::table('returns_header')->where('id',$request->header_id)->update([
+					'for_customer_payment_by'   => CRUDBooster::myId(),
+					'for_customer_payment_at'   => date('Y-m-d H:i:s'),
+				]);
+			}
+
+			// REPLACEMENT PARTS PAID
 			if($request->status_id == 18){
 
 				if ($request->hasFile('input_file')) {
@@ -985,10 +1003,44 @@
 					
 					DB::table('returns_header')->where('id',$request->header_id)->update([
 						'receipt'   => $filename,
+						'replacement_part_paid_by'   => CRUDBooster::myId(),
+						'replacement_part_paid_at'   => date('Y-m-d H:i:s'),
 					]);
 				}
 			}
+			
+			// FOR PENDING GOOD UNIT
+			if($request->status_id == 22){
+				DB::table('returns_header')->where('id',$request->header_id)->update([
+					'ongoing_repair_by'   => CRUDBooster::myId(),
+					'ongoing_repair_at'   => date('Y-m-d H:i:s'),
+				]);
+			}
+			
 
+			if($request->status_id == 21){
+
+				
+				DB::table('returns_header')->where('id',$request->header_id)->update([
+					'for_call_out_good_unit_by'   => CRUDBooster::myId(),
+					'for_call_out_good_unit_at'   => date('Y-m-d H:i:s'),
+				]);
+			
+				$latestAssignment = DB::table('case_assignments')
+				->where('returns_header_id', $request->header_id)
+				->where('technician_id', $transaction_details[0]->technician_id)
+				->latest('id') 
+				->first();
+	
+				if ($latestAssignment) {
+				// Update the latest assignment by setting end_date
+				DB::table('case_assignments')
+					->where('id', $latestAssignment->id)
+					->update(['end_date' => now()]);
+				}
+			}
+
+			
 			// if($request->status_id == 15){
 			// 	DB::table('returns_header')->where('id',$request->header_id)->update([
 			// 		'updated_by'   => CRUDBooster::myId(),
