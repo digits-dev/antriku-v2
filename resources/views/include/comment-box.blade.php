@@ -1,155 +1,3 @@
-<link rel="stylesheet" href="{{ asset('css/custom.css') }}">
-
-<div class="row" style="background:#595959;color:white;padding:3px;text-align: center;">
-    <h4>Comments</h4>   
-</div> 
-
-@if(request()->segment(3) == "detail" && CRUDBooster::getModulePath() != "transaction_history")
-<div class="row comment-col" style="height:377px !important;"> 
-
-    @if(count($data['Comment']) > 0)
-        @foreach($data['Comment'] as $comment)
-            @if($comment->userid == CRUDBooster::myId())     
-                <div class="row">
-                    <div class="col"  style="float:right;align-self:end;">
-                        <img src="{{ URL::to('/') }}/{{$comment->userimg}}" alt="Avatar" style="border-radius:50%;width:30px;margin-top:13px;margin-left: 10px;">
-                    </div>
-                    <div class="col-12 ">
-                        <div class="comment-cloud" style="float:right;align-self:end;">
-                            <div class="row comment-date">
-                                <span><b>{{ $comment->name }} ({{ $comment->role }})</b> commented</span>
-                                <span style="float:right;font-weight: bolder;">{{ date('F j, Y h:i:A', strtotime($comment->comment_date)) }}</span>
-                            </div>
-                            <p>{{$comment->comment}}</p>
-                        </div>
-                    </div>
-                </div>
-            @else
-                <div class="row">
-                    <div class="col" style="float:left;align-self:start;">
-                        <img src="{{ URL::to('/') }}/{{$comment->userimg}}" alt="Avatar" style="border-radius:50%;width:30px;margin-top:13px;margin-right: 10px;">
-                    </div>
-                    <div class="col-12">
-                        <div class="comment-cloud" style="float:left;align-self:start;">
-                            <div class="row comment-date">
-                                <span><b>{{ $comment->name }} ({{ $comment->role }})</b> commented</span>
-                                <span style="float:right;font-weight: bolder;">{{ date('F j, Y h:i:A', strtotime($comment->comment_date)) }}</span>
-                            </div>
-                            <p>{{$comment->comment}}</p>
-                        </div>
-                    </div>
-                </div>
-            @endif
-        @endforeach
-    @else
-        <div class="row no-comment">
-            <h4>No Comments Yet</h4>
-            <p>Be the first to comment.</p>
-        </div>
-    @endif
-</div>
-@elseif(request()->segment(3) == "getDetailView" && CRUDBooster::getModulePath() == "transaction_history")
-<div class="row comment-col" style="height:377px !important;"> 
-
-    @if(count($Comment) > 0)
-        @foreach($Comment as $comment)
-            @if($comment->userid == CRUDBooster::myId())     
-                <div class="row">
-                    <div class="col"  style="float:right;align-self:end;">
-                        <img src="{{ URL::to('/') }}/{{$comment->userimg}}" alt="Avatar" style="border-radius:50%;width:30px;margin-top:13px;margin-left: 10px;">
-                    </div>
-                    <div class="col-12 ">
-                        <div class="comment-cloud" style="float:right;align-self:end;">
-                            <div class="row comment-date">
-                                <span><b>{{ $comment->name }} ({{ $comment->role }})</b> commented</span>
-                                <span style="float:right;font-weight: bolder;">{{ date('F j, Y h:i:A', strtotime($comment->comment_date)) }}</span>
-                            </div>
-                            <p>{{$comment->comment}}</p>
-                        </div>
-                    </div>
-                </div>
-            @else
-                <div class="row">
-                    <div class="col" style="float:left;align-self:start;">
-                        <img src="{{ URL::to('/') }}/{{$comment->userimg}}" alt="Avatar" style="border-radius:50%;width:30px;margin-top:13px;margin-right: 10px;">
-                    </div>
-                    <div class="col-12">
-                        <div class="comment-cloud" style="float:left;align-self:start;">
-                            <div class="row comment-date">
-                                <span><b>{{ $comment->name }} ({{ $comment->role }})</b> commented</span>
-                                <span style="float:right;font-weight: bolder;">{{ date('F j, Y h:i:A', strtotime($comment->comment_date)) }}</span>
-                            </div>
-                            <p>{{$comment->comment}}</p>
-                        </div>
-                    </div>
-                </div>
-            @endif
-        @endforeach
-    @else
-        <div class="row no-comment">
-            <h4>No Comments Yet</h4>
-            <p>Be the first to comment.</p>
-        </div>
-    @endif
-</div>
-<div class="row" style=" height: auto;">
-    <input type="hidden" value="{{csrf_token()}}" name="_token" id="token">
-    <input type="hidden" value="{{$transaction_details->header_id}}" name="transaction_comment_id" id="transaction_comment_id">
-    <textarea type="input" name="comment" id="comment" placeholder="Type your comment here" class="form-control fixed-textarea" autocomplete="off" required></textarea>
-    <button type="submit" value="Submit" onclick="AllComments()" id="clickSubmit" style="margin-top: 3px;" class="btn btn-success pull-right">Comment</button> 
-</div>
-@elseif(request()->segment(3) == "edit" || CRUDBooster::getModulePath() == "transaction_history")
-<div class="row comment-col" id="comment-area" style="background-color:#EDEDED;">  
-    @if(!empty($data['Comment']))
-        @foreach($data['Comment'] as $comment)
-            @if($comment->userid == CRUDBooster::myId())
-                <div class="row">
-                    <div class="col"  style="float:right;align-self:end;">
-                        <img src="{{ URL::to('/') }}/{{$comment->userimg}}" alt="Avatar" style="border-radius:50%;width:30px;margin-top:13px;margin-left: 10px;">
-                    </div>
-                    <div class="col-12 ">
-                        <div class="comment-cloud" style="float:right;align-self:end;">
-                            <div class="row comment-date">
-                                <span><b>{{ $comment->name }} ({{ $comment->role }})</b> commented</span>
-                                <span style="float:right;font-weight: bolder;">{{ date('F j, Y h:i:A', strtotime($comment->comment_date)) }}</span>
-                            </div>
-                            <p>{{$comment->comment}}</p>
-                        </div>
-                    </div>
-                </div>
-            @else
-                <div class="row">
-                    <div class="col" style="float:left;align-self:start;">
-                        <img src="{{ URL::to('/') }}/{{$comment->userimg}}" alt="Avatar" style="border-radius:50%;width:30px;margin-top:13px;margin-right: 10px;">
-                    </div>
-                    <div class="col-12">
-                        <div class="comment-cloud" style="float:left;align-self:start;">
-                            <div class="row comment-date">
-                                <span><b>{{ $comment->name }} ({{ $comment->role }})</b> commented</span>
-                                <span style="float:right;font-weight: bolder;">{{ date('F j, Y h:i:A', strtotime($comment->comment_date)) }}</span>
-                            </div>
-                            <p>{{$comment->comment}}</p>
-                        </div>
-                    </div>
-                </div>
-            @endif
-        @endforeach
-    @else
-        <div class="row no-comment">
-            <h4>No Comments Yet</h4>
-            <p>Be the first to comment.</p>
-        </div>
-    @endif
-</div>
-<div class="row" style=" height: auto;">
-    <input type="hidden" value="{{csrf_token()}}" name="_token" id="token">
-    <input type="hidden" value="{{$transaction_details->header_id}}" name="transaction_comment_id" id="transaction_comment_id">
-    <textarea type="input" name="comment" id="comment" placeholder="Type your comment here" class="form-control fixed-textarea" autocomplete="off" required></textarea>
-    <button type="submit" value="Submit" onclick="AllComments()" id="clickSubmit" style="margin-top: 3px;" class="btn btn-success pull-right">Comment</button> 
-</div>
-@endif
-
-
 <div class="chat-container">
     <!-- Chat bubble that shows when chat is closed -->
     <div class="chat-bubble">
@@ -171,7 +19,7 @@
           </div>
           <div class="chat-title">
             <h3>Comments</h3>
-            <p>Please Read or Enter comments here.</p>
+            <p>Please Read or Type your comments here.</p>
           </div>
         </div>
         <div class="chat-actions">
@@ -203,9 +51,10 @@
         </div>
       </div>
 
+    @if(request()->segment(3) == "detail" && CRUDBooster::getModulePath() != "transaction_history")
       <div class="chat-messages">
-        @if(count($Comment) > 0)
-            @foreach($Comment as $comment)
+        @if(count($data['Comment']) > 0)
+            @foreach($data['Comment'] as $comment)
             @if($comment->userid == CRUDBooster::myId())
                 <div class="message user">
                     <div class="message-content">
@@ -230,26 +79,116 @@
                 </div>
             @endif
             @endforeach
+        @else
+            <div class="row no-comment">
+                <img src="https://cdn-icons-png.flaticon.com/128/7486/7486747.png" alt="">
+                <h4>No Comments Yet</h4>
+                <p>Be the first to comment.</p>
+            </div>
         @endif
-        {{-- <div class="message agent">
-          <div class="message-content">
-            <p>Of course! I'd be happy to help. What would you like to know about our services?</p>
-          </div>
-          <div class="message-time">10:05 AM</div>
-        </div> --}}
       </div>
-
-      <div class="chat-input">
-        <div class="input-container">
-          <input type="text" placeholder="Type your message here..." />
-          <button class="send-button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
-          </button>
+      
+    @elseif(request()->segment(3) == "getDetailView" && CRUDBooster::getModulePath() == "transaction_history")
+        <div class="chat-messages">
+            @if(count($Comment) > 0)
+                @foreach($Comment as $comment)
+                @if($comment->userid == CRUDBooster::myId())
+                    <div class="message user">
+                        <div class="message-content">
+                            <span>
+                                <img src="{{ URL::to('/') }}/{{$comment->userimg}}" alt="Avatar" style="border-radius:30%;width:30px;margin-bottom: 4px;">
+                                <b>{{ $comment->name }} ({{ $comment->role }})</b>
+                            </span>
+                            <p>{{$comment->comment}}</p>
+                        </div>
+                        <div class="message-time">{{ date('F j, Y h:i:A', strtotime($comment->comment_date)) }}</div>
+                    </div>
+                @else
+                    <div class="message agent">
+                        <div class="message-content">
+                            <span>
+                                <img src="{{ URL::to('/') }}/{{$comment->userimg}}" alt="Avatar" style="border-radius:30%;width:30px;margin-bottom: 4px;">
+                                <b>{{ $comment->name }} ({{ $comment->role }})</b>
+                            </span>
+                            <p>{{$comment->comment}}</p>
+                        </div>
+                        <div class="message-time">{{ date('F j, Y h:i:A', strtotime($comment->comment_date)) }}</div>
+                    </div>
+                @endif
+                @endforeach
+            @else
+                <div class="row no-comment">
+                    <img src="https://cdn-icons-png.flaticon.com/128/7486/7486747.png" alt="">
+                    <h4>No Comments Yet</h4>
+                    <p>Be the first to comment.</p>
+                </div>
+            @endif
         </div>
-      </div>
+        <div class="chat-input">
+            <div class="input-container">
+            <input type="hidden" value="{{csrf_token()}}" name="_token" id="token">
+            <input type="hidden" value="{{$transaction_details->header_id}}" name="transaction_comment_id" id="transaction_comment_id">
+            <input type="text" name="comment" id="comment" autocomplete="off" required placeholder="Type your comment here..." />
+            <button type="submit" onclick="AllComments()" id="clickSubmit" class="send-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+            </div>
+        </div>
+
+    @elseif(request()->segment(3) == "edit" || CRUDBooster::getModulePath() == "transaction_history")
+        <div class="chat-messages">
+            @if(count($data['Comment']) > 0)
+                @foreach($data['Comment'] as $comment)
+                @if($comment->userid == CRUDBooster::myId())
+                    <div class="message user">
+                        <div class="message-content">
+                            <span>
+                                <img src="{{ URL::to('/') }}/{{$comment->userimg}}" alt="Avatar" style="border-radius:30%;width:30px;margin-bottom: 4px;">
+                                <b>{{ $comment->name }} ({{ $comment->role }})</b>
+                            </span>
+                            <p>{{$comment->comment}}</p>
+                        </div>
+                        <div class="message-time">{{ date('F j, Y h:i:A', strtotime($comment->comment_date)) }}</div>
+                    </div>
+                @else
+                    <div class="message agent">
+                        <div class="message-content">
+                            <span>
+                                <img src="{{ URL::to('/') }}/{{$comment->userimg}}" alt="Avatar" style="border-radius:30%;width:30px;margin-bottom: 4px;">
+                                <b>{{ $comment->name }} ({{ $comment->role }})</b>
+                            </span>
+                            <p>{{$comment->comment}}</p>
+                        </div>
+                        <div class="message-time">{{ date('F j, Y h:i:A', strtotime($comment->comment_date)) }}</div>
+                    </div>
+                @endif
+                @endforeach
+            @else
+                <div class="row no-comment">
+                    <img src="https://cdn-icons-png.flaticon.com/128/7486/7486747.png" alt="">
+                    <h4>No Comments Yet</h4>
+                    <p>Be the first to comment.</p>
+                </div>
+            @endif
+        </div>
+        <div class="chat-input">
+            <div class="input-container">
+            <input type="hidden" value="{{csrf_token()}}" name="_token" id="token">
+            <input type="hidden" value="{{$transaction_details->header_id}}" name="transaction_comment_id" id="transaction_comment_id">
+            <input type="text" name="comment" id="comment" autocomplete="off" required placeholder="Type your comment here..." />
+            <button type="submit" onclick="AllComments()" id="clickSubmit" class="send-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+            </div>
+        </div>
+    @endif
+    
     </div>
   </div>
 
@@ -314,52 +253,6 @@
         chatContainer.classList.remove('open');
       }
 
-      // Function to add a new message
-      function addMessage(content, isUser = false) {
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add('message');
-        messageDiv.classList.add(isUser ? 'user' : 'agent');
-
-        const now = new Date();
-        const hours = now.getHours();
-        const minutes = now.getMinutes();
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        const formattedHours = hours % 12 || 12;
-        const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
-        const timeString = `${formattedHours}:${formattedMinutes} ${ampm}`;
-
-        messageDiv.innerHTML = `
-          <div class="message-content">
-            <p>${content}</p>
-          </div>
-          <div class="message-time">${timeString}</div>
-        `;
-
-        chatMessages.appendChild(messageDiv);
-        scrollToBottom();
-
-        // If user sent a message, simulate a response after a delay
-        if (isUser) {
-          setTimeout(() => {
-            simulateResponse();
-          }, 1000);
-        }
-      }
-
-      // Function to simulate a response
-      function simulateResponse() {
-        const responses = [
-          "Thanks for your message! How else can I help?",
-          "I understand. Let me check that for you.",
-          "Great question! Our team specializes in that area.",
-          "I'd be happy to assist with that request.",
-          "Let me connect you with the right department for that."
-        ];
-        
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-        addMessage(randomResponse, false);
-      }
-
       // Function to scroll chat to bottom
       function scrollToBottom() {
         chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -369,27 +262,6 @@
       chatBubble.addEventListener('click', openChat);
       chatClose.addEventListener('click', closeChat);
       themeToggle.addEventListener('click', toggleTheme);
-
-      // Send message when clicking send button
-      sendButton.addEventListener('click', function() {
-        sendMessage();
-      });
-
-      // Send message when pressing Enter
-      messageInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-          sendMessage();
-        }
-      });
-
-      // Function to send a message
-      function sendMessage() {
-        const message = messageInput.value.trim();
-        if (message) {
-          addMessage(message, true);
-          messageInput.value = '';
-        }
-      }
 
       // Auto-focus input when chat opens
       chatBubble.addEventListener('click', function() {

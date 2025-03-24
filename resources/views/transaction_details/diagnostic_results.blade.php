@@ -213,3 +213,92 @@
         @endif
     </div>
 </div>
+
+{{-- <section class="card-cust" style="border-radius: 0rem">
+    <div class="card-header-cust">Diagnostic Results</div>
+    <div class="card-body-cust">
+        <table class="diagnostic-table-cust">
+            <thead>
+                <tr>
+                    <th>Test Type</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Battery Usage</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td>Call Performance</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td>Cosmetic Check</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td>Display and Graphics / VST</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td>Display Backlight and Color</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td>Display Image Quality</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td>Display Pixel Anomalies</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td>Home Button</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td>Mac Resource Inspections (MRI) Adapter</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td>Mac Resource Inspections (MRI) Apple USB INPUT devices</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td>Mac Resource Inspections (MRI) Battery</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td>Mac Resource Inspections (MRI) Bluetooth</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td>Mac Resource Inspections (MRI) Display</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td>Mac Resource Inspections (MRI) Ethernet</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td>Mac Resource Inspections (MRI) Fan Motor</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td>Mac Resource Inspections (MRI) Graphics/GPU</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td>Mac Resource Inspections (MRI) Hard Drive</td>
+                    <td>N/A</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="info-item-cust">
+            <div class="info-label-cust">Other Diagnostic Information</div>
+            <div class="info-value-cust">SMP</div>
+        </div>
+    </div>
+</section> --}}

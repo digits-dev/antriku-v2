@@ -37,7 +37,7 @@
 			$this->col[] = ["label"=>"Downpayment Status","name"=>"downpayment_status"];
 			$this->col[] = ["label"=>"Downpayment URL","name"=>"down_payment_url"];
 			$this->col[] = ["label"=>"Date Received","name"=>"level2_personnel_edited"];
-			$this->col[] = ["label"=>"Updated By","name"=>"updated_by"];
+			$this->col[] = ["label"=>"Updated By","name"=>"updated_by", 'join' => 'cms_users,name'];
 			$this->col[] = ["label"=>"Technician","name"=>"technician_id", 'join' => 'cms_users,name'];
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
@@ -331,7 +331,7 @@
 				->leftJoin('cms_users', 'returns_comments.created_by', '=', 'cms_users.id')
 				->leftJoin('cms_privileges', 'cms_users.id_cms_privileges', '=', 'cms_privileges.id')
 				->select('returns_comments.returns_header_id as header_id', 'returns_comments.comments as comment', 'returns_comments.created_at as comment_date', 'cms_users.name as name', 'cms_users.id as userid', 'cms_users.photo as userimg', 'cms_privileges.name as role')
-				->where('returns_comments.returns_header_id',$id)->orderBy('comment_date', 'DESC')->get();
+				->where('returns_comments.returns_header_id',$id)->orderBy('comment_date', 'ASC')->get();
 
 			$data['diagnostic_test'] = DB::table('returns_diagnostic_test')->leftJoin('tech_testing', 'returns_diagnostic_test.test_type', '=', 'tech_testing.id')
 				->select('returns_diagnostic_test.*','tech_testing.description as diagnostic_desc')
@@ -368,7 +368,7 @@
 				->leftJoin('cms_users', 'returns_comments.created_by', '=', 'cms_users.id')
 				->leftJoin('cms_privileges', 'cms_users.id_cms_privileges', '=', 'cms_privileges.id')
 				->select('returns_comments.returns_header_id as header_id', 'returns_comments.comments as comment', 'returns_comments.created_at as comment_date', 'cms_users.name as name', 'cms_users.id as userid', 'cms_users.photo as userimg', 'cms_privileges.name as role')
-				->where('returns_comments.returns_header_id',$id)->orderBy('comment_date', 'DESC')->get();
+				->where('returns_comments.returns_header_id',$id)->orderBy('comment_date', 'ASC')->get();
 
 			$data['diagnostic_test'] = DB::table('returns_diagnostic_test')->leftJoin('tech_testing', 'returns_diagnostic_test.test_type', '=', 'tech_testing.id')
 				->select('returns_diagnostic_test.*','tech_testing.description as diagnostic_desc')

@@ -46,6 +46,8 @@
 <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.2-rc.1/dist/js/select2.min.js"></script>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
 <script>
     var ASSET_URL = "{{asset('/')}}";
     var APP_NAME = "{{Session::get('appname')}}";

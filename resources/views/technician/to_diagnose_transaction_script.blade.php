@@ -369,7 +369,7 @@
                             window.location.href = window.location.origin+"/admin/call_out";
                         });
                     }else if(status_id == 13){
-                        swal({ title: "Info!", text: "STATUS: ONGOIN REPAIR", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                        swal({ title: "Info!", text: "STATUS: ONGOING REPAIR", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
                         }, function(){
                             window.location.href = window.location.origin+"/admin/pending_repair";
                         });

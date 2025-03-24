@@ -64,6 +64,21 @@
     --message-agent-text: #333333;
     --input-text: #333333;
     --time-text: #888888;
+
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --secondary: #475569;
+    --accent: #f59e0b;
+    --background: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+    --border: #e2e8f0;
+    --success: #10b981;
+    --warning: #f97316;
+    --danger: #ef4444;
+    --radius: 12px;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
 }
 
 .dark-theme {
@@ -571,9 +586,21 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
     }
 
     #signature-pad {
-        width: 220px;
-        border: none;
+        width: 200px;
+        border: none !important;
     }
+
+    #signature-pad-release-form {
+        width: 200px;
+        border: none !important;
+    }
+
+    #clear-signature{
+        display: none;
+    } 
+    
+    .table-bordered-display { border: 1px solid #B8B8B8 !important; } 
+    table.print-friendly { page-break-inside: avoid; }
 }
 
 .fixed-size-modal {
@@ -855,4 +882,364 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
 
 .dark-theme .chat-messages::-webkit-scrollbar-thumb {
     background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* New Form UI Design  */
+.container-cust {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.transaction-card {
+    background-color: #475569;
+    border-radius: 12px;
+    padding: 24px 32px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.page-header-cust {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.page-header-cust h1 {
+    font-size: 25px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    padding-bottom: 8px;
+    /* border-bottom: 3px solid var(--secondary); */
+}
+
+.reference-badge-cust {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.3);
+    color: var(--text-primary);
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    font-size: 14px;
+}
+
+.copy-icon {
+    margin-left: 8px;
+    cursor: pointer;
+    color: var(--text-primary);
+}
+
+.card-cust {
+    background-color: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 0rem;
+    margin-top: 0rem;
+    transition: var(--transition);
+}
+
+/* .card-cust:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px);
+} */
+
+.card-header-cust {
+    background-color: #e2e1e1;
+    color: var(--secondary);
+    padding: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content:left;
+    position: relative;
+}
+
+.card-header-cust::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+}
+
+.card-body-cust {
+    padding: 2rem;
+}
+
+.info-grid-cust {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.info-item-cust {
+    margin-bottom: 1.5rem;
+}
+
+.info-label-cust {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+}
+
+.info-value-cust {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border);
+    transition: var(--transition);
+}
+
+.info-item-cust:hover .info-value-cust {
+    border-color: var(--secondary);
+}
+
+.product-section-cust {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: center;
+}
+
+.product-image-cust {
+    text-align: center;
+}
+
+.product-image-cust img {
+    max-width: 100%;
+    height: 400px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.product-image-cust img:hover {
+    transform: scale(1.05);
+}
+
+.product-details-cust {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.status-badge-cust {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    margin-top: 1rem;
+    box-shadow: var(--shadow);
+    color: white;
+}
+
+.status-badge-cust.success {
+    background-color: var(--success);
+}
+
+.status-badge-cust.warning {
+    background-color: var(--warning);
+}
+
+.status-badge-cust.danger {
+    background-color: var(--danger);
+}
+
+.status-badge-cust::before {
+    margin-right: 0.5rem;
+}
+
+.status-badge-cust.success::before {
+    content: '✓';
+    font-size: 1.25rem;
+}
+
+.status-badge-cust.warning::before {
+    content: '⚠';
+    font-size: 1.25rem;
+}
+
+.status-badge-cust.danger::before {
+    content: '✕';
+    font-size: 1.25rem;
+}
+
+.diagnostic-table-cust {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+}
+
+.diagnostic-table-cust th,
+.diagnostic-table-cust td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.diagnostic-table-cust th {
+    background-color: rgba(37, 99, 235, 0.1);
+    font-weight: 600;
+    color: var(--text);
+}
+
+.diagnostic-table-cust tr:hover {
+    background-color: rgba(37, 99, 235, 0.05);
+}
+
+.diagnostic-table-cust tr:last-child td {
+    border-bottom: none;
+}
+
+.repair-form-cust {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.repair-form-cust label {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.repair-form-cust input {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    width: 100%;
+    transition: var(--transition);
+}
+
+.repair-form-cust input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.parts-table-cust {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+}
+
+.parts-table-cust th,
+.parts-table-cust td {
+    padding: 1rem;
+    text-align: left;
+    border: 1px solid var(--border);
+}
+
+.parts-table-cust th {
+    background-color: rgba(37, 99, 235, 0.1);
+    font-weight: 600;
+    color: var(--text);
+}
+
+.parts-table-cust tr:hover {
+    background-color: rgba(37, 99, 235, 0.05);
+}
+
+.receipt-image-cust {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.receipt-image-cust img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.available-cust {
+    color: var(--success);
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    .product-section-cust {
+        grid-template-columns: 1fr;
+    }
+
+    .info-grid-cust {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .card-body-cust {
+        padding: 1.5rem;
+    }
+
+    .repair-form-cust {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-header-cust h1 {
+        font-size: 1.75rem;
+    }
+
+    .card-header-cust {
+        font-size: 1.25rem;
+        padding: 1rem;
+    }
+}
+
+/* Animation for page load */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.container-cust {
+    animation: fadeIn 0.6s ease-out;
+}
+
+.card-cust:nth-child(1) {
+    animation: fadeIn 0.6s ease-out 0.1s backwards;
+}
+
+.card-cust:nth-child(2) {
+    animation: fadeIn 0.6s ease-out 0.2s backwards;
+}
+
+.card-cust:nth-child(3) {
+    animation: fadeIn 0.6s ease-out 0.3s backwards;
+}
+
+.card-cust:nth-child(4) {
+    animation: fadeIn 0.6s ease-out 0.4s backwards;
+}
+
+.card-cust:nth-child(5) {
+    animation: fadeIn 0.6s ease-out 0.5s backwards;
+}
+
+.card:nth-child(6) {
+    animation: fadeIn 0.6s ease-out 0.6s backwards;
 }

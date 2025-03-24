@@ -269,7 +269,7 @@
 				->leftJoin('cms_users', 'returns_comments.created_by', '=', 'cms_users.id')
 				->leftJoin('cms_privileges', 'cms_users.id_cms_privileges', '=', 'cms_privileges.id')
 				->select('returns_comments.returns_header_id as header_id', 'returns_comments.comments as comment', 'returns_comments.created_at as comment_date', 'cms_users.name as name', 'cms_users.id as userid', 'cms_users.photo as userimg', 'cms_privileges.name as role')
-				->where('returns_comments.returns_header_id',$id)->orderBy('comment_date', 'DESC')->get();
+				->where('returns_comments.returns_header_id',$id)->orderBy('comment_date', 'ASC')->get();
 
 			$data['Branch'] = DB::table('branch')->leftJoin('cms_users', 'branch.id', '=', 'cms_users.branch_id')->where('cms_users.id',$data['transaction_details']->user_id)->first();
 			$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
@@ -297,7 +297,7 @@
 				->leftJoin('cms_users', 'returns_comments.created_by', '=', 'cms_users.id')
 				->leftJoin('cms_privileges', 'cms_users.id_cms_privileges', '=', 'cms_privileges.id')
 				->select('returns_comments.returns_header_id as header_id', 'returns_comments.comments as comment', 'returns_comments.created_at as comment_date', 'cms_users.name as name', 'cms_users.id as userid', 'cms_users.photo as userimg', 'cms_privileges.name as role')
-				->where('returns_comments.returns_header_id',$id)->orderBy('comment_date', 'DESC')->get();
+				->where('returns_comments.returns_header_id',$id)->orderBy('comment_date', 'ASC')->get();
 
 			$data['Branch'] = DB::table('branch')->leftJoin('cms_users', 'branch.id', '=', 'cms_users.branch_id')->where('cms_users.id',$data['transaction_details']->user_id)->first();
 			$data['Diagnostic_Fee'] = DB::table('model_group')->where('id',$data['transaction_details']->model_group)->value('diagnostic_fee');

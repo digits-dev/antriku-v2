@@ -1,17 +1,19 @@
 
 @extends('crudbooster::admin_template')
 @push('head')
+<link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endpush
 @section('content')
     @if(g('return_url'))
-        <p class="noprint"><a title="Return" href='{{g("return_url")}}'><i class='fa fa-chevron-circle-left '></i> &nbsp; {{trans("crudbooster.form_back_to_list",['module'=>CRUDBooster::getCurrentModule()->name])}}</a></p>       
+        <p class="no-print"><a title="Return" href='{{g("return_url")}}'><i class='fa fa-chevron-circle-left '></i> &nbsp; {{trans("crudbooster.form_back_to_list",['module'=>CRUDBooster::getCurrentModule()->name])}}</a></p>       
     @else
-        <p class="noprint"><a title='Main Module' href='{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}'><i class='fa fa-chevron-circle-left '></i> &nbsp; {{trans("crudbooster.form_back_to_list",['module'=>CRUDBooster::getCurrentModule()->name])}}</a></p>       
+        <p class="no-print"><a title='Main Module' href='{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}'><i class='fa fa-chevron-circle-left '></i> &nbsp; {{trans("crudbooster.form_back_to_list",['module'=>CRUDBooster::getCurrentModule()->name])}}</a></p>       
     @endif
-    <div class="panel panel-default">
-        <div class='panel-heading'>Print Release Form</div>
-        <div class='panel-body'>    
-            <div id="printableArea"> 
+    <div class="panel panel-default" id="main-pannel">
+        <div class='panel-heading no-print'>Print Release Form</div>
+        <div class='panel-body' id="printableArea">    
+            <div> 
                 <style> 
                     .table-bordered-display { border: 1px solid #B8B8B8 !important; } 
                     table.print-friendly { page-break-inside: avoid; }
@@ -19,19 +21,19 @@
                 <table width="100%">
                     <tr>
                         <th colspan="4" style="text-align:center;">
-                            <img src="{{asset('img/btblogo.png')}}" style="align:middle;width:450px;height:auto;">
+                            <img src="{{asset('img/btblogo.png')}}" id="antriku-logo" style="align:middle;width:450px;height:auto;">
                         </th>
                     </tr>   
                     <tr>
                         <td width="35%" style="padding-right:50px;">
                             <div class="row">
-                                <span class="control-label col-md-12">{{ $data['Branch']->branch_name }}</span>
+                                <span class="control-label col-md-12" id="left-label" >{{ $data['Branch']->branch_name }}</span>
                             </div>
                             <div class="row">
-                                <span class="control-label col-md-12">{{ $data['Branch']->branch_address }}</span>
+                                <span class="control-label col-md-12" id="left-label">{{ $data['Branch']->branch_address }}</span>
                             </div>
                             <div class="row">
-                                <span class="control-label col-md-12">
+                                <span class="control-label col-md-12" id="left-label">
                                     {{ $data['Branch']->branch_contact1 }} / {{ $data['Branch']->branch_contact2 }} / {{ $data['Branch']->branch_contact3 }} <br>
                                     http://beyondthebox.ph/
                                 </span>
@@ -42,16 +44,16 @@
                         </td>
                         <td width="100%" style="padding-left:110px;">
                             <div class="row">
-                                <span class="control-label col-md-12"><strong>Return Reference#: </strong>{{$data['transaction_details']->reference_no}}</span>
+                                <span class="control-label col-md-12" id="right-label"><strong>Return Reference#: </strong>{{$data['transaction_details']->reference_no}}</span>
                             </div>
                             <div class="row"> 
-                                <span class="control-label col-md-12"><strong>Date Received: </strong>{{date('Y-m-d', strtotime($data['transaction_details']->updated_at))}}</span>
+                                <span class="control-label col-md-12" id="right-label"><strong>Date Received: </strong>{{date('Y-m-d', strtotime($data['transaction_details']->updated_at))}}</span>
                             </div>
                             <div class="row">
-                                <span class="control-label col-md-12"><strong>Date Released: </strong>{{ date('Y-m-d') }}</span>
+                                <span class="control-label col-md-12" id="right-label"><strong>Date Released: </strong>{{ date('Y-m-d') }}</span>
                             </div>
                             <div class="row">
-                                <span class="control-label col-md-12"><strong>Prepared By: </strong>{{ CRUDBooster::myName() }}</span>
+                                <span class="control-label col-md-12" id="right-label"><strong>Prepared By: </strong>{{ CRUDBooster::myName() }}</span>
                             </div>
                         </td>
                     </tr> 
@@ -304,8 +306,17 @@
                         <td width="100%" style="text-align: center;">
                             <b>I acknowledge the details above and have received the device in good, working condition.</b>
                             <br><br>
-                            <p>___________________________________________</p>
-                            <p>Signature over Printed Name and Date</p>
+                            <div style="display: flex; align-items: center; justify-content: center;" id="signature_container_release_form">
+                                <canvas id="signature-pad-release-form" class="signature-pad-release-form" width="500" height="130" 
+                                    style="border: 1px solid #ddd; margin: 0 auto;">
+                                </canvas>
+                            </div>
+                            <center> 
+                                <p style="margin-bottom: 0px"> {{$data['transaction_details']->last_name}}, {{$data['transaction_details']->first_name}} / {{now()}}</p>
+                                <p>Signature over Printed Name and Date</p>
+                                <button type="button" id="clear-signature" class="no-print">Clear Signature</button>
+                                <input type="hidden" name="signatureData" id="signatureData">
+                            </center>
                         </td>
 
                     </tr>     
@@ -313,30 +324,23 @@
             </div>
         </div>          
     </div>
-    <div class='panel-footer'>            
+    <div class='panel-footer no-print'>            
         <form method="" id="myform" action="">
             <input type="hidden" value="{{$data['transaction_details']->header_id}}" name="header_id">
             <input type="hidden" value="3" name="print_form_type">
             <a href="{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}" class="btn btn-default">Cancel</a>
-            <button class="btn btn-primary pull-right" type="submit" id="print" onclick="printDivision('printableArea')"> 
+            <button class="btn btn-primary pull-right" type="button" id="print" onclick="printDivision('printableArea')"> 
                 <i class="fa fa-print"></i> Print as PDF 
             </button>
-        </form>                                                
+        </form>   
+        <button class="btn btn-primary" id="download-btn" style="display: none"></button>
     </div>
 @endsection
 
 @push('bottom')
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script type="text/javascript">
-    function printDivision(divName) {
-        alert('Please print 2 copies!');
-        var generator = window.open(",'printableArea,");
-        var layertext = document.getElementById(divName);
-        generator.document.write(layertext.innerHTML.replace("Print Me"));
-        generator.document.close();
-        generator.print();
-        generator.close();
-    }  
-
     $(document).on('click', '#print', function(e){
         var data = $('#myform').serialize();
         $.ajax
@@ -352,6 +356,232 @@
             }
         });
         return true;
-    });              
+    }); 
+
+    document.addEventListener("DOMContentLoaded", function () {
+        $('.main-footer').addClass("no-print");
+        $('body').addClass("sidebar-collapse");
+    });
+
+    // Preven ctrl + p
+    document.addEventListener("keydown", function (event) {
+        if (event.ctrlKey && event.key === "p") {
+            event.preventDefault();
+        }
+    });
+    
+    // Prevent page reload
+    window.onbeforeunload = function(event) {
+        if (isSwalOpen) {
+            event.preventDefault();
+            event.returnValue = '';
+        } else  {
+            event.preventDefault();
+            event.returnValue = '';
+        }
+    };
+
+    // Prevent right-click
+    window.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+    });
+
+    let isSwalOpen = false;
+    function printDivision() {
+        isSwalOpen = true;
+        alert('Please print 2 copies.');
+
+        // Get the canvas element
+        let canvas = document.getElementById("signature-pad-release-form");
+
+        if (canvas) {
+            let ctx = canvas.getContext("2d");
+            let blank = document.createElement("canvas");
+            blank.width = canvas.width;
+            blank.height = canvas.height;
+
+            // Check if the canvas is empty
+            if (canvas.toDataURL() === blank.toDataURL()) {
+                Swal.fire({
+                    title: "Signature Requirement",
+                    text: "Please sign before printing!",
+                    icon: "warning",
+                });
+                return; 
+            } else {
+                window.print();
+            }
+        }
+    }  
+
+    window.onafterprint = function() {
+        $("#download-btn").trigger('click');
+    };
+
+    $("#download-btn").click(function () {
+        let element = document.getElementById("printableArea");
+        let button = document.getElementById("clear-signature");
+        let canvas = document.getElementById("signature-pad-release-form");
+
+        if (button) button.style.display = "none";
+        if (canvas) canvas.style.width = "220px";
+
+        let contact_no = "{{$data['transaction_details']->contact_no}}";
+        let first_name = "{{$data['transaction_details']->first_name}}";
+        let last_name = "{{$data['transaction_details']->last_name}}";
+        let email_add = "{{$data['transaction_details']->email}}";
+        let file_name = "{{$data['transaction_details']->reference_no}}_RELEASED_SIGNED_FORM.pdf";
+
+        let options = {
+            margin: 7,
+            filename: file_name,
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, allowTaint: true },
+            jsPDF: { unit: "mm", format: "letter", orientation: "portrait" }
+        };
+
+        html2pdf().from(element).set(options).outputPdf("blob").then((pdfBlob) => {
+            let formData = new FormData();
+            formData.append("contact_no", contact_no);
+            formData.append("first_name", first_name);
+            formData.append("last_name", last_name);
+            formData.append("email", email_add);
+            formData.append("pdf", pdfBlob, file_name);
+            // Save PDF to drive 
+            $.ajax({
+                url: "{{ route('upload_pdf') }}",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                beforeSend: function () {
+                    Swal.fire({
+                        icon: "info",
+                        title: "Saving PDF copy to Drive",
+                        text: "Please wait...",
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+                },
+                success: function (response) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Upload Successful",
+                        html: response.message + '<br>' + response.file_name + "<br> <br>Please wait again...",
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        timer: 2000,
+                        didOpen: () => Swal.showLoading()
+                    });
+
+                    setTimeout(() => {
+                        // Send PDF to Email
+                        $.ajax({
+                            url: "{{ route('send_pdf_email') }}",
+                            type: "POST",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            beforeSend: function () {
+                                Swal.fire({
+                                    title: "Sending PDF copy via Email",
+                                    text: "Please wait...",
+                                    icon: "info",
+                                    allowOutsideClick: false,
+                                    didOpen: () => Swal.showLoading()
+                                });
+                            },
+                            success: function (emailResponse) {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Email Sent Successfully!",
+                                    html: emailResponse.message + "<br>" + "<b>To: </b>" + emailResponse.email,
+                                });
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error Sending Email",
+                                    text: "An error occurred while sending the email. Please try again.",
+                                });
+                            }
+                        });
+                    }, 2000);
+                },
+                error: function (xhr, error) {
+                    // console.error(xhr.responseText);
+                    Swal.close();
+                    Swal.fire({
+                        title: "Can't save this file again!",
+                        html: xhr.responseJSON?.error + '<br>' + xhr.responseJSON?.file_name || "Something went wrong!",
+                        icon: "error",
+                        timer: 3000,
+                        didOpen: () => Swal.showLoading()
+                    });setTimeout(() => {
+                    },3000)
+                }
+            });
+
+            if (button) button.style.display = "block";
+        });
+    });
+
+    // for digital Signature
+    document.addEventListener("DOMContentLoaded", function () {
+        const canvas = document.getElementById("signature-pad-release-form");
+        const clearButton = document.getElementById("clear-signature");
+        const signatureDataInput = document.getElementById("signatureData");
+        const form = document.getElementById("myform");
+
+        if (!canvas || !clearButton || !signatureDataInput || !form) {
+            console.error("Missing required elements for signature pad.");
+            return;
+        }
+
+        // Initialize SignaturePad
+        if (typeof SignaturePad !== "undefined") {
+            const signaturePad = new SignaturePad(canvas);
+
+            // Hide clear button initially
+            clearButton.style.display = "none";
+
+            // Show clear button when user starts drawing
+            canvas.addEventListener("mousedown", () => {
+                clearButton.style.display = "inline-block"; 
+            });
+
+            // Show clear button when drawing on mobile (touch event)
+            canvas.addEventListener("touchstart", () => {
+                clearButton.style.display = "inline-block"; 
+            });
+
+            // Form submission validation
+            form.addEventListener("submit", function (e) {
+                if (signaturePad.isEmpty()) {
+                    e.preventDefault();
+                    Swal.fire("Signature Requirement", "Please sign before printing!", "warning");
+                } else {
+                    const signatureImage = signaturePad.toDataURL(); // Converts to Base64
+                    signatureDataInput.value = signatureImage; // Store in hidden input
+                }
+            });
+
+            // Clear signature and hide button
+            clearButton.addEventListener("click", function () {
+                signaturePad.clear();
+                clearButton.style.display = "none"; // Hide button after clearing
+            });
+
+        } else {
+            console.error("SignaturePad library is not loaded.");
+        }
+    });
 </script>
 @endpush

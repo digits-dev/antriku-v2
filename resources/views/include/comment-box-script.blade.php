@@ -29,6 +29,7 @@ function AllComments()
 
     var comment = document.getElementById("comment").value; 
     var transaction_comment_id = document.getElementById("transaction_comment_id").value; 
+    const chatMessages = document.querySelector('.chat-messages');
     if(isEmptyOrSpaces(comment) == false)
     {
         $.ajax
@@ -51,42 +52,42 @@ function AllComments()
                     image = "{{ URL::to('/') }}/" + result[i].userimg;
                     if(result[i].userid == '{{CRUDBooster::myId()}}')
                     {
-                        showData[i] = '<div class="row">' +
-                        
-                            '<div class="col" style="float:right;align-self:end;">' +
-                            '<img src="'+ image +'" alt="Avatar" style="border-radius:50%;width:30px;margin-top:13px;margin-left: 10px;">' +
-                            '</div>' +
-                            '<div class="col-12 ">' +
-                            '<div class="comment-cloud" style="float:right;align-self:end;">' +
-                            '<div class="row comment-date">' +
-                            '<span><b>' + result[i].name + ' ('+ result[i].role +')</b> commented</span>' +
-                            '<span style="float:right;font-weight: bolder;">' + result[i].comment_date +'</span>' +
-                            '</div>' +
-                            '<p>' + result[i].comment + '</p>' +
-                            '</div>' +
-                            '</div>' + '</div>' ;   
+                        showData[i] = `
+                                        <div class="message user">
+                                            <div class="message-content">
+                                                <span>
+                                                    <img src="${image}" alt="Avatar" style="border-radius:30%;width:30px;margin-bottom: 4px;">
+                                                    <b>${result[i].name} (${result[i].role})</b>
+                                                </span>
+                                                <p>${result[i].comment}</p>
+                                            </div>
+                                            <div class="message-time">${result[i].comment_date}</div>
+                                        </div>
+                                    `;
                     }else{
-                        showData[i] = '<div class="row">' +
-                        
-                            '<div class="col" style="float:left;align-self:start;">' +
-                            '<img src="'+ image +'" alt="Avatar" style="border-radius:50%;width:30px;margin-top:13px;margin-right: 10px;">' +
-                            '</div>' +
-                            '<div class="col-12 ">' +
-                            '<div class="comment-cloud" style="float:left;align-self:start;">' +
-                            '<div class="row comment-date">' +
-                            '<span><b>' + result[i].name + ' ('+ result[i].role +')</b> commented</span>' +
-                            '<span style="float:right;font-weight: bolder;">' + result[i].comment_date +'</span>' +
-                            '</div>' +
-                            '<p>' + result[i].comment + '</p>' +
-                            '</div>' +
-                            '</div>' + '</div>' ;   
+                        showData[i] = `
+                                        <div class="message agent">
+                                            <div class="message-content">
+                                                <span>
+                                                    <img src="${image}" alt="Avatar" style="border-radius:30%;width:30px;margin-bottom: 4px;">
+                                                    <b>${result[i].name} (${result[i].role})</b>
+                                                </span>
+                                                <p>${result[i].comment}</p>
+                                            </div>
+                                            <div class="message-time">${result[i].comment_date}</div>
+                                        </div>
+                                    `;  
                     }
                 }
-
                 $("#comment").val('');
-                jQuery("#comment-area").html(showData);              
+                jQuery(".chat-messages").html(showData);   
+                scrollToBottom();           
             }
         });
+    }
+
+    function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 }
 </script>

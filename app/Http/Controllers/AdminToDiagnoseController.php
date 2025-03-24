@@ -304,7 +304,7 @@
 				->leftJoin('cms_users', 'returns_comments.created_by', '=', 'cms_users.id')
 				->leftJoin('cms_privileges', 'cms_users.id_cms_privileges', '=', 'cms_privileges.id')
 				->select('returns_comments.returns_header_id as header_id', 'returns_comments.comments as comment', 'returns_comments.created_at as comment_date', 'cms_users.name as name', 'cms_users.id as userid', 'cms_users.photo as userimg', 'cms_privileges.name as role')
-				->where('returns_comments.returns_header_id',$id)->orderBy('comment_date', 'DESC')->get();
+				->where('returns_comments.returns_header_id',$id)->orderBy('comment_date', 'ASC')->get();
 
 			$data['diagnostic_test'] = DB::table('returns_diagnostic_test')->leftJoin('tech_testing', 'returns_diagnostic_test.test_type', '=', 'tech_testing.id')
 				->select('returns_diagnostic_test.*','tech_testing.description as diagnostic_desc')
@@ -341,7 +341,7 @@
 				->leftJoin('cms_users', 'returns_comments.created_by', '=', 'cms_users.id')
 				->leftJoin('cms_privileges', 'cms_users.id_cms_privileges', '=', 'cms_privileges.id')
 				->select('returns_comments.returns_header_id as header_id', 'returns_comments.comments as comment', 'returns_comments.created_at as comment_date', 'cms_users.name as name', 'cms_users.id as userid', 'cms_users.photo as userimg', 'cms_privileges.name as role')
-				->where('returns_comments.returns_header_id',$id)->orderBy('comment_date', 'DESC')->get();
+				->where('returns_comments.returns_header_id',$id)->orderBy('comment_date', 'ASC')->get();
 
 			$data['diagnostic_test'] = DB::table('returns_diagnostic_test')->leftJoin('tech_testing', 'returns_diagnostic_test.test_type', '=', 'tech_testing.id')
 				->select('returns_diagnostic_test.*','tech_testing.description as diagnostic_desc')
@@ -383,19 +383,19 @@
 			//Your code here
 		
 			if(CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6 || CRUDBooster::myPrivilegeId() == 8){
-			    $query->whereIn('repair_status', [1,9,16])->orderBy('id', 'asc'); 
+			    $query->whereIn('repair_status', [1,9,16])->orderBy('id', 'desc'); 
 			}else if (CRUDBooster::myPrivilegeId() == 4){
-				$query->whereIn('repair_status', [1,9,16])->where('technician_id', CRUDBooster::myId())->orderBy('id', 'asc');
+				$query->whereIn('repair_status', [1,9,16])->where('technician_id', CRUDBooster::myId())->orderBy('id', 'desc');
 			}
 			else{
 			    $query->where('repair_status', 1)->where('branch', CRUDBooster::me()->branch_id); 
 
 				if(!empty(Session::get('toggle')) && Session::get('toggle') == "ON")
 				{
-					$query->where('updated_by', CRUDBooster::me()->id)->orderBy('id', 'asc'); 
+					$query->where('updated_by', CRUDBooster::me()->id)->orderBy('id', 'desc'); 
 				}else{
 					// $query->where('branch', CRUDBooster::me()->branch_id)->orderBy('id', 'desc'); 
-					$query->orderBy('id', 'asc'); 
+					$query->orderBy('id', 'desc'); 
 				}
 			}
 	    }
@@ -976,24 +976,6 @@
 					'pending_spare_parts_at'   => date('Y-m-d H:i:s'),
 				]);
 			}
-
-			// SHIPPED
-			if($request->status_id == 16){
-				DB::table('returns_header')->where('id',$request->header_id)->update([
-					'shipped_by'   => CRUDBooster::myId(),
-					'shipped_at'   => date('Y-m-d H:i:s'),
-				]);
-			}
-
-			// FOR PENDING CUSTOMER'S PAYMENT
-			if($request->status_id == 17){
-				DB::table('returns_header')->where('id',$request->header_id)->update([
-					'for_customer_payment_by'   => CRUDBooster::myId(),
-					'for_customer_payment_at'   => date('Y-m-d H:i:s'),
-				]);
-			}
-
-			// REPLACEMENT PARTS PAID
 			if($request->status_id == 18){
 
 				if ($request->hasFile('input_file')) {

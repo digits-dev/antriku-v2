@@ -4,22 +4,55 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css">
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 @include('include.css')
+
+<style>
+ .content{
+    padding: 0;
+ }
+
+ .content-header{
+    display: none;
+ }
+</style>
+
 @endpush
 
 @section('content')
-    <div class="panel panel-default">
+    <div class="panel panel-default" style="margin: 0; padding:0">
         <div class="panel-body">
-            <div class="row">
-                <div class="col-md-12" >
-                    <div class="form-group">
-                        <h4 style="text-align: center;">Transaction Details</h4><br>
-                        <div class="col-md-12">
+            <div class="row" style="margin-bottom: 0%">
+                <div class="col-md-12" style="margin-bottom: 0%">
+                    <div class="form-group" style="margin-bottom: 0rem">
+                        <div class="transaction-card" style="border-bottom-left-radius: 0%; border-bottom-right-radius: 0%;">
+                            <header class="page-header-cust">
+                                <div class="header-left">
+                                    <div style="background: rgba(255, 255, 255, 0.3); padding: 5px; border-radius: 20%">
+                                        <img src="https://cdn-icons-png.flaticon.com/128/7711/7711811.png" width="40" alt="">
+                                    </div>
+                                    <h1>
+                                        Transaction Details
+                                    </h1>
+                                </div>
+                                <div class="reference-badge-cust">
+                                    Reference:
+                                    <strong style="margin-left: 4px;">A000029362</strong>
+                                    <span class="copy-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </header>
+                        </div>
+                        <div class="col-md-12" style="margin-bottom: 0%">
                             @include('include.comment-box')
                         </div>
                     </div>
                 </div>
-            </div><br>
+            </div>
             @if(request()->segment(3) == "edit")
                 @if($transaction_details->repair_status == 8)
                     <form method="post" action="{{CRUDBooster::mainpath('edit-transaction-process/'.$transaction_details->header_id)}}" id="SubmitTransactionForm">                    
@@ -30,9 +63,8 @@
                 <input type="hidden" value="{{csrf_token()}}" name="_token" id="token">
             @endif
             @include('transaction_details.customer_details')
-            <br>
             @include('transaction_details.service_details')
-            <br>
+
             @if($transaction_details->repair_status == 8 && request()->segment(3) == "detail" || CRUDBooster::getModulePath() == "returns_header")
                 <div class="row">
                     <div class="col-md-12">
@@ -273,7 +305,6 @@
 
             @if($transaction_details->repair_status != 8)
                 @include('transaction_details.technical_report')
-                <br>
                 @include('transaction_details.diagnostic_results')
                 <br>
                 @include('transaction_details.quotation')
@@ -354,7 +385,8 @@
                         <button type="submit" id="save" onclick="return changeStatus(21)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-phone" aria-hidden="true"></i> FOR CALL-OUT</button>
                     @endif
                     @if ($transaction_details->repair_status == 13 && CRUDBooster::getModulePath() == "pending_repair")
-                        <button type="submit" id="save" onclick="return changeStatus(21)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check" aria-hidden="true"></i> Repair Completed</button>
+                        <button type="submit" id="save" onclick="return changeStatus(21)" class="btn btn-success pull-right buttonSubmit repairComplete" style="margin-left: 20px;"><i class="fa fa-check" aria-hidden="true"></i> Repair Completed</button>
+                        <button type="submit" id="pending_spare_parts" onclick="return validateBeforeChangeStatus(14)" class="btn btn-primary pull-right buttonSubmit pendingSpareParts" style="margin-left: 20px; {{ $transaction_details->warranty_status == 'IN WARRANTY' && $transaction_details->case == 'CARRY-IN' ? '' : 'display: none;' }}">PENDING SPARE PARTS</button>
                     @endif
                     @if ($transaction_details->repair_status == 14 && CRUDBooster::getModulePath() == "pending_spare_parts")
                         <button type="submit" id="save" onclick="return changeStatus(15)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check" aria-hidden="true"></i> Spare Parts Received</button>
@@ -375,13 +407,16 @@
                     @endif
                     @if ($transaction_details->repair_status == 18 && CRUDBooster::getModulePath() == "pending_repair")
                         @if ($transaction_details->warranty_status == 'OUT OF WARRANTY' && $transaction_details->case == 'CARRY-IN')
-                        <button type="submit" id="save" onclick="return changeStatus(13)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-circle-o" style="margin-right: 3px" aria-hidden="true"></i> Ongoing Repair</button>
+                            <button type="submit" id="pending_spare_parts" onclick="return validateBeforeChangeStatus(14)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-circle-o"></i> PENDING SPARE PARTS</button>
                         @else
-                        <button type="submit" id="save" onclick="return changeStatus(22)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-circle-o" style="margin-right: 3px" aria-hidden="true"></i> Ongoing Repair</button>
+                            <button type="submit" id="save" onclick="return changeStatus(22)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-circle-o" style="margin-right: 3px" aria-hidden="true"></i> Ongoing Repair</button>
                         @endif
                     @endif
                     @if ($transaction_details->repair_status == 19 && CRUDBooster::getModulePath() == "pending_repair")
                         <button type="submit" id="pending_spare_parts" onclick="return validateBeforeChangeStatus(14)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-circle-o"></i> PENDING SPARE PARTS</button>
+                    @endif
+                    @if ($transaction_details->repair_status == 21 && CRUDBooster::getModulePath() == "call_out")
+                        <button type="button" id="print_releasing_form" onclick="print_release_from_confirm()" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-print"></i> Print Releasing Form</button>
                     @endif
                     @if ($transaction_details->repair_status == 22 && CRUDBooster::getModulePath() == "pending_good_unit")
                     <button type="submit" id="save" onclick="return changeStatus(21)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-circle-o"></i> FOR CALL-OUT (GOOD UNIT)</button>
@@ -415,5 +450,18 @@
                 $('.available_btn').show();
             }
         });
+
+        function print_release_from_confirm() {
+            let header_id = $('#header_id').val();
+            swal({ 
+                title: "Confirmation!", 
+                text: "Are you sure you want to proceed printing realease form?", 
+                type: "warning", 
+                confirmButtonClass: "btn-primary", 
+                confirmButtonText: "Yes, Please",    
+            }, function(){
+                window.location.href = window.location.origin+"/admin/to_close/PrintSameDayReleaseForm/"+header_id;
+            });
+        }
     </script>
 @endpush

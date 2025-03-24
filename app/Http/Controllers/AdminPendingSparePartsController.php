@@ -68,11 +68,31 @@ class AdminPendingSparePartsController extends \crocodicstudio\crudbooster\contr
 
 	public function hook_row_index($column_index, &$column_value)
 	{
+		$pending_spare_parts = DB::table('transaction_status')->where('id','14')->first();
+	    	
+		if($column_index == 1){
+			if($column_value == $pending_spare_parts->id){
+				$column_value = '<span class="label label-warning">'.$pending_spare_parts->status_name.'</span>';
+			}
+		}
+
 		if ($column_index == 3) {
 			$models = DB::table('model')->where('id', $column_value)->first();
 			if ($models) {
 				$model_group = DB::table('model_group')->where('id', $models->model_group)->first();
 				$column_value = '<span class="label label-info">' . $model_group->model_group_name . '</span>';
+			}
+		}
+
+		if($column_index == 5){
+			if($column_value == 'UNPAID'){
+				$column_value = '<span style="color: #F93154"><strong>'.$column_value.'</strong></span>';
+			}elseif($column_value == 'PAID'){
+				$column_value = '<span style="color: #00B74A"><strong>'.$column_value.'</strong></span>';
+			}elseif($column_value == 'IN WARRANTY'){
+				$column_value = '<span style="color: #1266F1"><strong>'.$column_value.'</strong></span>';
+			}elseif($column_value == 'SPECIAL'){
+				$column_value = '<span style="color: #FFA900"><strong>'.$column_value.'</strong></span>';
 			}
 		}
 	}
@@ -101,7 +121,7 @@ class AdminPendingSparePartsController extends \crocodicstudio\crudbooster\contr
 			->leftJoin('cms_users', 'returns_comments.created_by', '=', 'cms_users.id')
 			->leftJoin('cms_privileges', 'cms_users.id_cms_privileges', '=', 'cms_privileges.id')
 			->select('returns_comments.returns_header_id as header_id', 'returns_comments.comments as comment', 'returns_comments.created_at as comment_date', 'cms_users.name as name', 'cms_users.id as userid', 'cms_users.photo as userimg', 'cms_privileges.name as role')
-			->where('returns_comments.returns_header_id', $id)->orderBy('comment_date', 'DESC')->get();
+			->where('returns_comments.returns_header_id', $id)->orderBy('comment_date', 'ASC')->get();
 
 		$data['diagnostic_test'] = DB::table('returns_diagnostic_test')->leftJoin('tech_testing', 'returns_diagnostic_test.test_type', '=', 'tech_testing.id')
 			->select('returns_diagnostic_test.*', 'tech_testing.description as diagnostic_desc')
@@ -138,7 +158,7 @@ class AdminPendingSparePartsController extends \crocodicstudio\crudbooster\contr
 			->leftJoin('cms_users', 'returns_comments.created_by', '=', 'cms_users.id')
 			->leftJoin('cms_privileges', 'cms_users.id_cms_privileges', '=', 'cms_privileges.id')
 			->select('returns_comments.returns_header_id as header_id', 'returns_comments.comments as comment', 'returns_comments.created_at as comment_date', 'cms_users.name as name', 'cms_users.id as userid', 'cms_users.photo as userimg', 'cms_privileges.name as role')
-			->where('returns_comments.returns_header_id', $id)->orderBy('comment_date', 'DESC')->get();
+			->where('returns_comments.returns_header_id', $id)->orderBy('comment_date', 'ASC')->get();
 
 		$data['diagnostic_test'] = DB::table('returns_diagnostic_test')->leftJoin('tech_testing', 'returns_diagnostic_test.test_type', '=', 'tech_testing.id')
 			->select('returns_diagnostic_test.*', 'tech_testing.description as diagnostic_desc')
