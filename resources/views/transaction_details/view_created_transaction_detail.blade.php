@@ -360,8 +360,9 @@
                         <button type="submit" id="repair_in_process" onclick="return changeStatus(4)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o" aria-hidden="true"></i> REPAIR IN PROCESS</button>
                     @elseif($transaction_details->repair_status == 4 && CRUDBooster::getModulePath() == "repair_in_process" && CRUDBooster::myPrivilegeId() != 2)
                         <button type="submit" id="pickup" onclick="return changeStatus(7)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o" aria-hidden="true"></i> TO PICK UP</button>
-                    @elseif($transaction_details->repair_status == 3 && CRUDBooster::getModulePath() == "to_close" && CRUDBooster::myPrivilegeId() != 2)
-                        <button type="submit" id="void" onclick="return changeStatus(5)" class="btn btn-danger pull-right buttonSubmit"/><i class="fa fa-check-square-o" aria-hidden="true"></i> CANCELLED/CLOSE</button>
+                    @elseif($transaction_details->repair_status == 3 && CRUDBooster::getModulePath() == "call_out")
+                        <button type="submit" id="void" onclick="return changeStatus(5)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;" {{ $transaction_details->print_release_form == "YES" && $transaction_details->print_technical_report == "YES" ? '' : 'disabled' }}><i class="fa fa-check-square-o" aria-hidden="true"></i> CANCELLED/CLOSE</button>
+                        <button type="button" id="print_releasing_form" onclick="print_release_from_confirm()" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-print"></i> Print Releasing Form</button>
                     @elseif($transaction_details->repair_status == 7 && CRUDBooster::getModulePath() == "to_close" && CRUDBooster::myPrivilegeId() != 2)
                         <button type="submit" id="close" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o" aria-hidden="true"></i> CLOSE</button>
                     @endif 
@@ -371,8 +372,11 @@
                         @endif 
                     @endif 
                     @if ($transaction_details->repair_status == 10 && CRUDBooster::getModulePath() == "call_out")
-                        <button type="submit" id="save" onclick="return changeStatus(11)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-floppy-o" aria-hidden="true"></i> APPROVE</button>
-                        <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
+                    <button type="button" id="call_out" onclick="callOut(10)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+                        <i class="fa fa-phone"></i> CALL OUT ({{ $CallOutCount }})
+                    </button>
+                    <button type="submit" id="save" onclick="return changeStatus(11)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-floppy-o" aria-hidden="true"></i> APPROVE</button>
+                    <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
                     @endif
                     @if ($transaction_details->repair_status == 11 && CRUDBooster::getModulePath() == "pending_mail_in_shipment")
                         @if ($transaction_details->warranty_status == 'IN WARRANTY')
@@ -387,6 +391,7 @@
                     @if ($transaction_details->repair_status == 13 && CRUDBooster::getModulePath() == "pending_repair")
                         <button type="submit" id="save" onclick="return changeStatus(21)" class="btn btn-success pull-right buttonSubmit repairComplete" style="margin-left: 20px;"><i class="fa fa-check" aria-hidden="true"></i> Repair Completed</button>
                         <button type="submit" id="pending_spare_parts" onclick="return validateBeforeChangeStatus(14)" class="btn btn-primary pull-right buttonSubmit pendingSpareParts" style="margin-left: 20px; {{ $transaction_details->warranty_status == 'IN WARRANTY' && $transaction_details->case == 'CARRY-IN' ? '' : 'display: none;' }}">PENDING SPARE PARTS</button>
+                        <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
                     @endif
                     @if ($transaction_details->repair_status == 14 && CRUDBooster::getModulePath() == "pending_spare_parts")
                         <button type="submit" id="save" onclick="return changeStatus(15)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check" aria-hidden="true"></i> Spare Parts Received</button>
@@ -396,6 +401,7 @@
                     @endif
                     @if ($transaction_details->repair_status == 16 && CRUDBooster::getModulePath() == "to_diagnose")
                         <button type="submit" id="save" onclick="return changeStatus(17)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-circle-o" aria-hidden="true"></i> PENDING CUSTOMER'S PAYMENT</button>
+                        <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
                     @endif
                     @if ($transaction_details->repair_status == 17 && CRUDBooster::getModulePath() == "call_out")
                         @if ($transaction_details->case == 'CARRY-IN')                        
@@ -411,12 +417,17 @@
                         @else
                             <button type="submit" id="save" onclick="return changeStatus(22)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-circle-o" style="margin-right: 3px" aria-hidden="true"></i> Ongoing Repair</button>
                         @endif
+                        <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
                     @endif
                     @if ($transaction_details->repair_status == 19 && CRUDBooster::getModulePath() == "pending_repair")
                         <button type="submit" id="pending_spare_parts" onclick="return validateBeforeChangeStatus(14)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-circle-o"></i> PENDING SPARE PARTS</button>
+                        <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button> 
                     @endif
                     @if ($transaction_details->repair_status == 21 && CRUDBooster::getModulePath() == "call_out")
                         <button type="button" id="print_releasing_form" onclick="print_release_from_confirm()" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-print"></i> Print Releasing Form</button>
+                        <button type="button" id="call_out" onclick="callOut(21)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+                            <i class="fa fa-phone"></i> CALL OUT ({{ $CallOutCount }})
+                        </button>
                     @endif
                     @if ($transaction_details->repair_status == 22 && CRUDBooster::getModulePath() == "pending_good_unit")
                     <button type="submit" id="save" onclick="return changeStatus(21)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-circle-o"></i> FOR CALL-OUT (GOOD UNIT)</button>
@@ -463,5 +474,49 @@
                 window.location.href = window.location.origin+"/admin/to_close/PrintSameDayReleaseForm/"+header_id;
             });
         }
+
+            function callOut(status_id) {
+            let header_id = $('#header_id').val();
+
+            swal({
+                title: "Are you sure you want to call out?",
+                text: "This will record the call out!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#008000",
+                confirmButtonText: "Yes!",
+                cancelButtonText: "No, cancel!",
+                closeOnConfirm: false,
+                closeOnCancel: false
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url: "/admin/call_out/call_out",
+                        type: "POST",
+                        data: {
+                            returns_header_id: header_id,
+                            status_id: status_id,
+                            _token: $('meta[name="csrf-token"]').attr('content') // CSRF Token
+                        },
+                        success: function (response) {
+                            swal({
+                            title: "Success!",
+                            text: "Call out has been recorded.",
+                            type: "success"
+                        }, function () {
+                            location.reload(); // Reload the page after clicking "OK"
+                        });
+                        },
+                        error: function (xhr) {
+                            swal("Error!", "Something went wrong. Please try again.", "error");
+                        }
+                    });
+                } else {
+                    swal("Cancelled", "Your call out has been cancelled.", "error");
+                }
+            });
+        }
+
     </script>
 @endpush

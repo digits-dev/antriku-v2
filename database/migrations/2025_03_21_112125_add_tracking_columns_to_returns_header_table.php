@@ -42,7 +42,10 @@ class AddTrackingColumnsToReturnsHeaderTable extends Migration
             $table->timestamp('for_parts_ordering_at')->nullable()->after('for_parts_ordering_by');
             $table->integer('print_releasing_form_by')->nullable();
             $table->timestamp('print_releasing_form_at')->nullable();
-
+            $table->integer('cancelled_by')->nullable();
+            $table->timestamp('cancelled_at')->nullable();
+            $table->integer('closed_by')->nullable();
+            $table->timestamp('close_at')->nullable();
         });
     }
 
@@ -68,7 +71,9 @@ class AddTrackingColumnsToReturnsHeaderTable extends Migration
                 'replacement_part_paid_by', 'replacement_part_paid_at',
                 'for_call_out_good_unit_by', 'for_call_out_good_unit_at',
                 'for_parts_ordering_by', 'for_parts_ordering_at',
-                'print_releasing_form_by', 'print_releasing_form_at'
+                'print_releasing_form_by', 'print_releasing_form_at',
+                'cancelled_by', 'cancelled_at',
+                'closed_by', 'closed_at'
             ]);
         });
     }

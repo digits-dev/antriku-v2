@@ -117,4 +117,8 @@ Route::group(['middleware' => ['web']], function() {
     
     // send PDF to customer email
     Route::post('/admin/returns_header/sendPdf','AdminReturnsHeaderController@sendPdf')->name('send_pdf_email');
+    
+    // Call out recorder
+    Route::post('/admin/call_out/call_out','AdminCallOutController@callOut');
+
 });

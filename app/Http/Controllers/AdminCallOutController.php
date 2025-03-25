@@ -1,7 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 	use Session;
-	use Request;
+	use Illuminate\Http\Request;
 	use DB;
 	use CRUDBooster;
 
@@ -35,10 +35,11 @@
 			$this->col[] = ["label"=>"Status","name"=>"repair_status"];
 			$this->col[] = ["label"=>"Reference No","name"=>"reference_no"];
 			$this->col[] = ["label"=>"Model Group","name"=>"model"];
+			$this->col[] = ["label"=>"Print Release Form","name"=>"print_release_form"];
 			$this->col[] = ["label"=>"Print Technical Report","name"=>"print_technical_report"];
 			$this->col[] = ["label"=>"Downpayment Status","name"=>"downpayment_status"];
-			$this->col[] = ["label"=>"Downpayment URL","name"=>"down_payment_url"];
-			$this->col[] = ["label"=>"Date Received","name"=>"level2_personnel_edited"];
+			// $this->col[] = ["label"=>"Downpayment URL","name"=>"down_payment_url"];
+			// $this->col[] = ["label"=>"Date Received","name"=>"level2_personnel_edited"];
 			$this->col[] = ["label"=>"Updated By","name"=>"updated_by", 'join' => 'cms_users,name'];
 			$this->col[] = ["label"=>"Technician","name"=>"technician_id", 'join' => 'cms_users,name'];
 			# END COLUMNS DO NOT REMOVE THIS LINE
@@ -213,7 +214,7 @@
 	        | @showIf 	   = If condition when action show. Use field alias. e.g : [id] == 1
 	        | 
 	        */
-	        $this->addaction = array();
+	      
 
 
 	        /* 
@@ -226,9 +227,13 @@
 	        | Then about the action, you should code at actionButtonSelected method 
 	        | 
 	        */
-	        $this->button_selected = array();
-
-	                
+			$this->button_selected = array();
+			$this->button_selected[] = ['label'=>'Print Receive Form', 'icon'=>'fa fa-print', 'name'=>'print_receive_form'];
+			$this->button_selected[] = ['label'=>'Print Technical Report', 'icon'=>'fa fa-print', 'name'=>'print_technical_report'];
+			$this->button_selected[] = ['label'=>'Print Release Form', 'icon'=>'fa fa-print', 'name'=>'print_release_form'];
+			$this->button_selected[] = ['label'=>'Print Same Day Release Form', 'icon'=>'fa fa-print', 'name'=>'print_sameday_release_form'];
+			
+			$this->addaction = array();
 	        /* 
 	        | ---------------------------------------------------------------------- 
 	        | Add alert message to this module at overheader
@@ -373,9 +378,9 @@
 	    public function hook_query_index(&$query) {
 	        //Your code here
 			if (CRUDBooster::myPrivilegeId() == 3) {
-				$query->whereIn('repair_status', [10,17,21])->where('branch', CRUDBooster::me()->branch_id); 
+				$query->whereIn('repair_status', [10,3, 17,21])->where('branch', CRUDBooster::me()->branch_id); 
 			}else {
-				$query->whereIn('repair_status', [10,17, 21]);
+				$query->whereIn('repair_status', [10,3, 17, 21]);
 			}
 	    }
 
@@ -484,12 +489,16 @@
 	    | ---------------------------------------------------------------------- 
 	    |
 	    */    
-	    public function hook_row_index($column_index,&$column_value) {	        
+	    public function hook_row_index($column_index,&$column_value) {	 
+			$cancelled = DB::table('transaction_status')->where('id','3')->first();
 	    	$pending_customes_approval = DB::table('transaction_status')->where('id','10')->first();
 	    	$pending_customer_payment = DB::table('transaction_status')->where('id','17')->first();
 	    	$for_call_out = DB::table('transaction_status')->where('id','21')->first();
 
 			if($column_index == 1){
+				if($column_value == $cancelled->id){
+					$column_value = '<span class="label label-danger">'.$cancelled->status_name.'</span>';
+				}
 				if($column_value == $pending_customes_approval->id){
 					$column_value = '<span class="label label-warning">'.$pending_customes_approval->status_name.'</span>';
 				}
@@ -507,7 +516,21 @@
 					$column_value = '<span class="label label-info">'.$model_group->model_group_name.'</span>';
 				}
 			}
+			if($column_index == 4){
+				if($column_value == 'YES'){
+					$column_value = '<span class="label label-success">'.$column_value.'</span>';
+				}elseif($column_value == 'NO'){
+					$column_value = '<span class="label label-danger">'.$column_value.'</span>';
+				}
+			}
 			if($column_index == 5){
+				if($column_value == 'YES'){
+					$column_value = '<span class="label label-success">'.$column_value.'</span>';
+				}elseif($column_value == 'NO'){
+					$column_value = '<span class="label label-danger">'.$column_value.'</span>';
+				}
+			}
+			if($column_index == 6){
 				if($column_value == 'UNPAID'){
 					$column_value = '<span style="color: #F93154"><strong>'.$column_value.'</strong></span>';
 				}elseif($column_value == 'PAID'){
@@ -596,8 +619,25 @@
 			$data['imfs'] = DB::table('product_item_master')->where('status', 'ACTIVE')->get();
 			$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
 			$data['TechTesting'] = DB::table('tech_testing')->where('test_type_status', 'ACTIVE')->where('model_group_id','!=',NULL)->orderBy('description', 'ASC')->get();
+			$data['CallOutCount'] = DB::table('call_out_recorder')->where('returns_header_id', $id)->where('status_id', $data['transaction_details']->repair_status)->count();
 
 			$this->cbView('transaction_details.view_created_transaction_detail',$data);
+		}
+
+		public function callOut(Request $request) {
+			$callOut = DB::table('call_out_recorder')->insert([
+				'status_id' => $request->status_id,
+				'returns_header_id' => $request->returns_header_id,
+				'call_out_by' => CRUDBooster::myId(),
+				'call_out_at' => now(),
+			]);
+			if ($callOut) {
+				return response()->json(['message' => 'Call out recorded successfully'], 200);
+			} else {
+				return response()->json(['message' => 'Failed to record call out'], 500);
+			}
+
+
 		}
 
 	  

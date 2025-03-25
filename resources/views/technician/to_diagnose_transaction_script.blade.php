@@ -318,7 +318,7 @@
                     }else if(status_id == 3){
                         swal({ title: "Info!", text: "STATUS: CANCELLED", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
                         }, function(){
-                            window.location.href = window.location.origin+"/admin/to_close/edit/"+header_id;
+                            window.location.href = "{{ CRUDBooster::mainpath() }}";
                         });
                     }else if(status_id == 4){
                         swal({ title: "Info!", text: "STATUS: REPAIR IN PROCESS", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
@@ -328,7 +328,7 @@
                     }else if(status_id == 5){
                         swal({ title: "Info!", text: "STATUS: CANCELLED/CLOSE", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
                         }, function(){
-                            window.location.href = window.location.origin+"/admin/to_close";
+                            window.location.href = window.location.origin+"/admin/call_out";
                         });
                     }else if(status_id == 6){
                         swal({ title: "Success!", text: "STATUS: COMPLETE", type: "success", confirmButtonClass: "btn-primary", confirmButtonText: "OK",

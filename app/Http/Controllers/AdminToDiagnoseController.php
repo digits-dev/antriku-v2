@@ -815,7 +815,15 @@
 					// ]);
 				}
 			}
-			
+
+			// Cancelled
+			if($request->status_id == 3){
+				DB::table('returns_header')->where('id',$request->header_id)->update([
+					'cancelled_by'          => CRUDBooster::myId(),
+					'cancelled_at'   => date('Y-m-d H:i:s')
+				]);
+			}
+
 			// Repair In Process
 			if($request->status_id == 4)
 			{
@@ -902,6 +910,8 @@
 				DB::table('returns_header')->where('id',$request->header_id)->update([
 					'level6_personnel'          => CRUDBooster::myId(),
 					'level6_personnel_edited'   => date('Y-m-d H:i:s'),
+					'closed_by'					=>	CRUDBooster::myId(),
+					'close_at'					=>	date('Y-m-d H:i:s'),
 					'service_time'   			=> date('H:i:s', $total_time)
 				]);
 			}
