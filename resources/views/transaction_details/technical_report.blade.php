@@ -43,11 +43,11 @@
                             <label><span class="requiredField">*</span>Case:</label>
                         </div>
                         <div class="col-md-3" style="margin-top:7px;">
-                            <label class="radio-inline control-label text-success"><input type="radio" name="case" value="CARRY-IN" onchange="return toggleCallOut('CARRY-IN')" required {{ $transaction_details->case == 'CARRY-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 9 ? 'disabled' : ''}}><strong>CARRY-IN</strong></label>
+                            <label class="radio-inline control-label text-success"><input type="radio" name="case_status" value="CARRY-IN" onchange="return toggleCallOut('CARRY-IN')" required {{ $transaction_details->case_status == 'CARRY-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 9 ? 'disabled' : ''}}><strong>CARRY-IN</strong></label>
                             <br>
                         </div>
                         <div class="col-md-3" style="margin-top:7px;">
-                            <label class="radio-inline control-label text-danger"><input type="radio" name="case" value="MAIL-IN" onchange="return toggleCallOut('MAIL-IN')"  required {{ $transaction_details->case == 'MAIL-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 9 ? 'disabled' : ''}}><strong>MAIL-IN</strong></label>
+                            <label class="radio-inline control-label text-danger"><input type="radio" name="case_status" value="MAIL-IN" onchange="return toggleCallOut('MAIL-IN')"  required {{ $transaction_details->case_status == 'MAIL-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 9 ? 'disabled' : ''}}><strong>MAIL-IN</strong></label>
                             <br>
                         </div>
                     </div>
@@ -156,7 +156,7 @@
             <div class="info-item-cust">
                 <div class="info-label-cust">Case</div>
                 <div class="info-value-cust">
-                    <div class="status-badge-cust warning" style="margin-top: 0rem">{{ $transaction_details->case }}</div>
+                    <div class="status-badge-cust warning" style="margin-top: 0rem">{{ $transaction_details->case_status }}</div>
                 </div>
             </div>
         </div>

@@ -623,7 +623,7 @@
                     'problem_details_other'		=> $all_data['problem_details_other'],    
                     'other_remarks'		        => $all_data['other_remarks'],
 					'parts_replacement_cost'	=> $all_data['replacement_cost'],
-					'case'						=> $all_data['case'],
+					'case_status'						=> $all_data['case_status'],
                     'warranty_status' 			=> $all_data['warranty_status'],
 					'memo_no' 					=> $all_data['memo_number'],
                     'device_issue_description' 	=> $all_data['device_issue_description'],

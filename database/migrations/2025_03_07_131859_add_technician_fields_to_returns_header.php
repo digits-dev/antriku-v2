@@ -14,7 +14,7 @@ class AddTechnicianFieldsToReturnsHeader extends Migration
     public function up()
     {
         Schema::table('returns_header', function (Blueprint $table) {
-            $table->string('case')->nullable()->after('warranty_status');
+            $table->string('case_status')->nullable()->after('warranty_status');
             $table->integer('lead_technician_id')->nullable()->after('level6_personnel_edited');
             $table->integer('technician_id')->nullable()->after('lead_technician_id');
             $table->timestamp('technician_assigned_at')->nullable()->after('technician_id');

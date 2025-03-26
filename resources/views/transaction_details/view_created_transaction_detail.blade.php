@@ -328,7 +328,7 @@
                         <input type="hidden" name="mainpath" id="mainpath" value="{{CRUDBooster::mainpath()}}">
                         <input type="hidden" id="warranty_status" value="{{$transaction_details->warranty_status}}">
                         <input type="hidden" name="action" id="action" value="">
-                        <input type="hidden" id="case_type" value="{{$transaction_details->case}}">
+                        <input type="hidden" id="case_type" value="{{$transaction_details->case_status}}">
                     @endif
 
                     @if(CRUDBooster::myPrivilegeId() == 2 && $transaction_details->repair_status == 4 && CRUDBooster::getModulePath() == "repair_in_process")
@@ -346,10 +346,10 @@
                     @if($transaction_details->repair_status == 8 && CRUDBooster::getModulePath() == "pay_diagnostic")
                         <button type="submit" id="paid" onclick="return changeStatus(1)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o"></i> PAID</button>
                     @elseif($transaction_details->repair_status == 9 && CRUDBooster::getModulePath() == "to_diagnose")
-                        <button type="submit" id="call_out_mail_in"  onclick="return validateBeforeChangeStatus(10)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px; {{ empty($transaction_details->case) || $transaction_details->case == 'CARRY-IN' ? 'display: none;' : '' }}">PENDING CUSTOMER'S APPROVAL</button>
-                        <button type="submit" id="ongoing_repair" onclick="return validateBeforeChangeStatus(13)" class="btn btn-primary pull-right buttonSubmit"  style="margin-left: 20px; {{ $transaction_details->warranty_status != 'OUT OF WARRANTY' && $transaction_details->case == 'CARRY-IN' ? '' : 'display: none;' }}">ONGOING REPAIR</button>
-                        <button type="submit" id="pending_spare_parts" onclick="return validateBeforeChangeStatus(14)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px; {{ $transaction_details->warranty_status != 'OUT OF WARRANTY' && $transaction_details->case == 'CARRY-IN' ? '' : 'display: none;' }}">PENDING SPARE PARTS</button>
-                        <button type="submit" id="for_customer_payment" onclick="return validateBeforeChangeStatus(17)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px; {{ $transaction_details->warranty_status == 'OUT OF WARRANTY' && $transaction_details->case == 'CARRY-IN' ? '' : 'display: none;' }}">For Customer’s Payment</button>
+                        <button type="submit" id="call_out_mail_in"  onclick="return validateBeforeChangeStatus(10)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px; {{ empty($transaction_details->case_status) || $transaction_details->case_status == 'CARRY-IN' ? 'display: none;' : '' }}">PENDING CUSTOMER'S APPROVAL</button>
+                        <button type="submit" id="ongoing_repair" onclick="return validateBeforeChangeStatus(13)" class="btn btn-primary pull-right buttonSubmit"  style="margin-left: 20px; {{ $transaction_details->warranty_status != 'OUT OF WARRANTY' && $transaction_details->case_status == 'CARRY-IN' ? '' : 'display: none;' }}">ONGOING REPAIR</button>
+                        <button type="submit" id="pending_spare_parts" onclick="return validateBeforeChangeStatus(14)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px; {{ $transaction_details->warranty_status != 'OUT OF WARRANTY' && $transaction_details->case_status == 'CARRY-IN' ? '' : 'display: none;' }}">PENDING SPARE PARTS</button>
+                        <button type="submit" id="for_customer_payment" onclick="return validateBeforeChangeStatus(17)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px; {{ $transaction_details->warranty_status == 'OUT OF WARRANTY' && $transaction_details->case_status == 'CARRY-IN' ? '' : 'display: none;' }}">For Customer’s Payment</button>
 
                         <button type="submit" id="save"  buttonSubmit onclick="return validateBeforeChangeStatus('save')" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-floppy-o" aria-hidden="true"></i> SAVE</button>
                         <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
@@ -390,7 +390,7 @@
                     @endif
                     @if ($transaction_details->repair_status == 13 && CRUDBooster::getModulePath() == "pending_repair")
                         <button type="submit" id="save" onclick="return changeStatus(21)" class="btn btn-success pull-right buttonSubmit repairComplete" style="margin-left: 20px;"><i class="fa fa-check" aria-hidden="true"></i> Repair Completed</button>
-                        <button type="submit" id="pending_spare_parts" onclick="return validateBeforeChangeStatus(14)" class="btn btn-primary pull-right buttonSubmit pendingSpareParts" style="margin-left: 20px; {{ $transaction_details->warranty_status == 'IN WARRANTY' && $transaction_details->case == 'CARRY-IN' ? '' : 'display: none;' }}">PENDING SPARE PARTS</button>
+                        <button type="submit" id="pending_spare_parts" onclick="return validateBeforeChangeStatus(14)" class="btn btn-primary pull-right buttonSubmit pendingSpareParts" style="margin-left: 20px; {{ $transaction_details->warranty_status == 'IN WARRANTY' && $transaction_details->case_status == 'CARRY-IN' ? '' : 'display: none;' }}">PENDING SPARE PARTS</button>
                         <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
                     @endif
                     @if ($transaction_details->repair_status == 14 && CRUDBooster::getModulePath() == "pending_spare_parts")
@@ -404,7 +404,7 @@
                         <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
                     @endif
                     @if ($transaction_details->repair_status == 17 && CRUDBooster::getModulePath() == "call_out")
-                        @if ($transaction_details->case == 'CARRY-IN')                        
+                        @if ($transaction_details->case_status == 'CARRY-IN')                        
                             <button type="submit" id="save" onclick="return validateBeforeChangeStatus(18)" class="btn btn-success pull-right buttonSubmit available_btn" style="margin-left: 20px;"><i class="fa fa-money" style="margin-right: 3px" aria-hidden="true"></i> Replacement Parts Paid</button>
                             <button type="submit" id="save" onclick="return validateBeforeChangeStatus(19)" class="btn btn-primary pull-right buttonSubmit unavailable_btn" style="margin-left: 20px;"><i class="fa fa-money" style="margin-right: 3px" aria-hidden="true"></i> Replacement Parts Paid</button>
                         @else
@@ -412,7 +412,7 @@
                         @endif
                     @endif
                     @if ($transaction_details->repair_status == 18 && CRUDBooster::getModulePath() == "pending_repair")
-                        @if ($transaction_details->warranty_status == 'OUT OF WARRANTY' && $transaction_details->case == 'CARRY-IN')
+                        @if ($transaction_details->warranty_status == 'OUT OF WARRANTY' && $transaction_details->case_status == 'CARRY-IN')
                             <button type="submit" id="pending_spare_parts" onclick="return validateBeforeChangeStatus(14)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-circle-o"></i> PENDING SPARE PARTS</button>
                         @else
                             <button type="submit" id="save" onclick="return changeStatus(22)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-circle-o" style="margin-right: 3px" aria-hidden="true"></i> Ongoing Repair</button>
