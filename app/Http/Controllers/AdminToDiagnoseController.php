@@ -44,6 +44,7 @@
 			$this->col[] = ["label"=>"Date Received","name"=>"level2_personnel_edited"];
 			$this->col[] = ["label"=>"Updated By","name"=>"updated_by"];
 			$this->col[] = ["label"=>"Technician","name"=>"technician_id", 'join' => 'cms_users,name'];
+			$this->col[] = ["label"=>"Technician","name"=>"technician_id", 'join' => 'cms_users,name'];
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 			# OLD START FORM
@@ -569,55 +570,55 @@
 				}
 
 				$parts_total_cost = $total_cost + $all_data['software_cost'];
-				$downpayment = ($parts_total_cost)*0.5;
-				$finalpayment = $parts_total_cost - $downpayment;
+				// $downpayment = ($parts_total_cost)*0.5;
+				// $finalpayment = $parts_total_cost - $downpayment;
 
 				DB::table('returns_header')->where('id',$all_data['header_id'])->update([
-					'downpayment_cost'			=> number_format($downpayment, 2, '.', ''),
-					'final_payment_cost'		=> number_format($finalpayment, 2, '.', ''),
+					// 'downpayment_cost'			=> number_format($downpayment, 2, '.', ''),
+					// 'final_payment_cost'		=> number_format($finalpayment, 2, '.', ''),
 					'parts_total_cost'			=> number_format($parts_total_cost, 2, '.', ''),
 					'software_cost'				=> $all_data['software_cost'],
 					'updated_by' 				=> CRUDBooster::myId()
 				]);
 			}
 
-			if(!empty($transaction_details[0]->diagnostic_fee_payment_url))
-			{
-				$status_diagnostic_fee = 'PAID';
-			}else{
-				if($all_data['warranty_status'] == "OUT OF WARRANTY"){
-					$status_diagnostic_fee = 'PAID';
-				}else{
-					$status_diagnostic_fee = $all_data['warranty_status'];
-				}
-			}
+			// if(!empty($transaction_details[0]->diagnostic_fee_payment_url))
+			// {
+			// 	$status_diagnostic_fee = 'PAID';
+			// }else{
+			// 	if($all_data['warranty_status'] == "OUT OF WARRANTY"){
+			// 		$status_diagnostic_fee = 'PAID';
+			// 	}else{
+			// 		$status_diagnostic_fee = $all_data['warranty_status'];
+			// 	}
+			// }
 					
-			if(!empty($transaction_details[0]->down_payment_url)){
-				$status_down_payment = 'PAID';
-			}else{
-				if($all_data['warranty_status'] == "OUT OF WARRANTY"){
-					$status_down_payment = 'UNPAID';
-				}else{
-					$status_down_payment = $all_data['warranty_status'];
-				}
-			}
+			// if(!empty($transaction_details[0]->down_payment_url)){
+			// 	$status_down_payment = 'PAID';
+			// }else{
+			// 	if($all_data['warranty_status'] == "OUT OF WARRANTY"){
+			// 		$status_down_payment = 'UNPAID';
+			// 	}else{
+			// 		$status_down_payment = $all_data['warranty_status'];
+			// 	}
+			// }
 
-			if(!empty($transaction_details[0]->final_payment_url)){
-				$status_final_payment = 'PAID';
-			}else{
-				if($all_data['warranty_status'] == "OUT OF WARRANTY"){
-					$status_final_payment = 'UNPAID';
-				}else{
-					$status_final_payment = $all_data['warranty_status'];
-				}
-			}
+			// if(!empty($transaction_details[0]->final_payment_url)){
+			// 	$status_final_payment = 'PAID';
+			// }else{
+			// 	if($all_data['warranty_status'] == "OUT OF WARRANTY"){
+			// 		$status_final_payment = 'UNPAID';
+			// 	}else{
+			// 		$status_final_payment = $all_data['warranty_status'];
+			// 	}
+			// }
             if($transaction_details[0]->repair_status == 9)
 			{
 				$ProblemDetails = implode(",", $all_data['problem_details']);
                 DB::table('returns_header')->where('id',$all_data['header_id'])->update([
-                    'diagnostic_fee_status'		=> $status_diagnostic_fee,
-                    'downpayment_status' 		=> $status_down_payment,
-                    'final_payment_status' 		=> $status_final_payment,
+                    // 'diagnostic_fee_status'		=> $status_diagnostic_fee,
+                    // 'downpayment_status' 		=> $status_down_payment,
+                    // 'final_payment_status' 		=> $status_final_payment,
                     'warranty_expiration_date' 	=> date('Y-m-d', strtotime($all_data['warranty_expiration_date'])),		
                     'problem_details'			=> $ProblemDetails,
                     'problem_details_other'		=> $all_data['problem_details_other'],    
@@ -986,6 +987,13 @@
 					'pending_spare_parts_at'   => date('Y-m-d H:i:s'),
 				]);
 			}
+
+			if($request->status_id == 16){
+				DB::table('returns_header')->where('id',$request->header_id)->update([
+					'shipped_by'   => CRUDBooster::myId(),
+					'shipped_at'   => date('Y-m-d H:i:s'),
+				]);
+			}
 			if($request->status_id == 17){
 				DB::table('returns_header')->where('id',$request->header_id)->update([
 					'for_customer_payment_by'   => CRUDBooster::myId(),
@@ -1042,8 +1050,25 @@
 					
 					DB::table('returns_header')->where('id',$request->header_id)->update([
 						'receipt'   => $filename,
+						'final_payment_status' => 'PAID',
 						'replacement_part_paid_by'   => CRUDBooster::myId(),
 						'replacement_part_paid_at'   => date('Y-m-d H:i:s'),
+					]);
+				}
+				
+			}
+			if($request->status_id == 19){
+
+				if ($request->hasFile('input_file')) {
+					$file = $request->file('input_file');
+					$filename =    time() .  '_' . $request->header_id . '_' . $file->getClientOriginalName() ;
+					$path = $file->storeAs('public/receipts', $filename);
+					
+					DB::table('returns_header')->where('id',$request->header_id)->update([
+						'receipt'   => $filename,
+						'final_payment_status' => 'PAID',
+						'for_parts_ordering'   => CRUDBooster::myId(),
+						'for_parts_ordering'   => date('Y-m-d H:i:s'),
 					]);
 				}
 			}
