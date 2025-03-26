@@ -3,13 +3,24 @@
 @push('head')
 <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    .page-break {
+      display: block;
+      page-break-before: always;
+    }
+  
+    .print-friendly, canvas {
+      page-break-inside: avoid;
+    }
+  </style>
 @endpush
 @section('content')
-    @if(g('return_url'))
+    {{-- @if(g('return_url'))
         <p class="no-print"><a title="Return" href='{{g("return_url")}}'><i class='fa fa-chevron-circle-left '></i> &nbsp; {{trans("crudbooster.form_back_to_list",['module'=>CRUDBooster::getCurrentModule()->name])}}</a></p>       
     @else
         <p class="no-print"><a title='Main Module' href='{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}'><i class='fa fa-chevron-circle-left '></i> &nbsp; {{trans("crudbooster.form_back_to_list",['module'=>CRUDBooster::getCurrentModule()->name])}}</a></p>       
-    @endif
+    @endif --}}
+
     <div class="panel panel-default" id="main-pannel">
         <div class='panel-heading no-print'>Print Release Form</div>
         <div class='panel-body' id="printableArea">    
@@ -109,9 +120,6 @@
                     </tr>
                     <tr></tr>
                     <tr style="font-size: 18px;">
-                        <!-- <td colspan="4"><br>
-                            <label class="control-label col-md-12"><strong>Service Details<strong></label>
-                        </td> -->
                         <td colspan="4" style="width:100%;background:#595959;color:white;padding:5px;"> 
                             <label style="margin-bottom:unset !important;">Service Details</label>
                         </td>
@@ -172,21 +180,6 @@
                     </tbody>
                 </table>
                 <br>
-                <!-- <table class="print-friendly" width="100%">
-                    <tbody> 
-                        <tr style="font-size: 18px;">
-                            <td colspan="4" style="width:100%;background:#595959;color:white;padding:5px;">
-                                <label class="control-label col-md-12" style="margin-bottom:unset !important;">Device Inspection (for scratches, dents, damages)</label>
-                            </td>
-                        </tr>  
-                        <tr> 
-                            <td style="text-align:center; border: 1px solid slategray; padding: 10px 0;">
-                                <img src="{{ URL::to('/') }}/{{$transaction_details->model_photo}}" style="width:40%;height:auto;"/>
-                            </td>
-                        </tr>  
-                    </tbody>
-                </table>
-                <br> -->
                 <table class="print-friendly" width="100%" style="border-spacing:unset !important;"> 
                     <tbody> 
                         <tr style="font-size:18px;">
@@ -195,24 +188,24 @@
                             </td>
                         </tr>
                         <tr style="font-size: 13px;">
-                            <td width="20%" style="padding:5px;">
+                            <td width="20%" style="padding:5px;" class="text-center table-bordered-display">
                                 <label class="control-label col-md-12"><strong>Device Issue Description</strong></label>
                             </td>
-                            <td width="20%" style="padding:5px;">
+                            <td width="20%" style="padding:5px;" class="text-center table-bordered-display">
                                 <label class="control-label col-md-12"><strong>Findings</strong></label>
                             </td>
-                            <td width="20%" style="padding:5px;">
+                            <td width="20%" style="padding:5px;" class="text-center table-bordered-display">
                                 <label class="control-label col-md-12"><strong>Resolution</strong></label>
                             </td>
                         </tr>
                         <tr style="font-size: 13px;">
-                            <td width="20%" style="padding:5px;">
+                            <td width="20%" style="padding:5px;" class="text-center table-bordered-display">
                                 <p class="control-label col-md-12">{{ $data['transaction_details']->device_issue_description }}</p>
                             </td>
-                            <td width="20%" style="padding:5px;">
+                            <td width="20%" style="padding:5px;" class="text-center table-bordered-display">
                                 <p class="control-label col-md-12">{{$data['transaction_details']->findings}}</p>
                             </td>
-                            <td width="20%" style="padding:5px;">
+                            <td width="20%" style="padding:5px;" class="text-center table-bordered-display">
                                 <p class="control-label col-md-12">{{$data['transaction_details']->resolution}}</p>
                             </td>
                         </tr>
@@ -233,15 +226,9 @@
                             <td width="20%" class="table-bordered-display" style="border-width: 1px !important;padding:5px;text-align:center;">
                                 <label class="control-label col-md-12"><strong>Item Description</strong></label>
                             </td>
-                            <!--<td width="20%" class="table-bordered-display" style="border-width: 1px 1px 1px 0 !important;padding:5px;text-align:center;">-->
-                            <!--    <label class="control-label col-md-12"><strong>Digits Code</strong></label>-->
-                            <!--</td>-->
                             <td width="20%" class="table-bordered-display" style="border-width: 1px 1px 1px 0 !important;padding:5px;text-align:center;">
                                 <label class="control-label col-md-12"><strong>Price</strong></label>
                             </td>
-                            <!--<td width="20%" class="table-bordered-display" style="border-width: 1px 1px 1px 0 !important;padding:5px;text-align:center;">-->
-                            <!--    <label class="control-label col-md-12"><strong>Total Amount</strong></label>-->
-                            <!--</td>-->
                         </tr>
                         @if(count($data['Quotation'])>0)
                             @foreach($data['Quotation'] as $qt)
@@ -252,9 +239,6 @@
                                     <td class="table-bordered-display" style="border-width: 0 1px 1px 1px !important; padding:5px; text-align:center;">
                                         <p>{{$qt->item_description}}</p>
                                     </td>
-                                    <!--<td class="table-bordered-display" style="border-width: 0 1px 1px 0 !important; padding:5px; text-align:center;">-->
-                                    <!--    <p>{{$qt->digits_code}}</p>-->
-                                    <!--</td>-->
                                     
                                     <?php $downpayment = ($qt->cost)*0.5; ?>
                                     <td class="table-bordered-display" style="border-width: 0 1px 1px 0 !important; padding:5px; text-align:center;">
@@ -264,9 +248,6 @@
                                             <p>₱{{number_format($downpayment, 2, '.', '')}}</p>
                                         @endif      
                                     </td>
-                                    <!--<td class="table-bordered-display" style="border-width: 0 1px 1px 0 !important; padding:5px; text-align:center;">-->
-                                    <!--    <p>₱{{number_format($qt->cost, 2, '.', '')}}</p>-->
-                                    <!--</td>-->
                                 </tr>
                             @endforeach
                         @else
@@ -285,24 +266,7 @@
                             <p>Warranty & Limitation of Liability. For all Service Repairs, Beyond the Box warrants that (1) services performed will conform to their description for ninety (90) days from the date of payment receipt, (2) except for batteries described in the subsection below, all parts or products used in service will be free from defects in materials and workmanship for ninety (90) days from the date of payment receipt, and (3) batteries installed as part of Apple’s battery replacement service for Apple portable Mac computers will be free from defects in materials and workmanship for one year from the date of service. If non-conforming service is provided or a defect arises in a replacement part or product during the applicable warranty period, Beyond the Box will at its option, either (a) re-perform services to conform to their description (b) repair or replace the part or product, using parts or products that are new or equivalent to new in performance and reliability, or (c) refund the sums paid to Beyond the Box for service.</p>
                         </td>
                     </tr>
-                    <tr></tr><tr></tr>
-                    <!-- <tr style="font-size: 13px;">
-                        <td width="1%" style="padding-top: 20px;vertical-align: top;">
-                            <label class="control-label col-md-12"><strong>Conforme:<strong></label>
-                        </td>
-                        <td width="10%" style="padding-top: 20px;">
-                            <p><strong>________________________________<strong></p>
-                        </td>
-                       
-                    </tr>      -->
                     <tr style="font-size: 13px;">
-                        <!-- <td width="1%" style="vertical-align: top;">
-                            <label class="control-label col-md-12"><strong><strong></label>
-                        </td>
-                        <td width="10%" left="10%">
-                            <p>Signature over Printed Name and Date</p>
-                        </td> -->
-
                         <td width="100%" style="text-align: center;">
                             <b>I acknowledge the details above and have received the device in good, working condition.</b>
                             <br><br>
@@ -312,13 +276,12 @@
                                 </canvas>
                             </div>
                             <center> 
-                                <p style="margin-bottom: 0px"> {{$data['transaction_details']->last_name}}, {{$data['transaction_details']->first_name}} / {{now()}}</p>
+                                <b><p style="margin-bottom: 0px"> {{$data['transaction_details']->last_name}}, {{$data['transaction_details']->first_name}} / {{now()}}</p></b>
                                 <p>Signature over Printed Name and Date</p>
                                 <button type="button" id="clear-signature" class="no-print">Clear Signature</button>
                                 <input type="hidden" name="signatureData" id="signatureData">
                             </center>
                         </td>
-
                     </tr>     
                 </table>
             </div>
@@ -343,6 +306,17 @@
 <script type="text/javascript">
     $(document).on('click', '#print', function(e){
         var data = $('#myform').serialize();
+        let print_technical_report = "{{$data['transaction_details']->print_technical_report}}";
+        
+        if(print_technical_report === 'NO'){
+            Swal.fire({
+                title: "Technical Report is not yet printed.",
+                text: "Please print the report first befor printing this release form!",
+                icon: "warning",
+            });
+            return;
+        }
+
         $.ajax
         ({
             type: 'GET',
@@ -369,17 +343,6 @@
             event.preventDefault();
         }
     });
-    
-    // Prevent page reload
-    window.onbeforeunload = function(event) {
-        if (isSwalOpen) {
-            event.preventDefault();
-            event.returnValue = '';
-        } else  {
-            event.preventDefault();
-            event.returnValue = '';
-        }
-    };
 
     // Prevent right-click
     window.addEventListener('contextmenu', function(event) {
@@ -388,6 +351,17 @@
 
     let isSwalOpen = false;
     function printDivision() {
+
+        let print_technical_report = "{{$data['transaction_details']->print_technical_report}}";
+        if(print_technical_report === 'NO'){
+            Swal.fire({
+                title: "Technical Report is not yet printed.",
+                text: "Please print the report first befor printing this release form!",
+                icon: "warning",
+            });
+            return;
+        }
+
         isSwalOpen = true;
         alert('Please print 2 copies.');
 
@@ -422,9 +396,13 @@
         let element = document.getElementById("printableArea");
         let button = document.getElementById("clear-signature");
         let canvas = document.getElementById("signature-pad-release-form");
+        element.style.width = "100%";
 
         if (button) button.style.display = "none";
-        if (canvas) canvas.style.width = "220px";
+        if (canvas) {
+            canvas.style.width = "220px";
+            canvas.style.border = "none";
+        }
 
         let contact_no = "{{$data['transaction_details']->contact_no}}";
         let first_name = "{{$data['transaction_details']->first_name}}";
@@ -436,7 +414,7 @@
             margin: 7,
             filename: file_name,
             image: { type: "jpeg", quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, allowTaint: true },
+            html2canvas: { scale: 2, scrollY: 0, useCORS: true, allowTaint: true },
             jsPDF: { unit: "mm", format: "letter", orientation: "portrait" }
         };
 

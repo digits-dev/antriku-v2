@@ -843,10 +843,19 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 				'updated_by' => CRUDBooster::myId()
 			]);
 		} elseif ($data['print_form_type'] == 3) {
-			DB::table('returns_header')->where('id', $header_id)->update([
-				'print_release_form' => "YES",
-				'updated_by' => CRUDBooster::myId()
-			]);
+			$get_header_data = DB::table('returns_header')->where('id', $header_id)->first();
+			if($get_header_data->repair_status == 3){
+				DB::table('returns_header')->where('id', $header_id)->update([
+					'print_release_form' => "YES",
+					'updated_by' => CRUDBooster::myId()
+				]);
+			} else {
+				DB::table('returns_header')->where('id', $header_id)->update([
+					'print_release_form' => "YES",
+					'repair_status' => 6,
+					'updated_by' => CRUDBooster::myId()
+				]);
+			}
 		}
 		return ($data);
 	}

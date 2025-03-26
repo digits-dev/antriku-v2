@@ -25,22 +25,18 @@
                     <div class="info-value-cust">{{$transaction_details->contact_no}}</div>
                 </div>
             @elseif(request()->segment(3) == "edit" && CRUDBooster::getModulePath() == "pay_diagnostic")
-                <td class="table-bordered-display" style="padding:5px !important; width:20%;">
-                    <label class="control-label col-md-12" style="margin-top:7px;"><span class="requiredField">*</span>{{ trans('labels.form-label.email_address') }}</label>
-                </td>
-                <td class="table-bordered-display" style="padding:5px !important; width:30%;">
-                    <div class="col-md-12" style="margin-top:7px;">
-                        <input type="email" name="email" id="email" value="{{$transaction_details->email}}" placeholder="Email Address" class="form-control" autocomplete="off" required/>   
+                <div class="info-item-cust">
+                    <div class="info-label-cust">{{ trans('labels.form-label.email_address') }}</div>
+                    <div class="info-value-cust">
+                        <input type="email" name="email" id="email" value="{{$transaction_details->email}}" placeholder="Email Address" style="border:none; outline: none;" autocomplete="off" required/>
                     </div>
-                </td>
-                <td class="table-bordered-display" style="padding:5px !important; width:20%;">
-                    <label class="control-label col-md-12" style="margin-top:7px;"><span class="requiredField">*</span>{{ trans('labels.form-label.contact_no') }}</label>
-                </td>
-                <td class="table-bordered-display" style="padding:5px !important; width:30%;">
-                    <div class="col-md-12" style="margin-top:7px;">
-                        <input type="input" name="contact_no" id="contact_no" value="{{$transaction_details->contact_no}}" placeholder="09#########" pattern="[09][0-9]{10}" class="form-control" autocomplete="off" required/>                  
+                </div>
+                <div class="info-item-cust">
+                    <div class="info-label-cust">{{ trans('labels.form-label.contact_no') }}</div>
+                    <div class="info-value-cust">
+                        <input type="input" name="contact_no" id="contact_no" value="{{$transaction_details->contact_no}}" placeholder="09#########" pattern="[09][0-9]{10}" style="border:none; outline: none;"  autocomplete="off" required/>
                     </div>
-                </td>
+                </div>
             @endif
             <div class="info-item-cust">
                 <div class="info-label-cust">Company Name</div>

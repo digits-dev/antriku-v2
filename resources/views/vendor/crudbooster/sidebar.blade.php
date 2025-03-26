@@ -105,13 +105,6 @@
                                 </div>
                             @endif
 
-                            @if($menu->name == 'Spare Parts Received')
-                                <div class="notification-container-cus" style="display: {{$spare_part_receive_count == 0 ? 'none' : ''}}">
-                                    <div class="icon-cus">🔔</div>
-                                    <div class="notif-count-cus">{{$spare_part_receive_count}}</div>
-                                </div>
-                            @endif
-
                             @if(!empty($menu->children))<i class="fa fa-angle-{{ cbLang("right") }} pull-{{ cbLang("right") }}"></i>@endif
                         </a>
                         @if(!empty($menu->children))

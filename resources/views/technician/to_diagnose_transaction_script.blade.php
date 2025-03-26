@@ -84,11 +84,13 @@
                 if(opd[i] === 'OTHERS')
                 {
                     addinputField = `
-                        <div class="col-md-12">
-                            <label class="control-label col-md-2" style="margin-top:7px;"><span class="requiredField">*</span>Other Problem Details:</label>
-                            <div class="col-md-10" style="margin-top:7px;">
-                                <input type="text" class="form-control" name="problem_details_other" id="problem_details_other" value="" placeholder="Type your other problem details here">
-                            </div>
+                        <div class="col-md-12" style="margin-top: 5px;">
+                            <div class="col-md-1"></div>
+                                <div class="col-md-10">
+                                    <label class="label-cus"><span class="requiredField">*</span>Other Problem Details:</label>
+                                    <input type="text" class="input-cus" name="problem_details_other" id="problem_details_other" value="" placeholder="Type your other problem details here">
+                                </div>
+                            <div class="col-md-1"></div>
                         </div>`;
 
                     $("#show_other_problem").html(addinputField);

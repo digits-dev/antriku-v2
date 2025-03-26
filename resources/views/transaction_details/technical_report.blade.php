@@ -12,19 +12,20 @@
             @if($transaction_details->repair_status == 9 && CRUDBooster::getModulePath() == "to_diagnose" && request()->segment(3) == "edit")
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="row" style="margin-top:7px;">
-                            <div class="col-md-12">
-                                <div class="col-md-2"></div>
-                                <div class="col-md-10">
-                                    <div class="alert alert-info" style="font-size:1.2vw;"><strong>Info! </strong>If you are changing the Warranty Status make sure to click the rewind button.</div>
-                                </div>
+                        <div class="col-md-12" style="margin-top: 12px;margin-bottom: 12px;">
+                            <div class="alert-cust alert-info-cust alert-with-icon-cust">
+                                <div class="alert-icon-cust">i</div>
+                                    <span class="alert-title-cust">Info!</span> 
+                                    If you are changing the Warranty Status make sure to click the rewind button.
                             </div>
                         </div>
                         <div class="col-md-3" style="margin-top:7px;">
                             <label><span class="requiredField">*</span>Warranty Status:</label>
                         </div>
                         <div class="col-md-3" style="margin-top:7px;">
-                            <label class="radio-inline control-label text-success"><input type="radio" name="warranty_status" value="IN WARRANTY" onchange="return WarrantyStatusChange(1)" required {{ $transaction_details->warranty_status == 'IN WARRANTY' ? 'checked' : ''}} {{ $transaction_details->repair_status != 9 ? 'disabled' : ''}}><strong>IN WARRANTY</strong></label>
+                            <label class="radio-inline control-label text-success">
+                                <input type="radio" name="warranty_status" value="IN WARRANTY" onchange="return WarrantyStatusChange(1)" required {{ $transaction_details->warranty_status == 'IN WARRANTY' ? 'checked' : ''}} {{ $transaction_details->repair_status != 9 ? 'disabled' : ''}}><strong>IN WARRANTY</strong>
+                            </label>
                             <br>
                         </div>
                         <div class="col-md-3" style="margin-top:7px;">
@@ -56,9 +57,9 @@
                 <?php $problem_details = explode(",", $transaction_details->problem_details); ?>
                 <div class="row">
                     <div class="col-md-12">
-                        <label class="control-label col-md-2" style="margin-top:7px;"><span class="requiredField">*</span>Problem Details:</label>
-                        <div class="col-md-10" style="margin-top:7px;">
-                            <select class="form-control limitedNumbSelect2" name="problem_details[]" id="problem_details" onchange="OtherProblemDetail()" multiple="multiple" style="width:100%" required>
+                        <div class="col-md-12" style="margin-top:7px;">
+                            <label class="label-cus" style="margin-top:7px;"><span class="requiredField">*</span>Problem Details:</label>
+                            <select class="input-cus limitedNumbSelect2" name="problem_details[]" id="problem_details" onchange="OtherProblemDetail()" multiple="multiple" style="width:100%" required>
                                 @foreach($data['ProblemDetails'] as $key=>$pd)
                                     @if(in_array($pd->problem_details, $problem_details))
                                         <option value="{{$pd->problem_details}}" selected>{{$pd->problem_details}}</option>
@@ -70,68 +71,63 @@
                         </div>
                     </div>
                 </div>
-                <br>
                 @if(!empty($transaction_details->problem_details_other))
                     <div class="row" id="show_other_problem">    
                         <div class="col-md-12">
-                            <label class="control-label col-md-2" style="margin-top:7px;"><span class="requiredField">*</span>Other Problem Details:</label>
-                            <div class="col-md-10" style="margin-top:7px;">
-                                <input type="text" class="form-control" name="problem_details_other" value="{{$transaction_details->problem_details_other}}" placeholder="Type your other problem details here" {{ $transaction_details->repair_status != 9 ? 'readonly' : '' }}>
+                            <div class="col-md-12">
+                                <label class="label-cus"><span class="requiredField">*</span>Other Problem Details:</label>
+                                <input type="text" class="input-cus" name="problem_details_other" value="{{$transaction_details->problem_details_other}}" placeholder="Type your other problem details here" {{ $transaction_details->repair_status != 9 ? 'readonly' : '' }}>
                             </div>
                         </div>
                     </div>
-                    <br>
                 @else
-                    <div class="row" id="show_other_problem"></div><br>
+                    <div class="row" id="show_other_problem"></div>
                 @endif
                 <div class="row">    
                     <div class="col-md-12">
-                        <label class="control-label col-md-2" style="margin-top:7px;">Other Remarks:</label>
-                        <div class="col-md-10" style="margin-top:7px;">
-                            <textarea placeholder="Type your other remarks here" name="other_remarks" rows="2" class="form-control" {{ $transaction_details->repair_status != 9 ? 'readonly' : '' }}>{{ $transaction_details->other_remarks }}</textarea>
+                        <div class="col-md-12" style="margin-top: 5px;">
+                            <label class="label-cus">Other Remarks:</label>
+                            <textarea placeholder="Type your other remarks here" name="other_remarks" rows="2" class="input-cus" {{ $transaction_details->repair_status != 9 ? 'readonly' : '' }}>{{ $transaction_details->other_remarks }}</textarea>
                         </div>
                     </div>
                 </div>
-                <br>
                 <div class="row">    
                     <div class="col-md-12">
-                        <label class="control-label col-md-2" style="margin-top:7px;"><span class="requiredField">*</span>Device Issue Description:</label>
-                        <div class="col-md-10" style="margin-top:7px;">
-                            <textarea placeholder="Type your device issue description here" name="device_issue_description" rows="2" class="form-control" required {{ $transaction_details->repair_status != 9 ? 'readonly' : '' }}>{{ $transaction_details->device_issue_description }}</textarea>
+                        <div class="col-md-12" style="margin-top: 5px;">
+                            <label class="label-cus"><span class="requiredField">*</span>Device Issue Description:</label>
+                            <textarea placeholder="Type your device issue description here" name="device_issue_description" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 9 ? 'readonly' : '' }}>{{ $transaction_details->device_issue_description }}</textarea>
                         </div>
                     </div>
                 </div>
-                <br>
                 <div class="row">    
                     <div class="col-md-12">
-                        <label class="control-label col-md-2" style="margin-top:7px;"><span class="requiredField">*</span>Findings:</label>
-                        <div class="col-md-10" style="margin-top:7px;">
-                            <textarea placeholder="Type your findings here" name="findings" rows="2" class="form-control" required {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>{{ $transaction_details->findings }}</textarea>
+                        <div class="col-md-12" style="margin-top: 5px;">
+                            <label class="label-cus"><span class="requiredField">*</span>Findings:</label>
+                            <textarea placeholder="Type your findings here" name="findings" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>{{ $transaction_details->findings }}</textarea>
                         </div>
                     </div>
                 </div>
-                <br>
                 <div class="row">    
                     <div class="col-md-12">
-                        <label class="control-label col-md-2" style="margin-top:7px;"><span class="requiredField">*</span>Resolution:</label>
-                        <div class="col-md-10" style="margin-top:7px;">
-                            <textarea placeholder="Type your resolution here" name="resolution" rows="2" class="form-control" required {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>{{ $transaction_details->resolution }}</textarea>
+                        <div class="col-md-12" style="margin-top: 5px;">
+                            <label class="label-cus"><span class="requiredField">*</span>Resolution:</label>
+                            <textarea placeholder="Type your resolution here" name="resolution" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>{{ $transaction_details->resolution }}</textarea>
                         </div>
                     </div>
                 </div>
-                <br>
                 @if ($transaction_details->warranty_status == "OUT OF WARRANTY")
                     <div class="row">    
                         <div class="col-md-12">
-                            <label class="control-label col-md-2" style="margin-top:7px;"><span class="requiredField">*</span>Parts Replacement Cost:</label>
-                            <div class="col-md-10" style="margin-top:7px;">
-                                <textarea placeholder="Type your Parts Replacement Cost here" name="replacement_cost" rows="2" class="form-control" required {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>{{ $transaction_details->parts_replacement_cost }}</textarea>
+                            <div class="col-md-12" style="margin-top: 5px;">
+                                <label class="label-cus"><span class="requiredField">*</span>Parts Replacement Cost:</label>
+                                <textarea placeholder="Type your Parts Replacement Cost here" name="replacement_cost" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>{{ $transaction_details->parts_replacement_cost }}</textarea>
                             </div>
                         </div>
                     </div>
                 @endif
             </div>
         </div>
+        <br>
     @else
 
     <?php 

@@ -31,7 +31,7 @@ class EmailReceivePrintForm extends Mailable
      */
     public function build()
     {
-        return $this->subject('Signed Received Form - Encrypted PDF')
+        return $this->subject('Beyond The Box Service Center Signed Form - Encrypted PDF')
             ->view('email.received_form', [
                 'zipFileName' => $this->zipFileName,
                 'zipPassword' => $this->zipPassword

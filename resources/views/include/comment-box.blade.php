@@ -209,37 +209,37 @@
       const html = document.documentElement;
 
       // Check for saved theme preference or use default
-      const savedTheme = localStorage.getItem('chat-theme');
-      if (savedTheme === 'dark') {
-        enableDarkMode();
-      } else {
-        enableLightMode();
-      }
+      // const savedTheme = localStorage.getItem('chat-theme');
+      // if (savedTheme === 'dark') {
+      //   enableDarkMode();
+      // } else {
+      //   enableLightMode();
+      // }
 
       // Function to enable dark mode
-      function enableDarkMode() {
-        html.classList.add('dark-theme');
-        sunIcon.style.display = 'none';
-        moonIcon.style.display = 'block';
-        localStorage.setItem('chat-theme', 'dark');
-      }
+      // function enableDarkMode() {
+      //   html.classList.add('dark-theme');
+      //   sunIcon.style.display = 'none';
+      //   moonIcon.style.display = 'block';
+      //   localStorage.setItem('chat-theme', 'dark');
+      // }
 
-      // Function to enable light mode
-      function enableLightMode() {
-        html.classList.remove('dark-theme');
-        sunIcon.style.display = 'block';
-        moonIcon.style.display = 'none';
-        localStorage.setItem('chat-theme', 'light');
-      }
+      // // Function to enable light mode
+      // function enableLightMode() {
+      //   html.classList.remove('dark-theme');
+      //   sunIcon.style.display = 'block';
+      //   moonIcon.style.display = 'none';
+      //   localStorage.setItem('chat-theme', 'light');
+      // }
 
       // Function to toggle theme
-      function toggleTheme() {
-        if (html.classList.contains('dark-theme')) {
-          enableLightMode();
-        } else {
-          enableDarkMode();
-        }
-      }
+      // function toggleTheme() {
+      //   if (html.classList.contains('dark-theme')) {
+      //     enableLightMode();
+      //   } else {
+      //     enableDarkMode();
+      //   }
+      // }
 
       // Function to open chat
       function openChat() {
@@ -261,7 +261,7 @@
       // Event listeners
       chatBubble.addEventListener('click', openChat);
       chatClose.addEventListener('click', closeChat);
-      themeToggle.addEventListener('click', toggleTheme);
+      // themeToggle.addEventListener('click', toggleTheme);
 
       // Auto-focus input when chat opens
       chatBubble.addEventListener('click', function() {

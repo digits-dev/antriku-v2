@@ -192,21 +192,21 @@
                     </div>
                 </div><br>
             @elseif($transaction_details->repair_status == 8 && CRUDBooster::getModulePath() == "pay_diagnostic" && request()->segment(3) == "edit")
-            
+            <section class="card-cust" style="border-radius: 0%;">
                 <div class="row">    
                     <div class="col-md-6">
-                        <label class="require control-label col-md-4" style="margin-top:7px;">Memo Number:</label>
+                        <label class="require label-cus col-md-4" style="margin-top:7px;">Memo Number:</label>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" name="memo_number" id="memo_number" value="{{$transaction_details->memo_no}}" placeholder="Memo Number" required>
+                            <input type="text" class="input-cus" name="memo_number" id="memo_number" value="{{$transaction_details->memo_no}}" placeholder="Memo Number" required>
                         </div>
                     </div>
                      <div class="col-md-6">
                          <div class="row">
                             <div class="col-md-12">
-                                <label class="require control-label col-md-4" style="margin-top:7px;"><span class="requiredField">*</span>Diagnostic Fee:</label>
+                                <label class="require label-cus col-md-4" style="margin-top:7px;"><span class="requiredField">*</span>Diagnostic Fee:</label>
                                 <div class="col-md-8 input-icon">
                                     <input type="hidden" value="{{ (!empty($Diagnostic_Fee)) ? number_format($Diagnostic_Fee, 2, '.', '') : 0 }}" id="diagnostic_original_cost" >
-                                    <input name="diagnostic_cost" id="diagnostic_cost" value="{{ (!empty($transaction_details->diagnostic_cost)) ? number_format($transaction_details->diagnostic_cost, 2, '.', '') : 0 }}" onblur="AutoFormatDiagnosticPrice()" placeholder="Diagnostic Fee" type="text" class="form-control" required>
+                                    <input name="diagnostic_cost" id="diagnostic_cost" value="{{ (!empty($transaction_details->diagnostic_cost)) ? number_format($transaction_details->diagnostic_cost, 2, '.', '') : 0 }}" onblur="AutoFormatDiagnosticPrice()" placeholder="Diagnostic Fee" type="text" class="input-cus" required>
                                     <i>₱</i>
                                 </div>
                             </div>
@@ -221,11 +221,12 @@
                         </div>
                     </div>
                 </div>
+
                 <br><br>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="col-md-3" style="margin-top:7px;">
-                            <label><span class="requiredField">*</span>Warranty Status:</label>
+                            <label class="label-cus"><span class="requiredField">*</span>Warranty Status:</label>
                         </div>
                         <input type="hidden" id="warranty_status" value="{{$transaction_details->warranty_status}}">
                         <div class="col-md-3" style="margin-top:7px;">
@@ -247,9 +248,9 @@
                 @if(request()->segment(3) == "getDetailView" && CRUDBooster::getModulePath() == "transaction_history")
                 <div class="row">
                     <div class="col-md-12">
-                        <label class="require control-label col-md-2"><span class="requiredField">*</span>Problem Details:</label>
+                        <label class="require label-cus col-md-2"><span class="requiredField">*</span>Problem Details:</label>
                         <div class="col-md-10" style="margin-top:7px;">
-                            <select data-placeholder="Choose problem details here..." class="form-control limitedNumbSelect2" name="problem_details[]" id="problem_details" onchange="OtherProblemDetail()" multiple="multiple" style="width:100% !important;" required {{ $transaction_details->repair_status == 3 ? 'disabled' : ''}}>
+                            <select data-placeholder="Choose problem details here..." class="input-cus limitedNumbSelect2" name="problem_details[]" id="problem_details" onchange="OtherProblemDetail()" multiple="multiple" style="width:100% !important;" required {{ $transaction_details->repair_status == 3 ? 'disabled' : ''}}>
                                 @foreach($ProblemDetails as $key=>$pd)
                                     @if(in_array($pd->problem_details, $problem_details))
                                         <option value="{{$pd->problem_details}}" selected>{{$pd->problem_details}}</option>
@@ -264,9 +265,9 @@
                 @else
                 <div class="row">
                     <div class="col-md-12">
-                        <label class="require control-label col-md-2"><span class="requiredField">*</span>Problem Details:</label>
+                        <label class="require label-cus col-md-2"><span class="requiredField">*</span>Problem Details:</label>
                         <div class="col-md-10" style="margin-top:7px;">
-                            <select data-placeholder="Choose problem details here..." class="form-control limitedNumbSelect2" name="problem_details[]" id="problem_details" onchange="OtherProblemDetail()" multiple="multiple" style="width:100% !important;" required {{ $transaction_details->repair_status == 3 ? 'disabled' : ''}}>
+                            <select data-placeholder="Choose problem details here..." class="input-cus limitedNumbSelect2" name="problem_details[]" id="problem_details" onchange="OtherProblemDetail()" multiple="multiple" style="width:100% !important;" required {{ $transaction_details->repair_status == 3 ? 'disabled' : ''}}>
                                 @foreach($data['ProblemDetails'] as $key=>$pd)
                                     @if(in_array($pd->problem_details, $problem_details))
                                         <option value="{{$pd->problem_details}}" selected>{{$pd->problem_details}}</option>
@@ -283,9 +284,9 @@
                 @if(!empty($transaction_details->problem_details_other))
                     <div class="row" id="show_other_problem">    
                         <div class="col-md-12">
-                            <label class="require control-label col-md-2"><span class="requiredField">*</span>Other Problem Details:</label>
+                            <label class="require label-cus col-md-2"><span class="requiredField">*</span>Other Problem Details:</label>
                             <div class="col-md-10" style="margin-top:7px;">
-                                <input type="text" class="form-control" name="problem_details_other" id="problem_details_other" value="{{$transaction_details->problem_details_other}}" placeholder="Type your other problem details here" required>
+                                <input type="text" class="input-cus" name="problem_details_other" id="problem_details_other" value="{{$transaction_details->problem_details_other}}" placeholder="Type your other problem details here" required>
                             </div>
                         </div>
                     </div>
@@ -295,24 +296,23 @@
                 @endif
                 <div class="row">
                     <div class="col-md-12">
-                        <label class="require control-label col-md-2">Other Remarks:</label>
+                        <label class="require label-cus col-md-2">Other Remarks:</label>
                         <div class="col-md-10" style="margin-top:7px;">
-                            <textarea placeholder="Type your other remarks here" name="other_remarks" rows="2" class="form-control" {{ $transaction_details->repair_status != 8 ? 'readonly' : '' }}>{{ $transaction_details->other_remarks }}</textarea>
+                            <textarea placeholder="Type your other remarks here" name="other_remarks" rows="2" class="input-cus" {{ $transaction_details->repair_status != 8 ? 'readonly' : '' }}>{{ $transaction_details->other_remarks }}</textarea>
                         </div>
                     </div>
                 </div><br>
+            </section>
             @endif
 
             @if($transaction_details->repair_status != 8)
                 @include('transaction_details.technical_report')
                 @include('transaction_details.diagnostic_results')
-                <br>
                 @include('transaction_details.quotation')
-                <br>
                 @include('transaction_details.uploade_receipt')
             @endif
             {{-- <input required id="input-file" name="receipt" multiple type="file"> --}}
-            <div class="panel-footer">
+            <section class="card-cust" style="border-radius: 0rem; padding: 1.2rem; border-top: 2px solid #e2e8f0">
                 @if(request()->segment(3) == "getDetailView" || CRUDBooster::getModulePath() == "returns_header")
                 <a href="{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}" style="margin-left:20px;" class="btn btn-default pull-right"><i class="fa fa-chevron-circle-left"></i> BACK</a>
                 @elseif(request()->segment(3) == "edit")
@@ -362,7 +362,7 @@
                         <button type="submit" id="pickup" onclick="return changeStatus(7)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o" aria-hidden="true"></i> TO PICK UP</button>
                     @elseif($transaction_details->repair_status == 3 && CRUDBooster::getModulePath() == "call_out")
                         <button type="submit" id="void" onclick="return changeStatus(5)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;" {{ $transaction_details->print_release_form == "YES" && $transaction_details->print_technical_report == "YES" ? '' : 'disabled' }}><i class="fa fa-check-square-o" aria-hidden="true"></i> CANCELLED/CLOSE</button>
-                        <button type="button" id="print_releasing_form" onclick="print_release_from_confirm()" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-print"></i> Print Releasing Form</button>
+                        <button type="button" id="print_releasing_form" onclick="print_technical_from_confirm()" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px; display:{{ $transaction_details->print_release_form == "YES" && $transaction_details->print_technical_report == "YES" ? 'none' : '' }}"> <i class="fa fa-print"></i> Print Releasing Form</button>
                     @elseif($transaction_details->repair_status == 7 && CRUDBooster::getModulePath() == "to_close" && CRUDBooster::myPrivilegeId() != 2)
                         <button type="submit" id="close" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o" aria-hidden="true"></i> CLOSE</button>
                     @endif 
@@ -396,7 +396,7 @@
                     @if ($transaction_details->repair_status == 14 && CRUDBooster::getModulePath() == "pending_spare_parts")
                         <button type="submit" id="save" onclick="return changeStatus(15)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check" aria-hidden="true"></i> Spare Parts Received</button>
                     @endif
-                    @if ($transaction_details->repair_status == 15 && CRUDBooster::getModulePath() == "spare_parts_received")
+                    @if ($transaction_details->repair_status == 15 && CRUDBooster::getModulePath() == "pending_repair")
                         <button type="submit" id="save" onclick="return changeStatus(13)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-circle-o" aria-hidden="true"></i> Ongoing Repair</button>
                     @endif
                     @if ($transaction_details->repair_status == 16 && CRUDBooster::getModulePath() == "to_diagnose")
@@ -424,16 +424,24 @@
                         <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button> 
                     @endif
                     @if ($transaction_details->repair_status == 21 && CRUDBooster::getModulePath() == "call_out")
-                        <button type="button" id="print_releasing_form" onclick="print_release_from_confirm()" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-print"></i> Print Releasing Form</button>
                         <button type="button" id="call_out" onclick="callOut(21)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
                             <i class="fa fa-phone"></i> CALL OUT ({{ $CallOutCount }})
                         </button>
                     @endif
                     @if ($transaction_details->repair_status == 22 && CRUDBooster::getModulePath() == "pending_good_unit")
                     <button type="submit" id="save" onclick="return changeStatus(21)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-circle-o"></i> FOR CALL-OUT (GOOD UNIT)</button>
+                    @endif
+                    @if ($transaction_details->repair_status == 21 && CRUDBooster::getModulePath() == "call_out")
+                    <button type="button" id="print_technical_form" onclick="print_technical_from_confirm()" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-print"></i> Print Technical Form</button>
+                    @endif
+                    @if ($transaction_details->repair_status == 21 && CRUDBooster::getModulePath() == "call_out")
+                    <button type="button" id="print_releasing_form" onclick="print_technical_from_confirm()" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-print"></i> Print Releasing Form</button>
+                    @endif
+                    @if (in_array($transaction_details->repair_status, [1, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22]))
+                        <button type="submit" id="save" onclick="return changeStatus(21)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-circle-o"></i> Escalate</button>
+                    @endif
                 @endif
-                @endif
-            </div>
+            </section>
             @if(request()->segment(3) == "edit") </form> @endif 
         </div>
     </div>
@@ -462,16 +470,16 @@
             }
         });
 
-        function print_release_from_confirm() {
+        function print_technical_from_confirm() {
             let header_id = $('#header_id').val();
             swal({ 
                 title: "Confirmation!", 
-                text: "Are you sure you want to proceed printing realease form?", 
+                text: "Are you sure you want to proceed printing Technical form?", 
                 type: "warning", 
                 confirmButtonClass: "btn-primary", 
                 confirmButtonText: "Yes, Please",    
             }, function(){
-                window.location.href = window.location.origin+"/admin/to_close/PrintSameDayReleaseForm/"+header_id;
+                window.location.href = window.location.origin+"/admin/to_close/PrintTechnicalReport/"+header_id;
             });
         }
 

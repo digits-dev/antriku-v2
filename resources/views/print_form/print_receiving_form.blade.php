@@ -307,12 +307,16 @@
 
         if (button) button.style.display = "none";
         if (canvas) canvas.style.width = "220px";
+        if (canvas) {
+            canvas.style.width = "220px";
+            canvas.style.border = "none";
+        }
 
         let contact_no = "{{$data['transaction_details']->contact_no}}";
         let first_name = "{{$data['transaction_details']->first_name}}";
         let last_name = "{{$data['transaction_details']->last_name}}";
         let email_add = "{{$data['transaction_details']->email}}";
-        let file_name = "{{$data['transaction_details']->reference_no}}_SIGNED_FORM.pdf";
+        let file_name = "{{$data['transaction_details']->reference_no}}_RECEIVED_SIGNED_FORM.pdf";
 
         let options = {
             margin: 7,

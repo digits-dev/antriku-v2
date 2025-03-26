@@ -383,19 +383,19 @@
 			//Your code here
 		
 			if(CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6 || CRUDBooster::myPrivilegeId() == 8){
-			    $query->whereIn('repair_status', [1,9,16])->orderBy('id', 'desc'); 
+			    $query->whereIn('repair_status', [1,9,16])->orderBy('id', 'ASC'); 
 			}else if (CRUDBooster::myPrivilegeId() == 4){
-				$query->whereIn('repair_status', [1,9,16])->where('technician_id', CRUDBooster::myId())->orderBy('id', 'desc');
+				$query->whereIn('repair_status', [1,9,16])->where('technician_id', CRUDBooster::myId())->orderBy('id', 'ASC');
 			}
 			else{
 			    $query->where('repair_status', 1)->where('branch', CRUDBooster::me()->branch_id); 
 
 				if(!empty(Session::get('toggle')) && Session::get('toggle') == "ON")
 				{
-					$query->where('updated_by', CRUDBooster::me()->id)->orderBy('id', 'desc'); 
+					$query->where('updated_by', CRUDBooster::me()->id)->orderBy('id', 'ASC'); 
 				}else{
-					// $query->where('branch', CRUDBooster::me()->branch_id)->orderBy('id', 'desc'); 
-					$query->orderBy('id', 'desc'); 
+					// $query->where('branch', CRUDBooster::me()->branch_id)->orderBy('id', 'ASC'); 
+					$query->orderBy('id', 'ASC'); 
 				}
 			}
 	    }
@@ -985,6 +985,53 @@
 					'pending_spare_parts_by'   => CRUDBooster::myId(),
 					'pending_spare_parts_at'   => date('Y-m-d H:i:s'),
 				]);
+			}
+			if($request->status_id == 17){
+				DB::table('returns_header')->where('id',$request->header_id)->update([
+					'for_customer_payment_by'   => CRUDBooster::myId(),
+					'for_customer_payment_at'   => date('Y-m-d H:i:s'),
+				]);
+
+				DB::table('returns_header')->where('id',$request->header_id)->update([
+					'send_final_payment_link' 		=> 'YES'
+				]);
+
+				$customer_email = $transaction_details[0]->email;
+				$data = array();
+				$data['id'] = $request->header_id;
+				$data['reference_no'] = $transaction_details[0]->reference_no;
+				$data['software_cost'] = number_format($transaction_details[0]->software_cost, 2, '.', ',');
+				$data['parts_total_cost'] = number_format($transaction_details[0]->parts_total_cost, 2, '.', ',');
+                $data['main_url'] = URL::to('/');
+    
+				$allparts = DB::table('returns_body_item')->where('returns_header_id',$request->header_id)->get();
+
+				$parts_cost = "";
+				foreach($allparts as $key=>$ap){
+					$parts_cost .= "<tr>
+									<td style='text-align: left; padding: 10px; border: 1px solid rgb(184, 184, 184) !important;width: 20%;'>
+										<font face='Tahoma'>".$ap->item_description.":<br></font>
+									</td>
+									<td style='border: 1px solid #B8B8B8 !important;padding: 5px;width: 55%;'>
+										<font face='Tahoma'>₱".number_format($ap->cost, 2, '.', ',')."</font>
+									</td>
+									</tr>";
+				}
+				$data['parts_cost'] = $parts_cost;
+				if($request->warranty_status == 'OUT OF WARRANTY'){
+					try {
+						if($transaction_details[0]->parts_total_cost <= 2000.00){
+							CRUDBooster::sendEmail(['to'=>$customer_email,'data'=>$data, 'template'=>'send_payment_link','attachments'=>[]]);
+						} else{
+							CRUDBooster::sendEmail(['to'=>$customer_email,'data'=>$data, 'template'=>'send_payment_link','attachments'=>[]]);
+						}
+					} catch (\Exception $e) {
+						\Log::error('Email sending failed: '.$e->getMessage());
+					}
+					
+				}
+
+				
 			}
 			if($request->status_id == 18){
 
