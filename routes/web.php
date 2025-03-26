@@ -11,6 +11,8 @@
 |
 */
 
+use App\Http\Controllers\AdminCustomDashboardController;
+
 Route::get('/payment-gateway/{id}','PayMongoController@CreatePayment'); 
 Route::post('/payment-gateway-process/{id}','PayMongoController@CreatePaymentProcess'); 
 
@@ -120,5 +122,8 @@ Route::group(['middleware' => ['web']], function() {
     
     // Call out recorder
     Route::post('/admin/call_out/call_out','AdminCallOutController@callOut');
+
+    Route::get('/admin/frontliner-dashboard', [AdminCustomDashboardController::class, 'index'])->name('frontliner.dashboard');
+
 
 });
