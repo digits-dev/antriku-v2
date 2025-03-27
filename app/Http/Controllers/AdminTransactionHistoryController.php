@@ -412,7 +412,7 @@
 	    */
 	    public function hook_query_index(&$query) {
 			//Your code here
-			if(CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6 || CRUDBooster::myPrivilegeId() == 7){
+			if(CRUDBooster::isSuperadmin() || in_array(CRUDBooster::myPrivilegeId(), [6,7,8,9]) ){
 				$query->orderBy('id', 'desc'); 
 			}else{
 				$query->where('branch', CRUDBooster::me()->branch_id);

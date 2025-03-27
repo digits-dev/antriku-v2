@@ -7,6 +7,8 @@
 	use DB;
 	use URL;
 	use CRUDBooster;
+	use Carbon\Carbon;
+	
 
 	class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\CBController {
 
@@ -39,12 +41,29 @@
 			$this->col[] = ["label"=>"Reference No","name"=>"reference_no"];
 			$this->col[] = ["label"=>"Model Group","name"=>"model"];
             $this->col[] = ["label"=>"Print Technical Report","name"=>"print_technical_report"];
-			$this->col[] = ["label"=>"Downpayment Status","name"=>"downpayment_status"];
-			$this->col[] = ["label"=>"Downpayment URL","name"=>"down_payment_url"];
+			// $this->col[] = ["label"=>"Downpayment Status","name"=>"downpayment_status"];
+			// $this->col[] = ["label"=>"Downpayment URL","name"=>"down_payment_url"];
 			$this->col[] = ["label"=>"Date Received","name"=>"level2_personnel_edited"];
-			$this->col[] = ["label"=>"Updated By","name"=>"updated_by"];
+			$this->col[] = ["label"=>"Updated By","name"=>"updated_by", 'join' => 'cms_users,name'];
 			$this->col[] = ["label"=>"Technician","name"=>"technician_id", 'join' => 'cms_users,name'];
-			$this->col[] = ["label"=>"Technician","name"=>"technician_id", 'join' => 'cms_users,name'];
+			$this->col[] = ["label"=>"Technician Accepted Date","name"=>"technician_accepted_at"];
+			$this->col[] = ["label"=>"Repaired Date","name"=>"for_call_out_good_unit_at"];
+			$this->col[] = [
+			"label" => "Duration",
+			"name" => "id",
+			"callback" => function ($row) {
+					if (!empty($row->technician_accepted_at) && !empty($row->for_call_out_good_unit_at)) {
+						$start = Carbon::parse($row->technician_accepted_at);
+						$end = Carbon::parse($row->for_call_out_good_unit_at);
+						$diff = $start->diff($end);
+			
+						$duration = sprintf("%d days %d hours %d mins", $diff->d, $diff->h, $diff->i);
+						return $duration;
+					}
+				}
+			];
+			
+			
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 			# OLD START FORM
@@ -390,7 +409,6 @@
 			}
 			else{
 			    $query->where('repair_status', 1)->where('branch', CRUDBooster::me()->branch_id); 
-
 				if(!empty(Session::get('toggle')) && Session::get('toggle') == "ON")
 				{
 					$query->where('updated_by', CRUDBooster::me()->id)->orderBy('id', 'ASC'); 
@@ -399,6 +417,7 @@
 					$query->orderBy('id', 'ASC'); 
 				}
 			}
+		
 	    }
 
 	    /*
@@ -468,19 +487,15 @@
 				}
 			}
 
-			if($column_index == 6){
-				$payments = DB::table('returns_payments')->where('id',$column_value)->first();
-				if(!empty($payments->downpayment_id)){
-					$column_value = "<a href='".$payments->downpayment_id."'>".$payments->downpayment_id."</a>";
-				}else{
-					$column_value = "";
-				}
-			}
+			// if($column_index == 6){
+			// 	$payments = DB::table('returns_payments')->where('id',$column_value)->first();
+			// 	if(!empty($payments->downpayment_id)){
+			// 		$column_value = "<a href='".$payments->downpayment_id."'>".$payments->downpayment_id."</a>";
+			// 	}else{
+			// 		$column_value = "";
+			// 	}
+			// }
 
-			if($column_index == 8){
-				$name = DB::table('cms_users')->where('id',$column_value)->value('name');
-				$column_value = $name;
-			}
 	    }
 
 	    /*
@@ -1248,6 +1263,7 @@
 				DB::table('returns_header')->where('id', $request->id)->update([
 					// to ongoing diagnosis
 					'repair_status' => 9,
+					'technician_accepted_at' => date('Y-m-d H:i:s'),
 				]);
 
 				$latestAssignment = DB::table('case_assignments')
