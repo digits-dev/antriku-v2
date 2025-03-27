@@ -97,7 +97,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         $data['totalMailIn'] = DB::table('returns_header')->where('case_status', 'MAIL-IN')->where('branch', 1)->count();
 
         $data['totalSalesIW'] = DB::table('returns_header')->where('warranty_status', 'IN WARRANTY')->sum('parts_total_cost');
-        $data['totalSalesOOW'] = DB::table('returns_header')->where('warranty_status', 'OUT OF WARRANTY')->sum('parts_total_cost');
+        $data['totalSalesOOW'] = DB::table('returns_header')->where('warranty_status', 'OUT OF WARRANTY')->where('final_payment_status', 'PAID')->sum(DB::raw('parts_total_cost + diagnostic_cost'));
     
             
 

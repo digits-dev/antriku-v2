@@ -124,6 +124,7 @@ Route::group(['middleware' => ['web']], function() {
     Route::post('/admin/call_out/call_out','AdminCallOutController@callOut');
 
     Route::get('/admin/frontliner-dashboard', [AdminCustomDashboardController::class, 'index'])->name('frontliner.dashboard');
+    Route::get('/admin/technician-dashboard', [AdminCustomDashboardController::class, 'technicianDashboard'])->name('frontliner.dashboard');
 
 
 });

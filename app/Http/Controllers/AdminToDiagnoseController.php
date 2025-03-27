@@ -951,7 +951,7 @@
 			}
 
 			//  FOR CALL-OUT MAIL-IN
-			if($request->status_id == 10){
+			if(in_array($request->status_id, [10,13,14,17])){
 				DB::table('returns_header')->where('id',$request->header_id)->update([
 					'diagnose_by'   => CRUDBooster::myId(),
 					'diagnose_at'   => date('Y-m-d H:i:s'),

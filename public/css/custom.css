@@ -1948,3 +1948,13 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
       gap: 1rem;
     }
   }
+
+  .dataTables_empty {
+    display: none;
+  }
+
+  .pagination-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
