@@ -437,8 +437,8 @@
                     @if ($transaction_details->repair_status == 21 && CRUDBooster::getModulePath() == "call_out")
                     <button type="button" id="print_releasing_form" onclick="print_technical_from_confirm()" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-print"></i> Print Releasing Form</button>
                     @endif
-                    @if (in_array($transaction_details->repair_status, [1, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22]))
-                        <button type="submit" id="save" onclick="return changeStatus(21)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-circle-o"></i> Escalate</button>
+                    @if (in_array(CRUDBooster::myPrivilegeId(), [3, 4]))
+                        <button type="submit" id="save" onclick="return changeStatus(23)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-circle-o"></i> Escalate</button>
                     @endif
                 @endif
             </section>

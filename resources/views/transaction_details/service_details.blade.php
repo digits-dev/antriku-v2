@@ -49,6 +49,10 @@
                     <div class="info-label-cust">Model</div>
                     <div class="info-value-cust">{{ $transaction_details->model_name }}</div>
                 </div>
+                <div class="info-item-cust" style="display: {{$transaction_details->warranty_status != 'OUT OF WARRANTY' ? 'none' : ''}}">
+                    <div class="info-label-cust">Unit Type</div>
+                    <div class="info-value-cust">{{ $transaction_details->unit_type }}</div>
+                </div>
                 <div class="info-item-cust">
                     <div class="info-label-cust">Summary of Concern</div>
                     <div class="info-value-cust">{{ $transaction_details->summary_of_concern }}</div>

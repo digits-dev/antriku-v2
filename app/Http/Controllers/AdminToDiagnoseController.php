@@ -741,7 +741,7 @@
             } 
 			// *********************************************************************************************
 
-		    $status_array = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22];
+		    $status_array = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
 		    if(in_array($request->status_id, $status_array)){
 		    	DB::table('returns_header')->where('id',$request->header_id)->update([
 				'repair_status' 			=> $request->status_id,
@@ -1067,8 +1067,8 @@
 					DB::table('returns_header')->where('id',$request->header_id)->update([
 						'receipt'   => $filename,
 						'final_payment_status' => 'PAID',
-						'for_parts_ordering'   => CRUDBooster::myId(),
-						'for_parts_ordering'   => date('Y-m-d H:i:s'),
+						'for_parts_ordering_by'   => CRUDBooster::myId(),
+						'for_parts_ordering_at'   => date('Y-m-d H:i:s'),
 					]);
 				}
 			}
@@ -1080,8 +1080,14 @@
 					'ongoing_repair_at'   => date('Y-m-d H:i:s'),
 				]);
 			}
-			
 
+			if($request->status_id == 23){
+				DB::table('returns_header')->where('id',$request->header_id)->update([
+					'escalated_by'   => CRUDBooster::myId(),
+					'escalated_at'   => date('Y-m-d H:i:s'),
+				]);
+			}
+			
 			if($request->status_id == 21){
 
 				

@@ -125,6 +125,7 @@ Route::group(['middleware' => ['web']], function() {
 
     Route::get('/admin/frontliner-dashboard', [AdminCustomDashboardController::class, 'index'])->name('frontliner.dashboard');
     Route::get('/admin/technician-dashboard', [AdminCustomDashboardController::class, 'technicianDashboard'])->name('frontliner.dashboard');
+    Route::get('/admin/get-sales-data', [AdminCustomDashboardController::class, 'getSalesData'])->name('getSalesData');
 
 
 });

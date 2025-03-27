@@ -513,6 +513,10 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 			'last_name'   				=> $data['last_name'],
 			'first_name'   				=> $data['first_name'],
 			'email'   					=> $data['email'],
+			'country'					=> $data['country'],
+			'province'					=> $data['province'],
+			'city'						=> $data['city'],
+			'barangay'					=> $data['barangay'],
 			'address'					=> $data['address'],
 			'contact_no'   				=> $data['contact_no'],
 			'company_name'   			=> $data['company_name'],
@@ -527,6 +531,7 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 			'summary_of_concern' 		=> $data['summary_of_concern'],
 			'header_item_description'	=> $data['item_description'],
 			'model'						=> $data['model'],
+			'unit_type'					=> $data['unit_type'],
 			'branch'                    => CRUDBooster::me()->branch_id,
 			'problem_details'			=> $ProblemDetails,
 			'problem_details_other'		=> $data['problem_details_other'],
@@ -853,6 +858,8 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 				DB::table('returns_header')->where('id', $header_id)->update([
 					'print_release_form' => "YES",
 					'repair_status' => 6,
+					'completed_by' => CRUDBooster::myId(),
+					'completed_at' => now(),
 					'updated_by' => CRUDBooster::myId()
 				]);
 			}

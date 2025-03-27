@@ -57,20 +57,34 @@ class AppServiceProvider extends ServiceProvider
             ->where('for_call_out_good_unit_at', '<=', Carbon::now()->subDays(60))
             ->count();
 
-        // Get Aging Call-outs
+        // Get Aging Call-outs FOR CALL-OUT MAIL-IN
         $fl_aging_call_out_dash_count_all = DB::table('returns_header')
             ->whereIn('repair_status', [10, 21])
             ->count();
         $fl_aging_call_out_dash_count_0_14 = DB::table('returns_header')
-            ->whereIn('repair_status', [10, 21])
+            ->whereIn('repair_status', [10])
             ->whereBetween('created_at', [Carbon::now()->subDays(14), Carbon::now()])
             ->count();
         $fl_aging_call_out_dash_count_15_30 = DB::table('returns_header')
-            ->whereIn('repair_status', [10, 21])
+            ->whereIn('repair_status', [10])
             ->whereBetween('created_at', [Carbon::now()->subDays(30), Carbon::now()->subDays(15)])
             ->count();
         $fl_aging_call_out_dash_count_30_plus = DB::table('returns_header')
-            ->whereIn('repair_status', [10, 21])
+            ->whereIn('repair_status', [10])
+            ->where('created_at', '<=', Carbon::now()->subDays(30))
+            ->count();
+
+        // Get Aging Call-outs FOR CALL-OUT (GOOD UNIT)
+        $fl_gu_aging_call_out_dash_count_0_14 = DB::table('returns_header')
+            ->whereIn('repair_status', [21])
+            ->whereBetween('created_at', [Carbon::now()->subDays(14), Carbon::now()])
+            ->count();
+        $fl_gu_aging_call_out_dash_count_15_30 = DB::table('returns_header')
+            ->whereIn('repair_status', [21])
+            ->whereBetween('created_at', [Carbon::now()->subDays(30), Carbon::now()->subDays(15)])
+            ->count();
+        $fl_gu_aging_call_out_dash_count_30_plus = DB::table('returns_header')
+            ->whereIn('repair_status', [21])
             ->where('created_at', '<=', Carbon::now()->subDays(30))
             ->count();
 
@@ -85,6 +99,10 @@ class AppServiceProvider extends ServiceProvider
             'fl_aging_call_out_dash_count_0_14' => $fl_aging_call_out_dash_count_0_14,
             'fl_aging_call_out_dash_count_15_30' => $fl_aging_call_out_dash_count_15_30,
             'fl_aging_call_out_dash_count_30_plus' => $fl_aging_call_out_dash_count_30_plus,
+
+            'fl_gu_aging_call_out_dash_count_0_14' => $fl_gu_aging_call_out_dash_count_0_14,
+            'fl_gu_aging_call_out_dash_count_15_30' => $fl_gu_aging_call_out_dash_count_15_30,
+            'fl_gu_aging_call_out_dash_count_30_plus' => $fl_gu_aging_call_out_dash_count_30_plus,
         ]);
 
     }

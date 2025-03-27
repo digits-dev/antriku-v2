@@ -302,6 +302,9 @@
             if(status_id == 18){
                 formData.append("input_file", $("#input-file")[0].files[0]); 
             }
+            if(status_id == 19){
+                formData.append("input_file", $("#input-file")[0].files[0]); 
+            }
             formData.append("_token", '{!! csrf_token() !!}');
             $.ajax
             ({ 
@@ -427,6 +430,11 @@
                         swal({ title: "Info!", text: "STATUS: PENDING FOR GOOD UNIT", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
                         }, function(){
                             window.location.href = window.location.origin+"/admin/pending_repair";
+                        });
+                    }else if(status_id == 23){
+                        swal({ title: "Info!", text: "STATUS: ESCALATED", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                        }, function(){
+                            history.back();
                         });
                     }
                 }                    

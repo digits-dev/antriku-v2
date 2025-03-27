@@ -53,28 +53,6 @@
 	        
 	    }
 
-
-	    /*
-	    | ---------------------------------------------------------------------- 
-	    | Hook for button selected
-	    | ---------------------------------------------------------------------- 
-	    | @id_selected = the id selected
-	    | @button_name = the name of button
-	    |
-	    */
-	    public function actionButtonSelected($id_selected,$button_name) {
-	        //Your code here
-	            
-	    }
-
-
-	    /*
-	    | ---------------------------------------------------------------------- 
-	    | Hook for manipulate query of index result 
-	    | ---------------------------------------------------------------------- 
-	    | @query = current sql query 
-	    |
-	    */
 	    public function hook_query_index(&$query) {
 	        //Your code here
 			if (CRUDBooster::myPrivilegeId() == 3) {

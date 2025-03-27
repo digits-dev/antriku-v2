@@ -51,6 +51,8 @@
     --input-border: #ddd;
     --input-focus: var(--primary-color);
     --shadow-color: rgba(0, 0, 0, 0.05);
+    --green-light: #86efac;
+    --green-dark: #16a34a;
 
     --bg-color: #f5f5f5;
     --chat-primary: #4361ee;
@@ -947,7 +949,7 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
     background-color: rgba(255, 255, 255, 0.3);
     color: #f5f5f5;
     padding: 8px 16px;
-    border-radius: var(--radius);
+    border-radius: var(--dash-radius);
     font-size: 14px;
 }
 
@@ -959,7 +961,7 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
 
 .card-cust {
     background-color: var(--card);
-    border-radius: var(--radius);
+    border-radius: var(--dash-radius);
     box-shadow: var(--shadow);
     overflow: hidden;
     margin-bottom: 0rem;
@@ -1044,7 +1046,7 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
 .product-image-cust img {
     max-width: 100%;
     height: 400px;
-    border-radius: var(--radius);
+    border-radius: var(--dash-radius);
     box-shadow: var(--shadow);
     transition: var(--transition);
 }
@@ -1070,15 +1072,15 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
 }
 
 .status-badge-cust.success {
-    background-color: var(--success);
+    background-color: var(--dash-success);
 }
 
 .status-badge-cust.warning {
-    background-color: var(--warning);
+    background-color: var(--dash-warning);
 }
 
 .status-badge-cust.danger {
-    background-color: var(--danger);
+    background-color: var(--dash-danger);
 }
 
 .status-badge-cust::before {
@@ -1143,7 +1145,7 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
 .repair-form-cust input {
     padding: 0.75rem 1rem;
     border: 1px solid var(--border);
-    border-radius: var(--radius);
+    border-radius: var(--dash-radius);
     font-size: 1rem;
     width: 100%;
     transition: var(--transition);
@@ -1151,7 +1153,7 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
 
 .repair-form-cust input:focus {
     outline: none;
-    border-color: var(--primary);
+    border-color: var(--dash-primary);
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
@@ -1187,12 +1189,12 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
 .receipt-image-cust img {
     max-width: 100%;
     height: auto;
-    border-radius: var(--radius);
+    border-radius: var(--dash-radius);
     box-shadow: var(--shadow);
 }
 
 .available-cust {
-    color: var(--success);
+    color: var(--dash-success);
     font-weight: 600;
 }
 
@@ -1449,6 +1451,18 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
   }
 
   .icon-leaderboard {
+    background-color: var(--dash-info);
+  }
+
+  .icon-time-dash {
+    background-color: var(--dash-teal);
+  }
+
+  .icon-activity-dash {
+    background-color: var(--dash-purple);
+  }
+
+  .icon-summary-dash {
     background-color: var(--dash-info);
   }
 
@@ -1937,6 +1951,262 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
     height: 100% !important;
 }
 
+/* Time tracker table styles */
+.tracker-table-container {
+    overflow-x: auto;
+    margin-top: 1rem;
+    border-radius: var(--dash-radius);
+    border: 1px solid var(--dash-gray-200);
+  }
+
+  .tracker-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.4rem;
+  }
+
+  .tracker-table th {
+    background-color: var(--dash-success);
+    color: white;
+    font-weight: 600;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--green-dark);
+  }
+
+  .tracker-table td {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--dash-gray-200);
+    white-space: nowrap;
+  }
+
+  .tracker-table tr:nth-child(even) {
+    background-color: var(--dash-gray-50);
+  }
+
+  .tracker-table tr:hover {
+    background-color: var(--dash-gray-100);
+  }
+
+  .duration-cell {
+    text-align: center;
+    font-family: monospace;
+    font-weight: 600;
+  }
+
+  .short-duration {
+    color: var(--dash-danger);
+  }
+
+  .medium-duration {
+    color: var(--dash-warning);
+  }
+
+  .long-duration {
+    color: var(--dash-success);
+  }
+
+  /* Filter controls */
+  .filter-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+  }
+
+  .filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .filter-label {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--dash-gray-700);
+  }
+
+  .filter-select {
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--dash-radius);
+    border: 1px solid var(--dash-gray-300);
+    background-color: white;
+    font-size: 1.5rem;
+    color: var(--dash-gray-800);
+    min-width: 120px;
+  }
+
+  .filter-input {
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--dash-radius);
+    border: 1px solid var(--dash-gray-300);
+    background-color: white;
+    font-size: 1.5rem;
+    color: var(--dash-gray-800);
+    width: 150px;
+  }
+
+  /* Activity chart */
+  .activity-chart {
+    height: 200px;
+    margin-top: 1.5rem;
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    padding-bottom: 24px;
+    position: relative;
+  }
+
+  .activity-bar {
+    flex: 1;
+    background-color: var(--green-light);
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    transition: height 0.3s ease;
+  }
+
+  .activity-bar:hover {
+    background-color: var(--dash-success);
+  }
+
+  .activity-bar-label {
+    position: absolute;
+    bottom: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--dash-gray-500);
+    white-space: nowrap;
+  }
+
+  .activity-bar-value {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--dash-gray-700);
+    font-weight: 500;
+  }
+
+  .activity-chart-axis {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 24px;
+    height: 1px;
+    background-color: var(--dash-gray-300);
+  }
+
+  /* Summary metrics */
+  .summary-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .summary-metric {
+    background-color: var(--dash-gray-50);
+    border-radius: var(--dash-radius);
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .summary-metric-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dash-gray-900);
+  }
+
+  .summary-metric-label {
+    font-size: 0.75rem;
+    color: var(--dash-gray-500);
+    margin-top: 0.25rem;
+  }
+
+  /* User activity list */
+  .user-activity-list {
+    margin-top: 1rem;
+  }
+
+  .user-activity-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--dash-gray-200);
+  }
+
+  .user-activity-item:last-child {
+    border-bottom: none;
+  }
+
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--dash-gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--dash-gray-700);
+    margin-right: 0.75rem;
+  }
+
+  .user-info {
+    flex: 1;
+  }
+
+  .user-name {
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+
+  .user-details {
+    color: var(--dash-gray-500);
+    font-size: 0.75rem;
+  }
+
+  .user-time {
+    font-weight: 600;
+    font-size: 0.875rem;
+    font-family: monospace;
+  }
+
+  /* Pagination */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-top: 1rem;
+  }
+
+  .pagination-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--dash-radius);
+    border: 1px solid var(--dash-gray-300);
+    background-color: white;
+    color: var(--dash-gray-700);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .pagination-btn:hover {
+    background-color: var(--dash-gray-100);
+  }
+
+  .pagination-btn.active {
+    background-color: var(--dash-primary);
+    color: white;
+    border-color: var(--dash-primary);
+  }
 
   @media (max-width: 768px) {
     .dashboard-grid-dash {
