@@ -80,6 +80,7 @@
                                         <!--<th width="10%" class="text-center" style="padding: 1px !important;">Digits Code</th>-->
                                         <th width="20%" class="text-center" style="padding: 1px !important;">Item Description</th>
                                         <th width="7%" class="text-center" style="padding: 1px !important;">Qty</th>
+                                        <th width="7%" class="text-center" style="padding: 1px !important; display:none">Item_ID</th>
                                         <th width="9%" class="text-center" style="padding: 1px !important;">Price</th>
                                         <th width="1%" class="text-center" style="padding: 1px !important;">      </th>
                                     </tr>
@@ -128,6 +129,7 @@
                                                     <!--<td style="padding: 1px !important;"><input class="form-control text-center getdcValue" type="text" id="digits_code_{{$qt->id}}" value="{{ $qt->digits_code }}" placeholder="Enter Item Code" readonly {{ !in_array($transaction_details->repair_status, [9, 12, 14, 16, 22]) ? 'readonly' : ''}}></td>-->
                                                     <td style="padding: 1px !important;"><input class="input-cus text-center getitemValue" type="text" id="item_desc_{{$qt->id}}" value="{{ $qt->item_description }}" placeholder="Enter Item Description" readonly {{ !in_array($transaction_details->repair_status, [9, 12, 14, 16, 22]) ? 'readonly' : ''}}></td>
                                                     <td style="padding: 1px !important;"><input class="input-cus text-center getqtyValue" type="text" style="font-weight:900; color: {{ $qt->qty == 'Available' ? 'limegreen' : 'red' }}" id="item_qty_{{$qt->id}}" value="{{ $qt->qty }}" placeholder="Qty" readonly></td>
+                                                    <td style="padding: 1px !important;display:none"><input class="input-cus text-center getidValue" type="text" id="item_id_{{$qt->id}}" value='{{$qt->item_id}}' readonly></td>
                                                     <td style="padding: 1px !important;"><input class="input-cus text-center getcostValue" type="number" onblur="AutoFormatCost('{{$qt->id}}')" id="price_{{$qt->id}}" value="{{ $qt->cost }}" min="0" max="9999" step="any" placeholder="Enter Price" {{ !in_array($transaction_details->repair_status, [9, 12, 14, 16, 22]) ? 'readonly' : ''}}></td> 
                                                     @if(in_array($transaction_details->repair_status, [9, 12, 14, 16, 22])) <td style="padding: 5px !important;" class="text-center"><a onclick="RemoveRow('{{$qt->id}}')"><i class="fa fa-close fa-2x remove" style="color:red"></i></a></td> @endif
                                                 </tr>
@@ -147,6 +149,7 @@
                                         <td style="padding: 1px !important;"><input class="input-cus text-center getserialValue" type="text" value="" id="serial_no" placeholder="Enter Apple Parts Number"></td>
                                         <td style="padding: 1px !important;"><input class="input-cus text-center getitemValue" type="text" value="" id="item_desc" placeholder="Enter Item Description"></td>
                                         <td style="padding: 1px !important;"><input class="input-cus text-center getqtyValue" type="text" value="" id="item_qty" placeholder="Qty" readonly></td>
+                                        <td style="padding: 1px !important;display:none"><input class="input-cus text-center getidValue" type="text" value="" id="item_id" readonly></td>
                                         <td style="padding: 1px !important;"><input class="input-cus text-center getcostValue" type="number" value="" onblur="AutoFormatCost('cost')" id="cost" min="0" max="9999" step="any"  placeholder="Enter Price"></td> 
                                         <td style="padding: 5px !important;" class="text-center"></td>
                                     </tr>

@@ -46,7 +46,7 @@
                 <div class="stat-dash">
                     <div class="stat-value-dash">{{ $fl_pending_call_out_dash_count_all }}</div>
                     <div class="stat-label-dash">Total Pending</div>
-                    {{-- <div class="stat-trend-dash {{ $percentage_change >= 0 ? 'trend-down-dash' : 'trend-up-dash' }}">
+                    {{-- <div class="stat-trend-dash-dash {{ -dash$percentage_change >= 0 ? 'trend-down-dash' : 'trend-up-dash' }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="{{ $percentage_change >= 0 ? '6 9 12 15 18 9' : '18 15 12 9 6 15' }}"></polyline>
                         </svg>
@@ -88,7 +88,7 @@
             <div class="stat-dash">
               <div class="stat-value-dash">{{$fl_abandoned_units_dash_count}}</div>
               <div class="stat-label-dash">Total Abandoned</div>
-              {{-- <div class="stat-trend-dash trend-down-dash">
+              {{-- <div class="stat-trend-dash-dash tre-dashnd-down-dash">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
@@ -575,6 +575,343 @@
       </div>
     </div> --}}
   </main>
+
+  <main class="container-dash dashboard-dash">
+    <div class="dashboard-header-dash">
+      <h1 class="dashboard-title-dash">Customer & Unit Management</h1>
+      <p class="dashboard-subtitle-dash">Filter and manage customer information and unit details</p>
+    </div>
+
+    <div class="dashboard-grid-dash">
+      <!-- Unit Details Card -->
+      <div class="card-dash">
+        <div class="card-header-dash">
+          <h2 class="card-title-dash">
+            <div class="card-icon-dash icon-unit">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+            </div>
+            Customer & Unit Details
+          </h2>
+          <div class="card-actions-dash">
+            <button class="card-action-btn-dash">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="1"></circle>
+                <circle cx="19" cy="12" r="1"></circle>
+                <circle cx="5" cy="12" r="1"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="card-body-dash">
+
+          <!-- Filter Section -->
+      <h2 class="filter-title">
+        <div class="filter-icon" style="margin-top: 0px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+          </svg>
+        </div>
+        Filter Options
+      </h2>
+      
+      <div class="search-box">
+        <div class="search-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </div>
+        <input type="text" class="search-input input-cus" placeholder="Search by customer name, ID, or unit details...">
+      </div>
+      
+      <div class="filter-grid">
+        <!-- Unit Filters -->
+        <div class="filter-group">
+          <label class="label-cus" for="unit-type-filter">Unit Type</label>
+          <select id="unit-type-filter" class="filter-select">
+            <option value="all" selected>All Units</option>
+            <option value="iMac">iMac</option>      
+            <option value="iPhone">iPhone</option>      
+            <option value="macbook">MacBook</option>      
+            <option value="mac mini">Mac Mini</option>      
+            <option value="airpods">AirPods</option>      
+            <option value="keyboard">Keyboard</option>      
+            <option value="mouse">Mouse</option>      
+            <option value="iPad">iPad</option>      
+            <option value="Apple watch">Apple Watch</option>      
+            <option value="trackpad">TrackPad</option>      
+            <option value="apple tv">Apple TV</option>      
+            <option value="studio display">Studio Display</option>      
+            <option value="MAC Pro">MAC Pro</option>      
+            <option value="Mac Studio">Mac Studio</option>      
+            <option value="beats headphones">Beats Headphones</option>      
+            <option value="beats earphone">Beats Earphones</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label class="label-cus" for="date-range">Date Range From</label>
+          <input type="date" id="date-range-from" class="filter-input">
+        </div>
+        <div class="filter-group">
+          <label class="label-cus" for="date-range">Date Range To</label>
+          <input type="date" id="date-range-to" class="filter-input">
+        </div>
+      </div>
+      
+      <div class="filter-actions">
+        <button class="btn-dash btn-outline-dash btn-sm-dash">Reset Filters</button>
+        <button class="btn-dash btn-primary-dash btn-sm-dash" id="apply_filters">Apply Filters</button>
+      </div>
+
+          <div class="card-stats-dash">
+            <div class="stat-dash">
+              <div class="stat-value-dash">{{number_format($customers_units)}}</div>
+              <div class="stat-label-dash">Total Customers with Units</div>
+              <div class="stat-trend-dash trend-up-dash">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="18 15 12 9 6 15"></polyline>
+                </svg>
+                12% from last month
+              </div>
+            </div>
+          </div>
+
+          <div class="unit-table-container">
+            <table class="unit-table">
+              <thead>
+                <tr>
+                  <th>Reference</th>
+                  <th>Unit Type</th>
+                  <th>Customer</th>
+                  <th>Location</th>
+                  <th>Created at</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="6">
+                    <div style="display:flex; align-items:center; justify-content:center; margin: 30px 30px 0px 30px;">
+                      <img src="https://cdn-icons-png.flaticon.com/128/7486/7486747.png" width="100px" alt="">
+                    </div>
+                    <p style="text-align: center" class="stat-label-dash">Please filter data</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer-dash">
+          <span class="card-footer-text-dash">Showing 5 of 2,156 units</span>
+          <div class="pagination" style="margin: 0">
+            <button class="pagination-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-grid-dash">
+      <!-- Customer Details Card -->
+      <div class="card-dash">
+        <div class="card-header-dash">
+          <h2 class="card-title-dash">
+            <div class="card-icon-dash icon-customer">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            Customer Information
+          </h2>
+          <div class="card-actions-dash">
+            <button class="card-action-btn-dash">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="1"></circle>
+                <circle cx="19" cy="12" r="1"></circle>
+                <circle cx="5" cy="12" r="1"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="card-body-dash">
+
+          <!-- Filter Section -->
+      <h2 class="filter-title">
+        <div class="filter-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+          </svg>
+        </div>
+        Filter Options
+      </h2>
+      
+      <div class="search-box">
+        <div class="search-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </div>
+        <input type="text" class="search-input" placeholder="Search by customer name, ID, or unit details...">
+      </div>
+      
+      <div class="filter-grid">
+        <!-- Customer Location Filters -->
+        <div class="filter-group">
+          <label class="filter-label" for="country-filter">Country</label>
+          <select id="country-filter" class="filter-select">
+            <option value="">All Countries</option>
+            <option value="philippines">Philippines</option>
+            <option value="malaysia">Malaysia</option>
+            <option value="singapore">Singapore</option>
+            <option value="indonesia">Indonesia</option>
+            <option value="thailand">Thailand</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label class="filter-label" for="city-filter">City</label>
+          <select id="city-filter" class="filter-select">
+            <option value="">All Cities</option>
+            <option value="manila">Manila</option>
+            <option value="quezon">Quezon City</option>
+            <option value="makati">Makati</option>
+            <option value="pasig">Pasig</option>
+            <option value="taguig">Taguig</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label class="filter-label" for="barangay-filter">Barangay</label>
+          <select id="barangay-filter" class="filter-select">
+            <option value="">All Barangays</option>
+            <option value="barangay1">Barangay 1</option>
+            <option value="barangay2">Barangay 2</option>
+            <option value="barangay3">Barangay 3</option>
+            <option value="barangay4">Barangay 4</option>
+            <option value="barangay5">Barangay 5</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label class="filter-label" for="date-range">Date Range</label>
+          <input type="date" id="date-range" class="filter-input">
+        </div>
+      </div>
+      
+      <div class="filter-actions">
+        <button class="btn-dash btn-outline-dash btn-sm-dash">Reset Filters</button>
+        <button class="btn-dash btn-primary-dash btn-sm-dash">Apply Filters</button>
+      </div>
+
+          <div class="card-stats-dash">
+            <div class="stat-dash">
+              <div class="stat-value-dash">1,248</div>
+              <div class="stat-label-dash">Total Customers</div>
+              <div class="stat-trend-dash trend-up-dash">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="18 15 12 9 6 15"></polyline>
+                </svg>
+                8% from last month
+              </div>
+            </div>
+          </div>
+
+          <div class="customer-table-container">
+            <table class="customer-table">
+              <thead>
+                <tr>
+                  <th>Customer ID</th>
+                  <th>Name</th>
+                  <th>Country</th>
+                  <th>City</th>
+                  <th>Barangay</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>C-1001</td>
+                  <td>Maria Santos</td>
+                  <td>Philippines</td>
+                  <td>Manila</td>
+                  <td>Barangay 128</td>
+                  <td><span class="status-badge status-active">Active</span></td>
+                </tr>
+                <tr>
+                  <td>C-1002</td>
+                  <td>Juan Dela Cruz</td>
+                  <td>Philippines</td>
+                  <td>Quezon City</td>
+                  <td>Barangay Loyola</td>
+                  <td><span class="status-badge status-active">Active</span></td>
+                </tr>
+                <tr>
+                  <td>C-1003</td>
+                  <td>Roberto Tan</td>
+                  <td>Philippines</td>
+                  <td>Makati</td>
+                  <td>Barangay Poblacion</td>
+                  <td><span class="status-badge status-inactive">Inactive</span></td>
+                </tr>
+                <tr>
+                  <td>C-1004</td>
+                  <td>Elena Reyes</td>
+                  <td>Philippines</td>
+                  <td>Pasig</td>
+                  <td>Barangay Pinagbuhatan</td>
+                  <td><span class="status-badge status-active">Active</span></td>
+                </tr>
+                <tr>
+                  <td>C-1005</td>
+                  <td>Michael Garcia</td>
+                  <td>Philippines</td>
+                  <td>Taguig</td>
+                  <td>Barangay Fort Bonifacio</td>
+                  <td><span class="status-badge status-pending">Pending</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <button class="pagination-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="card-footer-dash">
+          <span class="card-footer-text-dash">Showing 5 of 1,248 customers</span>
+          <a href="#" class="btn-dash btn-primary-dash btn-sm-dash">Export Data</a>
+        </div>
+      </div>
+    </div>  
+  </main>
 @endsection
 @push('bottom')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -684,5 +1021,58 @@
       // Set the latest year as selected
       yearFilter.val(startYear);
   });
+</script>
+<script>
+$('#apply_filters').on('click', function () {
+    let unit_type = $('#unit-type-filter').val();
+    let date_range_from = $('#date-range-from').val();
+    let date_range_to = $('#date-range-to').val();
+
+    if (unit_type || date_range_from || date_range_to) {
+        $.ajax({
+            url: "{{ route('filter_customers_units') }}",
+            type: "POST",
+            data: { 
+              unit_type: unit_type, 
+              date_range_from: date_range_from, 
+              date_range_to: date_range_to 
+            },
+            success: function (response) {
+                let results = response.filter_results;
+                let tbody = $('.unit-table tbody');
+                tbody.empty(); // Clear previous results
+
+                if (results.length > 0) {
+                    $.each(results, function (index, item) {
+                        let row = `
+                            <tr>
+                                <td>${item.reference_no}</td>
+                                <td>${item.unit_type}</td>
+                                <td>${item.last_name}, ${item.first_name}</td>
+                                <td>${item.city}</td>
+                                <td>${item.created_at}</td>
+                                <td>${item.warranty_status}</td>
+                            </tr>
+                        `;
+                        tbody.append(row);
+                    });
+                } else {
+                    tbody.html(`
+                        <tr>
+                            <td colspan="6">
+                                <div style="display:flex; align-items:center; justify-content:center; margin: 30px 30px 0px 30px;">
+                                    <img src="https://cdn-icons-png.flaticon.com/128/7486/7486747.png" width="100px" alt="">
+                                </div>
+                                <p style="text-align: center" class="stat-label-dash">No records found</p>
+                            </td>
+                        </tr>
+                    `);
+                }
+            }
+        });
+    } else {
+        alert("Request Invalid!");
+    }
+});
 </script>
 @endpush

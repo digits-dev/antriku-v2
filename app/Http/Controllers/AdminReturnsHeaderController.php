@@ -840,6 +840,8 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 		if ($data['print_form_type'] == 1) {
 			DB::table('returns_header')->where('id', $header_id)->update([
 				'print_receive_form' => "YES",
+				'print_receiving_form_by' => CRUDBooster::myId(),
+				'print_receiving_form_at' => now(),
 				'updated_by' => CRUDBooster::myId()
 			]);
 		} elseif ($data['print_form_type'] == 2) {

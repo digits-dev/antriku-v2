@@ -37,7 +37,7 @@
                                 </div>
                                 <div class="reference-badge-cust">
                                     Reference:
-                                    <strong style="margin-left: 4px;">A000029362</strong>
+                                    <strong style="margin-left: 4px;">{{$transaction_details->reference_no}}</strong>
                                     <span class="copy-icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -347,7 +347,7 @@
                         <button type="submit" id="paid" onclick="return changeStatus(1)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o"></i> PAID</button>
                     @elseif($transaction_details->repair_status == 9 && CRUDBooster::getModulePath() == "to_diagnose")
                         <button type="submit" id="call_out_mail_in"  onclick="return validateBeforeChangeStatus(10)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px; {{ empty($transaction_details->case_status) || $transaction_details->case_status == 'CARRY-IN' ? 'display: none;' : '' }}">PENDING CUSTOMER'S APPROVAL</button>
-                        <button type="submit" id="ongoing_repair" onclick="return validateBeforeChangeStatus(13)" class="btn btn-primary pull-right buttonSubmit"  style="margin-left: 20px; {{ $transaction_details->warranty_status != 'OUT OF WARRANTY' && $transaction_details->case_status == 'CARRY-IN' ? '' : 'display: none;' }}">ONGOING REPAIR</button>
+                        <button type="submit" id="ongoing_repair" onclick="return validateBeforeChangeStatus(13)" class="btn btn-primary pull-right buttonSubmit btn_ongoing_repair_1"  style="margin-left: 20px; {{ $transaction_details->warranty_status != 'OUT OF WARRANTY' && $transaction_details->case_status == 'CARRY-IN' ? '' : 'display: none;' }}">ONGOING REPAIR</button>
                         <button type="submit" id="pending_spare_parts" onclick="return validateBeforeChangeStatus(14)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px; {{ $transaction_details->warranty_status != 'OUT OF WARRANTY' && $transaction_details->case_status == 'CARRY-IN' ? '' : 'display: none;' }}">PENDING SPARE PARTS</button>
                         <button type="submit" id="for_customer_payment" onclick="return validateBeforeChangeStatus(17)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px; {{ $transaction_details->warranty_status == 'OUT OF WARRANTY' && $transaction_details->case_status == 'CARRY-IN' ? '' : 'display: none;' }}">For Customer’s Payment</button>
 
@@ -362,7 +362,7 @@
                         <button type="submit" id="pickup" onclick="return changeStatus(7)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o" aria-hidden="true"></i> TO PICK UP</button>
                     @elseif($transaction_details->repair_status == 3 && CRUDBooster::getModulePath() == "call_out")
                         <button type="submit" id="void" onclick="return changeStatus(5)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;" {{ $transaction_details->print_release_form == "YES" && $transaction_details->print_technical_report == "YES" ? '' : 'disabled' }}><i class="fa fa-check-square-o" aria-hidden="true"></i> CANCELLED/CLOSE</button>
-                        <button type="button" id="print_releasing_form" onclick="print_technical_from_confirm()" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px; display:{{ $transaction_details->print_release_form == "YES" && $transaction_details->print_technical_report == "YES" ? 'none' : '' }}"> <i class="fa fa-print"></i> Print Releasing Form</button>
+                        <button type="button" id="print_releasing_form" onclick="print_release_form()" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px; display:{{ $transaction_details->print_release_form == "YES" && $transaction_details->print_technical_report == "YES" ? 'none' : '' }}"> <i class="fa fa-print"></i> Print Releasing Form</button>
                     @elseif($transaction_details->repair_status == 7 && CRUDBooster::getModulePath() == "to_close" && CRUDBooster::myPrivilegeId() != 2)
                         <button type="submit" id="close" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o" aria-hidden="true"></i> CLOSE</button>
                     @endif 
@@ -410,6 +410,9 @@
                         @else
                             <button type="submit" id="save" onclick="return validateBeforeChangeStatus(18)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-money" style="margin-right: 3px" aria-hidden="true"></i> Replacement Parts Paid</button>
                         @endif
+                        <button type="button" id="call_out" onclick="callOut(17)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+                            <i class="fa fa-phone"></i> CALL OUT ({{ $CallOutCount }})
+                        </button>
                     @endif
                     @if ($transaction_details->repair_status == 18 && CRUDBooster::getModulePath() == "pending_repair")
                         @if ($transaction_details->warranty_status == 'OUT OF WARRANTY' && $transaction_details->case_status == 'CARRY-IN')
@@ -432,10 +435,8 @@
                     <button type="submit" id="save" onclick="return changeStatus(21)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-circle-o"></i> FOR CALL-OUT (GOOD UNIT)</button>
                     @endif
                     @if ($transaction_details->repair_status == 21 && CRUDBooster::getModulePath() == "call_out")
-                    <button type="button" id="print_technical_form" onclick="print_technical_from_confirm()" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-print"></i> Print Technical Form</button>
-                    @endif
-                    @if ($transaction_details->repair_status == 21 && CRUDBooster::getModulePath() == "call_out")
-                    <button type="button" id="print_releasing_form" onclick="print_technical_from_confirm()" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-print"></i> Print Releasing Form</button>
+                        <button type="button" id="print_technical_form" onclick="print_technical_from_confirm()" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px; display:{{$transaction_details->print_technical_report == 'YES' ? 'none' : ''}}"> <i class="fa fa-print"></i> Print Technical Form</button>
+                        <button type="button" id="print_release_form" onclick="print_release_form()" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px; display:{{$transaction_details->print_technical_report == 'YES' ? '' : 'none'}}"> <i class="fa fa-print"></i> Print Releasing Form</button>
                     @endif
                     @if (in_array(CRUDBooster::myPrivilegeId(), [3, 4]))
                         <button type="submit" id="save" onclick="return changeStatus(23)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-circle-o"></i> Escalate</button>
@@ -469,6 +470,11 @@
                 $('.available_btn').show();
             }
         });
+
+        function print_release_form(){
+            let header_id = $('#header_id').val();
+            window.location.href = window.location.origin+"/admin/to_close/PrintReleaseForm/"+header_id;
+        }
 
         function print_technical_from_confirm() {
             let header_id = $('#header_id').val();

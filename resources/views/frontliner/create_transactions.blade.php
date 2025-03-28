@@ -159,7 +159,7 @@
                                         </div>
                                     </label>
                                     
-                                    <label class="warranty-option-cus">
+                                    {{-- <label class="warranty-option-cus">
                                         <div class="radio-container-cus">
                                         <input type="radio" name="warranty_status" value="SPECIAL">
                                         <span class="radio-custom"></span>
@@ -168,7 +168,7 @@
                                         <div class="option-title-cus">Special Coverage</div>
                                         <div class="option-description-cus">Extended warranty or special program</div>
                                         </div>
-                                    </label>
+                                    </label> --}}
                                 </div>
                             </div>
                             <div class="form-group-cus">

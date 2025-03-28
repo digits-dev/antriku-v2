@@ -1,12 +1,12 @@
 <?php namespace App\Http\Controllers;
 
-	use Luigel\Paymongo\Facades\Paymongo;
-	use Illuminate\Http\Request;
-	use Illuminate\Support\Facades\Input;
-	use Session;
-	use DB;
-	use URL;
-	use CRUDBooster;
+use crocodicstudio\crudbooster\helpers\CRUDBooster;
+use Luigel\Paymongo\Facades\Paymongo;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
+use URL;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 	use Carbon\Carbon;
 	
 
@@ -724,6 +724,7 @@
 							'cs_code'			=> $cs_code[$i],
 							'item_description'	=> $parts_item_description[0]->item_description,
 							'qty' 				=> $parts_item_description[0]->qty > 0 ? 'Available' : 'Unavailable',
+							'item_id'           => $parts_item_description[0]->id,
 							'cost'				=> $cost[$i],
 							'updated_by'		=> CRUDBooster::myId()
 						]);
@@ -731,6 +732,10 @@
 							'serial_number'		=> $serial_no[$i],
 							'updated_by'		=> CRUDBooster::myId()
 						]);
+
+						// DB::table()->where()->update([
+
+						// ]);
 
                     }else if(empty($bodyItem->id) && !empty($service_code[$i])){
                         $bodyItemID = DB::table('returns_body_item')->insertGetId([
@@ -740,6 +745,7 @@
                             'cs_code'			=> $cs_code[$i],
                             'item_description'	=> $parts_item_description[0]->item_description,
 							'qty' 				=> $parts_item_description[0]->qty > 0 ? 'Available' : 'Unavailable',
+							'item_id'           => $parts_item_description[0]->id,
                             'cost'				=> $cost[$i],
                             'created_by'		=> CRUDBooster::myId(),
                             'updated_by'		=> CRUDBooster::myId()
@@ -1044,7 +1050,7 @@
 				if($request->warranty_status == 'OUT OF WARRANTY'){
 					try {
 						if($transaction_details[0]->parts_total_cost <= 2000.00){
-							CRUDBooster::sendEmail(['to'=>$customer_email,'data'=>$data, 'template'=>'send_payment_link','attachments'=>[]]);
+							CRUDBooster::sendEmail(['to'=>$customer_email,'data'=>$data, 'template'=>'send_payment_link_below_2k','attachments'=>[]]);
 						} else{
 							CRUDBooster::sendEmail(['to'=>$customer_email,'data'=>$data, 'template'=>'send_payment_link','attachments'=>[]]);
 						}
@@ -1104,8 +1110,6 @@
 			}
 			
 			if($request->status_id == 21){
-
-				
 				DB::table('returns_header')->where('id',$request->header_id)->update([
 					'for_call_out_good_unit_by'   => CRUDBooster::myId(),
 					'for_call_out_good_unit_at'   => date('Y-m-d H:i:s'),
@@ -1146,6 +1150,7 @@
 			if(!empty($request->serial_no)){ $serial_no = $request->serial_no; }else{ $serial_no = ''; }
 			if(!empty($request->item_desc)){ $item_desc = $request->item_desc; }else{ $item_desc = ''; }
 			if(empty($request->item_qty) || $request->item_qty == 0){ $item_qty = 'Unavailable'; }else{ $item_qty = 'Available'; }
+			if(!empty($request->item_id)){ $item_id = $request->item_id; }else{ $item_id = ''; }
 			if(!empty($request->cost)){ $cost = $request->cost; }else{ $cost = ''; }
 			
 			$bodyItemID = DB::table('returns_body_item')->insertGetId([
@@ -1155,6 +1160,7 @@
 				'cs_code'			=> $cs_code,
 				'item_description'	=> $item_desc,
 				'qty'				=> $item_qty,
+				'item_id'			=> $item_id,
 				'cost'				=> $cost,
 				'created_by'		=> CRUDBooster::myId(),
 				'updated_by'		=> CRUDBooster::myId()
@@ -1167,6 +1173,20 @@
 				'created_by'			=> CRUDBooster::myId(),
 				'updated_by'			=> CRUDBooster::myId()
 			]);
+
+			$spare_parts_item = DB::table('parts_item_master')
+				->where('id', $item_id)
+				->lockForUpdate()
+				->first();
+
+			if ($spare_parts_item && $spare_parts_item->qty > 0) {
+				DB::table('parts_item_master')->where('id', $item_id)
+					->update([
+						'qty' => $spare_parts_item->qty - 1,
+						'updated_by' => CRUDBooster::myId(),
+						'updated_at' => now()
+					]);
+			}
 
 			$data['quotation'] = DB::table('returns_body_item')
 			->leftJoin('returns_serial', 'returns_body_item.id', '=', 'returns_serial.returns_body_item_id')

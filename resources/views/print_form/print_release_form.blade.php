@@ -481,6 +481,8 @@
                                     icon: "success",
                                     title: "Email Sent Successfully!",
                                     html: emailResponse.message + "<br>" + "<b>To: </b>" + emailResponse.email,
+                                }, function(){
+                                    window.location.href = window.location.origin+"/admin/call_out/edit/"+header_id;
                                 });
                             },
                             error: function () {

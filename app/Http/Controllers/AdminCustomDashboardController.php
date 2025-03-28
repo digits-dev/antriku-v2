@@ -61,6 +61,8 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->groupBy('cms_users.id', 'cms_users.name', 'cms_privileges.name')
             ->orderBy('total_creations', 'DESC')
             ->get();
+        
+        $data['customers_units'] = $handle_per_employee = DB::table('returns_header')->where('branch', CRUDBooster::me()->branch_id)->count();
 
         return view('frontliner.admin_dashboard_custom', compact('salesData'), $data);
     }
@@ -120,6 +122,32 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
                 'labels' => $ytdSales->pluck('year')->toArray(),
                 'data' => $ytdSales->pluck('total')->toArray()
             ],
+        ]);
+    }
+
+    public function filterCustomerUnit(Request $request)
+    {
+        $unit_type = $request->input('unit_type');
+        $date_from = $request->input('date_range_from'); 
+        $date_to = $request->input('date_range_to'); 
+
+        $query = DB::table('returns_header');
+
+        // Apply date range filter
+        if ($date_from && $date_to) {
+            $query->whereRaw("DATE(created_at) BETWEEN ? AND ?", [$date_from, $date_to]);
+        } elseif ($date_from) { 
+            $query->whereRaw("DATE(created_at) >= ?", [$date_from]);
+        } elseif ($date_to) { 
+            $query->whereRaw("DATE(created_at) <= ?", [$date_to]);
+        } elseif ($unit_type) {
+            $query->where('unit_type', $unit_type);
+        }
+
+        $filter_results = $query->get();
+
+        return response()->json([
+            'filter_results' => $filter_results
         ]);
     }
 

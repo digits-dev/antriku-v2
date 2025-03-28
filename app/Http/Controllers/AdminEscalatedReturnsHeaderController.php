@@ -56,9 +56,24 @@
 			}
 		}		
 
-	    public function hook_row_index($column_index,&$column_value) {	        
-	    	//Your code here
-	    }
+	    public function hook_row_index($column_index,&$column_value) 
+		{
+			$escalated = DB::table('transaction_status')->where('id','23')->first();
+			
+			if($column_index == 1){
+				if($column_value == $escalated->id){
+					$column_value = '<span class="label label-warning">'.$escalated->status_name.'</span>';
+				}
+			}
+
+			if ($column_index == 3) {
+				$models = DB::table('model')->where('id', $column_value)->first();
+				if ($models) {
+					$model_group = DB::table('model_group')->where('id', $models->model_group)->first();
+					$column_value = '<span class="label label-info">' . $model_group->model_group_name . '</span>';
+				}
+			}
+		}
 
 		public function cbView($template, $data)
 	{
