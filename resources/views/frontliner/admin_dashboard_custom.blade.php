@@ -12,9 +12,49 @@
 @endpush
 @section('content')
 <main class="container-dash dashboard-dash">
-    <div class="dashboard-header-dash">
-      <h1 class="dashboard-title-dash">Frontliner's Dashboard</h1>
-      <p class="dashboard-subtitle-dash">Overview of pending call-outs, abandoned units, and aging service requests</p>
+    <!-- Enhanced Dashboard Title Section -->
+    <div class="dashboard-title-section">
+      <!-- Top section with breadcrumbs and actions -->
+      <div class="dashboard-header-top">
+        <div class="breadcrumbs">
+          <div class="breadcrumb-item">
+            <a href="#">Home</a>
+          </div>
+          <div class="breadcrumb-item">
+            <a href="#">Dashboard</a>
+          </div>
+          <div class="breadcrumb-item active">Frontliner</div>
+        </div>
+        
+        <div class="dashboard-actions">
+          <button class="action-button primary" style="display: none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export Report
+          </button>
+        </div>
+      </div>
+      
+      <!-- Title and subtitle with enhanced styling -->
+      <div class="dashboard-title-content">
+        <h1 class="dashboard-title">
+          <span class="dashboard-title-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+          </span>
+          Frontliner's Dashboard
+        </h1>
+        <p class="dashboard-subtitle">
+          Comprehensive overview of pending call-outs, abandoned units, and aging service requests. Sales monitoring, customer and unit filters.
+        </p>
+      </div>
     </div>
 
     <div class="dashboard-grid-dash">
@@ -46,19 +86,9 @@
                 <div class="stat-dash">
                     <div class="stat-value-dash">{{ $fl_pending_call_out_dash_count_all }}</div>
                     <div class="stat-label-dash">Total Pending</div>
-                    {{-- <div class="stat-trend-dash-dash {{ -dash$percentage_change >= 0 ? 'trend-down-dash' : 'trend-up-dash' }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="{{ $percentage_change >= 0 ? '6 9 12 15 18 9' : '18 15 12 9 6 15' }}"></polyline>
-                        </svg>
-                        {{ abs($percentage_change) }}% from Yesterday
-                    </div> --}}
                 </div>
             </div>
         </div>        
-        <div class="card-footer-dash">
-          <span class="card-footer-text-dash">Last updated: Today, 10:45 AM</span>
-          <a href="/admin/call_out" class="btn-dash btn-primary-dash btn-sm-dash">View All</a>
-        </div>
       </div>
 
       <!-- Abandoned Units Card -->
@@ -88,18 +118,8 @@
             <div class="stat-dash">
               <div class="stat-value-dash">{{$fl_abandoned_units_dash_count}}</div>
               <div class="stat-label-dash">Total Abandoned</div>
-              {{-- <div class="stat-trend-dash-dash tre-dashnd-down-dash">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-                0% from Last Week
-              </div> --}}
             </div>
           </div>
-        </div>
-        <div class="card-footer-dash">
-          <span class="card-footer-text-dash">Last updated: Today, 10:45 AM</span>
-          <a href="/admin/call_out" class="btn-dash btn-primary-dash btn-sm-dash">View All</a>
         </div>
       </div>
 
@@ -148,14 +168,10 @@
                   @endphp
                   <div class="employee-bar" style="width: {{$total_case_handled_percentage}}%;"></div>
                 </div>
-                <div class="employee-value">{{$my_handled_case->total_creations}} / {{$handle_overall_total}}</div>
+                <div class="employee-value">{{number_format($my_handled_case->total_creations)}} / {{number_format($handle_overall_total)}}</div>
               </div>
             @endforeach
           </div>
-        </div>
-        <div class="card-footer-dash">
-          <span class="card-footer-text-dash">Last updated: Today, 10:45 AM</span>
-          <a href="#" class="btn-dash btn-primary-dash btn-sm-dash">View All</a>
         </div>
       </div>
     </div>
@@ -323,10 +339,6 @@
                 </div>
               </div>
             </div>
-            <div class="card-footer-dash">
-              <span class="card-footer-text-dash">Last updated: Today, 10:45 AM</span>
-              <a href="/admin/call_out" class="btn-dash btn-primary-dash btn-sm-dash">View All</a>
-            </div>
           </div>
 
         <!-- Employee Performance Card -->
@@ -353,7 +365,7 @@
             </button>
           </div>
         </div>
-        <div class="card-body-dash" style="height: 295px; overflow-y:auto">
+        <div class="card-body-dash" style="height: 310px; overflow-y:auto">
           <div class="employee-chart">
             @foreach ($handle_for_all_employee as $per_employee)
               <div class="employee-row">
@@ -377,14 +389,10 @@
                   @endphp
                   <div class="employee-bar" style="width: {{$total_case_handled_per_employee_percentage}}%;"></div>
                 </div>
-                <div class="employee-value">{{$per_employee->total_creations}} / {{$handle_overall_total}}</div>
+                <div class="employee-value">{{number_format($per_employee->total_creations)}} / {{number_format($handle_overall_total)}}</div>
               </div>
             @endforeach
           </div>
-        </div>
-        <div class="card-footer-dash">
-          <span class="card-footer-text-dash">Last updated: Today, 10:45 AM</span>
-          <a href="#" class="btn-dash btn-primary-dash btn-sm-dash">View All</a>
         </div>
       </div>
     </div>
@@ -402,184 +410,21 @@
             </div>
             Total Sales
           </h2>
-          <div class="card-actions-dash" style="width: 200px">
-            <select id="timeFilter" class="input-cus">
+          <div class="card-actions-dash">
+            <select id="timeFilter" class="filter-select">
                 <option value="weekly" selected>Weekly</option>
                 <option value="monthly">Monthly</option>
                 <option value="ytd">YTD</option>
             </select>
-            <select id="yearFilter" class="input-cus">
+            <select id="yearFilter" class="filter-select">
               <option value="2021" selected>2021</option>
             </select>
           </div>
         </div>
         <div class="card-body-dash">
             <canvas id="salesChart"></canvas>
-        </div>
-        <div class="card-footer-dash">
-          <span class="card-footer-text-dash">Last updated: Today, 10:45 AM</span>
-          <a href="#" class="btn-dash btn-primary-dash btn-sm-dash">View Details</a>
-        </div>
+        </div><br>
       </div>
-    </div>
-
-    {{-- <div class="dashboard-grid-dash">
-        <!-- Time Tracker Table Card -->
-        <div class="card-dash">
-          <div class="card-header-dash">
-            <h2 class="card-title-dash">
-              <div class="card-icon-dash icon-time-dash">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-              </div>
-              Time and Motion
-            </h2>
-            <div class="card-actions-dash">
-              <button class="card-action-btn-dash">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="1"></circle>
-                  <circle cx="19" cy="12" r="1"></circle>
-                  <circle cx="5" cy="12" r="1"></circle>
-                </svg>
-              </button>
-            </div>
-          </div>
-
-        <div class="card-body-dash">
-          <div class="filter-controls">
-            <div class="filter-group">
-              <label class="filter-label" for="date-filter">Date:</label>
-              <input type="date" id="date-filter" class="filter-input" value="2021-09-05">
-            </div>
-            <div class="filter-group">
-              <label class="filter-label" for="user-filter">User:</label>
-              <select id="user-filter" class="filter-select">
-                <option value="all">All Users</option>
-                <option value="kailash" selected>Kailash</option>
-                <option value="john">John</option>
-                <option value="sarah">Sarah</option>
-              </select>
-            </div>
-            <div class="filter-group">
-              <label class="filter-label" for="duration-filter">Duration:</label>
-              <select id="duration-filter" class="filter-select">
-                <option value="all">All Durations</option>
-                <option value="short">Short (< 10s)</option>
-                <option value="medium">Medium (10s - 30s)</option>
-                <option value="long">Long (> 30s)</option>
-              </select>
-            </div>
-            <button class="btn-dash btn-primary-dash btn-sm-dash">Apply Filters</button>
-          </div>
-          <div class="tracker-table-container">
-            <table class="tracker-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Transaction ID</th>
-                  <th>User ID</th>
-                  <th>Start Time</th>
-                  <th>End Time</th>
-                  <th>Duration</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>5-Sep-21</td>
-                  <td>2323</td>
-                  <td>Kailash</td>
-                  <td>11:51 AM</td>
-                  <td>11:51 AM</td>
-                  <td class="duration-cell short-duration">0:00:03</td>
-                </tr>
-                <tr>
-                  <td>5-Sep-21</td>
-                  <td>5255</td>
-                  <td>Kailash</td>
-                  <td>11:51 AM</td>
-                  <td>11:52 AM</td>
-                  <td class="duration-cell short-duration">0:00:07</td>
-                </tr>
-                <tr>
-                  <td>5-Sep-21</td>
-                  <td>3525</td>
-                  <td>Kailash</td>
-                  <td>11:52 AM</td>
-                  <td>11:52 AM</td>
-                  <td class="duration-cell medium-duration">0:00:11</td>
-                </tr>
-                <tr>
-                  <td>5-Sep-21</td>
-                  <td>6225</td>
-                  <td>Kailash</td>
-                  <td>11:52 AM</td>
-                  <td>11:52 AM</td>
-                  <td class="duration-cell short-duration">0:00:07</td>
-                </tr>
-                <tr>
-                  <td>5-Sep-21</td>
-                  <td>5272</td>
-                  <td>Kailash</td>
-                  <td>11:52 AM</td>
-                  <td>11:52 AM</td>
-                  <td class="duration-cell short-duration">0:00:07</td>
-                </tr>
-                <tr>
-                  <td>5-Sep-21</td>
-                  <td>7363</td>
-                  <td>Kailash</td>
-                  <td>11:53 AM</td>
-                  <td>11:53 AM</td>
-                  <td class="duration-cell medium-duration">0:00:33</td>
-                </tr>
-                <tr>
-                  <td>5-Sep-21</td>
-                  <td>8124</td>
-                  <td>Kailash</td>
-                  <td>11:54 AM</td>
-                  <td>11:55 AM</td>
-                  <td class="duration-cell medium-duration">0:00:22</td>
-                </tr>
-                <tr>
-                  <td>5-Sep-21</td>
-                  <td>9235</td>
-                  <td>Kailash</td>
-                  <td>11:55 AM</td>
-                  <td>11:56 AM</td>
-                  <td class="duration-cell long-duration">0:01:05</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="card-footer-dash">
-          <span class="card-footer-text-dash">Showing 8 of 24 transactions</span>
-          <div class="pagination" style="margin: 0">
-            <button class="pagination-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="15 18 9 12 15 6"></polyline>
-              </svg>
-            </button>
-            <button class="pagination-btn active">1</button>
-            <button class="pagination-btn">2</button>
-            <button class="pagination-btn">3</button>
-            <button class="pagination-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div> --}}
-  </main>
-
-  <main class="container-dash dashboard-dash">
-    <div class="dashboard-header-dash">
-      <h1 class="dashboard-title-dash">Customer & Unit Management</h1>
-      <p class="dashboard-subtitle-dash">Filter and manage customer information and unit details</p>
     </div>
 
     <div class="dashboard-grid-dash">
@@ -624,34 +469,10 @@
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
         </div>
-        <input type="text" class="search-input input-cus" placeholder="Search by customer name, ID, or unit details...">
+        <input type="text" class="search-input" placeholder="Search by customer name, ID, or unit details..." id="searchInput">
       </div>
       
-      <div class="filter-grid">
-        <!-- Unit Filters -->
-        <div class="filter-group">
-          <label class="label-cus" for="unit-type-filter">Unit Type</label>
-          <select id="unit-type-filter" class="filter-select">
-            <option value="all" selected>All Units</option>
-            <option value="iMac">iMac</option>      
-            <option value="iPhone">iPhone</option>      
-            <option value="macbook">MacBook</option>      
-            <option value="mac mini">Mac Mini</option>      
-            <option value="airpods">AirPods</option>      
-            <option value="keyboard">Keyboard</option>      
-            <option value="mouse">Mouse</option>      
-            <option value="iPad">iPad</option>      
-            <option value="Apple watch">Apple Watch</option>      
-            <option value="trackpad">TrackPad</option>      
-            <option value="apple tv">Apple TV</option>      
-            <option value="studio display">Studio Display</option>      
-            <option value="MAC Pro">MAC Pro</option>      
-            <option value="Mac Studio">Mac Studio</option>      
-            <option value="beats headphones">Beats Headphones</option>      
-            <option value="beats earphone">Beats Earphones</option>
-          </select>
-        </div>
-        
+      <div class="filter-grid">  
         <div class="filter-group">
           <label class="label-cus" for="date-range">Date Range From</label>
           <input type="date" id="date-range-from" class="filter-input">
@@ -684,10 +505,10 @@
             <table class="unit-table">
               <thead>
                 <tr>
-                  <th>Reference</th>
-                  <th>Unit Type</th>
+                  <th>Reference No.</th>
+                  <th>Model</th>
                   <th>Customer</th>
-                  <th>Location</th>
+                  <th>Contact</th>
                   <th>Created at</th>
                   <th>Status</th>
                 </tr>
@@ -706,21 +527,8 @@
           </div>
         </div>
         <div class="card-footer-dash">
-          <span class="card-footer-text-dash">Showing 5 of 2,156 units</span>
-          <div class="pagination" style="margin: 0">
-            <button class="pagination-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="15 18 9 12 15 6"></polyline>
-              </svg>
-            </button>
-            <button class="pagination-btn active">1</button>
-            <button class="pagination-btn">2</button>
-            <button class="pagination-btn">3</button>
-            <button class="pagination-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
-            </button>
+          <span class="card-footer-text-dash" id="showing_data_cus_unit"></span>
+          <div class="pagination-cust" id="pagination_cus_unit" style="margin: 0">
           </div>
         </div>
       </div>
@@ -750,79 +558,49 @@
           </div>
         </div>
         <div class="card-body-dash">
-
-          <!-- Filter Section -->
-      <h2 class="filter-title">
-        <div class="filter-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-          </svg>
-        </div>
-        Filter Options
-      </h2>
-      
-      <div class="search-box">
-        <div class="search-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-        </div>
-        <input type="text" class="search-input" placeholder="Search by customer name, ID, or unit details...">
-      </div>
       
       <div class="filter-grid">
         <!-- Customer Location Filters -->
         <div class="filter-group">
           <label class="filter-label" for="country-filter">Country</label>
-          <select id="country-filter" class="filter-select">
-            <option value="">All Countries</option>
-            <option value="philippines">Philippines</option>
-            <option value="malaysia">Malaysia</option>
-            <option value="singapore">Singapore</option>
-            <option value="indonesia">Indonesia</option>
-            <option value="thailand">Thailand</option>
+          <select name="country" id="country" class="js-example-basic-single filter-select">
+              <option value="" selected disabled>Select country here...</option>
+              @foreach($country as $per_count)
+                  <option value="{{$per_count->countryDesc}}" data-id="{{$per_count->id}}">{{$per_count->countryDesc}}</option>
+              @endforeach
           </select>
         </div>
         
         <div class="filter-group">
+          <label class="filter-label" for="province-filter">Province</label>
+            <select name="province" autocomplete="off" class="js-example-basic-single filter-select" id="province" disabled> 
+                <option value="" selected disabled>Select province here...</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
           <label class="filter-label" for="city-filter">City</label>
-          <select id="city-filter" class="filter-select">
-            <option value="">All Cities</option>
-            <option value="manila">Manila</option>
-            <option value="quezon">Quezon City</option>
-            <option value="makati">Makati</option>
-            <option value="pasig">Pasig</option>
-            <option value="taguig">Taguig</option>
-          </select>
+            <select name="city" autocomplete="off" class="js-example-basic-single filter-select" id="city" disabled> 
+                <option value="" selected disabled>Select city here...</option>
+            </select>
         </div>
         
         <div class="filter-group">
           <label class="filter-label" for="barangay-filter">Barangay</label>
-          <select id="barangay-filter" class="filter-select">
-            <option value="">All Barangays</option>
-            <option value="barangay1">Barangay 1</option>
-            <option value="barangay2">Barangay 2</option>
-            <option value="barangay3">Barangay 3</option>
-            <option value="barangay4">Barangay 4</option>
-            <option value="barangay5">Barangay 5</option>
-          </select>
-        </div>
-        
-        <div class="filter-group">
-          <label class="filter-label" for="date-range">Date Range</label>
-          <input type="date" id="date-range" class="filter-input">
+            <select name="barangay" autocomplete="off" class="js-example-basic-single filter-select" id="barangay" disabled> 
+                <option value="" selected disabled>Select barangay here...</option>
+            </select>
         </div>
       </div>
       
       <div class="filter-actions">
         <button class="btn-dash btn-outline-dash btn-sm-dash">Reset Filters</button>
-        <button class="btn-dash btn-primary-dash btn-sm-dash">Apply Filters</button>
+        <button class="btn-dash btn-primary-dash btn-sm-dash" id="apply_customer_info_filter">Apply Filters</button>
       </div>
 
           <div class="card-stats-dash">
             <div class="stat-dash">
-              <div class="stat-value-dash">1,248</div>
+              <div class="stat-value-dash">{{number_format($customers_info)}}</div>
               <div class="stat-label-dash">Total Customers</div>
               <div class="stat-trend-dash trend-up-dash">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -837,77 +615,31 @@
             <table class="customer-table">
               <thead>
                 <tr>
-                  <th>Customer ID</th>
-                  <th>Name</th>
+                  <th>Customer Name</th>
                   <th>Country</th>
+                  <th>Province</th>
                   <th>City</th>
                   <th>Barangay</th>
-                  <th>Status</th>
+                  <th>Transaction Status</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>C-1001</td>
-                  <td>Maria Santos</td>
-                  <td>Philippines</td>
-                  <td>Manila</td>
-                  <td>Barangay 128</td>
-                  <td><span class="status-badge status-active">Active</span></td>
-                </tr>
-                <tr>
-                  <td>C-1002</td>
-                  <td>Juan Dela Cruz</td>
-                  <td>Philippines</td>
-                  <td>Quezon City</td>
-                  <td>Barangay Loyola</td>
-                  <td><span class="status-badge status-active">Active</span></td>
-                </tr>
-                <tr>
-                  <td>C-1003</td>
-                  <td>Roberto Tan</td>
-                  <td>Philippines</td>
-                  <td>Makati</td>
-                  <td>Barangay Poblacion</td>
-                  <td><span class="status-badge status-inactive">Inactive</span></td>
-                </tr>
-                <tr>
-                  <td>C-1004</td>
-                  <td>Elena Reyes</td>
-                  <td>Philippines</td>
-                  <td>Pasig</td>
-                  <td>Barangay Pinagbuhatan</td>
-                  <td><span class="status-badge status-active">Active</span></td>
-                </tr>
-                <tr>
-                  <td>C-1005</td>
-                  <td>Michael Garcia</td>
-                  <td>Philippines</td>
-                  <td>Taguig</td>
-                  <td>Barangay Fort Bonifacio</td>
-                  <td><span class="status-badge status-pending">Pending</span></td>
+                  <td colspan="6">
+                    <div style="display:flex; align-items:center; justify-content:center; margin: 30px 30px 0px 30px;">
+                      <img src="https://cdn-icons-png.flaticon.com/128/7486/7486747.png" width="100px" alt="">
+                    </div>
+                    <p style="text-align: center" class="stat-label-dash">Please filter data</p>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <div class="pagination">
-            <button class="pagination-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="15 18 9 12 15 6"></polyline>
-              </svg>
-            </button>
-            <button class="pagination-btn active">1</button>
-            <button class="pagination-btn">2</button>
-            <button class="pagination-btn">3</button>
-            <button class="pagination-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
-            </button>
-          </div>
         </div>
         <div class="card-footer-dash">
-          <span class="card-footer-text-dash">Showing 5 of 1,248 customers</span>
-          <a href="#" class="btn-dash btn-primary-dash btn-sm-dash">Export Data</a>
+          <span class="card-footer-text-dash" id="showing_data_cus_info"></span>
+          <div class="pagination-cust" id="pagination_cus_info" style="margin: 0">
+          </div>
         </div>
       </div>
     </div>  
@@ -916,6 +648,9 @@
 @push('bottom')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+  $(document).ready(function() {
+      $('.js-example-basic-single').select2();
+  });
     $(document).ready(function () {
       let ctx = $("#salesChart")[0].getContext("2d");
       let salesChart = new Chart(ctx, {
@@ -1023,56 +758,255 @@
   });
 </script>
 <script>
-$('#apply_filters').on('click', function () {
-    let unit_type = $('#unit-type-filter').val();
+function fetchData(page = 1) {
     let date_range_from = $('#date-range-from').val();
     let date_range_to = $('#date-range-to').val();
 
-    if (unit_type || date_range_from || date_range_to) {
-        $.ajax({
-            url: "{{ route('filter_customers_units') }}",
-            type: "POST",
-            data: { 
-              unit_type: unit_type, 
-              date_range_from: date_range_from, 
-              date_range_to: date_range_to 
-            },
-            success: function (response) {
-                let results = response.filter_results;
-                let tbody = $('.unit-table tbody');
-                tbody.empty(); // Clear previous results
+    $.ajax({
+        url: "{{ route('filter_customers_units') }}?page=" + page,
+        type: "POST",
+        data: { 
+            date_range_from: date_range_from, 
+            date_range_to: date_range_to 
+        },
+        success: function (response) {
+            let results = response.data;
+            let tbody = $('.unit-table tbody');
+            tbody.empty(); // Clear previous results
 
-                if (results.length > 0) {
-                    $.each(results, function (index, item) {
-                        let row = `
-                            <tr>
-                                <td>${item.reference_no}</td>
-                                <td>${item.unit_type}</td>
-                                <td>${item.last_name}, ${item.first_name}</td>
-                                <td>${item.city}</td>
-                                <td>${item.created_at}</td>
-                                <td>${item.warranty_status}</td>
-                            </tr>
-                        `;
-                        tbody.append(row);
-                    });
-                } else {
-                    tbody.html(`
+            if (results.length > 0) {
+                $.each(results, function (index, item) {
+                    let row = `
                         <tr>
-                            <td colspan="6">
-                                <div style="display:flex; align-items:center; justify-content:center; margin: 30px 30px 0px 30px;">
-                                    <img src="https://cdn-icons-png.flaticon.com/128/7486/7486747.png" width="100px" alt="">
-                                </div>
-                                <p style="text-align: center" class="stat-label-dash">No records found</p>
-                            </td>
+                            <td>${item.reference_no}</td>
+                            <td>${item.model_name}</td>
+                            <td>${item.last_name}, ${item.first_name}</td>
+                            <td>${item.contact_no}</td>
+                            <td>${item.created_at}</td>
+                            <td>${item.status_name}</td>
                         </tr>
-                    `);
-                }
+                    `;
+                    tbody.append(row);
+                });
+            } else {
+                tbody.html(`
+                    <tr>
+                        <td colspan="6">
+                            <div style="display:flex; align-items:center; justify-content:center; margin: 30px 30px 0px 30px;">
+                                <img src="https://cdn-icons-png.flaticon.com/128/7486/7486747.png" width="100px" alt="">
+                            </div>
+                            <p style="text-align: center" class="stat-label-dash">No records found</p>
+                        </td>
+                    </tr>
+                `);
             }
-        });
-    } else {
-        alert("Request Invalid!");
-    }
+
+            $('#showing_data_cus_unit').text(`Showing ${response.to - response.from + 1} of ${response.total}`);
+
+            // Update Pagination Links
+            let paginationLinks = '';
+            let totalPages = response.last_page;
+            let currentPage = response.current_page;
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+
+            if (response.prev_page_url) {
+                paginationLinks += `<button class="pagination-btn-cust" onclick="fetchData(${currentPage - 1})">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>    
+                </button>`;
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                paginationLinks += `<button class="pagination-btn-cust ${i === currentPage ? 'active' : ''}" onclick="fetchData(${i})">${i}</button>`;
+            }
+
+            if (response.next_page_url) {
+                paginationLinks += `<button class="pagination-btn-cust" onclick="fetchData(${currentPage + 1})">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>  
+                </button>`;
+            }
+
+            $('#pagination_cus_unit').html(paginationLinks);
+        }
+    });
+}
+
+// Trigger AJAX when filters are applied
+$('#apply_filters').on('click', function () {
+    fetchData();
 });
+
+  // get provinces
+  $(document).ready(function() {
+      $('#country').change(function() {
+          let countryID = $(this).find(':selected').data('id');
+
+          if (countryID) {
+              $.ajax({
+                  url: "{{ route('get_provinces') }}", 
+                  type: "POST",
+                  data: { country_id: countryID },
+                  success: function(data) {
+                      $('#province').prop('disabled', false);
+                      $('#province').html('<option value="" selected disabled>Select province here...</option>');
+                      $.each(data, function(key, value) {
+                          $('#province').append('<option value="' + value.provDesc + '" data-id="' + value.provCode + '">' + value.provDesc + '</option>');
+                      });
+                  }
+              });
+          } else {
+              $('#province').prop('disabled', true);
+              $('#province').html('<option value="" selected disabled>Select province here...</option>');
+          }
+      });
+  });
+
+  // get cities 
+  $(document).ready(function() {
+      $('#province').change(function() {
+          let provCode = $(this).find(':selected').data('id');
+
+          if (provCode) {
+              $.ajax({
+                  url: "{{ route('get_cities') }}", 
+                  type: "POST",
+                  data: { prov_code: provCode },
+                  success: function(data) {
+                      $('#city').prop('disabled', false);
+                      $('#city').html('<option value="" selected disabled>Select city here...</option>');
+                      $.each(data, function(key, value) {
+                          $('#city').append('<option value="' + value.citymunDesc + '" data-id="' + value.citymunCode + '" data-code="' + value.provCode + '">' + value.citymunDesc + '</option>');
+                      });
+                  }
+              });
+          } else {
+              $('#city').prop('disabled', true);
+              $('#city').html('<option value="" selected disabled>Select city here...</option>');
+          }
+      });
+  });
+
+  // get brgy 
+  $(document).ready(function() {
+      $('#city').change(function() {
+          let citymunCode = $(this).find(':selected').data('id');
+          let provCode = $(this).find(':selected').data('code');
+
+          if (provCode && citymunCode) {
+              $.ajax({
+                  url: "{{ route('get_brgy') }}", 
+                  type: "POST",
+                  data: { city_mun_code: citymunCode, prov_code: provCode },
+                  success: function(data) {
+                      $('#barangay').prop('disabled', false);
+                      $('#barangay').html('<option value="" selected disabled>Select barangay here...</option>');
+                      $.each(data, function(key, value) {
+                          $('#barangay').append('<option value="' + value.brgyDesc + '">' + value.brgyDesc + '</option>');
+                      });
+                  }
+              });
+          } else {
+              $('#barangay').prop('disabled', true);
+              $('#barangay').html('<option value="" selected disabled>Select barangay here...</option>');
+          }
+      });
+  });
+
+  function fetchCustomerInfo(page = 1) {
+    let country = $('#country').val();
+    let province = $('#province').val();
+    let city = $('#city').val();
+    let brgy = $('#barangay').val();
+
+    $.ajax({
+        url: "{{ route('filter_customers_info') }}?page=" + page,
+        type: "POST",
+        data: { 
+            country: country, 
+            province: province, 
+            city: city,
+            brgy: brgy
+        },
+        success: function (response) {
+            let results = response.data;
+            let tbody = $('.customer-table tbody');
+            tbody.empty(); // Clear previous results
+
+            if (results.length > 0) {
+                $.each(results, function (index, item) {
+                    let row = `
+                        <tr>
+                            <td>${item.last_name}, ${item.first_name}</td>
+                            <td>${item.country}</td>
+                            <td>${item.province}</td>
+                            <td>${item.city}</td>
+                            <td>${item.barangay}</td>
+                            <td>${item.status_name}</td>
+                        </tr>
+                    `;
+                    tbody.append(row);
+                });
+            } else {
+                tbody.html(`
+                    <tr>
+                        <td colspan="6">
+                            <div style="display:flex; align-items:center; justify-content:center; margin: 30px 30px 0px 30px;">
+                                <img src="https://cdn-icons-png.flaticon.com/128/7486/7486747.png" width="100px" alt="">
+                            </div>
+                            <p style="text-align: center" class="stat-label-dash">No records found</p>
+                        </td>
+                    </tr>
+                `);
+            }
+
+            $('#showing_data_cus_info').text(`Showing ${response.to - response.from + 1} of ${response.total}`);
+
+            // Update Pagination Links
+            let paginationLinks = '';
+            let totalPages = response.last_page;
+            let currentPage = response.current_page;
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+
+            if (response.prev_page_url) {
+                paginationLinks += `<button class="pagination-btn-cust" onclick="fetchData(${currentPage - 1})">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>    
+                </button>`;
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                paginationLinks += `<button class="pagination-btn-cust ${i === currentPage ? 'active' : ''}" onclick="fetchData(${i})">${i}</button>`;
+            }
+
+            if (response.next_page_url) {
+                paginationLinks += `<button class="pagination-btn-cust" onclick="fetchData(${currentPage + 1})">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>  
+                </button>`;
+            }
+
+            $('#pagination_cus_info').html(paginationLinks);
+        }
+    });
+}
+
+// Trigger AJAX when filters are applied
+$('#apply_customer_info_filter').on('click', function () {
+  fetchCustomerInfo();
+});
+
 </script>
+<script>
+  window.onload = function() {
+      window.scrollTo(0, 0);
+  };
+</script>
+
 @endpush

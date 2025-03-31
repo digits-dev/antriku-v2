@@ -128,6 +128,7 @@ Route::group(['middleware' => ['web']], function() {
     Route::get('/admin/get-sales-data', [AdminCustomDashboardController::class, 'getSalesData'])->name('getSalesData');
 
     Route::post('/admin/filter_customers_units', [AdminCustomDashboardController::class, 'filterCustomerUnit'])->name('filter_customers_units');
+    Route::post('/admin/filter_customers_info', [AdminCustomDashboardController::class, 'filterCustomerInfo'])->name('filter_customers_info');
 
 
 });

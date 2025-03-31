@@ -17,12 +17,14 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
     private const ReplacementPartsPaid = 18;
     private const PendingCustomerPayment = 17;
     private const ForPartsOrdering = 19;
+    private const Frontliner = 3;
 
     public function index()
     {
-        if (!CRUDBooster::isSuperadmin() && !CRUDBooster::myPrivilegeId()) {
-            CRUDBooster::redirect(CRUDBooster::adminPath(), "You don't have permission to access this page!", 'warning');
+        if (CRUDBooster::myPrivilegeId() != self::Frontliner) {
+            return view('403_error_view.invalid_route');
         }
+		$data['country'] = DB::table('refcountry')->get();
         
         $data['handle_overall_total'] = DB::table('returns_header')
             ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.created_by')
@@ -62,7 +64,17 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->orderBy('total_creations', 'DESC')
             ->get();
         
-        $data['customers_units'] = $handle_per_employee = DB::table('returns_header')->where('branch', CRUDBooster::me()->branch_id)->count();
+        $data['customers_units'] = $handle_per_employee = DB::table('returns_header')
+            ->where('branch', CRUDBooster::me()->branch_id)
+            ->count();
+
+        $data['customers_info'] = $handle_per_employee = DB::table('returns_header')
+            ->where('branch', CRUDBooster::me()->branch_id)
+            ->whereNotNull('country')
+            ->whereNotNull('province')
+            ->whereNotNull('city')
+            ->whereNotNull('barangay')
+            ->count();
 
         return view('frontliner.admin_dashboard_custom', compact('salesData'), $data);
     }
@@ -79,7 +91,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
                 DB::raw('YEARWEEK(created_at, 1) as year_week'),
                 DB::raw('WEEK(created_at) as week'),
                 DB::raw('YEAR(created_at) as year'),
-                DB::raw('SUM(parts_total_cost) as total')
+                DB::raw('SUM(parts_total_cost + diagnostic_cost) as total')
             )
             ->groupBy('year_week', 'week', 'year')
             ->orderBy('year_week', 'asc')
@@ -92,7 +104,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
                 DB::raw('MONTH(created_at) as month_number'),
                 DB::raw('MONTHNAME(created_at) as month'),
                 DB::raw('YEAR(created_at) as year'),
-                DB::raw('SUM(parts_total_cost) as total')
+                DB::raw('SUM(parts_total_cost + diagnostic_cost) as total')
             )
             ->groupBy('year', 'month_number', 'month')
             ->orderBy('year', 'asc')
@@ -103,7 +115,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->whereNotIn('repair_status', [self::OngoingRepair, self::CancelledClosed])
             ->select(
                 DB::raw('YEAR(created_at) as year'),
-                DB::raw('SUM(parts_total_cost) as total')
+                DB::raw('SUM(parts_total_cost + diagnostic_cost) as total')
             )
             ->groupBy('year')
             ->orderBy('year', 'asc')
@@ -118,7 +130,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
                 'labels' => $monthlySales->map(fn($m) => "{$m->month} {$m->year}")->toArray(),
                 'data' => $monthlySales->pluck('total')->toArray()
             ],
-            'ytd' => [  // YTD shows all years
+            'ytd' => [
                 'labels' => $ytdSales->pluck('year')->toArray(),
                 'data' => $ytdSales->pluck('total')->toArray()
             ],
@@ -127,29 +139,72 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
 
     public function filterCustomerUnit(Request $request)
     {
-        $unit_type = $request->input('unit_type');
-        $date_from = $request->input('date_range_from'); 
-        $date_to = $request->input('date_range_to'); 
+        $date_from = $request->input('date_range_from');
+        $date_to = $request->input('date_range_to');
+        $perPage = 10; 
 
-        $query = DB::table('returns_header');
+        $query = DB::table('returns_header')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status', 'transaction_status.id', '=', 'returns_header.repair_status')
+            ->select(
+                'returns_header.*',
+                'returns_header.reference_no',
+                'model.model_name',
+                'returns_header.last_name',
+                'returns_header.first_name',
+                'returns_header.city',
+                'returns_header.created_at',
+                'transaction_status.status_name'
+            );
 
-        // Apply date range filter
-        if ($date_from && $date_to) {
-            $query->whereRaw("DATE(created_at) BETWEEN ? AND ?", [$date_from, $date_to]);
-        } elseif ($date_from) { 
-            $query->whereRaw("DATE(created_at) >= ?", [$date_from]);
-        } elseif ($date_to) { 
-            $query->whereRaw("DATE(created_at) <= ?", [$date_to]);
-        } elseif ($unit_type) {
-            $query->where('unit_type', $unit_type);
+        if (!empty($date_from) && !empty($date_to)) {
+            $query->whereBetween(DB::raw("DATE(returns_header.created_at)"), [$date_from, $date_to]);
+        } elseif (!empty($date_from)) {
+            $query->whereDate('returns_header.created_at', '>=', $date_from);
+        } elseif (!empty($date_to)) {
+            $query->whereDate('returns_header.created_at', '<=', $date_to);
         }
 
-        $filter_results = $query->get();
+        $filter_results = $query->paginate($perPage);
 
-        return response()->json([
-            'filter_results' => $filter_results
-        ]);
+        return response()->json($filter_results);
     }
+
+    public function filterCustomerInfo(Request $request)
+    {
+        $country = $request->input('country');
+        $province = $request->input('province');
+        $city = $request->input('city');
+        $brgy = $request->input('brgy');
+        $perPage = 10; 
+    
+        $query = DB::table('returns_header')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status', 'transaction_status.id', '=', 'returns_header.repair_status')
+            ->select(
+                'returns_header.*',
+                'model.model_name',
+                'transaction_status.status_name'
+            );
+    
+        // Apply filters
+        if ($country) {
+            $query->where('returns_header.country', $country);
+        }
+        if ($province) { 
+            $query->where('returns_header.province', $province);
+        }
+        if ($city) {
+            $query->where('returns_header.city', $city);
+        }
+        if ($brgy) {
+            $query->where('returns_header.barangay', $brgy);
+        }
+    
+        $filter_results = $query->paginate($perPage);
+    
+        return response()->json($filter_results);
+    }    
 
     public function technicianDashboard()
     {

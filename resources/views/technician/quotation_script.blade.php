@@ -212,11 +212,11 @@
                         $("#item_qty").css('color', result[0].qty == 0 ? 'red' : 'limegreen');
                         $("#cost").val(result[0].cost);
                         
-                            if(result[0].qty == 0){
-                                $('.btn_ongoing_repair_1').hide();
-                            } else {
-                                $('.btn_ongoing_repair_1').show();
-                            }
+                            // if(result[0].qty == 0){
+                            //     $('.btn_ongoing_repair_1').hide();
+                            // } else {
+                            //     $('.btn_ongoing_repair_1').show();
+                            // }
 
                         document.getElementById("service_code").disabled = true;
                         // document.getElementById("digits_code").disabled = true;

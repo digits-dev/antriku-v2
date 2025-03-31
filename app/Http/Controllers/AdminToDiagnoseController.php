@@ -1201,8 +1201,26 @@ use Illuminate\Support\Facades\Session;
 		public function DeleteQuotation(Request $request)
 		{
 			$data = array();
-			DB::table('returns_body_item')->where('id',$request->id)->delete();	
-			DB::table('returns_serial')->where('returns_body_item_id',$request->id)->delete();
+			$body_item = DB::table('returns_body_item')->where('id',$request->id)->first();
+
+			if ($body_item && $body_item->qty == 'Available') {
+				$added = DB::table('parts_item_master')->where('id', $body_item->item_id)
+					->update([
+						'qty' => DB::raw('qty + 1'), 
+						'updated_by' => CRUDBooster::myId(),
+						'updated_at' => now()
+					]);
+				
+					if($added){
+						DB::table('returns_body_item')->where('id',$request->id)->delete();	
+						DB::table('returns_serial')->where('returns_body_item_id',$request->id)->delete();
+					}
+					
+			} else {
+				DB::table('returns_body_item')->where('id',$request->id)->delete();	
+				DB::table('returns_serial')->where('returns_body_item_id',$request->id)->delete();
+			}
+
 			return($data);
 		}
 
