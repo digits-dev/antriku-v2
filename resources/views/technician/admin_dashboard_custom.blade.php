@@ -25,7 +25,7 @@
                 <polyline points="9 22 9 12 15 12 15 22"></polyline>
               </svg>
             </div>
-            Greenhills
+            {{ $branchName }}
           </h2>
           <div class="card-actions-dash">
             <button class="card-action-btn-dash">
@@ -47,7 +47,6 @@
           </div>
         </div>
         <div class="card-footer-dash">
-          <span class="card-footer-text-dash">Last updated: Today, 10:45 AM</span>
           <a href="#" class="btn-dash btn-primary-dash btn-sm-dash">View All</a>
         </div>
       </div>
@@ -85,7 +84,6 @@
             </div>
           </div>
           <div class="card-footer-dash">
-            <span class="card-footer-text-dash">Last updated: Today, 10:45 AM</span>
             <a href="#" class="btn-dash btn-primary-dash btn-sm-dash">View All</a>
           </div>
         </div>
@@ -119,10 +117,6 @@
               </div>
             </div>
           </div>
-          <div class="card-footer-dash">
-            <span class="card-footer-text-dash">Last updated: Today, 10:45 AM</span>
-            <a href="#" class="btn-dash btn-primary-dash btn-sm-dash">View All</a>
-          </div>
         </div>
     </div>
     <div class="dashboard-grid-dash">
@@ -153,13 +147,8 @@
          <div class="stat-dash">
            <div class="stat-value-dash">0</div>
            <div class="stat-label-dash">Total Repair Sales of In-Warranty</div>
-         
          </div>
        </div>
-     </div>
-     <div class="card-footer-dash">
-       <span class="card-footer-text-dash">Last updated: Today, 10:45 AM</span>
-       <a href="#" class="btn-dash btn-primary-dash btn-sm-dash">View All</a>
      </div>
    </div>
 
@@ -195,10 +184,7 @@
            </div>
          </div>
        </div>
-       <div class="card-footer-dash">
-         <span class="card-footer-text-dash">Last updated: Today, 10:45 AM</span>
-         <a href="#" class="btn-dash btn-primary-dash btn-sm-dash">View All</a>
-       </div>
+
      </div>
     </div>
     <div class="dashboard-grid-dash">
@@ -233,10 +219,6 @@
             </div>
           </div>
         </div>
-        <div class="card-footer-dash">
-          <span class="card-footer-text-dash">Last updated: Today, 10:45 AM</span>
-          <a href="#" class="btn-dash btn-primary-dash btn-sm-dash">View All</a>
-        </div>
       </div>
 
        {{-- Mail-In --}}
@@ -267,13 +249,8 @@
               <div class="stat-dash">
                 <div class="stat-value-dash">{{$totalMailIn}}</div>
                 <div class="stat-label-dash">Total Repair of Mail-In</div>
-             
               </div>
             </div>
-          </div>
-          <div class="card-footer-dash">
-            <span class="card-footer-text-dash">Last updated: Today, 10:45 AM</span>
-            <a href="#" class="btn-dash btn-primary-dash btn-sm-dash">View All</a>
           </div>
         </div>
     </div>

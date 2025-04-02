@@ -213,7 +213,8 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         }
 
         $data = [];
-        $data['totalOngoingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingRepair, self::ReplacementPartsPaid, self::SparePartsReceived, self::ForPartsOrdering])->where('branch', 1)->count();
+        $data['branchName'] = DB::table('branch')->where('id', CRUDBooster::me()->branch_id)->value('branch_name');;
+        $data['totalOngoingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingRepair, self::ReplacementPartsPaid, self::SparePartsReceived, self::ForPartsOrdering])->where('branch', CRUDBooster::me()->branch_id)->count();
         $data['myOngoingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingRepair, self::ReplacementPartsPaid, self::SparePartsReceived, self::ForPartsOrdering])->where('technician_id', CRUDBooster::myId())->count();
         $data['totalPendingCustomerPayment'] = DB::table('returns_header')->where('repair_status', self::PendingCustomerPayment)->where('technician_id', CRUDBooster::myId())->count();
         $data['totalRepairPerModel'] = DB::table('returns_header')
@@ -223,8 +224,8 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->orderByDesc('total_repairs')
             ->paginate(10);
 
-        $data['totalCarryIn'] = DB::table('returns_header')->where('case_status', 'CARRY-IN')->where('branch', 1)->count();
-        $data['totalMailIn'] = DB::table('returns_header')->where('case_status', 'MAIL-IN')->where('branch', 1)->count();
+        $data['totalCarryIn'] = DB::table('returns_header')->where('case_status', 'CARRY-IN')->where('branch', CRUDBooster::me()->branch_id)->count();
+        $data['totalMailIn'] = DB::table('returns_header')->where('case_status', 'MAIL-IN')->where('branch', CRUDBooster::me()->branch_id)->count();
 
         $data['totalSalesIW'] = DB::table('returns_header')->where('warranty_status', 'IN WARRANTY')->sum('parts_total_cost');
         $data['totalSalesOOW'] = DB::table('returns_header')->where('warranty_status', 'OUT OF WARRANTY')->where('final_payment_status', 'PAID')->sum(DB::raw('parts_total_cost + diagnostic_cost'));
