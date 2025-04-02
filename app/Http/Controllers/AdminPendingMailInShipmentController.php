@@ -44,8 +44,7 @@
 		}
 		
 	    public function hook_query_index(&$query) {
-			$query->whereIn('repair_status',[11,12]);
-	            
+			$query->whereIn('repair_status',[11,12]);  
 	    }
 
 	    /*

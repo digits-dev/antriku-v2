@@ -417,7 +417,7 @@
                 <option value="ytd">YTD</option>
             </select>
             <select id="yearFilter" class="filter-select">
-              <option value="2021" selected>2021</option>
+              <option value="2025" selected>2025</option>
             </select>
           </div>
         </div>
@@ -469,10 +469,10 @@
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
         </div>
-        <input type="text" class="search-input" placeholder="Search by customer name, ID, or unit details..." id="searchInput">
+        <input type="text" class="search-input" placeholder="Search by customer last name, first name, contact_no, reference_no, status or unit details..." id="searchInput">
       </div>
       
-      <div class="filter-grid">  
+      <div class="filter-grid" style="display: none;">  
         <div class="filter-group">
           <label class="label-cus" for="date-range">Date Range From</label>
           <input type="date" id="date-range-from" class="filter-input">
@@ -484,7 +484,7 @@
       </div>
       
       <div class="filter-actions">
-        <button class="btn-dash btn-outline-dash btn-sm-dash">Reset Filters</button>
+        <button class="btn-dash btn-outline-dash btn-sm-dash" id="reset_cus_unit_filter">Reset Filters</button>
         <button class="btn-dash btn-primary-dash btn-sm-dash" id="apply_filters">Apply Filters</button>
       </div>
 
@@ -492,12 +492,12 @@
             <div class="stat-dash">
               <div class="stat-value-dash">{{number_format($customers_units)}}</div>
               <div class="stat-label-dash">Total Customers with Units</div>
-              <div class="stat-trend-dash trend-up-dash">
+              {{-- <div class="stat-trend-dash trend-up-dash">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="18 15 12 9 6 15"></polyline>
                 </svg>
                 12% from last month
-              </div>
+              </div> --}}
             </div>
           </div>
 
@@ -594,7 +594,7 @@
       </div>
       
       <div class="filter-actions">
-        <button class="btn-dash btn-outline-dash btn-sm-dash">Reset Filters</button>
+        <button class="btn-dash btn-outline-dash btn-sm-dash" id="reset_cus_info_filters">Reset Filters</button>
         <button class="btn-dash btn-primary-dash btn-sm-dash" id="apply_customer_info_filter">Apply Filters</button>
       </div>
 
@@ -602,12 +602,12 @@
             <div class="stat-dash">
               <div class="stat-value-dash">{{number_format($customers_info)}}</div>
               <div class="stat-label-dash">Total Customers</div>
-              <div class="stat-trend-dash trend-up-dash">
+              {{-- <div class="stat-trend-dash trend-up-dash">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="18 15 12 9 6 15"></polyline>
                 </svg>
                 8% from last month
-              </div>
+              </div> --}}
             </div>
           </div>
 
@@ -754,20 +754,22 @@
       }
 
       // Set the latest year as selected
-      yearFilter.val(startYear);
+      yearFilter.val(currentYear);
   });
 </script>
 <script>
 function fetchData(page = 1) {
     let date_range_from = $('#date-range-from').val();
     let date_range_to = $('#date-range-to').val();
+    let search_input = $('#searchInput').val();
 
     $.ajax({
         url: "{{ route('filter_customers_units') }}?page=" + page,
         type: "POST",
         data: { 
             date_range_from: date_range_from, 
-            date_range_to: date_range_to 
+            date_range_to: date_range_to,
+            search_input: search_input 
         },
         success: function (response) {
             let results = response.data;
@@ -966,14 +968,14 @@ $('#apply_filters').on('click', function () {
             $('#showing_data_cus_info').text(`Showing ${response.to - response.from + 1} of ${response.total}`);
 
             // Update Pagination Links
-            let paginationLinks = '';
+            let paginationLinksInfo = '';
             let totalPages = response.last_page;
             let currentPage = response.current_page;
             let startPage = Math.max(1, currentPage - 2);
             let endPage = Math.min(totalPages, startPage + 4);
 
             if (response.prev_page_url) {
-                paginationLinks += `<button class="pagination-btn-cust" onclick="fetchData(${currentPage - 1})">
+                paginationLinksInfo += `<button class="pagination-btn-cust" onclick="fetchCustomerInfo(${currentPage - 1})">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>    
@@ -981,18 +983,18 @@ $('#apply_filters').on('click', function () {
             }
 
             for (let i = startPage; i <= endPage; i++) {
-                paginationLinks += `<button class="pagination-btn-cust ${i === currentPage ? 'active' : ''}" onclick="fetchData(${i})">${i}</button>`;
+                paginationLinksInfo += `<button class="pagination-btn-cust ${i === currentPage ? 'active' : ''}" onclick="fetchCustomerInfo(${i})">${i}</button>`;
             }
 
             if (response.next_page_url) {
-                paginationLinks += `<button class="pagination-btn-cust" onclick="fetchData(${currentPage + 1})">
+                paginationLinksInfo += `<button class="pagination-btn-cust" onclick="fetchCustomerInfo(${currentPage + 1})">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="9 18 15 12 9 6"></polyline>
                 </svg>  
                 </button>`;
             }
 
-            $('#pagination_cus_info').html(paginationLinks);
+            $('#pagination_cus_info').html(paginationLinksInfo);
         }
     });
 }
@@ -1002,6 +1004,39 @@ $('#apply_customer_info_filter').on('click', function () {
   fetchCustomerInfo();
 });
 
+  $('#reset_cus_unit_filter').on('click', function(){
+    $('#searchInput').val('');
+
+    let tbody = $('.unit-table tbody');
+    tbody.empty(); 
+
+    tbody.html(`
+        <tr>
+            <td colspan="6">
+                <div style="display:flex; align-items:center; justify-content:center; margin: 30px 30px 0px 30px;">
+                    <img src="https://cdn-icons-png.flaticon.com/128/7486/7486747.png" width="100px" alt="">
+                </div>
+                <p style="text-align: center" class="stat-label-dash">Please filter data</p>
+            </td>
+        </tr>
+    `);
+  });
+
+  $('#reset_cus_info_filters').on('click', function() {
+    let tbody = $('.customer-table tbody');
+    tbody.empty(); 
+
+    tbody.html(`
+        <tr>
+            <td colspan="6">
+                <div style="display:flex; align-items:center; justify-content:center; margin: 30px 30px 0px 30px;">
+                    <img src="https://cdn-icons-png.flaticon.com/128/7486/7486747.png" width="100px" alt="">
+                </div>
+                <p style="text-align: center" class="stat-label-dash">Please filter data</p>
+            </td>
+        </tr>
+    `);
+  });
 </script>
 <script>
   window.onload = function() {

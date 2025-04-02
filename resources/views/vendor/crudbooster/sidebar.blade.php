@@ -105,6 +105,41 @@
                                 </div>
                             @endif
 
+                            @if($menu->name == 'To Diagnose')
+                                <div class="notification-container-cus" style="display: {{$to_diagnose_count == 0 ? 'none' : ''}}">
+                                    <div class="icon-cus">🔔</div>
+                                    <div class="notif-count-cus">{{$to_diagnose_count}}</div>
+                                </div>
+                            @endif
+
+                            @if($menu->name == 'Pending Mail-In Shipment')
+                                <div class="notification-container-cus" style="display: {{$pending_mail_in_shipment == 0 ? 'none' : ''}}">
+                                    <div class="icon-cus">🔔</div>
+                                    <div class="notif-count-cus">{{$pending_mail_in_shipment}}</div>
+                                </div>
+                            @endif
+
+                            @if($menu->name == 'Pending Spare Parts')
+                                <div class="notification-container-cus" style="display: {{$pending_spare_parts == 0 ? 'none' : ''}}">
+                                    <div class="icon-cus">🔔</div>
+                                    <div class="notif-count-cus">{{$pending_spare_parts}}</div>
+                                </div>
+                            @endif
+
+                            @if($menu->name == 'Pending Good Unit')
+                                <div class="notification-container-cus" style="display: {{$pending_good_unit == 0 ? 'none' : ''}}">
+                                    <div class="icon-cus">🔔</div>
+                                    <div class="notif-count-cus">{{$pending_good_unit}}</div>
+                                </div>
+                            @endif
+
+                            @if($menu->name == 'Call Out')
+                                <div class="notification-container-cus" style="display: {{$call_out_count == 0 ? 'none' : ''}}">
+                                    <div class="icon-cus">🔔</div>
+                                    <div class="notif-count-cus">{{$call_out_count}}</div>
+                                </div>
+                            @endif
+
                             @if(!empty($menu->children))<i class="fa fa-angle-{{ cbLang("right") }} pull-{{ cbLang("right") }}"></i>@endif
                         </a>
                         @if(!empty($menu->children))

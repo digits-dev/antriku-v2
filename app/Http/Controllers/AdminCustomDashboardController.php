@@ -144,6 +144,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         $perPage = 10; 
 
         $query = DB::table('returns_header')
+            ->where('branch', CRUDBooster::me()->branch_id)
             ->leftJoin('model', 'model.id', '=', 'returns_header.model')
             ->leftJoin('transaction_status', 'transaction_status.id', '=', 'returns_header.repair_status')
             ->select(
@@ -157,13 +158,25 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
                 'transaction_status.status_name'
             );
 
-        if (!empty($date_from) && !empty($date_to)) {
-            $query->whereBetween(DB::raw("DATE(returns_header.created_at)"), [$date_from, $date_to]);
-        } elseif (!empty($date_from)) {
-            $query->whereDate('returns_header.created_at', '>=', $date_from);
-        } elseif (!empty($date_to)) {
-            $query->whereDate('returns_header.created_at', '<=', $date_to);
+        if ($request->has('search_input')) {
+            $search = $request->search_input;
+            $query->where(function ($q) use ($search) {
+                $q->where('reference_no', 'LIKE', "%$search%")
+                ->orWhere('model_name', 'LIKE', "%$search%")
+                ->orWhere('first_name', 'LIKE', "%$search%")
+                ->orWhere('last_name', 'LIKE', "%$search%")
+                ->orWhere('contact_no', 'LIKE', "%$search%")
+                ->orWhere('status_name', 'LIKE', "%$search%");
+            });
         }
+            
+            // if (!empty($date_from) && !empty($date_to)) {
+            //     $query->whereBetween(DB::raw("DATE(returns_header.created_at)"), [$date_from, $date_to]);
+            // } elseif (!empty($date_from)) {
+            //     $query->whereDate('returns_header.created_at', '>=', $date_from);
+            // } elseif (!empty($date_to)) {
+            //     $query->whereDate('returns_header.created_at', '<=', $date_to);
+            // }
 
         $filter_results = $query->paginate($perPage);
 
@@ -179,6 +192,11 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         $perPage = 10; 
     
         $query = DB::table('returns_header')
+            ->where('branch', CRUDBooster::me()->branch_id)
+            ->whereNotNull('country')
+            ->whereNotNull('province')
+            ->whereNotNull('city')
+            ->whereNotNull('barangay')
             ->leftJoin('model', 'model.id', '=', 'returns_header.model')
             ->leftJoin('transaction_status', 'transaction_status.id', '=', 'returns_header.repair_status')
             ->select(
