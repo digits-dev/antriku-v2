@@ -18,6 +18,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
     private const PendingCustomerPayment = 17;
     private const ForPartsOrdering = 19;
     private const Frontliner = 3;
+    private const Technician = 4;
 
     public function index(Request $request)
     {
@@ -247,8 +248,8 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
 
     public function technicianDashboard()
     {
-        if (!CRUDBooster::isSuperadmin() && !CRUDBooster::myPrivilegeId()) {
-            CRUDBooster::redirect(CRUDBooster::adminPath(), "You don't have permission to access this page!", 'warning');
+        if (CRUDBooster::myPrivilegeId() != self::Technician) {
+            return view('403_error_view.invalid_route');
         }
 
         $data = [];
