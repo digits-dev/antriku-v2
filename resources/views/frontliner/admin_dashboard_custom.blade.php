@@ -52,133 +52,143 @@
           Frontliner's Dashboard
         </h1>
         <p class="dashboard-subtitle">
-          Comprehensive overview of pending call-outs, abandoned units, and aging service requests. Sales monitoring, customer and unit filters.
+          Overview of pending call-outs, abandoned units, aging call-outs, total sales, customer and unit filters.
         </p>
       </div>
     </div>
 
-    <div class="dashboard-grid-dash">
-      <!-- Pending Call-outs Card -->
-      <div class="card-dash">
-        <div class="card-header-dash">
-          <h2 class="card-title-dash">
-            <div class="card-icon-dash icon-pending-dash">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-              </svg>
-            </div>
-            Pending Call-outs
-          </h2>
-          <div class="card-actions-dash">
-            <button class="card-action-btn-dash">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="1"></circle>
-                <circle cx="19" cy="12" r="1"></circle>
-                <circle cx="5" cy="12" r="1"></circle>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="card-body-dash">
-            <div class="card-stats-dash">
-                <div class="stat-dash">
-                    <div class="stat-value-dash">{{ $fl_pending_call_out_dash_count_all }}</div>
-                    <div class="stat-label-dash">Total Pending</div>
-                </div>
-            </div>
-        </div>        
-      </div>
-
-      <!-- Abandoned Units Card -->
-      <div class="card-dash">
-        <div class="card-header-dash">
-          <h2 class="card-title-dash">
-            <div class="card-icon-dash icon-abandoned-dash">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-              </svg>
-            </div>
-            Abandoned Units
-          </h2>
-          <div class="card-actions-dash">
-            <button class="card-action-btn-dash">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="1"></circle>
-                <circle cx="19" cy="12" r="1"></circle>
-                <circle cx="5" cy="12" r="1"></circle>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="card-body-dash">
-          <div class="card-stats-dash">
-            <div class="stat-dash">
-              <div class="stat-value-dash">{{$fl_abandoned_units_dash_count}}</div>
-              <div class="stat-label-dash">Total Abandoned</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Total case/s handled -->
-      <div class="card-dash">
-        <div class="card-header-dash">
-          <h2 class="card-title-dash">
-            <div class="card-icon-dash icon-employe-dash">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-              </svg>
-            </div>
-            Total cases handled
-          </h2>
-          <div class="card-actions-dash">
-            <button class="card-action-btn-dash">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="1"></circle>
-                <circle cx="19" cy="12" r="1"></circle>
-                <circle cx="5" cy="12" r="1"></circle>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="card-body-dash">
-          <div class="employee-chart">
-            @foreach ($handle_per_employee as $my_handled_case)
-              <div class="employee-row" style="margin-bottom: 15px">
-                <div class="employee-avatar" style="background: #14b8a6; color:aliceblue">
-                  {{ strtoupper(substr($my_handled_case->created_by_user, 0, 1)) }}
-                  {{ strtoupper(substr(strrchr($my_handled_case->created_by_user, ' '), 1, 1)) }}
-                </div>
-                <div class="employee-info">
-                  <div class="employee-name">{{$my_handled_case->created_by_user}}</div>
-                  <div class="employee-position">{{$my_handled_case->privilege_name}}</div>
-                </div>
-                <div class="employee-bar-container">
-                  @php
-                      // Prevent division by zero error
-                      $total_case_handled_percentage = $handle_overall_total > 0 
-                      ? ($my_handled_case->total_creations / $handle_overall_total) * 100 
-                      : 0;
-                  @endphp
-                  <div class="employee-bar" style="width: {{$total_case_handled_percentage}}%;"></div>
-                </div>
-                <div class="employee-value">{{number_format($my_handled_case->total_creations)}} / {{number_format($handle_overall_total)}}</div>
-              </div>
-            @endforeach
-          </div>
-        </div>
-      </div>
+    <div class="tabs" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+      <div class="tab active" data-tab="overview">Overview</div>
+      <div class="tab" data-tab="time_and_motion">Time-in-Motion</div>
+      <div class="tab" data-tab="customers_unit_filter">Customer's/Unit Filters</div>
+      <div class="tab" data-tab="customer_info_filter">Customer's Information Filter</div>
     </div>
-
-    <div class="dashboard-grid-dash">
-        <!-- Aging Call-outs Card -->
+    
+    <div id="overview" class="tab-content active">
+      <h2>Overview</h2>
+      
+      <div class="dashboard-grid-dash">
+        <!-- Pending Call-outs Card -->
         <div class="card-dash">
+          <div class="card-header-dash">
+            <h2 class="card-title-dash">
+              <div class="card-icon-dash icon-pending-dash">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </div>
+              Pending Call-outs
+            </h2>
+            <div class="card-actions-dash">
+              <button class="card-action-btn-dash">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="1"></circle>
+                  <circle cx="19" cy="12" r="1"></circle>
+                  <circle cx="5" cy="12" r="1"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="card-body-dash">
+              <div class="card-stats-dash">
+                  <div class="stat-dash">
+                      <div class="stat-value-dash">{{ $fl_pending_call_out_dash_count_all }}</div>
+                      <div class="stat-label-dash">Total Pending</div>
+                  </div>
+              </div>
+          </div>        
+        </div>
+  
+        <!-- Abandoned Units Card -->
+        <div class="card-dash">
+          <div class="card-header-dash">
+            <h2 class="card-title-dash">
+              <div class="card-icon-dash icon-abandoned-dash">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+              </div>
+              Abandoned Units
+            </h2>
+            <div class="card-actions-dash">
+              <button class="card-action-btn-dash">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="1"></circle>
+                  <circle cx="19" cy="12" r="1"></circle>
+                  <circle cx="5" cy="12" r="1"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="card-body-dash">
+            <div class="card-stats-dash">
+              <div class="stat-dash">
+                <div class="stat-value-dash">{{$fl_abandoned_units_dash_count}}</div>
+                <div class="stat-label-dash">Total Abandoned</div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Total case/s handled -->
+        <div class="card-dash">
+          <div class="card-header-dash">
+            <h2 class="card-title-dash">
+              <div class="card-icon-dash icon-employe-dash">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </div>
+              Total cases handled
+            </h2>
+            <div class="card-actions-dash">
+              <button class="card-action-btn-dash">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="1"></circle>
+                  <circle cx="19" cy="12" r="1"></circle>
+                  <circle cx="5" cy="12" r="1"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="card-body-dash">
+            <div class="employee-chart">
+              @foreach ($handle_per_employee as $my_handled_case)
+                <div class="employee-row" style="margin-bottom: 15px">
+                  <div class="employee-avatar" style="background: #14b8a6; color:aliceblue">
+                    {{ strtoupper(substr($my_handled_case->created_by_user, 0, 1)) }}
+                    {{ strtoupper(substr(strrchr($my_handled_case->created_by_user, ' '), 1, 1)) }}
+                  </div>
+                  <div class="employee-info">
+                    <div class="employee-name">{{$my_handled_case->created_by_user}}</div>
+                    <div class="employee-position">{{$my_handled_case->privilege_name}}</div>
+                  </div>
+                  <div class="employee-bar-container">
+                    @php
+                        // Prevent division by zero error
+                        $total_case_handled_percentage = $handle_overall_total > 0 
+                        ? ($my_handled_case->total_creations / $handle_overall_total) * 100 
+                        : 0;
+                    @endphp
+                    <div class="employee-bar" style="width: {{$total_case_handled_percentage}}%;"></div>
+                  </div>
+                  <div class="employee-value">{{number_format($my_handled_case->total_creations)}} / {{number_format($handle_overall_total)}}</div>
+                </div>
+              @endforeach
+            </div>
+          </div>
+        </div>
+        </div>
+      
+        <div class="dashboard-grid-dash">
+          <!-- Aging Call-outs Card -->
+          <div class="card-dash">
             <div class="card-header-dash">
               <h2 class="card-title-dash">
                 <div class="card-icon-dash icon-aging-dash">
@@ -341,309 +351,402 @@
             </div>
           </div>
 
-        <!-- Employee Performance Card -->
-      <div class="card-dash">
-        <div class="card-header-dash">
-          <h2 class="card-title-dash">
-            <div class="card-icon-dash icon-employe-dash">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-              </svg>
-            </div>
-            Total cases handled per Employee
-          </h2>
-          <div class="card-actions-dash">
-            <button class="card-action-btn-dash">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="1"></circle>
-                <circle cx="19" cy="12" r="1"></circle>
-                <circle cx="5" cy="12" r="1"></circle>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="card-body-dash" style="height: 310px; overflow-y:auto">
-          <div class="employee-chart">
-            @foreach ($handle_for_all_employee as $per_employee)
-              <div class="employee-row">
-                <div class="employee-badge {{ $loop->iteration == 1 ? 'badge-1' : ($loop->iteration == 2 ? 'badge-2' : ($loop->iteration == 3 ? 'badge-3' : '')) }}">
-                  {{ $loop->iteration }}
+          <!-- Employee Performance Card -->
+          <div class="card-dash">
+            <div class="card-header-dash">
+              <h2 class="card-title-dash">
+                <div class="card-icon-dash icon-employe-dash">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
                 </div>
-                <div class="employee-avatar" style="background: #14b8a6; color:aliceblue">
-                  {{ strtoupper(substr($per_employee->created_by_user, 0, 1)) }}
-                  {{ strtoupper(substr(strrchr($per_employee->created_by_user, ' '), 1, 1)) }}
-                </div>
-                <div class="employee-info">
-                  <div class="employee-name">{{$per_employee->created_by_user}}</div>
-                  <div class="employee-position">{{$per_employee->privilege_name}}</div>
-                </div>
-                <div class="employee-bar-container">
-                  @php
-                      // Prevent division by zero error
-                      $total_case_handled_per_employee_percentage = $handle_overall_total > 0 
-                      ? ($per_employee->total_creations / $handle_overall_total) * 100 
-                      : 0;
-                  @endphp
-                  <div class="employee-bar" style="width: {{$total_case_handled_per_employee_percentage}}%;"></div>
-                </div>
-                <div class="employee-value">{{number_format($per_employee->total_creations)}} / {{number_format($handle_overall_total)}}</div>
+                Total cases handled per Employee
+              </h2>
+              <div class="card-actions-dash">
+                <button class="card-action-btn-dash">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <circle cx="19" cy="12" r="1"></circle>
+                    <circle cx="5" cy="12" r="1"></circle>
+                  </svg>
+                </button>
               </div>
-            @endforeach
+            </div>
+            <div class="card-body-dash" style="height: 310px; overflow-y:auto">
+              <div class="employee-chart">
+                @foreach ($handle_for_all_employee as $per_employee)
+                  <div class="employee-row">
+                    <div class="employee-badge {{ $loop->iteration == 1 ? 'badge-1' : ($loop->iteration == 2 ? 'badge-2' : ($loop->iteration == 3 ? 'badge-3' : '')) }}">
+                      {{ $loop->iteration }}
+                    </div>
+                    <div class="employee-avatar" style="background: #14b8a6; color:aliceblue">
+                      {{ strtoupper(substr($per_employee->created_by_user, 0, 1)) }}
+                      {{ strtoupper(substr(strrchr($per_employee->created_by_user, ' '), 1, 1)) }}
+                    </div>
+                    <div class="employee-info">
+                      <div class="employee-name">{{$per_employee->created_by_user}}</div>
+                      <div class="employee-position">{{$per_employee->privilege_name}}</div>
+                    </div>
+                    <div class="employee-bar-container">
+                      @php
+                          // Prevent division by zero error
+                          $total_case_handled_per_employee_percentage = $handle_overall_total > 0 
+                          ? ($per_employee->total_creations / $handle_overall_total) * 100 
+                          : 0;
+                      @endphp
+                      <div class="employee-bar" style="width: {{$total_case_handled_per_employee_percentage}}%;"></div>
+                    </div>
+                    <div class="employee-value">{{number_format($per_employee->total_creations)}} / {{number_format($handle_overall_total)}}</div>
+                  </div>
+                @endforeach
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="dashboard-grid-dash">
+      <div class="dashboard-grid-dash">
         <!-- Sales Overview Card -->
-      <div class="card-dash">
-        <div class="card-header-dash">
-          <h2 class="card-title-dash">
-            <div class="card-icon-dash icon-sales">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="1" x2="12" y2="23"></line>
-                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-              </svg>
+        <div class="card-dash">
+          <div class="card-header-dash">
+            <h2 class="card-title-dash">
+              <div class="card-icon-dash icon-sales">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="1" x2="12" y2="23"></line>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+              </div>
+              Total Sales
+            </h2>
+            <div class="card-actions-dash">
+              <select id="timeFilter" class="filter-select">
+                  <option value="weekly" selected>Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="ytd">YTD</option>
+              </select>
+              <select id="yearFilter" class="filter-select">
+                <option value="2025" selected>2025</option>
+              </select>
             </div>
-            Total Sales
-          </h2>
-          <div class="card-actions-dash">
-            <select id="timeFilter" class="filter-select">
-                <option value="weekly" selected>Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="ytd">YTD</option>
-            </select>
-            <select id="yearFilter" class="filter-select">
-              <option value="2025" selected>2025</option>
-            </select>
           </div>
+          <div class="card-body-dash">
+              <canvas id="salesChart"></canvas>
+          </div><br>
         </div>
-        <div class="card-body-dash">
-            <canvas id="salesChart"></canvas>
-        </div><br>
       </div>
     </div>
-
-    <div class="dashboard-grid-dash">
-      <!-- Unit Details Card -->
-      <div class="card-dash">
-        <div class="card-header-dash">
-          <h2 class="card-title-dash">
-            <div class="card-icon-dash icon-unit">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-              </svg>
-            </div>
-            Customer & Unit Details
-          </h2>
-          <div class="card-actions-dash">
-            <button class="card-action-btn-dash">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="1"></circle>
-                <circle cx="19" cy="12" r="1"></circle>
-                <circle cx="5" cy="12" r="1"></circle>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="card-body-dash">
-
-          <!-- Filter Section -->
-      <h2 class="filter-title">
-        <div class="filter-icon" style="margin-top: 0px;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-          </svg>
-        </div>
-        Filter Options
-      </h2>
-      
-      <div class="search-box">
-        <div class="search-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-        </div>
-        <input type="text" class="search-input" placeholder="Search by customer last name, first name, contact_no, reference_no, status or unit details..." id="searchInput">
-      </div>
-      
-      <div class="filter-grid" style="display: none;">  
-        <div class="filter-group">
-          <label class="label-cus" for="date-range">Date Range From</label>
-          <input type="date" id="date-range-from" class="filter-input">
-        </div>
-        <div class="filter-group">
-          <label class="label-cus" for="date-range">Date Range To</label>
-          <input type="date" id="date-range-to" class="filter-input">
-        </div>
-      </div>
-      
-      <div class="filter-actions">
-        <button class="btn-dash btn-outline-dash btn-sm-dash" id="reset_cus_unit_filter">Reset Filters</button>
-        <button class="btn-dash btn-primary-dash btn-sm-dash" id="apply_filters">Apply Filters</button>
-      </div>
-
-          <div class="card-stats-dash">
-            <div class="stat-dash">
-              <div class="stat-value-dash">{{number_format($customers_units)}}</div>
-              <div class="stat-label-dash">Total Customers with Units</div>
-              {{-- <div class="stat-trend-dash trend-up-dash">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="18 15 12 9 6 15"></polyline>
+    
+    <div id="customers_unit_filter" class="tab-content">
+      <div class="dashboard-grid-dash">
+        <!-- Unit Details Card -->
+        <div class="card-dash" style="border-radius: 0%">
+          <div class="card-header-dash">
+            <h2 class="card-title-dash">
+              <div class="card-icon-dash icon-unit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
-                12% from last month
-              </div> --}}
+              </div>
+              Customer & Unit Details
+            </h2>
+            <div class="card-actions-dash">
+              <button class="card-action-btn-dash">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="1"></circle>
+                  <circle cx="19" cy="12" r="1"></circle>
+                  <circle cx="5" cy="12" r="1"></circle>
+                </svg>
+              </button>
             </div>
           </div>
-
-          <div class="unit-table-container">
-            <table class="unit-table">
-              <thead>
-                <tr>
-                  <th>Reference No.</th>
-                  <th>Model</th>
-                  <th>Customer</th>
-                  <th>Contact</th>
-                  <th>Created at</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colspan="6">
-                    <div style="display:flex; align-items:center; justify-content:center; margin: 30px 30px 0px 30px;">
-                      <img src="https://cdn-icons-png.flaticon.com/128/7486/7486747.png" width="100px" alt="">
-                    </div>
-                    <p style="text-align: center" class="stat-label-dash">Please filter data</p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="card-body-dash">
+  
+            <!-- Filter Section -->
+        <h2 class="filter-title">
+          <div class="filter-icon" style="margin-top: 0px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+            </svg>
+          </div>
+          Filter Options
+        </h2>
+        
+        <div class="search-box">
+          <div class="search-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+          <input type="text" class="search-input" placeholder="Search by customer last name, first name, contact_no, reference_no, status or unit details..." id="searchInput">
+        </div>
+        
+        <div class="filter-grid" style="display: none;">  
+          <div class="filter-group">
+            <label class="label-cus" for="date-range">Date Range From</label>
+            <input type="date" id="date-range-from" class="filter-input">
+          </div>
+          <div class="filter-group">
+            <label class="label-cus" for="date-range">Date Range To</label>
+            <input type="date" id="date-range-to" class="filter-input">
           </div>
         </div>
-        <div class="card-footer-dash">
-          <span class="card-footer-text-dash" id="showing_data_cus_unit"></span>
-          <div class="pagination-cust" id="pagination_cus_unit" style="margin: 0">
+        
+        <div class="filter-actions">
+          <button class="btn-dash btn-outline-dash btn-sm-dash" id="reset_cus_unit_filter">Reset Filters</button>
+          <button class="btn-dash btn-primary-dash btn-sm-dash" id="apply_filters">Apply Filters</button>
+        </div>
+  
+            <div class="card-stats-dash">
+              <div class="stat-dash">
+                <div class="stat-value-dash">{{number_format($customers_units)}}</div>
+                <div class="stat-label-dash">Total Customers with Units</div>
+              </div>
+            </div>
+  
+            <div class="unit-table-container">
+              <table class="unit-table">
+                <thead>
+                  <tr>
+                    <th>Reference No.</th>
+                    <th>Model</th>
+                    <th>Customer</th>
+                    <th>Contact</th>
+                    <th>Created at</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="6">
+                      <div style="display:flex; align-items:center; justify-content:center; margin: 30px 30px 0px 30px;">
+                        <img src="https://cdn-icons-png.flaticon.com/128/7486/7486747.png" width="100px" alt="">
+                      </div>
+                      <p style="text-align: center" class="stat-label-dash">Please filter data</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer-dash">
+            <span class="card-footer-text-dash" id="showing_data_cus_unit"></span>
+            <div class="pagination-cust" id="pagination_cus_unit" style="margin: 0">
+            </div>
           </div>
         </div>
       </div>
     </div>
-
-    <div class="dashboard-grid-dash">
-      <!-- Customer Details Card -->
-      <div class="card-dash">
-        <div class="card-header-dash">
-          <h2 class="card-title-dash">
-            <div class="card-icon-dash icon-customer">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-            </div>
-            Customer Information
-          </h2>
-          <div class="card-actions-dash">
-            <button class="card-action-btn-dash">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="1"></circle>
-                <circle cx="19" cy="12" r="1"></circle>
-                <circle cx="5" cy="12" r="1"></circle>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="card-body-dash">
-      
-      <div class="filter-grid">
-        <!-- Customer Location Filters -->
-        <div class="filter-group">
-          <label class="filter-label" for="country-filter">Country</label>
-          <select name="country" id="country" class="js-example-basic-single filter-select">
-              <option value="" selected disabled>Select country here...</option>
-              @foreach($country as $per_count)
-                  <option value="{{$per_count->countryDesc}}" data-id="{{$per_count->id}}">{{$per_count->countryDesc}}</option>
-              @endforeach
-          </select>
-        </div>
-        
-        <div class="filter-group">
-          <label class="filter-label" for="province-filter">Province</label>
-            <select name="province" autocomplete="off" class="js-example-basic-single filter-select" id="province" disabled> 
-                <option value="" selected disabled>Select province here...</option>
-            </select>
-        </div>
-
-        <div class="filter-group">
-          <label class="filter-label" for="city-filter">City</label>
-            <select name="city" autocomplete="off" class="js-example-basic-single filter-select" id="city" disabled> 
-                <option value="" selected disabled>Select city here...</option>
-            </select>
-        </div>
-        
-        <div class="filter-group">
-          <label class="filter-label" for="barangay-filter">Barangay</label>
-            <select name="barangay" autocomplete="off" class="js-example-basic-single filter-select" id="barangay" disabled> 
-                <option value="" selected disabled>Select barangay here...</option>
-            </select>
-        </div>
-      </div>
-      
-      <div class="filter-actions">
-        <button class="btn-dash btn-outline-dash btn-sm-dash" id="reset_cus_info_filters">Reset Filters</button>
-        <button class="btn-dash btn-primary-dash btn-sm-dash" id="apply_customer_info_filter">Apply Filters</button>
-      </div>
-
-          <div class="card-stats-dash">
-            <div class="stat-dash">
-              <div class="stat-value-dash">{{number_format($customers_info)}}</div>
-              <div class="stat-label-dash">Total Customers</div>
-              {{-- <div class="stat-trend-dash trend-up-dash">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="18 15 12 9 6 15"></polyline>
+    
+    <div id="customer_info_filter" class="tab-content"> 
+      <div class="dashboard-grid-dash">
+        <!-- Customer Details Card -->
+        <div class="card-dash" style="border-radius: 0%">
+          <div class="card-header-dash">
+            <h2 class="card-title-dash">
+              <div class="card-icon-dash icon-customer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
                 </svg>
-                8% from last month
-              </div> --}}
+              </div>
+              Customer Information
+            </h2>
+            <div class="card-actions-dash">
+              <button class="card-action-btn-dash">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="1"></circle>
+                  <circle cx="19" cy="12" r="1"></circle>
+                  <circle cx="5" cy="12" r="1"></circle>
+                </svg>
+              </button>
             </div>
           </div>
-
-          <div class="customer-table-container">
-            <table class="customer-table">
-              <thead>
-                <tr>
-                  <th>Customer Name</th>
-                  <th>Country</th>
-                  <th>Province</th>
-                  <th>City</th>
-                  <th>Barangay</th>
-                  <th>Transaction Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colspan="6">
-                    <div style="display:flex; align-items:center; justify-content:center; margin: 30px 30px 0px 30px;">
-                      <img src="https://cdn-icons-png.flaticon.com/128/7486/7486747.png" width="100px" alt="">
-                    </div>
-                    <p style="text-align: center" class="stat-label-dash">Please filter data</p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="card-body-dash">
+        
+        <div class="filter-grid">
+          <!-- Customer Location Filters -->
+          <div class="filter-group">
+            <label class="filter-label" for="country-filter">Country</label>
+            <select name="country" id="country" class="js-example-basic-single filter-select" style="width: 100%">
+                <option value="" selected disabled>Select country here...</option>
+                @foreach($country as $per_count)
+                    <option value="{{$per_count->countryDesc}}" data-id="{{$per_count->id}}">{{$per_count->countryDesc}}</option>
+                @endforeach
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label class="filter-label" for="province-filter">Province</label>
+              <select name="province" autocomplete="off" class="js-example-basic-single filter-select" style="width: 100%" id="province" disabled> 
+                  <option value="" selected disabled>Select province here...</option>
+              </select>
+          </div>
+  
+          <div class="filter-group">
+            <label class="filter-label" for="city-filter">City</label>
+              <select name="city" autocomplete="off" class="js-example-basic-single filter-select" style="width: 100%" id="city" disabled> 
+                  <option value="" selected disabled>Select city here...</option>
+              </select>
+          </div>
+          
+          <div class="filter-group">
+            <label class="filter-label" for="barangay-filter">Barangay</label>
+              <select name="barangay" autocomplete="off" class="js-example-basic-single filter-select" style="width: 100%" id="barangay" disabled> 
+                  <option value="" selected disabled>Select barangay here...</option>
+              </select>
           </div>
         </div>
-        <div class="card-footer-dash">
-          <span class="card-footer-text-dash" id="showing_data_cus_info"></span>
-          <div class="pagination-cust" id="pagination_cus_info" style="margin: 0">
+        
+        <div class="filter-actions">
+          <button class="btn-dash btn-outline-dash btn-sm-dash" id="reset_cus_info_filters">Reset Filters</button>
+          <button class="btn-dash btn-primary-dash btn-sm-dash" id="apply_customer_info_filter">Apply Filters</button>
+        </div>
+  
+            <div class="card-stats-dash">
+              <div class="stat-dash">
+                <div class="stat-value-dash">{{number_format($customers_info)}}</div>
+                <div class="stat-label-dash">Total Customers</div>
+              </div>
+            </div>
+  
+            <div class="customer-table-container">
+              <table class="customer-table">
+                <thead>
+                  <tr>
+                    <th>Customer Name</th>
+                    <th>Country</th>
+                    <th>Province</th>
+                    <th>City</th>
+                    <th>Barangay</th>
+                    <th>Transaction Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="6">
+                      <div style="display:flex; align-items:center; justify-content:center; margin: 30px 30px 0px 30px;">
+                        <img src="https://cdn-icons-png.flaticon.com/128/7486/7486747.png" width="100px" alt="">
+                      </div>
+                      <p style="text-align: center" class="stat-label-dash">Please filter data</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer-dash">
+            <span class="card-footer-text-dash" id="showing_data_cus_info"></span>
+            <div class="pagination-cust" id="pagination_cus_info" style="margin: 0">
+            </div>
           </div>
         </div>
       </div>
-    </div>  
+    </div>
+    
+    <div id="time_and_motion" class="tab-content">
+      <div class="transactions-container">
+        <div class="transactions-header" style="margin-top: 0%">
+            <h2 class="card-title-dash">
+              <div class="card-icon-dash icon-unit">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" style="color: white" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="time-icon">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </div>
+              Time-in-motion
+            </h2>
+            <div class="search-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" class="search-input" placeholder="Search transactions...">
+            </div>
+        </div>
+        <div style="overflow:auto" id="time_motion_data">
+          @include('frontliner.admin_dashboard_tm_table')
+        </div>
+          <div class="card-footer-dash">
+            <span class="card-footer-text-dash" id="showing_data_time_motion">
+                Showing {{ $time_motion->count() }} of {{ $time_motion->total() }}
+            </span>
+            
+            <div class="pagination-cust" id="pagination_time_motion" style="margin: 0">
+                <!-- Previous Button -->
+                <button class="pagination-btn-cust pagination-link" 
+                    data-url="{{ $time_motion->previousPageUrl() }}" 
+                    {{ $time_motion->onFirstPage() ? 'disabled' : '' }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>    
+                </button>
+            
+                <!-- Page Numbers (Limited to 5) -->
+                @php
+                    $totalPages = $time_motion->lastPage();
+                    $currentPage = $time_motion->currentPage();
+                    $startPage = max(1, $currentPage - 2);
+                    $endPage = min($totalPages, $startPage + 4);
+                    $startPage = max(1, $endPage - 4);
+                @endphp
+            
+                @if ($startPage > 1)
+                    <button class="pagination-btn-cust pagination-link" data-url="{{ $time_motion->url(1) }}">1</button>
+                    @if ($startPage > 2)
+                        <span>...</span>
+                    @endif
+                @endif
+            
+                @for ($i = $startPage; $i <= $endPage; $i++)
+                    <button class="pagination-btn-cust pagination-link {{ $i == $currentPage ? 'active' : '' }}" 
+                        data-url="{{ $time_motion->url($i) }}">
+                        {{ $i }}
+                    </button>
+                @endfor
+            
+                @if ($endPage < $totalPages)
+                    @if ($endPage < $totalPages - 1)
+                        <span>...</span>
+                    @endif
+                    <button class="pagination-btn-cust pagination-link" data-url="{{ $time_motion->url($totalPages) }}">{{ $totalPages }}</button>
+                @endif
+            
+                <!-- Next Button -->
+                <button class="pagination-btn-cust pagination-link" 
+                    data-url="{{ $time_motion->nextPageUrl() }}" 
+                    {{ $time_motion->currentPage() == $time_motion->lastPage() ? 'disabled' : '' }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>  
+                </button>
+            </div>
+          </div>
+      </div> 
+    </div>
   </main>
+
+  <!-- Transaction Details Modal -->
+  <div class="modal" id="transaction-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Transaction Details</h3>
+            <button class="modal-close" id="modal-close">&times;</button>
+        </div>
+        <div id="transaction-details-content">
+            <div class="transaction-info">
+                <p><strong>Transaction ID:</strong> <span id="modal-transaction-id"></span></p>
+                <p><strong>Customer:</strong> <span id="modal-customer"></span></p>
+                <p><strong>Amount:</strong> <span id="modal-amount"></span></p>
+                <p><strong>Status:</strong> <span id="modal-status"></span></p>
+                <p><strong>Started:</strong> <span id="modal-started"></span></p>
+            </div>
+
+            <div class="transaction-timeline" id="modal-timeline">
+            </div>
+        </div>
+    </div>
+  </div>
 @endsection
 @push('bottom')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -1037,11 +1140,59 @@ $('#apply_customer_info_filter').on('click', function () {
         </tr>
     `);
   });
+
+  // time & motion pagination 
+  $(document).ready(function() {
+      $('.pagination-link').on('click', function(e) {
+          e.preventDefault();
+          
+          let url = $(this).data('url');
+          if (!url) return;
+
+          $.ajax({
+              url: url,
+              type: 'GET',
+              beforeSend: function() {
+                  $('#time_motion_data').html(`
+                    <div style="display: flex; justify-content: center">
+                      <img width="100" src="https://cdn-icons-gif.flaticon.com/10282/10282620.gif"/>
+                    </div>
+                    <center><p style="text-align:center">Loading data, please wait...</p></center>`);
+              },
+              success: function(data) {
+                  $('#time_motion_data').html($(data.table));
+                  $('#pagination_time_motion').html($(data.pagination));
+              },
+              error: function() {
+                  alert('Error loading data.');
+              }
+          });
+      });
+  });
 </script>
 <script>
   window.onload = function() {
       window.scrollTo(0, 0);
   };
-</script>
 
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabs = document.querySelectorAll('.tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          // Remove active class from all tabs and contents
+          tabs.forEach(t => t.classList.remove('active'));
+          tabContents.forEach(content => content.classList.remove('active'));
+          
+          // Add active class to clicked tab
+          tab.classList.add('active');
+          
+          // Show corresponding content
+          const tabId = tab.getAttribute('data-tab');
+          document.getElementById(tabId).classList.add('active');
+        });
+      });
+    });
+</script>
 @endpush

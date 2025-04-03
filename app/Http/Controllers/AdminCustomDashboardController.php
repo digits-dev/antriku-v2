@@ -19,20 +19,20 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
     private const ForPartsOrdering = 19;
     private const Frontliner = 3;
 
-    public function index()
+    public function index(Request $request)
     {
         if (CRUDBooster::myPrivilegeId() != self::Frontliner) {
             return view('403_error_view.invalid_route');
         }
-		$data['country'] = DB::table('refcountry')->get();
-        
+
+		$data['country'] = DB::table('refcountry')->get();    
         $data['handle_overall_total'] = DB::table('returns_header')
             ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.created_by')
             ->leftJoin('cms_privileges', 'cms_privileges.id', '=', 'cms_users.id_cms_privileges')
             ->where('cms_users.id_cms_privileges', 3)
             ->where('cms_users.status', '=', 'ACTIVE')
             ->count();
-
+            
         $data['handle_for_all_employee'] = $handle_per_employee = DB::table('returns_header')
             ->select(
                 'cms_users.id as user_id',
@@ -75,6 +75,27 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->whereNotNull('city')
             ->whereNotNull('barangay')
             ->count();
+        
+        $data['time_motion'] = DB::table('returns_header')
+            ->select(
+                'returns_header.*',
+                'transaction_status.status_name',
+                DB::raw('MIN(call_out_recorder.call_out_at) as first_timestamp'),
+            )
+            ->leftJoin('transaction_status', 'transaction_status.id', '=', 'returns_header.repair_status')
+            ->leftJoin('call_out_recorder', 'call_out_recorder.returns_header_id', '=', 'returns_header.id')
+            ->whereIn('repair_status', [21, 6])
+            ->where('branch', CRUDBooster::me()->branch_id)
+            ->groupBy('returns_header.id', 'transaction_status.status_name')
+            ->orderBy('returns_header.id', 'DESC')
+            ->paginate(10);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'table' => view('frontliner.admin_dashboard_tm_table', ['time_motion' => $data['time_motion']])->render(),
+                'pagination' => view('frontliner.admin_dashboard_tm_pagination', ['time_motion' => $data['time_motion']])->render(),
+            ]);
+        }
 
         return view('frontliner.admin_dashboard_custom', compact('salesData'), $data);
     }

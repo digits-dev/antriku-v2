@@ -859,6 +859,8 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 			} else {
 				DB::table('returns_header')->where('id', $header_id)->update([
 					'print_release_form' => "YES",
+					'print_releasing_form_by' => CRUDBooster::myId(),
+					'print_releasing_form_at' => now(),
 					'repair_status' => 6,
 					'completed_by' => CRUDBooster::myId(),
 					'completed_at' => now(),
