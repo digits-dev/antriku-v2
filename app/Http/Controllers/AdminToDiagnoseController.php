@@ -284,7 +284,7 @@ use Illuminate\Support\Facades\Session;
 	        */
 			$this->style_css = "
 			.swal2-popup {
-				font-size: unset !important;
+		 		font-size: 1.3rem !important;
 			}
 			";
 
