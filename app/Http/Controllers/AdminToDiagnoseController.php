@@ -597,6 +597,7 @@ use Illuminate\Support\Facades\Session;
 				]);
 			}
 
+
 			// if(!empty($transaction_details[0]->diagnostic_fee_payment_url))
 			// {
 			// 	$status_diagnostic_fee = 'PAID';
@@ -1029,8 +1030,8 @@ use Illuminate\Support\Facades\Session;
 				$data = array();
 				$data['id'] = $request->header_id;
 				$data['reference_no'] = $transaction_details[0]->reference_no;
-				$data['software_cost'] = number_format($transaction_details[0]->software_cost, 2, '.', ',');
-				$data['parts_total_cost'] = number_format($transaction_details[0]->parts_total_cost, 2, '.', ',');
+				$data['software_cost'] = number_format($all_data['software_cost'], 2, '.', ',');
+				$data['parts_total_cost'] = number_format($parts_total_cost, 2, '.', ',');
                 $data['main_url'] = URL::to('/');
     
 				$allparts = DB::table('returns_body_item')->where('returns_header_id',$request->header_id)->get();
