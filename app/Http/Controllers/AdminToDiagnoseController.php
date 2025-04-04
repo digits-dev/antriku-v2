@@ -597,7 +597,6 @@ use Illuminate\Support\Facades\Session;
 				]);
 			}
 
-
 			// if(!empty($transaction_details[0]->diagnostic_fee_payment_url))
 			// {
 			// 	$status_diagnostic_fee = 'PAID';
