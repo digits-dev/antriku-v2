@@ -2917,7 +2917,7 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
 }
 
 .transactions-table td {
-    padding: 15px 20px;
+    padding: 10px 20px;
     font-size: 1.3rem;
     border-bottom: 1px solid var(--border);
 }
@@ -2980,7 +2980,7 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
 
 
 /* tab styles  */
-.tabs {
+.tabs-dash {
   display: flex;
   background-color: #fff;
   border-bottom: 1px solid #eaedf3;
@@ -2988,7 +2988,7 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
   -webkit-overflow-scrolling: touch;
 }
 
-.tab {
+.tab-dash {
   padding: 16px 24px;
   font-size: 14px;
   font-weight: 500;
@@ -2999,30 +2999,30 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
   white-space: nowrap;
 }
 
-.tab:hover {
+.tab-dash:hover {
   color: #3182ce;
 }
 
-.tab.active {
+.tab-dash.active {
   color: #3182ce;
   border-bottom-color: #3182ce;
 }
 
-.tab-content {
+.tab-content-dash {
   display: none;
 }
 
-.tab-content.active {
+.tab-content-dash.active {
   display: block;
 }
 
-.tab-content h2 {
+.tab-content-dash h2 {
   margin-bottom: 20px;
   font-size: 18px;
   color: #2d3748;
 }
 
-.card-tab {
+.card-tab-dash {
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);

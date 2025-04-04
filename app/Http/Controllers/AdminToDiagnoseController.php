@@ -62,77 +62,7 @@ use Illuminate\Support\Facades\Session;
 					}
 				}
 			];
-			
-			
-			# END COLUMNS DO NOT REMOVE THIS LINE
 
-			# OLD START FORM
-			//$this->form = [];
-			//$this->form[] = ["label"=>"Reference No","name"=>"reference_no","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Returns Status","name"=>"repair_status","type"=>"number","required"=>TRUE,"validation"=>"required|integer|min:0"];
-			//$this->form[] = ["label"=>"Print Receive Form","name"=>"print_receive_form","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Print Technical Report","name"=>"print_technical_report","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Print Release Form","name"=>"print_release_form","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Diagnostic Fee Status","name"=>"diagnostic_fee_status","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Diagnostic Cost","name"=>"diagnostic_cost","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Last Name","name"=>"last_name","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"First Name","name"=>"first_name","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Email","name"=>"email","type"=>"email","required"=>TRUE,"validation"=>"required|min:1|max:255|email|unique:returns_header","placeholder"=>"Please enter a valid email address"];
-			//$this->form[] = ["label"=>"Address","name"=>"address","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Contact No","name"=>"contact_no","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Company Name","name"=>"company_name","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Company Contact No","name"=>"company_contact_no","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Purchase Date","name"=>"purchase_date","type"=>"datetime","required"=>TRUE,"validation"=>"required|date_format:Y-m-d H:i:s"];
-			//$this->form[] = ["label"=>"Warranty Expiration Date","name"=>"warranty_expiration_date","type"=>"datetime","required"=>TRUE,"validation"=>"required|date_format:Y-m-d H:i:s"];
-			//$this->form[] = ["label"=>"Warranty Status","name"=>"warranty_status","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Memo No","name"=>"memo_no","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Software Cost","name"=>"software_cost","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Mode Of Payment","name"=>"mode_of_payment","type"=>"number","required"=>TRUE,"validation"=>"required|integer|min:0"];
-			//$this->form[] = ["label"=>"Model","name"=>"model","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Summary Of Concern","name"=>"summary_of_concern","type"=>"textarea","required"=>TRUE,"validation"=>"required|string|min:5|max:5000"];
-			//$this->form[] = ["label"=>"Header Digits Code","name"=>"header_digits_code","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Header Item Description","name"=>"header_item_description","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Header Serial No","name"=>"header_serial_no","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Device Issue Description","name"=>"device_issue_description","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Findings","name"=>"findings","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Resolution","name"=>"resolution","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Other Diagnostic","name"=>"other_diagnostic","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Problem Details","name"=>"problem_details","type"=>"textarea","required"=>TRUE,"validation"=>"required|string|min:5|max:5000"];
-			//$this->form[] = ["label"=>"Problem Details Other","name"=>"problem_details_other","type"=>"textarea","required"=>TRUE,"validation"=>"required|string|min:5|max:5000"];
-			//$this->form[] = ["label"=>"Created By","name"=>"created_by","type"=>"number","required"=>TRUE,"validation"=>"required|integer|min:0"];
-			//$this->form[] = ["label"=>"Updated By","name"=>"updated_by","type"=>"number","required"=>TRUE,"validation"=>"required|integer|min:0"];
-			//$this->form[] = ["label"=>"Level1 Personnel","name"=>"level1_personnel","type"=>"number","required"=>TRUE,"validation"=>"required|integer|min:0"];
-			//$this->form[] = ["label"=>"Level1 Personnel Edited","name"=>"level1_personnel_edited","type"=>"datetime","required"=>TRUE,"validation"=>"required|date_format:Y-m-d H:i:s"];
-			//$this->form[] = ["label"=>"Level2 Personnel","name"=>"level2_personnel","type"=>"number","required"=>TRUE,"validation"=>"required|integer|min:0"];
-			//$this->form[] = ["label"=>"Level2 Personnel Edited","name"=>"level2_personnel_edited","type"=>"datetime","required"=>TRUE,"validation"=>"required|date_format:Y-m-d H:i:s"];
-			# OLD END FORM
-
-			/* 
-	        | ---------------------------------------------------------------------- 
-	        | Sub Module
-	        | ----------------------------------------------------------------------     
-			| @label          = Label of action 
-			| @path           = Path of sub module
-			| @foreign_key 	  = foreign key of sub table/module
-			| @button_color   = Bootstrap Class (primary,success,warning,danger)
-			| @button_icon    = Font Awesome Class  
-			| @parent_columns = Sparate with comma, e.g : name,created_at
-	        | 
-	        */
-	        $this->sub_module = array();
-
-
-	        /* 
-	        | ---------------------------------------------------------------------- 
-	        | Add More Action Button / Menu
-	        | ----------------------------------------------------------------------     
-	        | @label       = Label of action 
-	        | @url         = Target URL, you can use field alias. e.g : [id], [name], [title], etc
-	        | @icon        = Font awesome class icon. e.g : fa fa-bars
-	        | @color 	   = Default is primary. (primary, warning, succecss, info)     
-	        | @showIf 	   = If condition when action show. Use field alias. e.g : [id] == 1
-	        | 
-	        */
 	        $this->addaction = array();
 			if (CRUDBooster::myPrivilegeId() == 8) {
 				$this->addaction[] = [
@@ -160,144 +90,38 @@ use Illuminate\Support\Facades\Session;
 				];
 			}
 
-
-
-	        /* 
-	        | ---------------------------------------------------------------------- 
-	        | Add More Button Selected
-	        | ----------------------------------------------------------------------     
-	        | @label       = Label of action 
-	        | @icon 	   = Icon from fontawesome
-	        | @name 	   = Name of button 
-	        | Then about the action, you should code at actionButtonSelected method 
-	        | 
-	        */
 			$this->button_selected = array();
 			$this->button_selected[] = ['label'=>'Print Receive Form', 'icon'=>'fa fa-print', 'name'=>'print_receive_form'];
 			$this->button_selected[] = ['label'=>'Print Technical Report', 'icon'=>'fa fa-print', 'name'=>'print_technical_report'];
-// 			$this->button_selected[] = ['label'=>'Print Release Form', 'icon'=>'fa fa-print', 'name'=>'print_release_form'];
+ 			//$this->button_selected[] = ['label'=>'Print Release Form', 'icon'=>'fa fa-print', 'name'=>'print_release_form'];
 			$this->button_selected[] = ['label'=>'Print Same Day Release Form', 'icon'=>'fa fa-print', 'name'=>'print_sameday_release_form'];
 
-	        /* 
-	        | ---------------------------------------------------------------------- 
-	        | Add alert message to this module at overheader
-	        | ----------------------------------------------------------------------     
-	        | @message = Text of message 
-	        | @type    = warning,success,danger,info        
-	        | 
-	        */
-	        $this->alert        = array();
-	                
-	        /* 
-	        | ---------------------------------------------------------------------- 
-	        | Add more button to header button 
-	        | ----------------------------------------------------------------------     
-	        | @label = Name of button 
-	        | @url   = URL Target
-	        | @icon  = Icon from Awesome.
-	        | 
-	        */
+
 	        $this->index_button = array();
 			if(CRUDBooster::myPrivilegeId() == 4){
 				$this->index_button[] = ["title"=>"Assigned To You","label"=>"Show Your Works","icon"=>"fa fa-list","url"=>CRUDBooster::mainpath('AssignedTechnician')];
 			}
 
-	        /* 
-	        | ---------------------------------------------------------------------- 
-	        | Customize Table Row Color
-	        | ----------------------------------------------------------------------     
-	        | @condition = If condition. You may use field alias. E.g : [id] == 1
-	        | @color = Default is none. You can use bootstrap success,info,warning,danger,primary.        
-	        | 
-	        */
-	        $this->table_row_color = array();     	          
 
-	        /*
-	        | ---------------------------------------------------------------------- 
-	        | You may use this bellow array to add statistic at dashboard 
-	        | ---------------------------------------------------------------------- 
-	        | @label, @count, @icon, @color 
-	        |
-	        */
-	        $this->index_statistic = array();
-
-	        /*
-			/admin/to_diagnose/GetTechnicians
-	        | ---------------------------------------------------------------------- 
-	        | Add javascript at body 
-	        | ---------------------------------------------------------------------- 
-	        | javascript code in the variable 
-	        | $this->script_js = "function() { ... }";
-	        |
-	        */
-	        // $this->script_js = NULL;
 			$this->script_js = "
-			function handleSwal(id, reference_no, technician_id) {
-			assignTechnician(id, reference_no, technician_id);
-			}
-			function handleAcceptJob(id) {
-			acceptJob(id);
-			}
+				function handleSwal(id, reference_no, technician_id) {
+					assignTechnician(id, reference_no, technician_id);
+				}
+				function handleAcceptJob(id) {
+					acceptJob(id);
+				}
 			";
 
-            /*
-	        | ---------------------------------------------------------------------- 
-	        | Include HTML Code before index table 
-	        | ---------------------------------------------------------------------- 
-	        | html code to display it before index table
-	        | $this->pre_index_html = "<p>test</p>";
-	        |
-	        */
-	        $this->pre_index_html = null;
-	        
-	        /*
-	        | ---------------------------------------------------------------------- 
-	        | Include HTML Code after index table 
-	        | ---------------------------------------------------------------------- 
-	        | html code to display it after index table
-	        | $this->post_index_html = "<p>test</p>";
-	        |
-	        */
 			$this->post_index_html = '
 				<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 				<script src="'.asset('js/jobActions.js').'"></script>
 			';
 		
-	        
-	        /*
-	        | ---------------------------------------------------------------------- 
-	        | Include Javascript File 
-	        | ---------------------------------------------------------------------- 
-	        | URL of your javascript each array 
-	        | $this->load_js[] = asset("myfile.js");
-	        |
-	        */
-	        $this->load_js = array();
-	        
-	        /*
-	        | ---------------------------------------------------------------------- 
-	        | Add css style at body 
-	        | ---------------------------------------------------------------------- 
-	        | css code in the variable 
-	        | $this->style_css = ".style{....}";
-	        |
-	        */
 			$this->style_css = "
-			.swal2-popup {
-		 		font-size: 1.3rem !important;
-			}
+				.swal2-popup {
+					font-size: 1.3rem !important;
+				}
 			";
-
-	        
-	        /*
-	        | ---------------------------------------------------------------------- 
-	        | Include css File 
-	        | ---------------------------------------------------------------------- 
-	        | URL of your css each array 
-	        | $this->load_css[] = asset("myfile.css");
-	        |
-	        */
-	        $this->load_css = array();
 	    }
 
 		public function cbView($template, $data)
@@ -380,25 +204,6 @@ use Illuminate\Support\Facades\Session;
 			$this->cbView('transaction_details.view_created_transaction_detail',$data);
 		}
 
-	    /*
-	    | ---------------------------------------------------------------------- 
-	    | Hook for button selected
-	    | ---------------------------------------------------------------------- 
-	    | @id_selected = the id selected
-	    | @button_name = the name of button
-	    |
-	    */
-	    public function actionButtonSelected($id_selected,$button_name) {
-	        //Your code here
-	    }
-
-	    /*
-	    | ---------------------------------------------------------------------- 
-	    | Hook for manipulate query of index result 
-	    | ---------------------------------------------------------------------- 
-	    | @query = current sql query 
-	    |
-	    */
 	    public function hook_query_index(&$query) {
 			//Your code here
 		
@@ -419,13 +224,7 @@ use Illuminate\Support\Facades\Session;
 			}
 		
 	    }
-
-	    /*
-	    | ---------------------------------------------------------------------- 
-	    | Hook for manipulate row of index table html 
-	    | ---------------------------------------------------------------------- 
-	    |
-	    */    
+ 
 		public function hook_row_index($column_index,&$column_value) 
 		{	        
 			//Your code here
@@ -497,75 +296,6 @@ use Illuminate\Support\Facades\Session;
 			// }
 
 	    }
-
-	    /*
-	    | ---------------------------------------------------------------------- 
-	    | Hook for manipulate data input before add data is execute
-	    | ---------------------------------------------------------------------- 
-	    | @arr
-	    |
-	    */
-	    public function hook_before_add(&$postdata) {        
-	        //Your code here
-	    }
-
-	    /* 
-	    | ---------------------------------------------------------------------- 
-	    | Hook for execute command after add public static function called 
-	    | ---------------------------------------------------------------------- 
-	    | @id = last insert id
-	    | 
-	    */
-	    public function hook_after_add($id) {        
-	        //Your code here
-	    }
-
-	    /* 
-	    | ---------------------------------------------------------------------- 
-	    | Hook for manipulate data input before update data is execute
-	    | ---------------------------------------------------------------------- 
-	    | @postdata = input post data 
-	    | @id       = current id 
-	    | 
-	    */
-	    public function hook_before_edit(&$postdata,$id) {        
-	        //Your code here
-	    }
-
-	    /* 
-	    | ---------------------------------------------------------------------- 
-	    | Hook for execute command after edit public static function called
-	    | ----------------------------------------------------------------------     
-	    | @id       = current id 
-	    | 
-	    */
-	    public function hook_after_edit($id) {
-	        //Your code here 
-	    }
-
-	    /* 
-	    | ---------------------------------------------------------------------- 
-	    | Hook for execute command before delete public static function called
-	    | ----------------------------------------------------------------------     
-	    | @id       = current id 
-	    | 
-	    */
-	    public function hook_before_delete($id) {
-	        //Your code here
-	    }
-
-	    /* 
-	    | ---------------------------------------------------------------------- 
-	    | Hook for execute command after delete public static function called
-	    | ----------------------------------------------------------------------     
-	    | @id       = current id 
-	    | 
-	    */
-	    public function hook_after_delete($id) {
-	        //Your code here
-	    }
-
-		//By the way, you can still create your own method in here... :) 
 
 		// CHANGE TRANSACTION STATUS
 		public function changeTransactionStatus(Request $request)
@@ -1049,7 +779,7 @@ use Illuminate\Support\Facades\Session;
 				$data['parts_cost'] = $parts_cost;
 				if($request->warranty_status == 'OUT OF WARRANTY'){
 					try {
-						if($transaction_details[0]->parts_total_cost <= 2000.00){
+						if((float) str_replace(',', '', $data['parts_total_cost']) <= 2000.00){
 							CRUDBooster::sendEmail(['to'=>$customer_email,'data'=>$data, 'template'=>'send_payment_link_below_2k','attachments'=>[]]);
 						} else{
 							CRUDBooster::sendEmail(['to'=>$customer_email,'data'=>$data, 'template'=>'send_payment_link','attachments'=>[]]);
@@ -1174,19 +904,19 @@ use Illuminate\Support\Facades\Session;
 				'updated_by'			=> CRUDBooster::myId()
 			]);
 
-			$spare_parts_item = DB::table('parts_item_master')
-				->where('id', $item_id)
-				->lockForUpdate()
-				->first();
+			// $spare_parts_item = DB::table('parts_item_master')
+			// 	->where('id', $item_id)
+			// 	->lockForUpdate()
+			// 	->first();
 
-			if ($spare_parts_item && $spare_parts_item->qty > 0) {
-				DB::table('parts_item_master')->where('id', $item_id)
-					->update([
-						'qty' => $spare_parts_item->qty - 1,
-						'updated_by' => CRUDBooster::myId(),
-						'updated_at' => now()
-					]);
-			}
+			// if ($spare_parts_item && $spare_parts_item->qty > 0) {
+			// 	DB::table('parts_item_master')->where('id', $item_id)
+			// 		->update([
+			// 			'qty' => $spare_parts_item->qty - 1,
+			// 			'updated_by' => CRUDBooster::myId(),
+			// 			'updated_at' => now()
+			// 		]);
+			// }
 
 			$data['quotation'] = DB::table('returns_body_item')
 			->leftJoin('returns_serial', 'returns_body_item.id', '=', 'returns_serial.returns_body_item_id')
@@ -1201,25 +931,25 @@ use Illuminate\Support\Facades\Session;
 		public function DeleteQuotation(Request $request)
 		{
 			$data = array();
-			$body_item = DB::table('returns_body_item')->where('id',$request->id)->first();
+			// $body_item = DB::table('returns_body_item')->where('id',$request->id)->first();
 
-			if ($body_item && $body_item->qty == 'Available') {
-				$added = DB::table('parts_item_master')->where('id', $body_item->item_id)
-					->update([
-						'qty' => DB::raw('qty + 1'), 
-						'updated_by' => CRUDBooster::myId(),
-						'updated_at' => now()
-					]);
+			// if ($body_item && $body_item->qty == 'Available') {
+			// 	$added = DB::table('parts_item_master')->where('id', $body_item->item_id)
+			// 		->update([
+			// 			'qty' => DB::raw('qty + 1'), 
+			// 			'updated_by' => CRUDBooster::myId(),
+			// 			'updated_at' => now()
+			// 		]);
 				
-					if($added){
-						DB::table('returns_body_item')->where('id',$request->id)->delete();	
-						DB::table('returns_serial')->where('returns_body_item_id',$request->id)->delete();
-					}
+			// 		if($added){
+			// 			DB::table('returns_body_item')->where('id',$request->id)->delete();	
+			// 			DB::table('returns_serial')->where('returns_body_item_id',$request->id)->delete();
+			// 		}
 					
-			} else {
+			// } else {
 				DB::table('returns_body_item')->where('id',$request->id)->delete();	
 				DB::table('returns_serial')->where('returns_body_item_id',$request->id)->delete();
-			}
+			// }
 
 			return($data);
 		}

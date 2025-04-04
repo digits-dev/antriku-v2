@@ -63,7 +63,8 @@ class AdminPendingSparePartsController extends \crocodicstudio\crudbooster\contr
 	public function hook_query_index(&$query)
 	{
 		$query->whereIn('repair_status', [14])
-			->where('branch', CRUDBooster::me()->branch_id);
+			->where('branch', CRUDBooster::me()->branch_id)
+			->orderBy('returns_header.id', 'ASC');
 	}
 
 	public function hook_row_index($column_index, &$column_value)
