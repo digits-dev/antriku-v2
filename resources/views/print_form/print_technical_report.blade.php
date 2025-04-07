@@ -35,7 +35,8 @@
                             </div>
                             <div class="row">
                                 <span class="control-label col-md-12" id="left-label">
-                                    {{ $data['Branch']->branch_contact1 }} / {{ $data['Branch']->branch_contact2 }} / {{ $data['Branch']->branch_contact3 }} <br>
+                                    {{ $data['Branch']->branch_contact1 }} / {{ $data['Branch']->branch_contact2 }} <br>
+                                    {{-- {{ $data['Branch']->branch_contact3 }} --}}
                                     http://beyondthebox.ph/
                                 </span>
                             </div>

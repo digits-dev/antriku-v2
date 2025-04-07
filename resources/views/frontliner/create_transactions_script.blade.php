@@ -314,6 +314,14 @@
         }else{
             var serial_no = '';
         }
+
+        let purchase_date = new Date($("#purchase_date").val());
+        let warranty_expiration_date = new Date($("#warranty_expiration_date").val());
+
+        if (purchase_date > warranty_expiration_date) {
+            swal('Error!', 'The purchase date cannot be later than the warranty expiration date. Please double check.', 'error');
+            return;
+        }
         
         if(formdata){ 
             swal('Error!','Please fill up required field!','error');

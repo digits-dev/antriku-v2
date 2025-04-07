@@ -104,7 +104,15 @@
     }
 
     function validateBeforeChangeStatus(status_id) {
-        let form = document.getElementById("SubmitTransactionForm"); // Adjust to your form ID
+        let form = document.getElementById("SubmitTransactionForm"); 
+
+        if(status_id === 14) {
+            const spare_part = document.querySelector('.getscValue');
+            spare_part.required = true;
+        } else {
+            const spare_part = document.querySelector('.getscValue');
+            spare_part.required = false;
+        }
 
         // Check if form fields are valid
         if (!form.checkValidity()) {
@@ -167,7 +175,7 @@
         // For Cost Computation
         var all_cost = document.getElementById("costArray").value;
         var all_item_desc = document.getElementById("itemArray").value;
-        var software_cost = document.getElementById("software_cost").value;
+        // var software_cost = document.getElementById("software_cost").value;
 
         //************************Validation for Array************************
         if(checkIfDuplicateExists(getscValue)){
@@ -298,7 +306,7 @@
             formData.append("warranty_status", warranty_status);
             formData.append("all_cost", all_cost);
             formData.append("all_item_desc", all_item_desc);
-            formData.append("software_cost", software_cost);
+            // formData.append("software_cost", software_cost);
             if(status_id == 18){
                 formData.append("input_file", $("#input-file")[0].files[0]); 
             }
@@ -349,6 +357,11 @@
                         swal({ title: "Info!", text: "STATUS: TO PAY DIAGNOSTIC", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
                         }, function(){
                             window.location.href = window.location.origin+"/admin/to_diagnose";
+                        });
+                    }else if(status_id == 9){
+                        swal({ title: "Info!", text: "STATUS: DOA, ONGOING DIAGNOSIS FOR PENDING SPARE PARTS", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                        }, function(){
+                            window.location.href = window.location.origin+"/admin/to_diagnose/edit/"+header_id;
                         });
                     }else if(status_id == 'send'){
                         $(".buttonSubmit").removeAttr("disabled");

@@ -12,6 +12,7 @@
 */
 
 use App\Http\Controllers\AdminCustomDashboardController;
+use App\Http\Controllers\AdminProductItemMasterController;
 
 Route::get('/payment-gateway/{id}','PayMongoController@CreatePayment'); 
 Route::post('/payment-gateway-process/{id}','PayMongoController@CreatePaymentProcess'); 
@@ -129,6 +130,9 @@ Route::group(['middleware' => ['web']], function() {
 
     Route::post('/admin/filter_customers_units', [AdminCustomDashboardController::class, 'filterCustomerUnit'])->name('filter_customers_units');
     Route::post('/admin/filter_customers_info', [AdminCustomDashboardController::class, 'filterCustomerInfo'])->name('filter_customers_info');
+
+    // API ITEM MASTER FROM DIMFS 
+    // Route::get('/admin/apple_items_created', [AdminProductItemMasterController::class, 'getItemsCreatedAPI']);
 
 
 });

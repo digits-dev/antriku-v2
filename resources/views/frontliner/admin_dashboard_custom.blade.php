@@ -145,7 +145,7 @@
                 <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
               </svg>
             </div>
-            Total cases handled
+            Total Case/s Handled
           </h2>
           <div class="card-actions-dash">
             <button class="card-action-btn-dash">
@@ -352,7 +352,7 @@
         </div>
 
         <!-- Employee Performance Card -->
-        <div class="card-dash">
+        <div class="card-dash" style="display: none;">
           <div class="card-header-dash">
             <h2 class="card-title-dash">
               <div class="card-icon-dash icon-employe-dash">

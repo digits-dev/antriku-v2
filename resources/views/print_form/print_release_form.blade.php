@@ -45,7 +45,8 @@
                             </div>
                             <div class="row">
                                 <span class="control-label col-md-12" id="left-label">
-                                    {{ $data['Branch']->branch_contact1 }} / {{ $data['Branch']->branch_contact2 }} / {{ $data['Branch']->branch_contact3 }} <br>
+                                    {{ $data['Branch']->branch_contact1 }} / {{ $data['Branch']->branch_contact2 }}<br>
+                                    {{-- {{ $data['Branch']->branch_contact3 }} --}}
                                     http://beyondthebox.ph/
                                 </span>
                             </div>
@@ -481,9 +482,14 @@
                                     icon: "success",
                                     title: "Email Sent Successfully!",
                                     html: emailResponse.message + "<br>" + "<b>To: </b>" + emailResponse.email,
-                                // }, function(){
-                                //     window.location.href = window.location.origin+"/admin/call_out/edit/"+header_id;
+                                    allowOutsideClick: false,
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    didOpen: () => Swal.showLoading()
                                 });
+                                setTimeout(() => {
+                                    window.location.href = `/admin/call_out`;
+                                }, 3000);
                             },
                             error: function () {
                                 Swal.fire({

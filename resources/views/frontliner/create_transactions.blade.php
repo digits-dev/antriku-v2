@@ -74,7 +74,17 @@
                             </div>
                             <div class="form-group-cus">
                                 <label class="label-cus"><span class="required">*</span>{{ trans('labels.form-label.contact_no') }}</label>
-                                <input type="input" name="contact_no" placeholder="Enter Contact# e.g.(09xxxxxxxxx)" pattern="[09][0-9]{10}" class="input-cus" autocomplete="off" required/> 
+                                <input 
+                                    type="input" 
+                                    name="contact_no" 
+                                    placeholder="Enter Contact# e.g.(09xxxxxxxxx)" 
+                                    pattern="[09][0-9]{10}" 
+                                    maxlength="11" 
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,11)"
+                                    class="input-cus" 
+                                    autocomplete="off" 
+                                    required
+                                /> 
                             </div>
                             <div class="form-group-cus">
                                 <label class="label-cus">Company Name:</label>
@@ -82,7 +92,16 @@
                             </div>
                             <div class="form-group-cus">
                                 <label class="label-cus">Company Contact#:</label>
-                                <input type="input" name="company_contact_no" placeholder="Enter Company Contact# e.g.(09xxxxxxxxx)" pattern="[09][0-9]{10}" class="input-cus" autocomplete="off"/>
+                                <input 
+                                    type="input" 
+                                    name="company_contact_no" 
+                                    placeholder="Enter Company Contact# e.g.(09xxxxxxxxx)" 
+                                    pattern="[09][0-9]{10}" 
+                                    maxlength="11" 
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,11)"
+                                    class="input-cus" 
+                                    autocomplete="off"
+                                />
                             </div>
                         </div>
                         <div class="form-column-cus">
@@ -223,8 +242,8 @@
                                 </div>
                             </div>
                             <div class="form-group-cus">
-                                <label class="label-cus"><span class="requiredField">*</span>Summary of Concern:</label>
-                                <textarea placeholder="Type your summary of concern here" name="summary_of_concern" rows="3" class="textarea-cus" style="padding-bottom: 15px" required></textarea>
+                                <label class="label-cus"><span class="requiredField">*</span>BMI:</label>
+                                <textarea placeholder="Type your BMI here" name="summary_of_concern" rows="3" class="textarea-cus" style="padding-bottom: 15px" required></textarea>
                             </div>
                         </div>
                     </div>

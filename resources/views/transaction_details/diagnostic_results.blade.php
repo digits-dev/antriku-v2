@@ -112,7 +112,7 @@
                 <div class="info-label-cust">Other Diagnostic Information</div>
                 {{-- <div class="info-value-cust">SMP</div> --}}
                 <div>
-                    <textarea placeholder="Type your other diagnostic information here" name="other_diagnostic" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>{{ $transaction_details->other_diagnostic }}</textarea>
+                    <textarea placeholder="Type your other diagnostic information here" name="other_diagnostic" rows="2" class="input-cus" {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>{{ $transaction_details->other_diagnostic }}</textarea>
                 </div>
             </div>
         </div>

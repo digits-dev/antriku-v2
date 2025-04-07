@@ -11,25 +11,6 @@
         <p class="no-print"><a title='Main Module' href='{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}'><i class='fa fa-chevron-circle-left '></i> &nbsp; {{trans("crudbooster.form_back_to_list",['module'=>CRUDBooster::getCurrentModule()->name])}}</a></p>       
     @endif
     <div class="panel panel-default" id="main-pannel">
-        <div class='panel-heading no-print'>
-            <div class="row">
-                <div class="col-md-8">
-                    Print Receiving Form
-                </div>
-                <div class="col-md-4">
-                    <form method="" id="myform" action="">
-                        <input type="hidden" value="{{$data['transaction_details']->header_id}}" name="header_id">
-                        <input type="hidden" value="1" name="print_form_type">
-                        <!-- <a href="{{ CRUDBooster::mainpath() }}" class="btn btn-default pull-right">Cancel</a> -->
-                        <a href="{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}" class="btn btn-default pull-right">Cancel</a>
-                        <button class="btn btn-primary pull-right" style="margin-right: 18px;" type="button" id="print" onclick="printDivision('printableArea')"> 
-                            <i class="fa fa-print"></i> Print as PDF 
-                        </button>
-                    </form>
-                    <button class="btn btn-primary" id="download-btn" style="display: none"></button>
-                </div>
-            </div>
-        </div>
         <!-- <div class="row"></div> -->
         <div class='panel-body'id="printableArea">    
             <div> 
@@ -73,7 +54,7 @@
                                     <span class="control-label col-md-12" id="right-label"><strong>Date Received: </strong>{{ date('Y-m-d') }}</span>
                                 </div>
                                 <div class="row">
-                                    <span class="control-label col-md-12" id="right-label"><strong>Prepared By: </strong>{{ CRUDBooster::myName() }}</span>
+                                    <span class="control-label col-md-12" id="right-label"><strong>Prepared By: </strong>{{ CRUDBooster::me()->first_name }}</span>
                                 </div>
                             </td>
                         </tr> 
@@ -244,6 +225,7 @@
                             </canvas>
                         </div>
                         <center>
+                            <b><p style="margin-bottom: 0px"> {{$data['transaction_details']->last_name}}, {{$data['transaction_details']->first_name}} / {{now()}}</p></b>
                             <p>Customer’s Signature over Printed Name</p> 
                             <button type="button" id="clear-signature" class="no-print">Clear Signature</button>
                             <input type="hidden" name="signatureData" id="signatureData">
@@ -263,7 +245,26 @@
                         Date: <span> <u>{{now()}}</u> </span>
                 </div>
             </div>
-        </div>          
+        </div> 
+        <div class='panel-footer no-print'>
+            <div class="row">
+                <div class="col-md-8">
+                    {{-- Print Receiving Form --}}
+                </div>
+                <div class="col-md-4">
+                    <form method="" id="myform" action="">
+                        <input type="hidden" value="{{$data['transaction_details']->header_id}}" name="header_id">
+                        <input type="hidden" value="1" name="print_form_type">
+                        <!-- <a href="{{ CRUDBooster::mainpath() }}" class="btn btn-default pull-right">Cancel</a> -->
+                        {{-- <a href="{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}" class="btn btn-default pull-right">Cancel</a> --}}
+                        <button class="btn btn-primary pull-right" style="margin-right: 10px;" type="button" id="print" onclick="printDivision('printableArea')"> 
+                            <i class="fa fa-print"></i> Print as PDF 
+                        </button>
+                    </form>
+                    <button class="btn btn-primary" id="download-btn" style="display: none"></button>
+                </div>
+            </div>
+        </div>         
     </div>
 @endsection
     
@@ -283,17 +284,6 @@
             event.preventDefault();
         }
     });
-    
-    // Prevent page reload
-    window.onbeforeunload = function(event) {
-        if (isSwalOpen) {
-            event.preventDefault();
-            event.returnValue = '';
-        } else  {
-            event.preventDefault();
-            event.returnValue = '';
-        }
-    };
 
     // Prevent right-click
     window.addEventListener('contextmenu', function(event) {
@@ -322,7 +312,7 @@
             margin: 7,
             filename: file_name,
             image: { type: "jpeg", quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, allowTaint: true },
+            html2canvas: { scale: 2, scrollY: 0, useCORS: true, allowTaint: true },
             jsPDF: { unit: "mm", format: "letter", orientation: "portrait" }
         };
 
@@ -387,9 +377,16 @@
                             success: function (emailResponse) {
                                 Swal.fire({
                                     icon: "success",
-                                    title: "Email Sent Successfully!",
-                                    html: emailResponse.message + "<br>" + "<b>To: </b>" + emailResponse.email,
+                                    title: "Transaction Complete, Email Sent Successfully!",
+                                    html: emailResponse.message + "<br>" + "<b>To: </b>" + emailResponse.email + "<br><br> <small>Closing, A moment again please...</small>",
+                                    allowOutsideClick: false,
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    didOpen: () => Swal.showLoading()
                                 });
+                                setTimeout(() => {
+                                    window.location.href = `/admin/returns_header`;
+                                }, 3000);
                             },
                             error: function () {
                                 Swal.fire({
@@ -472,86 +469,73 @@
     
     // for digital Signature
     document.addEventListener("DOMContentLoaded", function () {
-        const canvas = document.getElementById("signature-pad");
-        const clearButton = document.getElementById("clear-signature");
-        const signatureDataInput = document.getElementById("signatureData");
-        const form = document.getElementById("myform");
-
-        if (!canvas || !clearButton || !signatureDataInput || !form) {
-            console.error("Missing required elements for signature pad.");
-            return;
-        }
-
-        // Initialize SignaturePad
-        if (typeof SignaturePad !== "undefined") {
-            const signaturePad = new SignaturePad(canvas);
-
-            // Hide clear button initially
-            clearButton.style.display = "none";
-
-            // Show clear button when user starts drawing
-            canvas.addEventListener("mousedown", () => {
-                clearButton.style.display = "inline-block"; 
-            });
-
-            // Show clear button when drawing on mobile (touch event)
-            canvas.addEventListener("touchstart", () => {
-                clearButton.style.display = "inline-block"; 
-            });
-
-            // Form submission validation
-            form.addEventListener("submit", function (e) {
-                if (signaturePad.isEmpty()) {
-                    e.preventDefault();
-                    Swal.fire("Signature Requirement", "Please sign before printing!", "warning");
-                } else {
-                    const signatureImage = signaturePad.toDataURL(); // Converts to Base64
-                    signatureDataInput.value = signatureImage; // Store in hidden input
-                }
-            });
-
-            // Clear signature and hide button
-            clearButton.addEventListener("click", function () {
-                signaturePad.clear();
-                clearButton.style.display = "none"; // Hide button after clearing
-            });
-
-        } else {
-            console.error("SignaturePad library is not loaded.");
-        }
-    });
-</script>
-<script>
     const canvas = document.getElementById("signature-pad");
-    const ctx = canvas.getContext("2d");
-    let isDrawing = false;
-    let img = document.createElement("img"); // Create a single image element
-    document.getElementById("e_signed").appendChild(img);
+    const clearButton = document.getElementById("clear-signature");
+    const signatureDataInput = document.getElementById("signatureData");
+    const form = document.getElementById("myform");
+    const previewContainer = document.getElementById("e_signed");
 
-    canvas.addEventListener("mousedown", (e) => {
-        isDrawing = true;
-        ctx.beginPath();
-        ctx.moveTo(e.offsetX, e.offsetY);
-    });
-
-    canvas.addEventListener("mousemove", (e) => {
-        if (!isDrawing) return;
-        ctx.lineTo(e.offsetX, e.offsetY);
-        ctx.stroke();
-        updateSignature(); // Update signature real-time
-    });
-
-    canvas.addEventListener("mouseup", () => {
-        isDrawing = false;
-    });
-
-    function updateSignature() {
-        img.src = canvas.toDataURL("image/png"); 
-        img.style.border = "0px solid #ddd";
-        img.style.marginTop = "1px";
-        img.style.width = "5%";
-        img.style.height = "5%";
+    if (!canvas || !clearButton || !signatureDataInput || !form || !previewContainer) {
+        console.error("Missing required elements for signature pad.");
+        return;
     }
+
+    if (typeof SignaturePad !== "undefined") {
+        const signaturePad = new SignaturePad(canvas);
+
+        // Create preview image element once
+        const img = document.createElement("img");
+        img.style.width = "100px";
+        img.style.borderBottom = "1px solid black";
+        img.style.marginTop = "0px";
+        previewContainer.appendChild(img);
+
+        // Function to update preview in real-time
+        function updatePreview() {
+            if (!signaturePad.isEmpty()) {
+                img.src = signaturePad.toDataURL();
+            } else {
+                img.src = "";
+            }
+        }
+
+        // Show clear button when user starts drawing
+        canvas.addEventListener("mousedown", () => {
+            clearButton.style.display = "inline-block";
+        });
+        canvas.addEventListener("touchstart", () => {
+            clearButton.style.display = "inline-block";
+        });
+
+        // Real-time update
+        canvas.addEventListener("mouseup", updatePreview);
+        canvas.addEventListener("touchend", updatePreview);
+        canvas.addEventListener("mousemove", updatePreview);
+        canvas.addEventListener("touchmove", updatePreview);
+
+        // Form submission validation
+        form.addEventListener("submit", function (e) {
+            if (signaturePad.isEmpty()) {
+                e.preventDefault();
+                Swal.fire("Signature Requirement", "Please sign before printing!", "warning");
+            } else {
+                const signatureImage = signaturePad.toDataURL();
+                signatureDataInput.value = signatureImage;
+            }
+        });
+
+        // Clear signature and mirror preview
+        clearButton.addEventListener("click", function () {
+            signaturePad.clear();
+            img.src = ""; // Clear the preview
+            clearButton.style.display = "none";
+        });
+
+    } else {
+        console.error("SignaturePad library is not loaded.");
+    }
+});
+
 </script>
 @endpush
 

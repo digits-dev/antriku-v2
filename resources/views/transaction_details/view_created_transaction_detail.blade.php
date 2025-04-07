@@ -307,7 +307,9 @@
 
             @if($transaction_details->repair_status != 8)
                 @include('transaction_details.technical_report')
-                @include('transaction_details.diagnostic_results')
+                @if (CRUDBooster::myPrivilegeId() !== 9)
+                    @include('transaction_details.diagnostic_results')
+                @endif
                 @include('transaction_details.quotation')
                 @include('transaction_details.uploade_receipt')
             @endif
@@ -390,7 +392,7 @@
                     @endif
                     @if ($transaction_details->repair_status == 13 && CRUDBooster::getModulePath() == "pending_repair")
                         <button type="submit" id="save" onclick="return changeStatus(21)" class="btn btn-success pull-right buttonSubmit repairComplete" style="margin-left: 20px;"><i class="fa fa-check" aria-hidden="true"></i> Repair Completed</button>
-                        <button type="submit" id="pending_spare_parts" onclick="return validateBeforeChangeStatus(14)" class="btn btn-primary pull-right buttonSubmit pendingSpareParts" style="margin-left: 20px; {{ $transaction_details->warranty_status == 'IN WARRANTY' && $transaction_details->case_status == 'CARRY-IN' ? '' : 'display: none;' }}">PENDING SPARE PARTS</button>
+                        <button type="submit" id="doa_pending_spare_parts" onclick="return validateBeforeChangeStatus(9)" class="btn btn-primary pull-right buttonSubmit doa_pending_spare_parts" style="margin-left: 20px;">DOA, Pending Spare Parts</button>
                         <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
                     @endif
                     @if ($transaction_details->repair_status == 14 && CRUDBooster::getModulePath() == "pending_spare_parts")

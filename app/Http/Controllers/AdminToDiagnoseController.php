@@ -40,7 +40,7 @@ use Illuminate\Support\Facades\Session;
 			$this->col[] = ["label"=>"Status","name"=>"repair_status"];
 			$this->col[] = ["label"=>"Reference No","name"=>"reference_no"];
 			$this->col[] = ["label"=>"Model Group","name"=>"model"];
-            $this->col[] = ["label"=>"Print Technical Report","name"=>"print_technical_report"];
+			$this->col[] = ["label" => "Print Receive Form", "name" => "print_receive_form"];
 			// $this->col[] = ["label"=>"Downpayment Status","name"=>"downpayment_status"];
 			// $this->col[] = ["label"=>"Downpayment URL","name"=>"down_payment_url"];
 			$this->col[] = ["label"=>"Date Received","name"=>"level2_personnel_edited"];
@@ -208,9 +208,9 @@ use Illuminate\Support\Facades\Session;
 			//Your code here
 		
 			if(CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6 || CRUDBooster::myPrivilegeId() == 8){
-			    $query->whereIn('repair_status', [1,9,16])->orderBy('id', 'ASC'); 
+			    $query->whereIn('repair_status', [1,9,16])->where('print_receive_form', 'YES')->orderBy('id', 'ASC'); 
 			}else if (CRUDBooster::myPrivilegeId() == 4){
-				$query->whereIn('repair_status', [1,9,16])->where('technician_id', CRUDBooster::myId())->orderBy('id', 'ASC');
+				$query->whereIn('repair_status', [1,9,16])->where('print_receive_form', 'YES')->where('technician_id', CRUDBooster::myId())->orderBy('id', 'ASC');
 			}
 			else{
 			    $query->where('repair_status', 1)->where('branch', CRUDBooster::me()->branch_id); 
@@ -314,7 +314,8 @@ use Illuminate\Support\Facades\Session;
 					$total_cost += intval($ac);
 				}
 
-				$parts_total_cost = $total_cost + $all_data['software_cost'];
+				// $parts_total_cost = $total_cost + $all_data['software_cost'];
+				$parts_total_cost = $total_cost;
 				// $downpayment = ($parts_total_cost)*0.5;
 				// $finalpayment = $parts_total_cost - $downpayment;
 
@@ -322,7 +323,7 @@ use Illuminate\Support\Facades\Session;
 					// 'downpayment_cost'			=> number_format($downpayment, 2, '.', ''),
 					// 'final_payment_cost'		=> number_format($finalpayment, 2, '.', ''),
 					'parts_total_cost'			=> number_format($parts_total_cost, 2, '.', ''),
-					'software_cost'				=> $all_data['software_cost'],
+					// 'software_cost'				=> $all_data['software_cost'],
 					'updated_by' 				=> CRUDBooster::myId()
 				]);
 			}
@@ -371,7 +372,7 @@ use Illuminate\Support\Facades\Session;
 					'parts_replacement_cost'	=> $all_data['replacement_cost'],
 					'case_status'						=> $all_data['case_status'],
                     'warranty_status' 			=> $all_data['warranty_status'],
-					'memo_no' 					=> $all_data['memo_number'],
+					// 'memo_no' 					=> $all_data['memo_number'],
                     'device_issue_description' 	=> $all_data['device_issue_description'],
                     'findings' 					=> $all_data['findings'],
                     'resolution' 				=> $all_data['resolution'],
@@ -463,10 +464,6 @@ use Illuminate\Support\Facades\Session;
 							'updated_by'		=> CRUDBooster::myId()
 						]);
 
-						// DB::table()->where()->update([
-
-						// ]);
-
                     }else if(empty($bodyItem->id) && !empty($service_code[$i])){
                         $bodyItemID = DB::table('returns_body_item')->insertGetId([
                             'returns_header_id'	=> $all_data['header_id'],
@@ -524,7 +521,8 @@ use Illuminate\Support\Facades\Session;
 					$total_cost += intval($ac);
 				}
 
-				$parts_total_cost = $total_cost + $request->software_cost;
+				// $parts_total_cost = $total_cost + $request->software_cost;
+				$parts_total_cost = $total_cost;
 				$downpayment = ($parts_total_cost)*0.5;
 				$finalpayment = $parts_total_cost - $downpayment;
 				
@@ -532,7 +530,7 @@ use Illuminate\Support\Facades\Session;
 					'parts_total_cost'			=> number_format($parts_total_cost, 2, '.', ''),
 					'downpayment_cost'			=> number_format($downpayment, 2, '.', ''),
 					'final_payment_cost'		=> number_format($finalpayment, 2, '.', ''),
-					'software_cost'				=> $request->software_cost,
+					// 'software_cost'				=> $request->software_cost,
 					'level3_personnel'          => CRUDBooster::myId(),
 					'level3_personnel_edited'   => date('Y-m-d H:i:s')
 				]);
@@ -540,7 +538,7 @@ use Illuminate\Support\Facades\Session;
 				$data = array();
 				$data['id'] = $request->header_id;
 				$data['reference_no'] = $transaction_details[0]->reference_no;
-				$data['software_cost'] = number_format($request->software_cost, 2, '.', ',');
+				// $data['software_cost'] = number_format($request->software_cost, 2, '.', ',');
 				$data['downpayment_cost'] = number_format($downpayment, 2, '.', ',');
 				$data['main_url'] = URL::to('/');
 
@@ -678,7 +676,7 @@ use Illuminate\Support\Facades\Session;
 				$data = array();
 				$data['id'] = $request->header_id;
 				$data['reference_no'] = $transaction_details[0]->reference_no;
-				$data['software_cost'] = number_format($transaction_details[0]->software_cost, 2, '.', ',');
+				// $data['software_cost'] = number_format($transaction_details[0]->software_cost, 2, '.', ',');
 				$data['downpayment_cost'] = number_format($transaction_details[0]->downpayment_cost, 2, '.', ',');
                 $data['main_url'] = URL::to('/');
     
@@ -730,6 +728,20 @@ use Illuminate\Support\Facades\Session;
 					'ongoing_repair_by'   => CRUDBooster::myId(),
 					'ongoing_repair_at'   => date('Y-m-d H:i:s'),
 				]);
+
+				$get_body_items = DB::table('returns_body_item')->where('returns_header_id', $request->header_id)->get();
+				if(!$get_body_items->isEmpty()){
+					foreach($get_body_items as $per_item){
+						if($per_item->qty == 'Available'){
+							DB::table('parts_item_master')->where('id', $per_item->item_id)->update([
+								'qty' => DB::raw('qty - 1'),
+								'updated_by' => CRUDBooster::myId(),
+								'updated_at' => now()
+							]);
+						}
+					}
+				}
+
 			}
 
 			if($request->status_id == 14){
@@ -759,7 +771,7 @@ use Illuminate\Support\Facades\Session;
 				$data = array();
 				$data['id'] = $request->header_id;
 				$data['reference_no'] = $transaction_details[0]->reference_no;
-				$data['software_cost'] = number_format($all_data['software_cost'], 2, '.', ',');
+				// $data['software_cost'] = number_format($all_data['software_cost'], 2, '.', ',');
 				$data['parts_total_cost'] = number_format($parts_total_cost, 2, '.', ',');
                 $data['main_url'] = URL::to('/');
     
@@ -859,7 +871,6 @@ use Illuminate\Support\Facades\Session;
 				}
 			}
 
-			
 			// if($request->status_id == 15){
 			// 	DB::table('returns_header')->where('id',$request->header_id)->update([
 			// 		'updated_by'   => CRUDBooster::myId(),
@@ -931,25 +942,25 @@ use Illuminate\Support\Facades\Session;
 		public function DeleteQuotation(Request $request)
 		{
 			$data = array();
-			// $body_item = DB::table('returns_body_item')->where('id',$request->id)->first();
+			$body_item = DB::table('returns_body_item')->where('id',$request->id)->first();
 
-			// if ($body_item && $body_item->qty == 'Available') {
-			// 	$added = DB::table('parts_item_master')->where('id', $body_item->item_id)
-			// 		->update([
-			// 			'qty' => DB::raw('qty + 1'), 
-			// 			'updated_by' => CRUDBooster::myId(),
-			// 			'updated_at' => now()
-			// 		]);
+			if ($body_item && $body_item->qty == 'Available') {
+				$added = DB::table('parts_item_master')->where('id', $body_item->item_id)
+					->update([
+						'qty' => DB::raw('qty + 1'), 
+						'updated_by' => CRUDBooster::myId(),
+						'updated_at' => now()
+					]);
 				
-			// 		if($added){
-			// 			DB::table('returns_body_item')->where('id',$request->id)->delete();	
-			// 			DB::table('returns_serial')->where('returns_body_item_id',$request->id)->delete();
-			// 		}
+					if($added){
+						DB::table('returns_body_item')->where('id',$request->id)->delete();	
+						DB::table('returns_serial')->where('returns_body_item_id',$request->id)->delete();
+					}
 					
-			// } else {
+			} else {
 				DB::table('returns_body_item')->where('id',$request->id)->delete();	
 				DB::table('returns_serial')->where('returns_body_item_id',$request->id)->delete();
-			// }
+			}
 
 			return($data);
 		}
@@ -1015,6 +1026,7 @@ use Illuminate\Support\Facades\Session;
 					'lead_technician_id'		=> CRUDBooster::myId(),
 					'technician_id'				=> $request->technician_id,
 					'technician_assigned_at'    => date('Y-m-d H:i:s'),
+					'updated_by'				=> CRUDBooster::myId(),
 				]);
 				
 				return response()->json(['success' => true]);
