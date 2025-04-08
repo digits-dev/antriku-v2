@@ -407,7 +407,7 @@
         </div>
       </div>
 
-    <div class="dashboard-grid-dash">
+    {{-- <div class="dashboard-grid-dash">
       <!-- Sales Overview Card -->
       <div class="card-dash">
         <div class="card-header-dash">
@@ -435,7 +435,7 @@
             <canvas id="salesChart"></canvas>
         </div><br>
       </div>
-    </div>
+    </div> --}}
   </div>
   
   <div id="customers_unit_filter" class="tab-content-dash">

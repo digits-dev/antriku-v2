@@ -307,7 +307,7 @@
 
             @if($transaction_details->repair_status != 8)
                 @include('transaction_details.technical_report')
-                @if (CRUDBooster::myPrivilegeId() !== 9)
+                @if (CRUDBooster::myPrivilegeId() != 9)
                     @include('transaction_details.diagnostic_results')
                 @endif
                 @include('transaction_details.quotation')
@@ -396,7 +396,7 @@
                         <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
                     @endif
                     @if ($transaction_details->repair_status == 14 && CRUDBooster::getModulePath() == "pending_spare_parts")
-                        <button type="submit" id="save" onclick="return changeStatus(15)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check" aria-hidden="true"></i> Spare Parts Received</button>
+                        <button type="button" id="save" class="btn btn-success pull-right buttonSubmit spare_parts_received" style="margin-left: 20px;"><i class="fa fa-check" aria-hidden="true"></i> Spare Parts Received</button>
                     @endif
                     @if ($transaction_details->repair_status == 15 && CRUDBooster::getModulePath() == "pending_repair")
                         <button type="submit" id="save" onclick="return changeStatus(13)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-circle-o" aria-hidden="true"></i> Ongoing Repair</button>
@@ -533,6 +533,28 @@
                 }
             });
         }
+
+        $('.spare_parts_received').on('click', function(e){
+            let gsxInput = $('.getgsxValue');
+            let kgbInput = $('.getserialValue');
+
+            let gsx = gsxInput.val().trim();
+            let kgb_serial = kgbInput.val().trim();
+
+            if (gsx === '' || kgb_serial === '') {
+                e.preventDefault();
+
+                if (gsx === '') gsxInput.attr('required', true);
+                if (kgb_serial === '') kgbInput.attr('required', true);
+
+                alert('Please fill in all required fields. (GSX Reference & KGB Serial Number)');
+                return;
+            }
+
+            gsxInput.removeAttr('required');
+            kgbInput.removeAttr('required');
+            return changeStatus(15);
+        });
 
     </script>
 @endpush
