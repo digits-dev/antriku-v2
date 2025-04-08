@@ -242,8 +242,8 @@
                                 </div>
                             </div>
                             <div class="form-group-cus">
-                                <label class="label-cus"><span class="requiredField">*</span>BMI:</label>
-                                <textarea placeholder="Type your BMI here" name="summary_of_concern" rows="3" class="textarea-cus" style="padding-bottom: 15px" required></textarea>
+                                <label class="label-cus"><span class="requiredField">*</span>VMI:</label>
+                                <textarea placeholder="Type your VMI here" name="summary_of_concern" rows="3" class="textarea-cus" style="padding-bottom: 15px" required></textarea>
                             </div>
                         </div>
                     </div>
