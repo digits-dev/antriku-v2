@@ -14,6 +14,10 @@
 use App\Http\Controllers\AdminCustomDashboardController;
 use App\Http\Controllers\AdminProductItemMasterController;
 
+Route::get('/', function () {
+    return redirect('/admin/login');
+});
+
 Route::get('/payment-gateway/{id}','PayMongoController@CreatePayment'); 
 Route::post('/payment-gateway-process/{id}','PayMongoController@CreatePaymentProcess'); 
 
@@ -23,7 +27,7 @@ Route::get('/get-chargeable/{id}','PayMongoController@Chargeable');
 
 Route::post('/CheckPaymentIntent','PayMongoController@CheckPaymentIntent')->name('check-payment'); 
 
-Route::group(['middleware' => ['web']], function() {
+Route::group(['middleware' => ['web','\crocodicstudio\crudbooster\middlewares\CBBackend']], function() {
     
     Route::post('/admin/returns_header/add-transaction-process','AdminReturnsHeaderController@AddTransactionProcess')->name('add-transaction'); // CREATE TRANSACTION
     Route::post('/admin/returns_header/model','AdminReturnsHeaderController@model')->name('selected-model');    // SET IMAGE FOR SELECTED MODEL
@@ -134,6 +138,5 @@ Route::group(['middleware' => ['web']], function() {
     // Route::get('/admin/apple_items_created', [AdminProductItemMasterController::class, 'getItemsCreatedAPI']);
     Route::get('/admin/to_assign/GetTechnicians','AdminToAssignController@GetTechnicians');
     Route::post('/admin/to_assign/AssignTechnician','AdminToAssignController@AssignTechnician');  
-
 
 });

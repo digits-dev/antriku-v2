@@ -10,6 +10,7 @@ use DB;
 use URL;
 use ZipArchive;
 use CRUDBooster;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 
@@ -43,19 +44,11 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 		$this->col[] = ["label" => "Reference No", "name" => "reference_no"];
 		$this->col[] = ["label" => "Model Group", "name" => "model"];
 		$this->col[] = ["label" => "Print Receive Form", "name" => "print_receive_form"];
-		$this->col[] = ["label" => "Send Payment Link", "name" => "send_diagnostic_payment_link"];
 		$this->col[] = ["label" => "Diagnostic Payment Status", "name" => "diagnostic_fee_status"];
 		$this->col[] = ["label" => "Diagnostic Fee", "name" => "diagnostic_cost"];
-		$this->col[] = ["label" => "Diagnostic Payment URL", "name" => "diagnostic_fee_payment_url"];
 		$this->col[] = ["label" => "Date Created", "name" => "created_at"];
-		$this->col[] = ["label" => "Updated By", "name" => "updated_by"];
+		$this->col[] = ["label" => "Updated By", "name" => "updated_by", 'join' => 'cms_users,name'];
 		# END COLUMNS DO NOT REMOVE THIS LINE
-		
-		// $this->button_selected = array();
-		// $this->button_selected[] = ['label' => 'Print Receive Form', 'icon' => 'fa fa-print', 'name' => 'print_receive_form'];
-		// $this->button_selected[] = ['label' => 'Print Technical Report', 'icon' => 'fa fa-print', 'name' => 'print_technical_report'];
-		//$this->button_selected[] = ['label'=>'Print Release Form','icon'=>'fa fa-print','name'=>'print_release_form'];
-		// $this->button_selected[] = ['label' => 'Print Same Day Release Form', 'icon' => 'fa fa-print', 'name' => 'print_sameday_release_form'];
 	}
 
 	public function cbView($template, $data)
@@ -106,6 +99,10 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 		$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
 		$data['country'] = DB::table('refcountry')->get();
 
+		$cities_client = new Client();
+    	$response = $cities_client->get('https://psgc.gitlab.io/api/regions.json');	
+    	$data['cities'] = json_decode($response->getBody(), true);
+
 		$data['transaction_details'] = DB::table('returns_header')
 			->leftJoin('returns_body_item', 'returns_header.id', '=', 'returns_body_item.returns_header_id')
 			->leftJoin('returns_serial', 'returns_body_item.id', '=', 'returns_serial.returns_body_item_id')
@@ -118,25 +115,53 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 			$data['success'] = "";
 		}
 
-
 		$this->cbView("frontliner.create_transactions", $data);
 	}
 
 	public function getProvinces(Request $request)
 	{
-		$provinces = DB::table('refprovince')->where('country_id', $request->input('country_id'))->get();
+		$provinces_client = new Client();
+		$response = $provinces_client->request('GET', 'https://psgc.gitlab.io/api/provinces/');
+    	$provinces = json_decode($response->getBody(), true); 
 		return response()->json($provinces);
 	}
 
 	public function getCities(Request $request)
 	{
-		$cities = DB::table('refcitymun')->where('provCode', $request->input('prov_code'))->get();
-		return response()->json($cities);
+		$baseUrl = 'https://psgc.gitlab.io/api/';
+		$cities_client = new Client();
+		$cities = [];
+		
+		try {
+			// Check if the province code is for Metro Manila
+			if ($request->input('prov_code') === '00') {
+				$response_metro_manila = $cities_client->get("https://psgc.gitlab.io/api/cities-municipalities.json");
+				$cities_in_manila = json_decode($response_metro_manila->getBody(), true);
+				
+				$cities = array_filter($cities_in_manila, function($city) {
+					return $city['regionCode'] === '130000000'; // NCR region
+				});
+
+				return response()->json(array_values($cities));
+			} else {
+				// Non-Metro Manila
+				$response = $cities_client->get("{$baseUrl}provinces/{$request->input('prov_code')}/cities-municipalities/");
+				$cities = json_decode($response->getBody(), true);
+				
+				return response()->json($cities);
+			}
+		} catch (\Exception $e) {
+			return response()->json(['error' => 'Failed to fetch cities', 'message' => $e->getMessage()], 500);
+		}
 	}
 
 	public function getBrgy(Request $request)
 	{
-		$barangays = DB::table('refbrgy')->where('provCode', $request->input('prov_code'))->where('citymunCode', $request->input('city_mun_code'))->get();
+		$baseUrl = 'https://psgc.gitlab.io/api/';
+		$barangays_client = new Client();
+		$cityMunCode = $request->input('city_mun_code');
+		$response = $barangays_client->get("{$baseUrl}cities-municipalities/{$cityMunCode}/barangays/");
+		$barangays = json_decode($response->getBody(), true);
 		return response()->json($barangays);
 	}
 
@@ -173,16 +198,16 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 	{
 		//Your code here
 		if (CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6) {
-			$query->where('repair_status', 1)->where('print_receive_form', 'NO')->orderBy('id', 'asc');
+			$query->where('repair_status', 24)->where('print_receive_form', 'NO')->orderBy('id', 'asc');
 		} else {
-			$query->where('repair_status', 1)->where('print_receive_form', 'NO')->where('branch', CRUDBooster::me()->branch_id)->orderBy('id', 'asc');
+			$query->where('repair_status', 24)->where('print_receive_form', 'NO')->where('branch', CRUDBooster::me()->branch_id)->orderBy('id', 'asc');
 		}
 	}
 
 	public function hook_row_index($column_index, &$column_value)
 	{
 		//Your code here
-		$pending = DB::table('transaction_status')->where('id', '1')->first();
+		$pending = DB::table('transaction_status')->where('id', '24')->first();
 		$to_pay = DB::table('transaction_status')->where('id', '2')->first();
 		$rejected = DB::table('transaction_status')->where('id', '3')->first();
 		$repair_in_process = DB::table('transaction_status')->where('id', '4')->first();
@@ -237,17 +262,8 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 			}
 		}
 
-		if ($column_index == 7) {
+		if ($column_index == 6) {
 			$column_value = '₱' . $column_value;
-		}
-
-		if ($column_index == 8) {
-			$column_value = "<a href='" . $column_value . "'>" . $column_value . "</a>";
-		}
-
-		if ($column_index == 10) {
-			$name = DB::table('cms_users')->where('id', $column_value)->value('name');
-			$column_value = $name;
 		}
 	}
 
@@ -346,7 +362,7 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 
 		date_default_timezone_set('Asia/Manila');
 		$headerID = DB::table('returns_header')->insertGetId([
-			'repair_status' 			=> ($data['warranty_status'] === "OUT OF WARRANTY") ? 8 : 1,
+			'repair_status' 			=> ($data['warranty_status'] === "OUT OF WARRANTY") ? 8 : 24,
 			'last_name'   				=> $data['last_name'],
 			'first_name'   				=> $data['first_name'],
 			'email'   					=> $data['email'],
@@ -366,6 +382,7 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 			'final_payment_status' 	    => $status_diagnose,
 			'diagnostic_cost'			=> 0.00,
 			'summary_of_concern' 		=> $data['summary_of_concern'],
+			'other_inclusion'			=> $data['other_inclusion'],
 			'header_item_description'	=> $data['item_description'],
 			'model'						=> $data['model'],
 			'unit_type'					=> $data['unit_type'],
@@ -390,9 +407,26 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 
 		DB::table('returns_payments')->insertGetId([
 			'header_id' => $headerID,
-		]);
+		]);	
+		
+		$this->save_inspected_model($data['marked_image_base64'], $tracking_number, $headerID);
 
 		return (array(['header_id' => $headerID, 'ref_no' => $tracking_number, 'warranty_status' => $data['warranty_status']]));
+	}
+
+	private function save_inspected_model($marked_image_base64, $tracking_number, $headerID){
+		if (isset($marked_image_base64) && !empty($marked_image_base64)) {
+			$base64Image = $marked_image_base64;
+			[$type, $data] = explode(',', $base64Image);
+			$imageData = base64_decode($data);
+			$fileName = $tracking_number . '_inspected_' . time() . '.png';
+			Storage::put("public/inspections/$fileName", $imageData);
+			DB::table('returns_header')->where('id', $headerID)->update([
+				'inspected_model_photo' => 'inspections/'.$fileName,
+			]);
+		} else {
+			Log::error("Missing or invalid 'marked_image_base64' data.");
+		}
 	}
 
 	public function EditTransactionProcess(Request $request)

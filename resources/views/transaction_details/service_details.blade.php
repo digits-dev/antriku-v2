@@ -38,7 +38,8 @@
                     <div class="info-value-cust">{{ $transaction_details->header_item_description }}</div>
                 </div>
                 <div class="info-item-cust">
-                    <div class="info-label-cust">{{ trans('labels.table.serial_no') }}</div>
+                    {{-- <div class="info-label-cust">{{ trans('labels.table.serial_no') }}</div> --}}
+                    <div class="info-label-cust">Unit Serial Number</div>
                     <div class="info-value-cust">{{ $transaction_details->header_serial_no }}</div>
                 </div>
                 <div class="info-item-cust">
@@ -54,12 +55,16 @@
                     <div class="info-value-cust">{{ $transaction_details->unit_type }}</div>
                 </div>
                 <div class="info-item-cust">
-                    <div class="info-label-cust">Summary of Concern</div>
+                    <div class="info-label-cust">VMI</div>
                     <div class="info-value-cust">{{ $transaction_details->summary_of_concern }}</div>
                 </div>
             </div>
             <div class="product-image-cust">
-                <img src="{{ URL::to('/') }}/{{ $transaction_details->model_photo }}" alt="iPhone 13 Pro">
+                @if ($transaction_details->inspected_model_photo)
+                    <img src="{{ Storage::url($transaction_details->inspected_model_photo) }}" alt="iPhone 13 Pro">
+                @else
+                    <img src="{{ URL::to('/') }}/{{ $transaction_details->model_photo }}" alt="iPhone 13 Pro">
+                @endif
             </div>
         </div>
     </div>

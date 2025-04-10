@@ -56,9 +56,9 @@
 	    public function hook_query_index(&$query) {
 	        //Your code here
 			if (CRUDBooster::myPrivilegeId() == 3) {
-				$query->whereIn('repair_status', [10,3, 17,21])->where('branch', CRUDBooster::me()->branch_id); 
+				$query->whereIn('repair_status', [10,3, 17,21,23])->where('branch', CRUDBooster::me()->branch_id); 
 			}else {
-				$query->whereIn('repair_status', [10,3, 17, 21]);
+				$query->whereIn('repair_status', [10,3, 17, 21, 23]);
 			}
 	    }
 

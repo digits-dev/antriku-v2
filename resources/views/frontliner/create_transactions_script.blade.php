@@ -1,4 +1,4 @@
-
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript">
     var base_url = window.location.origin;
     $(document).ready(function(){
@@ -220,42 +220,225 @@
         }
     });
 
-    // MODEL DROPDOWN
-    function SelectedModel()
-    {
-        var model = document.getElementById("model").value; 
-        $.ajax
-        ({ 
-            url: "{{ route('selected-model') }}",
-            type: "POST",
-            data: {
-                'model': model,
-                _token: '{!! csrf_token() !!}'
-                },
-            success: function(result)
-            {
-                var img = "{{ URL::to('/') }}/" + result[0].model_photo;
-                var showData = "<img src=" + img + " style='border: 1px solid slategray; width: 100%;'/>";
-                
-                jQuery("#Photo").html(showData); 
-                $('.item-img-hov').hide();
-                $('#Photo').show();
-                            
-                $('#Photo').click(function(){
-                    Swal.fire({
-                        html: showData,
-                        width: '70%',
-                        heightAuto: true,
-                        padding: '1em',
-                        confirmButtonText: 'Close Preview',
-                        customClass: {
-                            popup: 'fixed-size-modal' 
-                        }
-                    });
-                });
+// MODEL DROPDOWN
+function SelectedModel() {
+  var model = document.getElementById("model").value
+
+  $.ajax({
+    url: "{{ route('selected-model') }}",
+    type: "POST",
+    data: {
+      model: model,
+      _token: "{!! csrf_token() !!}",
+    },
+    success: (result) => {
+      var img = "{{ URL::to('/') }}/" + result[0].model_photo
+      var showData = "<img src=" + img + " style='border: 1px solid slategray; width: 100%;'/>"
+
+      jQuery("#Photo").html(showData)
+      $(".item-img-hov").hide()
+      $("#Photo").show()
+
+      $("#Photo").off("click")
+      $("#Photo").on("click", () => {
+        Swal.fire({
+          html: `
+                <div class="app-container" id="app">
+                    <div class="app-header">
+                        <h1 class="app-title">
+                            <i class="fa fa-search"></i>
+                            Model Inspection
+                        </h1>
+                        <div class="mode-toggle">
+                            <span class="mode-label">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mode-icon mark-icon"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                                Mark
+                            </span>
+                            <label class="switch">
+                                <input type="checkbox" id="eraseToggle">
+                                <span class="slider"></span>
+                            </label>
+                            <span class="mode-label">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mode-icon erase-icon"><path d="M20 20H7L3 16a1 1 0 0 1 0-1.41l9.71-9.71a1 1 0 0 1 1.41 0l6.88 6.88a1 1 0 0 1 0 1.41L12.7 20"></path></svg>
+                                Erase
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div id="canvas-container">
+                        <canvas id="canvas"></canvas>
+                        <div class="tooltip" id="tooltip"></div>
+                    </div>
+                </div>
+            `,
+          width: "70%",
+          heightAuto: true,
+          padding: "1em",
+          showCancelButton: true,
+          showConfirmButton: true,
+          allowOutsideClick: false,
+          customClass: {
+            popup: "fixed-size-modal",
+          },
+          cancelButtonText: '<i class="fa fa-times"></i> No, Cancel',
+          confirmButtonText: '<i class="fa fa-save"></i> Save Inspection',
+          didOpen: () => {
+            // Initialize the canvas
+            // IMPORTANT: Use a new canvas instance each time
+            const canvasEl = document.getElementById("canvas")
+            const appEl = document.getElementById("app")
+
+            // Make sure we're working with a fresh canvas
+            if (window.activeCanvas) {
+              window.activeCanvas.dispose()
             }
-        });
-    }
+
+            const canvas = new fabric.Canvas("canvas")
+            window.activeCanvas = canvas
+
+            let isEraseMode = false
+            const marks = [] // Store marks for removal
+
+            // Load the image onto the canvas
+            fabric.Image.fromURL(img, (imgObj) => {
+              // Calculate responsive dimensions
+              const maxWidth = Math.min(window.innerWidth * 0.6, 800)
+              const scale = maxWidth / imgObj.width
+
+              // Set canvas dimensions
+              canvas.setWidth(imgObj.width * scale)
+              canvas.setHeight(imgObj.height * scale)
+
+              // Scale the image
+              imgObj.scale(scale)
+
+              // Add image to canvas
+              canvas.add(imgObj)
+
+              // Ensure the image is at the bottom
+              imgObj.set({
+                selectable: false,
+                evented: false,
+              })
+              canvas.sendToBack(imgObj)
+            })
+
+            // Handle the toggle switch change event
+            document.getElementById("eraseToggle").addEventListener("change", (event) => {
+              isEraseMode = event.target.checked
+              updateMode()
+            })
+
+            // Update the UI based on the current mode
+            function updateMode() {
+              if (isEraseMode) {
+                appEl.classList.add("erase-mode")
+
+                // Force cursor update for eraser
+                canvasEl.style.cursor = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="%23f72585" fill-opacity="0.2" stroke="%23f72585" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20H7L3 16a1 1 0 0 1 0-1.41l9.71-9.71a1 1 0 0 1 1.41 0l6.88 6.88a1 1 0 0 1 0 1.41L12.7 20"></path></svg>') 3 28, pointer`
+              } else {
+                appEl.classList.remove("erase-mode")
+
+                // Force cursor update for pen
+                canvasEl.style.cursor = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="%234361ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path><circle cx="7.5" cy="20.5" r="0.5" fill="%234361ee"/></svg>') 1 30, pointer`
+              }
+            }
+
+            // Handle the click event to place an "X" on the image or erase a mark
+            canvas.on("mouse:down", (event) => {
+              const pointer = canvas.getPointer(event.e)
+              const x = pointer.x
+              const y = pointer.y
+
+              if (isEraseMode) {
+                // Check if we clicked near an "X" and remove it
+                let removed = false
+                canvas.forEachObject((obj) => {
+                  if (obj.type === "line" && obj.containsPoint(new fabric.Point(x, y))) {
+                    canvas.remove(obj)
+                    removed = true
+                  }
+                })
+
+                if (removed) {
+                  showTooltip(x, y, "Mark removed!")
+                }
+              } else {
+                // Create the "X" with improved styling
+                const line1 = new fabric.Line([x - 10, y - 10, x + 10, y + 10], {
+                  stroke: "red",
+                  strokeWidth: 3,
+                  strokeLineCap: "round",
+                })
+
+                const line2 = new fabric.Line([x + 10, y - 10, x - 10, y + 10], {
+                  stroke: "red",
+                  strokeWidth: 3,
+                  strokeLineCap: "round",
+                })
+
+                // Add the lines to the canvas
+                canvas.add(line1, line2)
+
+                // Store the lines in the marks array for possible removal
+                marks.push(line1, line2)
+
+                // Ensure the "X" is placed above the image
+                canvas.bringToFront(line1)
+                canvas.bringToFront(line2)
+
+                showTooltip(x, y, "Mark placed!")
+              }
+            })
+
+            // Show tooltip with message
+            function showTooltip(x, y, message) {
+              const tooltip = document.getElementById("tooltip")
+              tooltip.textContent = message
+              tooltip.style.left = `${x + 10}px`
+              tooltip.style.top = `${y + 10}px`
+              tooltip.style.opacity = "1"
+
+              setTimeout(() => {
+                tooltip.style.opacity = "0"
+              }, 1500)
+            }
+
+            // Initialize the mode
+            updateMode()
+
+            // Handle window resize
+            window.addEventListener("resize", () => {
+              const maxWidth = Math.min(window.innerWidth * 0.6, 800)
+
+              if (canvas.width > maxWidth) {
+                const scale = maxWidth / canvas.width
+                canvas.setZoom(scale)
+                canvas.setDimensions({
+                  width: canvas.width * scale,
+                  height: canvas.height * scale,
+                })
+              }
+            })
+          },
+          preConfirm: () => {
+            if (window.activeCanvas) {
+                const base64Image = window.activeCanvas.toDataURL("image/png");
+                document.getElementById("marked_image_base64").value = base64Image;
+            }
+          },
+          willClose: () => {
+            // Clean up when the modal closes
+            if (window.activeCanvas) {
+              window.activeCanvas.dispose()
+              window.activeCanvas = null
+            }
+          },
+        })
+      })
+    },
+  })
+}
 
     // PROBLEM DETAIL DROPDOWN
     function OtherProblemDetail()

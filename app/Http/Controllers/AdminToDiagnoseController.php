@@ -180,9 +180,9 @@ use Carbon\Carbon;
 			//Your code here
 		
 			if(CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6){
-			    $query->whereIn('repair_status', [1,9,16])->where('print_receive_form', 'YES')->orderBy('id', 'ASC'); 
+			    $query->whereIn('repair_status', [1,9,16,23])->where('print_receive_form', 'YES')->orderBy('id', 'ASC'); 
 			}else if (in_array(CRUDBooster::myPrivilegeId(), [4, 8])){
-				$query->whereIn('repair_status', [1,9,16])->where('print_receive_form', 'YES')->where('technician_id', CRUDBooster::myId())->orderBy('id', 'ASC');
+				$query->whereIn('repair_status', [1,9,16,23])->where('print_receive_form', 'YES')->where('technician_id', CRUDBooster::myId())->orderBy('id', 'ASC');
 			}
 			else{
 			    $query->where('repair_status', 1)->where('branch', CRUDBooster::me()->branch_id); 

@@ -75,16 +75,35 @@
                             <div class="form-group-cus">
                                 <label class="label-cus"><span class="required">*</span>{{ trans('labels.form-label.contact_no') }}</label>
                                 <input 
+                                    style="display: none;"
                                     type="input" 
                                     name="contact_no" 
-                                    placeholder="Enter Contact# e.g.(09xxxxxxxxx)" 
-                                    pattern="[09][0-9]{10}" 
-                                    maxlength="11" 
-                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,11)"
-                                    class="input-cus" 
+                                    {{-- placeholder="Enter Contact# e.g.(09xxxxxxxxx)"  --}}
+                                    {{-- pattern="[09][0-9]{10}"  --}}
+                                    {{-- maxlength="11"  --}}
+                                    {{-- oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,11)" --}}
+                                    class="input-cus contact_no" 
                                     autocomplete="off" 
                                     required
-                                /> 
+                                />
+                                
+                                <div class="phone-input-container">
+                                    <div class="input-wrapper-cust">
+                                      <div class="country-selector">
+                                        <div class="flag">
+                                          <img src="https://flagcdn.com/w20/ph.png" alt="..." width="20">
+                                        </div>
+                                        <span class="country-code">+63</span>
+                                        <span class="chevron-down"></span>
+                                      </div>
+                                      <input type="tel" id="phone" name="phone" placeholder="">
+                                    </div>
+                                    <div class="dropdown-menu-cust">
+                                        <input type="text" id="country-search" class="input-cus" placeholder="Search country..." autocomplete="off">
+                                        <!-- Country options will be populated here -->
+                                    </div>
+                                </div>
+                                  
                             </div>
                             <div class="form-group-cus">
                                 <label class="label-cus">Company Name:</label>
@@ -107,34 +126,43 @@
                         <div class="form-column-cus">
                             <div class="form-group-cus">
                                 <label for="country" class="label-cus">Country</label>
-                                <select name="country" autocomplete="off" class="js-example-basic-single input-cus" id="country"> 
-                                    <option value="" selected disabled>Select country here...</option>
+                                <select name="country" autocomplete="off" class="js-example-basic-single input-cus" id="country" disabled> 
+                                    {{-- <option value="" selected disabled>Select country here...</option> --}}
                                         @foreach($country as $per_count)
-                                            <option value="{{$per_count->countryDesc}}" data-id="{{$per_count->id}}">{{$per_count->countryDesc}}</option>
+                                            <option value="{{$per_count->countryDesc}}" data-id="{{$per_count->id}}" selected>{{$per_count->countryDesc}}</option>
                                         @endforeach
                                 </select>
                             </div>
                             <div class="form-group-cus">
-                                <label for="province" class="label-cus">Province</label>
-                                <select name="province" autocomplete="off" class="js-example-basic-single input-cus" id="province" disabled> 
+                                <label for="province" class="label-cus">Province
+                                    <i class="fa fa-spinner fa-pulse fa-fw text-info" id="loading_filter_prov" style="display: none;"></i>
+                                    <span class="sr-only">Loading...</span>
+                                </label>
+                                <select name="province" autocomplete="off" class="js-example-basic-single input-cus" id="province"> 
                                     <option value="" selected disabled>Select province here...</option>
                                 </select>
                             </div>
                             <div class="form-group-cus">
-                                <label for="city" class="label-cus">City</label>
-                                <select name="city" autocomplete="off" class="js-example-basic-single input-cus" id="city" disabled> 
+                                <label for="city" class="label-cus"><span class="required">*</span>City 
+                                    <i class="fa fa-spinner fa-pulse fa-fw text-info" id="loading_filter_city" style="display: none;"></i>
+                                    <span class="sr-only">Loading...</span>
+                                </label>
+                                <select name="city" autocomplete="off" class="js-example-basic-single input-cus" id="city" required> 
                                     <option value="" selected disabled>Select city here...</option>
                                 </select>
                             </div>
                             <div class="form-group-cus">
-                                <label for="barangay" class="label-cus">Barangay</label>
-                                <select name="barangay" autocomplete="off" class="js-example-basic-single input-cus" id="barangay" disabled> 
+                                <label for="barangay" class="label-cus">Barangay
+                                    <i class="fa fa-spinner fa-pulse fa-fw text-info" id="loading_filter_brgy" style="display: none;"></i>
+                                    <span class="sr-only">Loading...</span>
+                                </label>
+                                <select name="barangay" autocomplete="off" class="js-example-basic-single input-cus" id="barangay"> 
                                     <option value="" selected disabled>Select barangay here...</option>
                                 </select>
                             </div>
                             <div class="form-group-cus">
-                                <label class="label-cus">Address Line</label>
-                                <textarea name="address_line" id="address_line" placeholder="No./Line/Street/Blk/Lot/etc..." rows="5" class="textarea-cus" autocomplete="off"></textarea>
+                                <label class="label-cus"><span class="required">*</span> Address Line</label>
+                                <textarea name="address_line" id="address_line" placeholder="No./Line/Street/Blk/Lot/etc..." rows="5" class="textarea-cus" autocomplete="off" required></textarea>
                             </div>
                             <div class="form-group-cus" style="display:none">
                                 <label class="label-cus">Address:</label>
@@ -201,8 +229,9 @@
                         </div>
                         <div class="form-column-cus">
                             <div class="form-group-cus">
+                                <input type="hidden" name="marked_image_base64" id="marked_image_base64">
                                 <div class="row">
-                                    <div class="col-md-12" id="model_class">
+                                    <div class="col-md-8" id="model_class">
                                         <label for="model" class="label-cus">Model</label>
                                         <select name="model" autocomplete="off" class="js-example-basic-single input-cus" id="model" onchange="SelectedModel()" required> 
                                             <option value="" selected disabled>Choose Model here...</option>
@@ -211,7 +240,7 @@
                                             @endforeach      
                                         </select> 
                                     </div>
-                                    <div class="" id="unitt_type_class" style="display: none;">
+                                    <div class="col-md-4" id="unitt_type_class">
                                         <label for="model" class="label-cus">Unit Type</label>
                                         <select name="unit_type" autocomplete="off" class="js-example-basic-single input-cus" id="model" onchange="SelectedModel()"> 
                                             <option value="" selected disabled>Choose Unit type here...</option>
@@ -245,6 +274,13 @@
                                 <label class="label-cus"><span class="requiredField">*</span>VMI:</label>
                                 <textarea placeholder="Type your VMI here" name="summary_of_concern" rows="3" class="textarea-cus" style="padding-bottom: 15px" required></textarea>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="form-column-cus">
+                        <div class="form-group-cus">
+                            <label for="other_inclusion" class="label-cus">Other Inclusion:</label>
+                            <textarea class="input-cus" name="other_inclusion" id="other_inclusion" rows="4" placeholder="Type other inclusion here..."></textarea>
                         </div>
                     </div>
 
@@ -282,7 +318,8 @@
                                                         </th>
                                                         <th width="15%" class="text-center">
                                                             <label class="label-cus">
-                                                                <span class="requiredField">*</span>{{ trans('labels.table.serial_no') }}
+                                                                {{-- <span class="requiredField">*</span>{{ trans('labels.table.serial_no') }} --}}
+                                                                <span class="requiredField">*</span>Unit Serial Number
                                                             </label>
                                                         </th>
                                                         <th width="1%" class="text-center">-</th>
@@ -329,6 +366,142 @@
 @endsection
 
 @push('bottom')
+{{-- phone number format each country  --}}
+<script src="https://unpkg.com/libphonenumber-js@1.10.18/bundle/libphonenumber-max.js"></script>
+<script>
+  $(document).ready(function () {
+    const $countrySelector = $('.country-selector');
+    const $dropdownMenu = $('.dropdown-menu-cust');
+    const $selectedFlag = $('.flag img');
+    const $selectedCountryCode = $('.country-selector .country-code');
+    const $phoneInput = $('#phone');
+    const $searchInput = $('#country-search');
+
+    let selectedISO = 'PH';
+    let dialCode = '+63'; 
+
+    // Predefined maximum digits
+    const countryFormats = {
+      PH: { maxDigits: 10 }, 
+    };
+
+    // Set default
+    $selectedFlag.attr('src', 'https://flagcdn.com/w20/ph.png');
+    $selectedCountryCode.text(dialCode);
+    setInputWithDialCode(dialCode);
+    setMaxInputLength(selectedISO);
+
+    const allCountries = libphonenumber.getCountries().map(iso => {
+      return {
+        iso,
+        name: new Intl.DisplayNames(['en'], { type: 'region' }).of(iso),
+        dialCode: '+' + libphonenumber.getCountryCallingCode(iso),
+        flag: `https://flagcdn.com/w20/${iso.toLowerCase()}.png`
+      };
+    });
+
+    function renderDropdown(countries) {
+      const $items = countries.map(c => `
+        <div class="dropdown-item-cust" data-iso="${c.iso}" data-dial-code="${c.dialCode}">
+          <img src="${c.flag}" width="20">
+          <span>${c.name}</span>
+          <span class="country-code">${c.dialCode}</span>
+        </div>
+      `).join('');
+      $dropdownMenu.find('.dropdown-item-cust').remove();
+      $dropdownMenu.append($items);
+    }
+
+    function setInputWithDialCode(code) {
+      $phoneInput.val(code + ' ');
+      setTimeout(() => {
+        // Move cursor to end
+        const input = $phoneInput.get(0);
+        input.setSelectionRange($phoneInput.val().length, $phoneInput.val().length);
+      }, 0);
+    }
+
+    function setMaxInputLength(iso) {
+      const format = countryFormats[iso];
+      if (format) {
+        $phoneInput.attr('maxlength', dialCode.length + 1 + format.maxDigits); // +1 for space
+      } else {
+        $phoneInput.removeAttr('maxlength');
+      }
+    }
+
+    renderDropdown(allCountries);
+
+    $searchInput.on('input', function () {
+      const query = $(this).val().toLowerCase();
+      const filtered = allCountries.filter(c =>
+        c.name.toLowerCase().includes(query) ||
+        c.dialCode.includes(query)
+      );
+      renderDropdown(filtered);
+    });
+
+    $countrySelector.on('click', function (e) {
+      e.stopPropagation();
+      $dropdownMenu.toggleClass('show');
+      $searchInput.focus();
+    });
+
+    $dropdownMenu.on('click', '.dropdown-item-cust', function (e) {
+      e.stopPropagation();
+      const $item = $(this);
+      const flagSrc = $item.find('img').attr('src');
+      dialCode = $item.data('dial-code');
+      selectedISO = $item.data('iso');
+
+      $selectedFlag.attr('src', flagSrc);
+      $selectedCountryCode.text(dialCode);
+      $dropdownMenu.removeClass('show');
+      setInputWithDialCode(dialCode);
+      setMaxInputLength(selectedISO);
+    });
+
+    $(document).on('click', function (e) {
+      if (!$(e.target).closest('.phone-input-container').length) {
+        $dropdownMenu.removeClass('show');
+      }
+    });
+
+    // Prevent deleting or editing the dial code
+    $phoneInput.on('keydown', function (e) {
+      const pos = this.selectionStart;
+      const codeLength = dialCode.length + 1; // +1 for space after dial code
+
+      // Prevent backspace/delete in dial code
+      if ((e.key === 'Backspace' && pos <= codeLength) ||
+          (e.key === 'ArrowLeft' && pos <= codeLength)) {
+        e.preventDefault();
+        return false;
+      }
+
+      // Prevent typing before dial code
+      if (pos < codeLength) {
+        this.setSelectionRange(codeLength, codeLength);
+      }
+    });
+
+    // Allow only numbers after country code
+    $phoneInput.on('keypress', function (e) {
+      const char = String.fromCharCode(e.which);
+      const pos = this.selectionStart;
+      const codeLength = dialCode.length + 1;
+      if (!/[0-9]/.test(char) || pos < codeLength) {
+        e.preventDefault();
+      }
+    });
+
+    $phoneInput.on('input', function() {
+        $('.contact_no').val($phoneInput.val());
+    });
+
+  });
+</script>
+
 <script type='text/javascript'>
     @if (!empty($data['success']))
         swal("{{ $data['success'] }}");
@@ -338,51 +511,43 @@
         $('.js-example-basic-single').select2();
     });
 
-    $(document).ready(function () {
-        $('input[name="warranty_status"]').change(function () {
-            const warranty_status = $('input[name="warranty_status"]:checked').val();
-
-            if (warranty_status === "OUT OF WARRANTY") {
-                $('#model_class').removeClass('col-md-12').addClass('col-md-7');
-                $('#unitt_type_class').addClass('col-md-5').show();
-            } else {
-                $('#model_class').removeClass('col-md-7').addClass('col-md-12');
-                $('#unitt_type_class').removeClass('col-md-5').hide(); // Fix 'removedClass' typo
-            }
-        });
-    });
-
     // get provinces
     $(document).ready(function() {
         $('#country').change(function() {
             let countryID = $(this).find(':selected').data('id');
 
             if (countryID) {
+                $('#loading_filter_prov').show();
                 $.ajax({
                     url: "{{ route('get_provinces') }}", 
                     type: "POST",
-                    data: { country_id: countryID },
                     success: function(data) {
                         $('#province').prop('disabled', false);
                         $('#province').html('<option value="" selected disabled>Select province here...</option>');
                         $.each(data, function(key, value) {
-                            $('#province').append('<option value="' + value.provDesc + '" data-id="' + value.provCode + '">' + value.provDesc + '</option>');
+                            $('#province').append('<option value="' + value.name + '" data-id="' + value.code + '">' + value.name + '</option>');
                         });
+                        $('#province').append('<option value="Metro Manila" data-id="00">Metro Manila</option>');
+                        $('#loading_filter_prov').hide();
                     }
                 });
             } else {
+                $('#loading_filter_prov').hide();
                 $('#province').prop('disabled', true);
                 $('#province').html('<option value="" selected disabled>Select province here...</option>');
             }
         });
+        $('#country').trigger('change');
     });
 
     // get cities 
     $(document).ready(function() {
         $('#province').change(function() {
             let provCode = $(this).find(':selected').data('id');
+            $('#city').val(null).trigger('change');
 
             if (provCode) {
+                $('#loading_filter_city').show();
                 $.ajax({
                     url: "{{ route('get_cities') }}", 
                     type: "POST",
@@ -391,11 +556,13 @@
                         $('#city').prop('disabled', false);
                         $('#city').html('<option value="" selected disabled>Select city here...</option>');
                         $.each(data, function(key, value) {
-                            $('#city').append('<option value="' + value.citymunDesc + '" data-id="' + value.citymunCode + '" data-code="' + value.provCode + '">' + value.citymunDesc + '</option>');
+                            $('#city').append('<option value="' + value.name + '" data-id="' + value.code + '">' + value.name + '</option>');
                         });
+                        $('#loading_filter_city').hide();
                     }
                 });
             } else {
+                $('#loading_filter_city').hide();
                 $('#city').prop('disabled', true);
                 $('#city').html('<option value="" selected disabled>Select city here...</option>');
             }
@@ -406,22 +573,25 @@
     $(document).ready(function() {
         $('#city').change(function() {
             let citymunCode = $(this).find(':selected').data('id');
-            let provCode = $(this).find(':selected').data('code');
+            $('#barangay').val(null).trigger('change');
 
-            if (provCode && citymunCode) {
+            if (citymunCode) {
+                $('#loading_filter_brgy').show();
                 $.ajax({
                     url: "{{ route('get_brgy') }}", 
                     type: "POST",
-                    data: { city_mun_code: citymunCode, prov_code: provCode },
+                    data: { city_mun_code: citymunCode},
                     success: function(data) {
                         $('#barangay').prop('disabled', false);
                         $('#barangay').html('<option value="" selected disabled>Select barangay here...</option>');
                         $.each(data, function(key, value) {
-                            $('#barangay').append('<option value="' + value.brgyDesc + '">' + value.brgyDesc + '</option>');
+                            $('#barangay').append('<option value="' + value.name + '">' + value.name + '</option>');
                         });
+                        $('#loading_filter_brgy').hide();
                     }
                 });
             } else {
+                $('#loading_filter_brgy').hide();
                 $('#barangay').prop('disabled', true);
                 $('#barangay').html('<option value="" selected disabled>Select barangay here...</option>');
             }
@@ -481,17 +651,22 @@
 
     nextButton.addEventListener("click", () => {
         // Basic validation for required fields
-        const requiredFields = step1.querySelectorAll("[required]")
-        let isValid = true
+        let city = $('#city').val();
+        const requiredFields = step1.querySelectorAll("[required]");
+        let isValid = true;
+
+        // Get the city input element to add the class directly to it
+        const cityElement = $('#city')[0];
 
         requiredFields.forEach((field) => {
-        if (!field.value.trim()) {
-            isValid = false
-            field.classList.add("invalid")
-        } else {
-            field.classList.remove("invalid")
-        }
-        })
+            // Check if the field is empty or if the city is empty
+            if (!field.value.trim()) {
+                isValid = false;
+                field.classList.add("invalid");
+            } else {
+                field.classList.remove("invalid");
+            }
+        });
 
         if (!isValid) {
             Swal.fire({
@@ -632,6 +807,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.jquery.min.js"></script>
 {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script> --}}
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
 @include('frontliner.create_transactions_script')
 @endpush

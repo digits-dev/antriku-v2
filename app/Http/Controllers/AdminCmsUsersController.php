@@ -111,4 +111,9 @@ class AdminCmsUsersController extends CBController {
         $postdata['name'] = $postdata['first_name'].' '.$postdata['last_name']; 
 	    unset($postdata['password_confirmation']);
 	}
+
+	public function hook_query_index(&$query) {
+		//Your code here
+		if(!CRUDBooster::isSuperadmin()) CRUDBooster::redirect(CRUDBooster::adminPath(),trans('crudbooster.denied_access'));
+	}
 }

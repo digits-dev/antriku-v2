@@ -186,7 +186,11 @@
                         <tr> 
                             <td style="text-align:center; border: 1px solid slategray; padding: 3px 0;">
                                 <div style="height:200px;padding:10px;">
-                                    <img src="{{ URL::to('/') }}/{{$transaction_details->model_photo}}" style="max-width: 50%;height: auto;max-height: 100%;"/>
+                                    @if ($transaction_details->inspected_model_photo)
+                                        <img src="{{ Storage::url($transaction_details->inspected_model_photo) }}" style="max-width: 50%;height: auto;max-height: 100%;">
+                                    @else
+                                        <img src="{{ URL::to('/') }}/{{$transaction_details->model_photo}}" style="max-width: 50%;height: auto;max-height: 100%;"/>
+                                    @endif
                                 </div>
                             </td>
                         </tr>  

@@ -87,10 +87,10 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 	public function hook_query_index(&$query)
 	{
 		if (in_array(CRUDBooster::myPrivilegeId(), [4, 8])) {
-			$query->where('technician_id', CRUDBooster::myId())->whereIn('repair_status', [13, 15, 18, 19])
+			$query->where('technician_id', CRUDBooster::myId())->whereIn('repair_status', [13, 15, 18, 19, 23])
 			->orderby('returns_header.id', 'ASC');
 		}else {
-			$query->whereIn('repair_status', [13, 15, 18, 19]);
+			$query->whereIn('repair_status', [13, 15, 18, 19, 23]);
 		}
 		
 	}
