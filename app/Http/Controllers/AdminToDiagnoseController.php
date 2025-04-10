@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Input;
 use URL;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
-	use Carbon\Carbon;
+use Carbon\Carbon;
 	
 
 	class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\CBController {
@@ -40,40 +40,12 @@ use Illuminate\Support\Facades\Session;
 			$this->col[] = ["label"=>"Status","name"=>"repair_status"];
 			$this->col[] = ["label"=>"Reference No","name"=>"reference_no"];
 			$this->col[] = ["label"=>"Model Group","name"=>"model"];
-			$this->col[] = ["label" => "Print Receive Form", "name" => "print_receive_form"];
-			// $this->col[] = ["label"=>"Downpayment Status","name"=>"downpayment_status"];
-			// $this->col[] = ["label"=>"Downpayment URL","name"=>"down_payment_url"];
-			$this->col[] = ["label"=>"Date Received","name"=>"level2_personnel_edited"];
-			$this->col[] = ["label"=>"Updated By","name"=>"updated_by", 'join' => 'cms_users,name'];
-			$this->col[] = ["label"=>"Technician","name"=>"technician_id", 'join' => 'cms_users,name'];
-			$this->col[] = ["label"=>"Technician Accepted Date","name"=>"technician_accepted_at"];
-			$this->col[] = ["label"=>"Repaired Date","name"=>"for_call_out_good_unit_at"];
-			$this->col[] = [
-			"label" => "Duration",
-			"name" => "id",
-			"callback" => function ($row) {
-					if (!empty($row->technician_accepted_at) && !empty($row->for_call_out_good_unit_at)) {
-						$start = Carbon::parse($row->technician_accepted_at);
-						$end = Carbon::parse($row->for_call_out_good_unit_at);
-						$diff = $start->diff($end);
-			
-						$duration = sprintf("%d days %d hours %d mins", $diff->d, $diff->h, $diff->i);
-						return $duration;
-					}
-				}
-			];
-
+			$this->col[] = ["label"=>"Technician Assigned","name"=>"technician_id", 'join' => 'cms_users,name'];
+			$this->col[] = ["label"=>"Date Received","name"=>"technician_accepted_at"];
+			$this->col[] = ["label"=>"Branch","name"=>"branch", 'join' => 'branch,branch_name' ];
 	        $this->addaction = array();
-			if (CRUDBooster::myPrivilegeId() == 8) {
-				$this->addaction[] = [
-					'title'   => 'Assign Technician',
-					'icon'    => 'fa fa-user',
-					'url'     => 'javascript:handleSwal([id], '.json_encode("[reference_no]").', [technician_id])', 
-					'color'   => 'success',
-					'showIf'  => '[repair_status] == 1 or [repair_status] == 9 or [repair_status] == 16',
-				];
-			}
-			if (CRUDBooster::myPrivilegeId() == 4) {
+
+			if (in_array(CRUDBooster::myPrivilegeId(), [4,8])) {
 				$this->addaction[] = [
 					'title'   => 'Accept Job',
 					'icon'    => 'fa fa-check',
@@ -207,9 +179,9 @@ use Illuminate\Support\Facades\Session;
 	    public function hook_query_index(&$query) {
 			//Your code here
 		
-			if(CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6 || CRUDBooster::myPrivilegeId() == 8){
+			if(CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6){
 			    $query->whereIn('repair_status', [1,9,16])->where('print_receive_form', 'YES')->orderBy('id', 'ASC'); 
-			}else if (CRUDBooster::myPrivilegeId() == 4){
+			}else if (in_array(CRUDBooster::myPrivilegeId(), [4, 8])){
 				$query->whereIn('repair_status', [1,9,16])->where('print_receive_form', 'YES')->where('technician_id', CRUDBooster::myId())->orderBy('id', 'ASC');
 			}
 			else{
@@ -266,25 +238,25 @@ use Illuminate\Support\Facades\Session;
 				}
 			}
 
-			if($column_index == 4){
-				if($column_value == 'YES'){
-					$column_value = '<span class="label label-success">'.$column_value.'</span>';
-				}elseif($column_value == 'NO'){
-					$column_value = '<span class="label label-danger">'.$column_value.'</span>';
-				}
-			}
+			// if($column_index == 4){
+			// 	if($column_value == 'YES'){
+			// 		$column_value = '<span class="label label-success">'.$column_value.'</span>';
+			// 	}elseif($column_value == 'NO'){
+			// 		$column_value = '<span class="label label-danger">'.$column_value.'</span>';
+			// 	}
+			// }
 
-			if($column_index == 5){
-				if($column_value == 'UNPAID'){
-					$column_value = '<span style="color: #F93154"><strong>'.$column_value.'</strong></span>';
-				}elseif($column_value == 'PAID'){
-					$column_value = '<span style="color: #00B74A"><strong>'.$column_value.'</strong></span>';
-				}elseif($column_value == 'IN WARRANTY'){
-					$column_value = '<span style="color: #1266F1"><strong>'.$column_value.'</strong></span>';
-				}elseif($column_value == 'SPECIAL'){
-					$column_value = '<span style="color: #FFA900"><strong>'.$column_value.'</strong></span>';
-				}
-			}
+			// if($column_index == 5){
+			// 	if($column_value == 'UNPAID'){
+			// 		$column_value = '<span style="color: #F93154"><strong>'.$column_value.'</strong></span>';
+			// 	}elseif($column_value == 'PAID'){
+			// 		$column_value = '<span style="color: #00B74A"><strong>'.$column_value.'</strong></span>';
+			// 	}elseif($column_value == 'IN WARRANTY'){
+			// 		$column_value = '<span style="color: #1266F1"><strong>'.$column_value.'</strong></span>';
+			// 	}elseif($column_value == 'SPECIAL'){
+			// 		$column_value = '<span style="color: #FFA900"><strong>'.$column_value.'</strong></span>';
+			// 	}
+			// }
 
 			// if($column_index == 6){
 			// 	$payments = DB::table('returns_payments')->where('id',$column_value)->first();
@@ -373,7 +345,7 @@ use Illuminate\Support\Facades\Session;
 					'case_status'						=> $all_data['case_status'],
                     'warranty_status' 			=> $all_data['warranty_status'],
 					// 'memo_no' 					=> $all_data['memo_number'],
-                    'device_issue_description' 	=> $all_data['device_issue_description'],
+                    // 'device_issue_description' 	=> $all_data['device_issue_description'],
                     'findings' 					=> $all_data['findings'],
                     'resolution' 				=> $all_data['resolution'],
                     'other_diagnostic'			=> $all_data['other_diagnostic'],
@@ -713,14 +685,24 @@ use Illuminate\Support\Facades\Session;
 					'approved_by'   => CRUDBooster::myId(),
 					'approved_at'   => date('Y-m-d H:i:s'),
 				]);
+				
 			}
 
 			// MAIL-IN SHIPPED
 			if($request->status_id == 12){
-				DB::table('returns_header')->where('id',$request->header_id)->update([
-					'mail_in_shipped_by'   => CRUDBooster::myId(),
-					'mail_in_shipped_at'   => date('Y-m-d H:i:s'),
-				]);
+
+				if ($request->hasFile('waybill')) {
+					$file = $request->file('waybill');
+					$filename =    time() .  '_' . $request->header_id . '_' . $file->getClientOriginalName() ;
+					$path = $file->storeAs('public/waybill_upload', $filename);
+					
+					DB::table('returns_header')->where('id',$request->header_id)->update([
+						'airwaybill_tn'   => $all_data['airwaybill_tn'],
+						'airwaybill_upload'   => $filename,
+						'mail_in_shipped_by'   => CRUDBooster::myId(),
+						'mail_in_shipped_at'   => date('Y-m-d H:i:s'),
+					]);
+				}
 			}
 
 			if($request->status_id == 13){
@@ -979,64 +961,7 @@ use Illuminate\Support\Facades\Session;
 			return($data);
 		}
 
-		public function GetTechnicians() {
-			$technicians = DB::table('cms_users')->where('id_cms_privileges', 4)->where('status', 'ACTIVE')->select('id', 'name', 'branch_id')->get();
-			return response()->json($technicians);
-		}
 
-		public function AssignTechnician(Request $request){
-	
-			try {
-				$technicianId = DB::table('returns_header')
-					->where('id', $request->id)
-					->value('technician_id');
-			
-				if (!$technicianId) {
-					// No existing technician, insert new assignment
-					DB::table('case_assignments')->insert([
-						'returns_header_id'   => $request->id,
-						'lead_technician_id'  => CRUDBooster::myId(),
-						'technician_id'       => $request->technician_id,
-						'start_date'          => now(),
-					]);
-				} else {
-					// Get the latest assignment
-					$latestAssignment = DB::table('case_assignments')
-						->where('returns_header_id', $request->id)
-						->latest('id') // Gets the latest entry based on ID
-						->first();
-			
-					if ($latestAssignment) {
-						// Update the latest assignment by setting end_date
-						DB::table('case_assignments')
-							->where('id', $latestAssignment->id)
-							->update(['end_date' => now()]);
-					}
-			
-					// Insert the new assignment with start_date
-					DB::table('case_assignments')->insert([
-						'returns_header_id'   => $request->id,
-						'lead_technician_id'  => CRUDBooster::myId(),
-						'technician_id'       => $request->technician_id,
-						'start_date'          => now(),
-					]);
-				}
-
-				DB::table('returns_header')->where('id', $request->id)->update([
-					'lead_technician_id'		=> CRUDBooster::myId(),
-					'technician_id'				=> $request->technician_id,
-					'technician_assigned_at'    => date('Y-m-d H:i:s'),
-					'updated_by'				=> CRUDBooster::myId(),
-				]);
-				
-				return response()->json(['success' => true]);
-			
-			} catch (\Exception $e) {
-				
-				\Log::error('Error updating case_assignments: ' . $e->getMessage());
-				return response()->json(['success' => false]);
-			}
-		}
 
 		 public function AcceptJob (Request $request) {
 			try {

@@ -33,12 +33,8 @@
 			$this->col[] = ["label"=>"Status","name"=>"repair_status"];
 			$this->col[] = ["label"=>"Reference No","name"=>"reference_no"];
 			$this->col[] = ["label"=>"Model Group","name"=>"model"];
-            $this->col[] = ["label"=>"Print Technical Report","name"=>"print_technical_report"];
-			$this->col[] = ["label"=>"Downpayment Status","name"=>"downpayment_status"];
-			$this->col[] = ["label"=>"Downpayment URL","name"=>"down_payment_url"];
-			$this->col[] = ["label"=>"Date Received","name"=>"level2_personnel_edited"];
-			$this->col[] = ["label"=>"Updated By","name"=>"updated_by", 'join' => 'cms_users,name'];
-			$this->col[] = ["label"=>"Technician","name"=>"technician_id", 'join' => 'cms_users,name'];
+			$this->col[] = ["label"=>"Technician Assigned","name"=>"technician_id", 'join' => 'cms_users,name'];
+			$this->col[] = ["label"=>"Branch","name"=>"branch", 'join' => 'branch,branch_name' ];
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 		}
@@ -72,17 +68,7 @@
 					$column_value = '<span class="label label-info">'.$model_group->model_group_name.'</span>';
 				}
 			}
-			if($column_index == 5){
-				if($column_value == 'UNPAID'){
-					$column_value = '<span style="color: #F93154"><strong>'.$column_value.'</strong></span>';
-				}elseif($column_value == 'PAID'){
-					$column_value = '<span style="color: #00B74A"><strong>'.$column_value.'</strong></span>';
-				}elseif($column_value == 'IN WARRANTY'){
-					$column_value = '<span style="color: #1266F1"><strong>'.$column_value.'</strong></span>';
-				}elseif($column_value == 'SPECIAL'){
-					$column_value = '<span style="color: #FFA900"><strong>'.$column_value.'</strong></span>';
-				}
-			}
+	
 	    }
 
 		public function cbView($template, $data)

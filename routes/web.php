@@ -39,8 +39,6 @@ Route::group(['middleware' => ['web']], function() {
     Route::post('/admin/to_diagnose/changeTransactionStatus','AdminToDiagnoseController@changeTransactionStatus')->name('change-status');  // CHANGE STATUS OF TRANSACTION
     Route::post('/admin/to_diagnose/CheckGSX','AdminToDiagnoseController@CheckGSX')->name('check-gsx');    
     Route::post('/admin/to_diagnose/SearchSparePartNo','AdminToDiagnoseController@SearchSparePartNo')->name('search-sparepart');    
-    Route::get('/admin/to_diagnose/GetTechnicians','AdminToDiagnoseController@GetTechnicians');
-    Route::post('/admin/to_diagnose/AssignTechnician','AdminToDiagnoseController@AssignTechnician');  
     Route::post('/admin/to_diagnose/AcceptJob','AdminToDiagnoseController@AcceptJob');  
     
 
@@ -126,6 +124,7 @@ Route::group(['middleware' => ['web']], function() {
 
     Route::get('/admin/frontliner-dashboard', [AdminCustomDashboardController::class, 'index'])->name('frontliner.dashboard');
     Route::get('/admin/technician-dashboard', [AdminCustomDashboardController::class, 'technicianDashboard'])->name('technician.dashboard');
+    Route::get('/admin/headtechnician-dashboard', [AdminCustomDashboardController::class, 'headTechnicianDashboard']);
     Route::get('/admin/get-sales-data', [AdminCustomDashboardController::class, 'getSalesData'])->name('getSalesData');
 
     Route::post('/admin/filter_customers_units', [AdminCustomDashboardController::class, 'filterCustomerUnit'])->name('filter_customers_units');
@@ -133,6 +132,8 @@ Route::group(['middleware' => ['web']], function() {
 
     // API ITEM MASTER FROM DIMFS 
     // Route::get('/admin/apple_items_created', [AdminProductItemMasterController::class, 'getItemsCreatedAPI']);
+    Route::get('/admin/to_assign/GetTechnicians','AdminToAssignController@GetTechnicians');
+    Route::post('/admin/to_assign/AssignTechnician','AdminToAssignController@AssignTechnician');  
 
 
 });

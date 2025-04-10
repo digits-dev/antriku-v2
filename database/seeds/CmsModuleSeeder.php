@@ -67,6 +67,15 @@ class CmsModuleSeeder extends Seeder
                 'is_protected' => 0,
                 'is_active'    => 0,
             ],
+            [
+                'name'         => 'To Assign',
+                'icon'         => 'fa fa-gear',
+                'path'         => 'to_assign',
+                'table_name'   => 'returns_header',
+                'controller'   => 'AdminToAssignController',
+                'is_protected' => 0,
+                'is_active'    => 0,
+            ],
         ];
 
         foreach ($modules as $module) {

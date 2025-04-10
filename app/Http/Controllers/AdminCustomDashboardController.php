@@ -19,6 +19,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
     private const ForPartsOrdering = 19;
     private const Frontliner = 3;
     private const Technician = 4;
+    private const LeadTechnician = 8;
 
     public function index(Request $request)
     {
@@ -267,11 +268,44 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         $data['totalCarryIn'] = DB::table('returns_header')->where('case_status', 'CARRY-IN')->where('branch', CRUDBooster::me()->branch_id)->count();
         $data['totalMailIn'] = DB::table('returns_header')->where('case_status', 'MAIL-IN')->where('branch', CRUDBooster::me()->branch_id)->count();
 
-        $data['totalSalesIW'] = DB::table('returns_header')->where('warranty_status', 'IN WARRANTY')->sum('parts_total_cost');
-        $data['totalSalesOOW'] = DB::table('returns_header')->where('warranty_status', 'OUT OF WARRANTY')->where('final_payment_status', 'PAID')->sum(DB::raw('parts_total_cost + diagnostic_cost'));
+        $data['totalIW'] = DB::table('returns_header')->where('warranty_status', 'IN WARRANTY')->where('branch', CRUDBooster::me()->branch_id)->count();
+        $data['totalOOW'] = DB::table('returns_header')->where('warranty_status', 'OUT OF WARRANTY')->where('branch', CRUDBooster::me()->branch_id)->count();
+    
     
             
 
         return view('technician.admin_dashboard_custom', $data);
+    }
+
+    public function headTechnicianDashboard()
+    {
+        if (CRUDBooster::myPrivilegeId() != self::LeadTechnician) {
+            return view('403_error_view.invalid_route');
+        }
+
+        $data = [];
+        $data['greenhills'] = DB::table('branch')->where('id', 1)->value('branch_name');;
+        $data['bonifacio'] = DB::table('branch')->where('id', 2)->value('branch_name');;
+        $data['greenhillsTotalRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingRepair, self::ReplacementPartsPaid, self::SparePartsReceived, self::ForPartsOrdering])->where('branch', 1)->count();
+        $data['bonifacioTotalRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingRepair, self::ReplacementPartsPaid, self::SparePartsReceived, self::ForPartsOrdering])->where('branch', 2)->count();
+        $data['totalOngoingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingRepair, self::ReplacementPartsPaid, self::SparePartsReceived, self::ForPartsOrdering])->count();
+        // $data['myOngoingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingRepair, self::ReplacementPartsPaid, self::SparePartsReceived, self::ForPartsOrdering])->where('technician_id', CRUDBooster::myId())->count();
+        $data['totalPendingCustomerPayment'] = DB::table('returns_header')->where('repair_status', self::PendingCustomerPayment)->where('technician_id', CRUDBooster::myId())->count();
+        $data['totalRepairPerModel'] = DB::table('returns_header')
+            ->join('model', 'returns_header.model', '=', 'model.id')
+            ->select('model.model_name', DB::raw('COUNT(*) as total_repairs'))
+            ->groupBy('model.model_name')
+            ->orderByDesc('total_repairs')
+            ->paginate(10);
+
+        $data['totalCarryIn'] = DB::table('returns_header')->where('case_status', 'CARRY-IN')->count();
+        $data['totalMailIn'] = DB::table('returns_header')->where('case_status', 'MAIL-IN')->count();
+
+        $data['totalIW'] = DB::table('returns_header')->where('warranty_status', 'IN WARRANTY')->count();
+        $data['totalOOW'] = DB::table('returns_header')->where('warranty_status', 'OUT OF WARRANTY')->count();
+    
+            
+
+        return view('headtechnician.admin_dashboard_custom', $data);
     }
 }

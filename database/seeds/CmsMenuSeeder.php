@@ -85,6 +85,18 @@ class CmsMenuSeeder extends Seeder
                 'id_cms_privileges' => 1,
                 'sorting'           => 18
             ],
+            [
+                'name'              => 'To Assign',
+                'type'              => 'Route',
+                'path'              => 'AdminToAssignControllerGetIndex',
+                'color'             => 'normal',
+                'icon'              => 'fa fa-gear',
+                'parent_id'         => 0,
+                'is_active'         => 1,
+                'is_dashboard'      => 0,
+                'id_cms_privileges' => 1,
+                'sorting'           => 12
+            ],
         ];
     
         foreach ($menus as $menu) {

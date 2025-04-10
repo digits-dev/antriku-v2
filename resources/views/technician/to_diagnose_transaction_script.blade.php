@@ -144,8 +144,6 @@
         //****************QUOTATION************************************/
         var row_num = $('.row_num').length;
         $("#number_of_rows").val(row_num);
-        var row_num = $('.input_file').length;
-        $("#number_of_rows").val(row_num);
 
         var getidValue = $('.getidValue').map((_,el) => el.value).get()
         $("#rowidArray").val(getidValue);
@@ -296,8 +294,6 @@
         if(proceed){
             if(status_id == 'send' || status_id == 'save'){
                 $(".buttonSubmit").removeAttr("disabled");
-            }else{
-                $(".buttonSubmit").attr("disabled", "disable");
             }
             var formData = new FormData();
             formData.append("all_data", $("#SubmitTransactionForm").serialize());
@@ -307,154 +303,174 @@
             formData.append("all_cost", all_cost);
             formData.append("all_item_desc", all_item_desc);
             // formData.append("software_cost", software_cost);
+            if(status_id == 12){
+                formData.append("waybill", $("#waybill")[0].files[0]); 
+            }
             if(status_id == 18){
                 formData.append("input_file", $("#input-file")[0].files[0]); 
             }
             if(status_id == 19){
                 formData.append("input_file", $("#input-file")[0].files[0]); 
             }
+            }
             formData.append("_token", '{!! csrf_token() !!}');
-            $.ajax
-            ({ 
-                url: "{{ route('change-status') }}",
-                type: "POST",
-                data: formData,
-                processData: false,  // Important: Prevent jQuery from processing data
-                contentType: false,  // Important: Prevent jQuery from setting content type
-                success: function(result)
-                {   
-                    if(status_id == 2){
-                        swal({ title: "Info!", text: "STATUS: TO PAY PARTS", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            window.location.href = window.location.origin+"/admin/to_pay_parts/edit/"+header_id;
-                        });
-                    }else if(status_id == 3){
-                        swal({ title: "Info!", text: "STATUS: CANCELLED", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            window.location.href = "{{ CRUDBooster::mainpath() }}";
-                        });
-                    }else if(status_id == 4){
-                        swal({ title: "Info!", text: "STATUS: REPAIR IN PROCESS", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            window.location.href = window.location.origin+"/admin/repair_in_process/edit/"+header_id;
-                        });
-                    }else if(status_id == 5){
-                        swal({ title: "Info!", text: "STATUS: CANCELLED/CLOSE", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            window.location.href = window.location.origin+"/admin/call_out";
-                        });
-                    }else if(status_id == 6){
-                        swal({ title: "Success!", text: "STATUS: COMPLETE", type: "success", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            window.location.href = window.location.origin+"/admin/to_close";
-                        });
-                    }else if(status_id == 7){
-                        swal({ title: "Info!", text: "STATUS: TO PICK UP", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            window.location.href = window.location.origin+"/admin/repair_in_process";
-                        });
-                    }else if(status_id == 8){
-                        swal({ title: "Info!", text: "STATUS: TO PAY DIAGNOSTIC", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            window.location.href = window.location.origin+"/admin/to_diagnose";
-                        });
-                    }else if(status_id == 9){
-                        swal({ title: "Info!", text: "STATUS: DOA, ONGOING DIAGNOSIS FOR PENDING SPARE PARTS", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            window.location.href = window.location.origin+"/admin/to_diagnose/edit/"+header_id;
-                        });
-                    }else if(status_id == 'send'){
-                        $(".buttonSubmit").removeAttr("disabled");
-                        if(warranty_status == 'OUT OF WARRANTY'){
-                            swal('Info!','PAYMENT LINK SENT!');
-                        }else{
-                            swal('Info!','Sending Payment Link is only applicable for Out Of Warranty Status.');
-                        }
-                    }else if(status_id == 'save'){
-                        $(".buttonSubmit").removeAttr("disabled");
-                        swal({ title: "Success!", text: "Transaction Details are saved.", type: "success"
-                        }, function(){
-                           location.reload();
-                        });
-                    }else if(status_id == 10){
-                        swal({ title: "Info!", text: "STATUS: FOR CALL-OUT MAIL-IN", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            window.location.href = window.location.origin+"/admin/to_diagnose";
-                        });
-                    } else if(status_id == 11){
-                        swal({ title: "Info!", text: "STATUS: PENDING MAIL-IN SHIPMENT", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            window.location.href = window.location.origin+"/admin/call_out";
-                        });
-                    }else if(status_id == 13){
-                        swal({ title: "Info!", text: "STATUS: ONGOING REPAIR", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            window.location.href = window.location.origin+"/admin/pending_repair";
-                        });
-                    }else if(status_id == 14){
-                        swal({ title: "Info!", text: "STATUS: PENDING SPARE PARTS", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            window.location.href = window.location.origin+"/admin/to_diagnose";
-                        });
-                    }else if(status_id == 12){
-                        swal({ title: "Info!", text: "STATUS: MAIL-IN SHIPPED", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
-                        });
-                    }else if(status_id == 15){
-                        swal({ title: "Info!", text: "STATUS: SPARE PARTS RECEIVED / AWAITING REPAIR", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            window.location.href = window.location.origin+"/admin/pending_spare_parts";
-                        });
-                    }else if(status_id == 16){
-                        swal({ title: "Info!", text: "STATUS: SHIPPED MAIL-IN", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
-                        });
-                    }else if(status_id == 17){
-                        swal({ title: "Info!", text: "STATUS: PENDING CUSTOMER'S PAYMENT", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            window.location.href = window.location.origin+"/admin/to_diagnose";
-                        });
-                    }else if(status_id == 18){
-                        swal({ title: "Info!", text: "STATUS: REPLACEMENT PARTS PAID", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            window.location.href = window.location.origin+"/admin/call_out";
-                        });
-                    }else if(status_id == 19){
-                        swal({ title: "Info!", text: "STATUS: FOR PARTS ORDERING", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            window.location.href = window.location.origin+"/admin/call_out";
-                        });
-                    }else if(status_id == 21){
-                        swal({ title: "Info!", text: "STATUS: FOR CALL OUT (GOOD UNIT)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            if(case_type === "CARRY-IN"){
-                                window.location.href = window.location.origin+"/admin/pending_repair";
-                            } else {
-                                if (warranty_status === "OUT OF WARRANTY") {
-                                    window.location.href = window.location.origin+"/admin/pending_good_unit";
-                                } else {
-                                    window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
+            swal({
+                title: "Are you sure?",
+                text: "Do you want to proceed?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#00b8d9",
+                confirmButtonText: "Yes, proceed!",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: false
+            }, function(isConfirm){
+                if (isConfirm) {
+                // Disable the submit button to prevent multiple clicks
+                $(".buttonSubmit").attr("disabled", "disabled");
+                    $.ajax
+                        ({ 
+                            url: "{{ route('change-status') }}",
+                            type: "POST",
+                            data: formData,
+                            processData: false,  // Important: Prevent jQuery from processing data
+                            contentType: false,  // Important: Prevent jQuery from setting content type
+                            success: function(result)
+                            {   
+                                if(status_id == 2){
+                                    swal({ title: "Info!", text: "STATUS: TO PAY PARTS", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        window.location.href = window.location.origin+"/admin/to_pay_parts/edit/"+header_id;
+                                    });
+                                }else if(status_id == 3){
+                                    swal({ title: "Info!", text: "STATUS: CANCELLED", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        window.location.href = "{{ CRUDBooster::mainpath() }}";
+                                    });
+                                }else if(status_id == 4){
+                                    swal({ title: "Info!", text: "STATUS: REPAIR IN PROCESS", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        window.location.href = window.location.origin+"/admin/repair_in_process/edit/"+header_id;
+                                    });
+                                }else if(status_id == 5){
+                                    swal({ title: "Info!", text: "STATUS: CANCELLED/CLOSE", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        window.location.href = window.location.origin+"/admin/call_out";
+                                    });
+                                }else if(status_id == 6){
+                                    swal({ title: "Success!", text: "STATUS: COMPLETE", type: "success", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        window.location.href = window.location.origin+"/admin/to_close";
+                                    });
+                                }else if(status_id == 7){
+                                    swal({ title: "Info!", text: "STATUS: TO PICK UP", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        window.location.href = window.location.origin+"/admin/repair_in_process";
+                                    });
+                                }else if(status_id == 8){
+                                    swal({ title: "Info!", text: "STATUS: TO PAY DIAGNOSTIC", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        window.location.href = window.location.origin+"/admin/to_diagnose";
+                                    });
+                                }else if(status_id == 9){
+                                    swal({ title: "Info!", text: "STATUS: DOA, ONGOING DIAGNOSIS FOR PENDING SPARE PARTS", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        window.location.href = window.location.origin+"/admin/to_diagnose/edit/"+header_id;
+                                    });
+                                }else if(status_id == 'send'){
+                                    $(".buttonSubmit").removeAttr("disabled");
+                                    if(warranty_status == 'OUT OF WARRANTY'){
+                                        swal('Info!','PAYMENT LINK SENT!');
+                                    }else{
+                                        swal('Info!','Sending Payment Link is only applicable for Out Of Warranty Status.');
+                                    }
+                                }else if(status_id == 'save'){
+                                    $(".buttonSubmit").removeAttr("disabled");
+                                    swal({ title: "Success!", text: "Transaction Details are saved.", type: "success"
+                                    }, function(){
+                                    location.reload();
+                                    });
+                                }else if(status_id == 10){
+                                    swal({ title: "Info!", text: "STATUS: FOR CALL-OUT MAIL-IN", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        window.location.href = window.location.origin+"/admin/to_diagnose";
+                                    });
+                                } else if(status_id == 11){
+                                    swal({ title: "Info!", text: "STATUS: PENDING MAIL-IN SHIPMENT", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        window.location.href = window.location.origin+"/admin/call_out";
+                                    });
+                                }else if(status_id == 13){
+                                    swal({ title: "Info!", text: "STATUS: ONGOING REPAIR", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        window.location.href = window.location.origin+"/admin/pending_repair";
+                                    });
+                                }else if(status_id == 14){
+                                    swal({ title: "Info!", text: "STATUS: PENDING SPARE PARTS", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        window.location.href = window.location.origin+"/admin/to_diagnose";
+                                    });
+                                }else if(status_id == 12){
+                                    swal({ title: "Info!", text: "STATUS: MAIL-IN SHIPPED", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
+                                    });
+                                }else if(status_id == 15){
+                                    swal({ title: "Info!", text: "STATUS: SPARE PARTS RECEIVED / AWAITING REPAIR", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        window.location.href = window.location.origin+"/admin/pending_spare_parts";
+                                    });
+                                }else if(status_id == 16){
+                                    swal({ title: "Info!", text: "STATUS: SHIPPED MAIL-IN", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
+                                    });
+                                }else if(status_id == 17){
+                                    swal({ title: "Info!", text: "STATUS: PENDING CUSTOMER'S PAYMENT", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        window.location.href = window.location.origin+"/admin/to_diagnose";
+                                    });
+                                }else if(status_id == 18){
+                                    swal({ title: "Info!", text: "STATUS: REPLACEMENT PARTS PAID", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        window.location.href = window.location.origin+"/admin/call_out";
+                                    });
+                                }else if(status_id == 19){
+                                    swal({ title: "Info!", text: "STATUS: FOR PARTS ORDERING", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        window.location.href = window.location.origin+"/admin/call_out";
+                                    });
+                                }else if(status_id == 21){
+                                    swal({ title: "Info!", text: "STATUS: FOR CALL OUT (GOOD UNIT)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        if(case_type === "CARRY-IN"){
+                                            window.location.href = window.location.origin+"/admin/pending_repair";
+                                        } else {
+                                            if (warranty_status === "OUT OF WARRANTY") {
+                                                window.location.href = window.location.origin+"/admin/pending_good_unit";
+                                            } else {
+                                                window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
+                                            }
+                                        }
+                                    });
+                                }else if(status_id == 22){
+                                    swal({ title: "Info!", text: "STATUS: PENDING FOR GOOD UNIT", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        window.location.href = window.location.origin+"/admin/pending_repair";
+                                    });
+                                }else if(status_id == 23){
+                                    swal({ title: "Info!", text: "STATUS: ESCALATED", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                                    }, function(){
+                                        history.back();
+                                    });
                                 }
-                            }
+                            }                    
                         });
-                    }else if(status_id == 22){
-                        swal({ title: "Info!", text: "STATUS: PENDING FOR GOOD UNIT", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            window.location.href = window.location.origin+"/admin/pending_repair";
-                        });
-                    }else if(status_id == 23){
-                        swal({ title: "Info!", text: "STATUS: ESCALATED", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                        }, function(){
-                            history.back();
-                        });
-                    }
-                }                    
+                }
             });
+
+         
             return false;
         }
-    }
 
     // confirmation for send quotation button
     $(document).on('click', '#repair', function(e){

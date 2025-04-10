@@ -1,39 +1,50 @@
 // Function to assign a technician
-function assignTechnician(id, reference_no, technician_id) {
-    fetch('to_diagnose/GetTechnicians')
+function assignTechnician(id, reference_no, branch_id, technician_id) {
+    fetch('to_assign/GetTechnicians')
         .then(response => response.json())
         .then(data => {
             let optionsHtml = `<select id="technicianSelect" class="js-example-basic-single" name="technician" style="width: 100%;">`;
             optionsHtml += `<option value="">Choose a technician</option>`;
-
-            // Group technicians based on branch_id
-            let groupedTechnicians = {
-                "VMALL": [],
-                "GREENHILLS": []
-            };
+    
+            optionsHtml += `<optgroup label="${branch_id === 1 ? "Greenhills VMall" : "Bonifacio High Street Central"}">`;
 
             data.forEach(technician => {
-                if (technician.id !== technician_id) { 
-                    let branchGroup = technician.branch_id === 1 ? "Greenhills VMall" : "Bonifacio High Street Central";
 
-                    if (!groupedTechnicians[branchGroup]) {
-                        groupedTechnicians[branchGroup] = [];
-                    }
-
-                    groupedTechnicians[branchGroup].push(`<option value="${technician.id}">${technician.name}</option>`);
+                if ((technician.id_cms_privileges == 8 || technician.branch_id == branch_id) && technician.id !== technician_id) {
+                    optionsHtml += `<option value="${technician.id}">${technician.name} - ${technician.id}</option>`;
                 }
             });
+            
+            optionsHtml += `</optgroup></select>`;
 
-            // Build optgroups
-            for (let branch in groupedTechnicians) {
-                if (groupedTechnicians[branch].length > 0) {
-                    optionsHtml += `<optgroup label="${branch}">`;
-                    optionsHtml += groupedTechnicians[branch].join('');
-                    optionsHtml += `</optgroup>`;
-                }
-            }
+            // // Group technicians based on branch_id
+            // let groupedTechnicians = {
+            //     "VMALL": [],
+            //     "GREENHILLS": []
+            // };
 
-            optionsHtml += `</select>`;
+            // data.forEach(technician => {
+            //     if (technician.id !== technician_id) { 
+            //         let branchGroup = technician.branch_id === 1 ? "Greenhills VMall" : "Bonifacio High Street Central";
+
+            //         if (!groupedTechnicians[branchGroup]) {
+            //             groupedTechnicians[branchGroup] = [];
+            //         }
+
+            //         groupedTechnicians[branchGroup].push(`<option value="${technician.id}">${technician.name}</option>`);
+            //     }
+            // });
+
+            // // Build optgroups
+            // for (let branch in groupedTechnicians) {
+            //     if (groupedTechnicians[branch].length > 0) {
+            //         optionsHtml += `<optgroup label="${branch}">`;
+            //         optionsHtml += groupedTechnicians[branch].join('');
+            //         optionsHtml += `</optgroup>`;
+            //     }
+            // }
+
+            // optionsHtml += `</select>`;
 
             // Show SweetAlert modal with Select2
             Swal.fire({
@@ -65,7 +76,7 @@ function assignTechnician(id, reference_no, technician_id) {
                 if (result.isConfirmed) {
                     let technicianId = result.value;
 
-                    fetch(`to_diagnose/AssignTechnician`, {
+                    fetch(`to_assign/AssignTechnician`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

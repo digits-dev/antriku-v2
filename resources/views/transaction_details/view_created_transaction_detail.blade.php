@@ -312,6 +312,7 @@
                 @endif
                 @include('transaction_details.quotation')
                 @include('transaction_details.uploade_receipt')
+                @include('transaction_details.uploade_airwaybill')
             @endif
             {{-- <input required id="input-file" name="receipt" multiple type="file"> --}}
             <section class="card-cust" style="border-radius: 0rem; padding: 1.2rem; border-top: 2px solid #e2e8f0">
@@ -354,11 +355,13 @@
                         <button type="submit" id="for_customer_payment" onclick="return validateBeforeChangeStatus(17)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px; {{ $transaction_details->warranty_status == 'OUT OF WARRANTY' && $transaction_details->case_status == 'CARRY-IN' ? '' : 'display: none;' }}">For Customer’s Payment</button>
 
                         <button type="submit" id="save"  buttonSubmit onclick="return validateBeforeChangeStatus('save')" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-floppy-o" aria-hidden="true"></i> SAVE</button>
-                        <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
+                        @if ((CRUDBooster::myPrivilegeId() == 8))
+                            <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
+                        @endif
                         {{-- <button type="submit" id="repair" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o" aria-hidden="true"></i> SEND QUOTATION</button> --}}
                         {{-- <button type="submit" id="pay_diagnostic" onclick="return changeStatus(8)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-backward" aria-hidden="true"></i> REWIND</button> --}}
                     @elseif($transaction_details->repair_status == 2 && CRUDBooster::getModulePath() == "to_pay_parts" && CRUDBooster::myPrivilegeId() != 2)
-                        <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
+                        {{-- <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button> --}}
                         <button type="submit" id="repair_in_process" onclick="return changeStatus(4)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o" aria-hidden="true"></i> REPAIR IN PROCESS</button>
                     @elseif($transaction_details->repair_status == 4 && CRUDBooster::getModulePath() == "repair_in_process" && CRUDBooster::myPrivilegeId() != 2)
                         <button type="submit" id="pickup" onclick="return changeStatus(7)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o" aria-hidden="true"></i> TO PICK UP</button>
@@ -378,11 +381,11 @@
                         <i class="fa fa-phone"></i> CALL OUT ({{ $CallOutCount }})
                     </button>
                     <button type="submit" id="save" onclick="return changeStatus(11)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-floppy-o" aria-hidden="true"></i> APPROVE</button>
-                    <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
+                    {{-- <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button> --}}
                     @endif
                     @if ($transaction_details->repair_status == 11 && CRUDBooster::getModulePath() == "pending_mail_in_shipment")
                         @if ($transaction_details->warranty_status == 'IN WARRANTY')
-                            <button type="submit" id="save" onclick="return changeStatus(12)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-paper-plane" aria-hidden="true"></i> MAIL-IN SHIPPED</button>
+                            <button type="submit" id="save" onclick="return validateBeforeChangeStatus(12)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-paper-plane" aria-hidden="true"></i> MAIL-IN SHIPPED</button>
                         @else
                             <button type="submit" id="save" onclick="return changeStatus(16)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-paper-plane" aria-hidden="true"></i> SHIPPED</button>
                         @endif
@@ -393,7 +396,9 @@
                     @if ($transaction_details->repair_status == 13 && CRUDBooster::getModulePath() == "pending_repair")
                         <button type="submit" id="save" onclick="return changeStatus(21)" class="btn btn-success pull-right buttonSubmit repairComplete" style="margin-left: 20px;"><i class="fa fa-check" aria-hidden="true"></i> Repair Completed</button>
                         <button type="submit" id="doa_pending_spare_parts" onclick="return validateBeforeChangeStatus(9)" class="btn btn-primary pull-right buttonSubmit doa_pending_spare_parts" style="margin-left: 20px;">DOA, Pending Spare Parts</button>
-                        <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
+                        @if (CRUDBooster::myPrivilegeId() == 8)
+                            <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
+                        @endif
                     @endif
                     @if ($transaction_details->repair_status == 14 && CRUDBooster::getModulePath() == "pending_spare_parts")
                         <button type="button" id="save" class="btn btn-success pull-right buttonSubmit spare_parts_received" style="margin-left: 20px;"><i class="fa fa-check" aria-hidden="true"></i> Spare Parts Received</button>
@@ -402,8 +407,10 @@
                         <button type="submit" id="save" onclick="return changeStatus(13)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-circle-o" aria-hidden="true"></i> Ongoing Repair</button>
                     @endif
                     @if ($transaction_details->repair_status == 16 && CRUDBooster::getModulePath() == "to_diagnose")
-                        <button type="submit" id="save" onclick="return changeStatus(17)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-circle-o" aria-hidden="true"></i> PENDING CUSTOMER'S PAYMENT</button>
-                        <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
+                    <button type="submit" id="save" onclick="return changeStatus(17)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-circle-o" aria-hidden="true"></i> PENDING CUSTOMER'S PAYMENT</button>
+                        @if (CRUDBooster::myPrivilegeId() == 8)
+                            <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
+                        @endif
                     @endif
                     @if ($transaction_details->repair_status == 17 && CRUDBooster::getModulePath() == "call_out")
                         @if ($transaction_details->case_status == 'CARRY-IN')                        
@@ -422,7 +429,9 @@
                         @else
                             <button type="submit" id="save" onclick="return changeStatus(22)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-circle-o" style="margin-right: 3px" aria-hidden="true"></i> Ongoing Repair</button>
                         @endif
+                        @if (CRUDBooster::myPrivilegeId() == 8)
                         <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
+                        @endif
                     @endif
                     @if ($transaction_details->repair_status == 19 && CRUDBooster::getModulePath() == "pending_repair")
                         <button type="submit" id="pending_spare_parts" onclick="return validateBeforeChangeStatus(14)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"> <i class="fa fa-circle-o"></i> PENDING SPARE PARTS</button>

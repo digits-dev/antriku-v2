@@ -34,15 +34,12 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 
 		# START COLUMNS DO NOT REMOVE THIS LINE
 		$this->col = [];
-		$this->col[] = ["label" => "Status", "name" => "repair_status", "join" => "transaction_status,status_name"];
-		$this->col[] = ["label" => "Reference No", "name" => "reference_no"];
-		$this->col[] = ["label" => "Model Group", "name" => "model"];
-		$this->col[] = ["label" => "Print Technical Report", "name" => "print_technical_report"];
-		$this->col[] = ["label" => "Downpayment Status", "name" => "downpayment_status"];
-		$this->col[] = ["label" => "Downpayment URL", "name" => "down_payment_url"];
-		$this->col[] = ["label" => "Date Received", "name" => "level2_personnel_edited"];
-		$this->col[] = ["label" => "Updated By", "name" => "updated_by", 'join' => 'cms_users,name'];
-		$this->col[] = ["label" => "Technician", "name" => "technician_id", 'join' => 'cms_users,name'];
+		$this->col[] = ["label"=>"Status","name"=>"repair_status"];
+		$this->col[] = ["label"=>"Reference No","name"=>"reference_no"];
+		$this->col[] = ["label"=>"Model Group","name"=>"model"];
+		$this->col[] = ["label"=>"Technician Assigned","name"=>"technician_id", 'join' => 'cms_users,name'];
+		$this->col[] = ["label"=>"Date Received","name"=>"technician_accepted_at"];
+		$this->col[] = ["label"=>"Branch","name"=>"branch", 'join' => 'branch,branch_name' ];
 		# END COLUMNS DO NOT REMOVE THIS LINE
 
 		# START FORM DO NOT REMOVE THIS LINE
@@ -60,15 +57,8 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 		$this->load_css = array();
 
 		$this->addaction = array();
-		if (CRUDBooster::myPrivilegeId() == 8) {
-			$this->addaction[] = [
-				'title'   => 'Assign Technician',
-				'icon'    => 'fa fa-user',
-				'url'     => 'javascript:handleSwal([id], '.json_encode("[reference_no]").', [technician_id])', 
-				'color'   => 'success',
-			];
-		}
-		if (CRUDBooster::myPrivilegeId() == 4) {
+	
+		if (in_array(CRUDBooster::myPrivilegeId(), [4,8])) {
 		
 			$this->addaction[] = [
 				'title'   => 'Edit Data',
@@ -96,9 +86,8 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 
 	public function hook_query_index(&$query)
 	{
-		if (CRUDBooster::myPrivilegeId() == 4) {
+		if (in_array(CRUDBooster::myPrivilegeId(), [4, 8])) {
 			$query->where('technician_id', CRUDBooster::myId())->whereIn('repair_status', [13, 15, 18, 19])
-			->where('branch', CRUDBooster::me()->branch_id)
 			->orderby('returns_header.id', 'ASC');
 		}else {
 			$query->whereIn('repair_status', [13, 15, 18, 19]);
