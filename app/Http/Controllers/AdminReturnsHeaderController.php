@@ -521,13 +521,21 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 					'send_diagnostic_payment_link' => 'YES'
 				]);
 			}
-		} elseif ($request->status_id == 1) {
-			DB::table('returns_header')->where('id', $request->header_id)->update([
-				'repair_status' 			=> 1,
-				'updated_by'            	=> CRUDBooster::myId(),
-				'level2_personnel'          => CRUDBooster::myId(),
-				'level2_personnel_edited'   => date('Y-m-d H:i:s')
-			]);
+		} elseif ($request->status_id == 24) {
+	
+			if ($request->hasFile('invoice')) {
+				$file = $request->file('invoice');
+				$filename =    time() .  '_' . $request->header_id . '_' . $file->getClientOriginalName() ;
+				$path = $file->storeAs('public/invoice', $filename);
+				
+				DB::table('returns_header')->where('id',$request->header_id)->update([
+					'invoice'   => $filename,
+					'repair_status' 			=> 24,
+					'updated_by'            	=> CRUDBooster::myId(),
+					'paid_by'          => CRUDBooster::myId(),
+					'paid_at'   => date('Y-m-d H:i:s')
+				]);
+			}
 		}
 
 		return ($transaction_details);

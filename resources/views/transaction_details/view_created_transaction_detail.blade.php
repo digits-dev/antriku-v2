@@ -192,6 +192,7 @@
                     </div>
                 </div><br>
             @elseif($transaction_details->repair_status == 8 && CRUDBooster::getModulePath() == "pay_diagnostic" && request()->segment(3) == "edit")
+
             <section class="card-cust" style="border-radius: 0%;">
                 <div class="row">    
                     <div class="col-md-6">
@@ -304,9 +305,11 @@
                 </div><br>
             </section>
             @endif
+            @include('transaction_details.uploade_invoice')
 
             @if($transaction_details->repair_status != 8)
                 @include('transaction_details.technical_report')
+                
                 @if (CRUDBooster::myPrivilegeId() != 9)
                     @include('transaction_details.diagnostic_results')
                 @endif
@@ -347,7 +350,7 @@
                     @endif
                     
                     @if($transaction_details->repair_status == 8 && CRUDBooster::getModulePath() == "pay_diagnostic")
-                        <button type="submit" id="paid" onclick="return changeStatus(1)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o"></i> PAID</button>
+                        <button type="submit" id="paid" onclick="return validateBeforeChangeStatus(24)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o"></i> PAID</button>
                     @elseif($transaction_details->repair_status == 9 && CRUDBooster::getModulePath() == "to_diagnose")
                         <button type="submit" id="call_out_mail_in"  onclick="return validateBeforeChangeStatus(10)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px; {{ empty($transaction_details->case_status) || $transaction_details->case_status == 'CARRY-IN' ? 'display: none;' : '' }}">PENDING CUSTOMER'S APPROVAL</button>
                         <button type="submit" id="ongoing_repair" onclick="return validateBeforeChangeStatus(13)" class="btn btn-primary pull-right buttonSubmit btn_ongoing_repair_1"  style="margin-left: 20px; {{ $transaction_details->warranty_status != 'OUT OF WARRANTY' && $transaction_details->case_status == 'CARRY-IN' ? '' : 'display: none;' }}">ONGOING REPAIR</button>
@@ -372,9 +375,9 @@
                         <button type="submit" id="close" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o" aria-hidden="true"></i> CLOSE</button>
                     @endif 
                     @if($transaction_details->repair_status == 8 || $transaction_details->repair_status == 7)    
-                        @if(CRUDBooster::myPrivilegeId() != 2)    
+                        {{-- @if(CRUDBooster::myPrivilegeId() != 2)    
                             <button type="submit" id="send" onclick="return changeStatus('send')" style="margin-left: 20px;" class="btn btn-primary pull-right buttonSubmit"><i class="fa fa-envelope"></i> SEND PAYMENT LINK</button>
-                        @endif 
+                        @endif  --}}
                     @endif 
                     @if ($transaction_details->repair_status == 10 && CRUDBooster::getModulePath() == "call_out")
                     <button type="button" id="call_out" onclick="callOut(10)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">

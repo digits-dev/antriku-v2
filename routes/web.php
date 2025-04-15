@@ -14,6 +14,25 @@
 use App\Http\Controllers\AdminCustomDashboardController;
 use App\Http\Controllers\AdminProductItemMasterController;
 
+
+Route::get('/test-email', function () {
+    $customer_email = 'pioloarrabis@digits.ph'; // Replace with your test email
+    $data = [
+        'name' => 'Test User',
+        'amount' => '1,999',
+    ];
+
+    CRUDBooster::sendEmail([
+        'to' => $customer_email,
+        'data' => [],
+        'template' => 'send_payment_link_below_2k',
+        'attachments' => []
+    ]);
+
+    return "Test email sent to $customer_email";
+});
+
+
 Route::get('/', function () {
     return redirect('/admin/login');
 });

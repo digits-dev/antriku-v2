@@ -252,28 +252,19 @@
                     <div style="background: rgba(255, 255, 255, 0.911); padding: 2px 7px 2px 7px; border-radius: 20%; margin-right: 3px">
                         <i class="bi bi-tools"></i>
                     </div>
-                    Airwaybill 
+                    Invoice
                 </div>
             </div> 
         </div> 
-        <div class="col-md-12" style="margin-top: 20px; display: flex; flex-direction: column; align-items: flex-end;">
-            <div style="width: 30%;">
-                <label class="label-cus" style="margin-bottom: 6px;">
-                    <span class="required">*</span> Airwaybill Tracking Number
-                </label>
-                <input type="text" name="airwaybill_tn" placeholder="Enter Airwaybill Tracking Number"
-                       class="input-cus" autocomplete="off" required />
-            </div>
-        </div>
         
         
         <div class="upload-receipt">
             <div class="upload-card">
-                <span class="header">Upload Airwaybill</span>
-                <p> Upload image (waybill).</p>
+                <span class="header">Upload Invoice</span>
+                <p> Upload image (Invoice).</p>
                 <div class="upload-file-container">
-                    <label for="waybill" id="drop-area">
-                        <input required id="waybill" name="waybill" type="file" accept="image/*"
+                    <label for="invoice" id="drop-area">
+                        <input required id="invoice" name="invoice" type="file" accept="image/*"
                         style="position: absolute; z-index: -1;">
                         <div class="image-view" id="image-view">
                             <div id="upload-text">
@@ -297,8 +288,8 @@
             </div>
             </div>
             <div class="preview" id="preview">
-                <span class="header"> Airwaybill Image Preview</span>
-                <p>View and verify your waybill image before uploading</p>
+                <span class="header"> Invoice Image Preview</span>
+                <p>View and verify your invoice image before uploading</p>
                 <div class="image-preview" id="image-preview">
                     <div id="no-receipt-message" style="font-size: 14px; color: #777;">
                         <i class="fa fa-exclamation-circle" aria-hidden="true" style="font-size: 40px"></i>
@@ -306,7 +297,7 @@
                             No Image Selected
                         </p>
                         <p>
-                            Upload a waybill using the form on the left to see a preview here
+                            Upload an invoice using the form on the left to see a preview here
                         </p>
                     </div>
                 </div>
@@ -316,7 +307,7 @@
     </div>
 </div>
 @else
-    @if (!is_null($transaction_details->airwaybill_upload))
+    @if (!is_null($transaction_details->invoice))
     <div class="row">
         <div class="col-md-12">
             <div class="row"> 
@@ -325,20 +316,13 @@
                         <div style="background: rgba(255, 255, 255, 0.911); padding: 2px 7px 2px 7px; border-radius: 20%; margin-right: 3px">
                             <i class="bi bi-tools"></i>
                         </div>
-                        Uploaded Airwaybill
+                        Uploaded Invoice
                     </div>
                 </div> 
             </div> 
-            <div class="card-body-cust">
-                <div class="info-grid-cust" style="width: 50%;">
-                    <div class="info-item-cust">
-                        <div class="info-label-cust">Airwaybill Tracking Number</div>
-                        <div class="info-value-cust">{{ $transaction_details->airwaybill_tn ?? 'N/A' }}</div>
-                    </div>
-                </div>
+         
             <div class="uploaded-image-container">
-                <img class="uploaded-image" src="{{ Storage::url('waybill_upload/' . $transaction_details->airwaybill_upload) }}" alt="Airwaybill">
-            </div>
+                <img class="uploaded-image" src="{{ Storage::url('invoice/' . $transaction_details->invoice) }}" alt="invoice">
             </div>
         </div>
     </div>
@@ -353,7 +337,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             const dropArea = $("#image-view");
-            const inputFile = $("#waybill");
+            const inputFile = $("#invoice");
             const imageView = $("#image-preview");
             const removeBtn = $("#remove-btn");
             const fileNameText = $("#file-name");
