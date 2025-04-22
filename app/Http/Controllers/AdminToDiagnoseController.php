@@ -23,7 +23,7 @@
 			$this->button_action_style = "button_icon";     
 			$this->button_add          = FALSE;
 			$this->button_delete       = TRUE;
-			$this->button_edit         = TRUE;
+			$this->button_edit         = FALSE;
 			$this->button_detail       = TRUE;
 			$this->button_show         = TRUE;
 			$this->button_filter       = TRUE;        
@@ -38,13 +38,12 @@
 			$this->col[] = ["label"=>"Status","name"=>"repair_status"];
 			$this->col[] = ["label"=>"Reference No","name"=>"reference_no"];
 			$this->col[] = ["label"=>"Model Group","name"=>"model"];
-            $this->col[] = ["label"=>"Print Technical Report","name"=>"print_technical_report"];
-			$this->col[] = ["label"=>"Downpayment Status","name"=>"downpayment_status"];
-			$this->col[] = ["label"=>"Downpayment URL","name"=>"down_payment_url"];
-			$this->col[] = ["label"=>"Date Received","name"=>"level2_personnel_edited"];
-			$this->col[] = ["label"=>"Updated By","name"=>"updated_by"];
+			$this->col[] = ["label"=>"Technician Assigned","name"=>"technician_id", 'join' => 'cms_users,name'];
+			$this->col[] = ["label"=>"Date Received","name"=>"technician_accepted_at"];
+			$this->col[] = ["label"=>"Branch","name"=>"branch", 'join' => 'branch,branch_name'];
+            // $this->col[] = ["label"=>"Print Technical Report","name"=>"print_technical_report"];
 			# END COLUMNS DO NOT REMOVE THIS LINE
-
+			
 			# OLD START FORM
 			//$this->form = [];
 			//$this->form[] = ["label"=>"Reference No","name"=>"reference_no","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
@@ -113,6 +112,23 @@
 	        | 
 	        */
 	        $this->addaction = array();
+			
+			if (in_array(CRUDBooster::myPrivilegeId(), [4,8])) {
+				$this->addaction[] = [
+					'title'   => 'Accept Job',
+					'icon'    => 'fa fa-check',
+					'url'     => 'javascript:handleAcceptJob([id])', 
+					'color'   => 'success',
+					'showIf'  => '[repair_status] == 1',
+				];
+				$this->addaction[] = [
+					'title'   => 'Edit Data',
+					'url'   => CRUDBooster::mainpath('edit/[id]'),
+					'icon'  => 'fa fa-pencil',
+					'color' => 'success',
+					'showIf'  => '[repair_status] == 10 or [repair_status] == 16',
+				];
+			}
 
 
 	        /* 
@@ -182,7 +198,25 @@
 	        | $this->script_js = "function() { ... }";
 	        |
 	        */
-	        $this->script_js = NULL;
+			$this->script_js = "
+			function handleSwal(id, reference_no, technician_id) {
+				assignTechnician(id, reference_no, technician_id);
+			}
+			function handleAcceptJob(id) {
+				acceptJob(id);
+			}
+		";
+
+		$this->post_index_html = '
+			<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+			<script src="'.asset('js/jobActions.js').'"></script>
+		';
+	
+		$this->style_css = "
+			.swal2-popup {
+				font-size: 1.3rem !important;
+			}
+		";
 
             /*
 	        | ---------------------------------------------------------------------- 
@@ -193,17 +227,7 @@
 	        |
 	        */
 	        $this->pre_index_html = null;
-	        
-	        /*
-	        | ---------------------------------------------------------------------- 
-	        | Include HTML Code after index table 
-	        | ---------------------------------------------------------------------- 
-	        | html code to display it after index table
-	        | $this->post_index_html = "<p>test</p>";
-	        |
-	        */
-	        $this->post_index_html = null;
-	        
+	     
 	        /*
 	        | ---------------------------------------------------------------------- 
 	        | Include Javascript File 
@@ -214,16 +238,7 @@
 	        */
 	        $this->load_js = array();
 	        
-	        /*
-	        | ---------------------------------------------------------------------- 
-	        | Add css style at body 
-	        | ---------------------------------------------------------------------- 
-	        | css code in the variable 
-	        | $this->style_css = ".style{....}";
-	        |
-	        */
-	        $this->style_css = NULL;
-	        
+	
 	        /*
 	        | ---------------------------------------------------------------------- 
 	        | Include css File 
@@ -334,21 +349,25 @@
 	    | @query = current sql query 
 	    |
 	    */
-	    public function hook_query_index(&$query) {
+		public function hook_query_index(&$query) {
 			//Your code here
+		
 			if(CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6){
-			    $query->where('repair_status', 1)->orderBy('id', 'asc'); 
-			}else{
+			    $query->whereIn('repair_status', [1,10,16,23])->where('print_receive_form', 'YES')->orderBy('id', 'ASC'); 
+			}else if (in_array(CRUDBooster::myPrivilegeId(), [4, 8])){
+				$query->whereIn('repair_status', [1,10,16,23])->where('print_receive_form', 'YES')->where('technician_id', CRUDBooster::myId())->orderBy('id', 'ASC');
+			}
+			else{
 			    $query->where('repair_status', 1)->where('branch', CRUDBooster::me()->branch_id); 
-
 				if(!empty(Session::get('toggle')) && Session::get('toggle') == "ON")
 				{
-					$query->where('updated_by', CRUDBooster::me()->id)->orderBy('id', 'asc'); 
+					$query->where('updated_by', CRUDBooster::me()->id)->orderBy('id', 'ASC'); 
 				}else{
-					// $query->where('branch', CRUDBooster::me()->branch_id)->orderBy('id', 'desc'); 
-					$query->orderBy('id', 'asc'); 
+					// $query->where('branch', CRUDBooster::me()->branch_id)->orderBy('id', 'ASC'); 
+					$query->orderBy('id', 'ASC'); 
 				}
 			}
+		
 	    }
 
 	    /*
@@ -367,6 +386,7 @@
 			$void = DB::table('transaction_status')->where('id','5')->first();
 			$complete = DB::table('transaction_status')->where('id','6')->first();
 			$pick_up = DB::table('transaction_status')->where('id','7')->first();
+			$ongoing_diagnosis = DB::table('transaction_status')->where('id','10')->first();
 
 			if($column_index == 1){
 				if($column_value == $pending->id){
@@ -381,6 +401,8 @@
 					$column_value = '<span class="label label-danger">'.$void->status_name.'</span>';
 				}elseif($column_value == $pick_up->id){
 					$column_value = '<span class="label label-success">'.$pick_up->status_name.'</span>';
+				}elseif($column_value == $ongoing_diagnosis->id){
+					$column_value = '<span class="label label-warning">'.$ongoing_diagnosis->status_name.'</span>';
 				}
 			}
 
@@ -556,19 +578,21 @@
 					$status_final_payment = $all_data['warranty_status'];
 				}
 			}
-            if($transaction_details[0]->repair_status == 1)
+            if($transaction_details[0]->repair_status == 10)
 			{
 				$ProblemDetails = implode(",", $all_data['problem_details']);
                 DB::table('returns_header')->where('id',$all_data['header_id'])->update([
-                    'diagnostic_fee_status'		=> $status_diagnostic_fee,
-                    'downpayment_status' 		=> $status_down_payment,
-                    'final_payment_status' 		=> $status_final_payment,
+                     // 'diagnostic_fee_status'		=> $status_diagnostic_fee,
+                    // 'downpayment_status' 		=> $status_down_payment,
+                    // 'final_payment_status' 		=> $status_final_payment,
                     'warranty_expiration_date' 	=> date('Y-m-d', strtotime($all_data['warranty_expiration_date'])),		
                     'problem_details'			=> $ProblemDetails,
                     'problem_details_other'		=> $all_data['problem_details_other'],    
                     'other_remarks'		        => $all_data['other_remarks'],
+					'parts_replacement_cost'	=> $all_data['replacement_cost'],
+					'case_status'				=> $all_data['case_status'],
                     'warranty_status' 			=> $all_data['warranty_status'],
-					'memo_no' 					=> $all_data['memo_number'],
+					// 'memo_no' 					=> $all_data['memo_number'],
                     'device_issue_description' 	=> $all_data['device_issue_description'],
                     'findings' 					=> $all_data['findings'],
                     'resolution' 				=> $all_data['resolution'],
@@ -943,4 +967,33 @@
 			$data = DB::table('parts_item_master')->where('spare_parts', 'like', '%'.$request->spare_part.'%')->get();
 			return($data);
 		}
+
+		public function AcceptJob (Request $request) {
+			try {
+				DB::table('returns_header')->where('id', $request->id)->update([
+					// to ongoing diagnosis
+					'repair_status' => 10,
+					'technician_accepted_at' => date('Y-m-d H:i:s'),
+				]);
+
+				$latestAssignment = DB::table('case_assignments')
+				->where('returns_header_id', $request->id)
+				->latest('id') // Gets the latest entry based on ID
+				->first();
+	
+				if ($latestAssignment) {
+					// Update the latest assignment by setting end_date
+					DB::table('case_assignments')
+						->where('id', $latestAssignment->id)
+						->update(['accepted_date' => now()]);
+				}
+
+			}  catch (\Exception $e) {
+				\Log::error('Error Accepting Job: ' . $e->getMessage());
+				return response()->json(['success' => false]);
+			}
+		
+
+			return response()->json(['success' => true]);
+		 }
 	}
