@@ -155,22 +155,22 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 	public function hook_query_index(&$query)
 	{
 		if (CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6) {
-			$query->whereIn('repair_status', [8, 9])->where('print_receive_form', 'NO')->orderBy('id', 'asc');
+			$query->whereIn('repair_status', [8, 11])->where('print_receive_form', 'NO')->orderBy('id', 'asc');
 		} else {
-			$query->whereIn('repair_status', [8, 9])->where('print_receive_form', 'NO')->where('branch', CRUDBooster::me()->branch_id)->orderBy('id', 'asc');
+			$query->whereIn('repair_status', [8, 11])->where('print_receive_form', 'NO')->where('branch', CRUDBooster::me()->branch_id)->orderBy('id', 'asc');
 		}
 	}
 
 	public function hook_row_index($column_index, &$column_value)
 	{
 		$pay_diagnose = DB::table('transaction_status')->where('id', '8')->first();
-		$to_assign = DB::table('transaction_status')->where('id', '9')->first();
+		$to_print_r_form = DB::table('transaction_status')->where('id', '11')->first();
 
 		if ($column_index == 1) {
 			if ($column_value == $pay_diagnose->id) {
 				$column_value = '<span class="label label-primary">' . $pay_diagnose->status_name . '</span>';
-			} elseif ($column_value == $to_assign->id) {
-				$column_value = '<span class="label label-primary">' . $to_assign->status_name . '</span>';
+			} elseif ($column_value == $to_print_r_form->id) {
+				$column_value = '<span class="label label-primary">' . $to_print_r_form->status_name . '</span>';
 			}
 		}
 
@@ -228,7 +228,7 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 
 		date_default_timezone_set('Asia/Manila');
 		$headerID = DB::table('returns_header')->insertGetId([
-			'repair_status' 			=> ($data['warranty_status'] === "OUT OF WARRANTY") ? 8 : 9,
+			'repair_status' 			=> ($data['warranty_status'] === "OUT OF WARRANTY") ? 8 : 11,
 			'last_name'   				=> $data['last_name'],
 			'first_name'   				=> $data['first_name'],
 			'email'   					=> $data['email'],
@@ -586,6 +586,7 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 
 		if ($data['print_form_type'] == 1) {
 			DB::table('returns_header')->where('id', $header_id)->update([
+				'repair_status'				=> 9,
 				'print_receive_form' 		=> "YES",
 				'updated_by'	     		=> CRUDBooster::myId()
 			]);

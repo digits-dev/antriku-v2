@@ -65,17 +65,15 @@
                 @if($transaction_details->repair_status == 8)
                     <form method="post" action="{{CRUDBooster::mainpath('edit-transaction-process/'.$transaction_details->header_id)}}" id="SubmitTransactionForm">                    
                 @else
-                     <!-- <form method="post" action="{{CRUDBooster::mainpath('diagnose-transaction-process/'.$transaction_details->header_id)}}" id="SubmitTransactionForm">     -->
                     <form method="post" action="" id="SubmitTransactionForm">                
                 @endif
                 <input type="hidden" value="{{csrf_token()}}" name="_token" id="token">
             @endif
             @include('transaction_details.customer_details')
             @include('transaction_details.service_details')
-          
             @include('transaction_details.uploade_invoice')
 
-            @if($transaction_details->repair_status != 8)
+            @if(!in_array($transaction_details->repair_status, [8, 11]))
                 @include('transaction_details.technical_report')
                 @if (CRUDBooster::myPrivilegeId() != 9)
                     @include('transaction_details.diagnostic_results')
@@ -125,4 +123,35 @@
     @else
         @include('technician.to_diagnose_transaction_script')
     @endif 
+
+    <script>
+        $(document).ready(function() {
+            $('.copy-icon').on('click', function() {
+                var $icon = $(this);
+                var reference = $icon.siblings('strong').text().trim();
+        
+                // Copy to clipboard
+                var tempInput = $('<input>');
+                $('body').append(tempInput);
+                tempInput.val(reference).select();
+                document.execCommand('copy');
+                tempInput.remove();
+        
+                // Swap SVG to check icon
+                var originalIcon = $icon.html();
+                var checkIcon = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        style="color: limegreen;">
+                        <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                `;
+                $icon.html(checkIcon).show();
+    
+                setTimeout(function() {
+                    $icon.html(originalIcon);
+                }, 1000);
+            });
+        });
+    </script>        
 @endpush
