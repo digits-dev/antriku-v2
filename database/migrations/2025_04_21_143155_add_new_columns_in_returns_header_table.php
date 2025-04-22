@@ -16,10 +16,10 @@ class AddNewColumnsInReturnsHeaderTable extends Migration
         Schema::table('returns_header', function (Blueprint $table) {
             $table->string('customer_type', 100)->nullable();
             $table->string('unit_type', 50)->nullable();
-            $table->string('store_purchase')->nullable();
-            $table->string('purchace_invoice_number')->nullable();
-            $table->string('device_serial_number')->nullable();
-            $table->string('accessories_included_remarks')->nullable();
+            $table->string('store_purchase', 150)->nullable();
+            $table->string('purchace_invoice_number', 255)->nullable();
+            $table->string('device_serial_number', 150)->nullable();
+            $table->text('accessories_included_remarks')->nullable();
             $table->string('files_backed_up', 10)->nullable();
             $table->string('icloud_sign_out', 10)->nullable();
         });
