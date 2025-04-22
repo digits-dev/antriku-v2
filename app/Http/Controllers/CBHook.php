@@ -1,11 +1,13 @@
-<?php 
+<?php
+
 namespace App\Http\Controllers;
 
 use DB;
-use Session;
 use Request;
+use Illuminate\Support\Facades\Session;
 
-class CBHook extends Controller {
+class CBHook extends Controller
+{
 
 	/*
 	| --------------------------------------
@@ -13,7 +15,8 @@ class CBHook extends Controller {
 	| --------------------------------------
 	|
 	*/
-	public function afterLogin() {
-		
+	public function afterLogin()
+	{
+		Session::put('just_logged_in', true);
 	}
 }
