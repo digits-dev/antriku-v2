@@ -104,6 +104,7 @@
         var memo_number = document.getElementById("memo_number").value;
         var diagnostic_cost = document.getElementById("diagnostic_cost").value;
         var ProblemDetailArray = $('#problem_details').val();
+        var invoice = $("#invoice")[0].files[0];
         let other_pd = false;
 
         if(ProblemDetailArray !== null){
@@ -142,18 +143,23 @@
             swal('Error!','Other Problem Details field is empty!','error');
         }else{
             $(".buttonSubmit").attr("disabled", "disable");
+
+            var formData = new FormData();
+            formData.append('header_id', header_id);
+            formData.append('status_id', status_id);
+            formData.append('warranty_status', warranty_status);
+            formData.append('diagnostic_cost', diagnostic_cost);
+            formData.append('email', email);
+            formData.append('invoice', invoice); // File goes here
+            formData.append('_token', '{!! csrf_token() !!}');
+
             $.ajax
             ({ 
                 url: "{{ route('diagnostic-status') }}",
                 type: "POST",
-                data: {
-                    'header_id': header_id,
-                    'status_id': status_id,
-					'warranty_status': warranty_status,
-					'diagnostic_cost': diagnostic_cost,
-					'email': email,
-                    _token: '{!! csrf_token() !!}'
-                    },
+                data: formData,
+                contentType: false, // Important for file upload
+                processData: false, // Important for file upload
                 success: function(result)
                 {
                     if(status_id == 'send')
@@ -167,7 +173,7 @@
                             type: "warning", confirmButtonClass: "btn-primary", confirmButtonText: "OK"
                             },function(){ $("#SubmitTransactionForm").submit(); });
                         }
-                    }else if(status_id == 1){
+                    }else if(status_id == 9){
                         swal({
                         title: "Success!",
                         text: "DIAGNOSTIC FEE IS NOW PAID!",

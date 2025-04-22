@@ -9,7 +9,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            @if($transaction_details->repair_status == 9 && CRUDBooster::getModulePath() == "to_diagnose" && request()->segment(3) == "edit")
+            @if($transaction_details->repair_status == 10 && CRUDBooster::getModulePath() == "to_diagnose" && request()->segment(3) == "edit")
                 <div class="row">
                     <div class="col-md-12">
                         <div class="col-md-12" style="margin-top: 12px;margin-bottom: 12px;">
@@ -24,16 +24,16 @@
                         </div>
                         <div class="col-md-3" style="margin-top:7px;">
                             <label class="radio-inline control-label text-success">
-                                <input type="radio" name="warranty_status" value="IN WARRANTY" onchange="return WarrantyStatusChange(1)" required {{ $transaction_details->warranty_status == 'IN WARRANTY' ? 'checked' : ''}} {{ $transaction_details->repair_status != 9 ? 'disabled' : ''}}><strong>IN WARRANTY</strong>
+                                <input type="radio" name="warranty_status" value="IN WARRANTY" onchange="return WarrantyStatusChange(1)" required {{ $transaction_details->warranty_status == 'IN WARRANTY' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}><strong>IN WARRANTY</strong>
                             </label>
                             <br>
                         </div>
                         <div class="col-md-3" style="margin-top:7px;">
-                            <label class="radio-inline control-label text-danger"><input type="radio" name="warranty_status" value="OUT OF WARRANTY" onchange="return WarrantyStatusChange(2)" required {{ $transaction_details->warranty_status == 'OUT OF WARRANTY' ? 'checked' : ''}} {{ $transaction_details->repair_status != 9 ? 'disabled' : ''}}><strong>OUT OF WARRANTY</strong></label>
+                            <label class="radio-inline control-label text-danger"><input type="radio" name="warranty_status" value="OUT OF WARRANTY" onchange="return WarrantyStatusChange(2)" required {{ $transaction_details->warranty_status == 'OUT OF WARRANTY' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}><strong>OUT OF WARRANTY</strong></label>
                             <br>
                         </div>
                         <div class="col-md-3" style="margin-top:7px;">
-                            <label class="radio-inline control-label text-warning"><input type="radio" name="warranty_status" value="SPECIAL" onchange="return WarrantyStatusChange(3)" required {{ $transaction_details->warranty_status == 'SPECIAL' ? 'checked' : ''}} {{ $transaction_details->repair_status != 9 ? 'disabled' : ''}}><strong>SPECIAL</strong></label>
+                            <label class="radio-inline control-label text-warning"><input type="radio" name="warranty_status" value="SPECIAL" onchange="return WarrantyStatusChange(3)" required {{ $transaction_details->warranty_status == 'SPECIAL' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}><strong>SPECIAL</strong></label>
                             <br>
                         </div>
                     </div>
@@ -44,11 +44,11 @@
                             <label><span class="requiredField">*</span>Case:</label>
                         </div>
                         <div class="col-md-3" style="margin-top:7px;">
-                            <label class="radio-inline control-label text-success"><input type="radio" name="case_status" value="CARRY-IN" onchange="return toggleCallOut('CARRY-IN')" required {{ $transaction_details->case_status == 'CARRY-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 9 ? 'disabled' : ''}}><strong>CARRY-IN</strong></label>
+                            <label class="radio-inline control-label text-success"><input type="radio" name="case_status" value="CARRY-IN" onchange="return toggleCallOut('CARRY-IN')" required {{ $transaction_details->case_status == 'CARRY-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}><strong>CARRY-IN</strong></label>
                             <br>
                         </div>
                         <div class="col-md-3" style="margin-top:7px;">
-                            <label class="radio-inline control-label text-danger"><input type="radio" name="case_status" value="MAIL-IN" onchange="return toggleCallOut('MAIL-IN')"  required {{ $transaction_details->case_status == 'MAIL-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 9 ? 'disabled' : ''}}><strong>MAIL-IN</strong></label>
+                            <label class="radio-inline control-label text-danger"><input type="radio" name="case_status" value="MAIL-IN" onchange="return toggleCallOut('MAIL-IN')"  required {{ $transaction_details->case_status == 'MAIL-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}><strong>MAIL-IN</strong></label>
                             <br>
                         </div>
                     </div>
@@ -76,7 +76,7 @@
                         <div class="col-md-12">
                             <div class="col-md-12">
                                 <label class="label-cus"><span class="requiredField">*</span>Other Problem Details:</label>
-                                <input type="text" class="input-cus" name="problem_details_other" value="{{$transaction_details->problem_details_other}}" placeholder="Type your other problem details here" {{ $transaction_details->repair_status != 9 ? 'readonly' : '' }}>
+                                <input type="text" class="input-cus" name="problem_details_other" value="{{$transaction_details->problem_details_other}}" placeholder="Type your other problem details here" {{ $transaction_details->repair_status != 10 ? 'readonly' : '' }}>
                             </div>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
                     <div class="col-md-12">
                         <div class="col-md-12" style="margin-top: 5px;">
                             <label class="label-cus">Other Remarks:</label>
-                            <textarea placeholder="Type your other remarks here" name="other_remarks" rows="2" class="input-cus" {{ $transaction_details->repair_status != 9 ? 'readonly' : '' }}>{{ $transaction_details->other_remarks }}</textarea>
+                            <textarea placeholder="Type your other remarks here" name="other_remarks" rows="2" class="input-cus" {{ $transaction_details->repair_status != 10 ? 'readonly' : '' }}>{{ $transaction_details->other_remarks }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -95,7 +95,7 @@
                     <div class="col-md-12">
                         <div class="col-md-12" style="margin-top: 5px;">
                             <label class="label-cus"><span class="requiredField">*</span>Device Issue Description:</label>
-                            <textarea placeholder="Type your device issue description here" name="device_issue_description" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 9 ? 'readonly' : '' }}>{{ $transaction_details->device_issue_description }}</textarea>
+                            <textarea placeholder="Type your device issue description here" name="device_issue_description" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 10 ? 'readonly' : '' }}>{{ $transaction_details->device_issue_description }}</textarea>
                         </div>
                     </div>
                 </div> --}}
@@ -103,7 +103,7 @@
                     <div class="col-md-12">
                         <div class="col-md-12" style="margin-top: 5px;">
                             <label class="label-cus"><span class="requiredField">*</span>Findings:</label>
-                            <textarea placeholder="Type your findings here" name="findings" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>{{ $transaction_details->findings }}</textarea>
+                            <textarea placeholder="Type your findings here" name="findings" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 10 ? 'readonly' : ''}}>{{ $transaction_details->findings }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -111,7 +111,7 @@
                     <div class="col-md-12">
                         <div class="col-md-12" style="margin-top: 5px;">
                             <label class="label-cus"><span class="requiredField">*</span>Resolution:</label>
-                            <textarea placeholder="Type your resolution here" name="resolution" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>{{ $transaction_details->resolution }}</textarea>
+                            <textarea placeholder="Type your resolution here" name="resolution" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 10 ? 'readonly' : ''}}>{{ $transaction_details->resolution }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -120,7 +120,7 @@
                         <div class="col-md-12">
                             <div class="col-md-12" style="margin-top: 5px;">
                                 <label class="label-cus"><span class="requiredField">*</span>Parts Replacement Cost:</label>
-                                <textarea placeholder="Type your Parts Replacement Cost here" name="replacement_cost" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 9 ? 'readonly' : ''}}>{{ $transaction_details->parts_replacement_cost }}</textarea>
+                                <textarea placeholder="Type your Parts Replacement Cost here" name="replacement_cost" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 10 ? 'readonly' : ''}}>{{ $transaction_details->parts_replacement_cost }}</textarea>
                             </div>
                         </div>
                     </div>
