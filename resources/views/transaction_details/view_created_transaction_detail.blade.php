@@ -4,22 +4,63 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css">
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 @include('include.css')
+<style>
+    .content{
+       padding: 0;
+    }
+   
+    .content-header{
+       display: none;
+    }
+    
+    .cust-ch{
+        margin-top: 50px;
+    }
+    
+    @media (max-width: 767px) {
+        .cust-ch {
+            margin-top: 100px;
+        }
+    }
+</style>
 @endpush
 
 @section('content')
-    <div class="panel panel-default">
+    <div class="panel panel-default" style="margin: 0; padding:0">
         <div class="panel-body">
-            <div class="row">
-                <div class="col-md-12" >
-                    <div class="form-group">
-                        <h4 style="text-align: center;">Transaction Details</h4><br>
-                        <div class="col-md-12">
+            <div class="row cust-ch" style="margin-bottom: 0%">
+                <div class="col-md-12" style="margin-bottom: 0%">
+                    <div class="form-group" style="margin-bottom: 0rem">
+                        <div class="transaction-card" style="border-bottom-left-radius: 0%; border-bottom-right-radius: 0%;">
+                            <header class="page-header-cust">
+                                <div class="header-left">
+                                    <div style="background: rgba(255, 255, 255, 0.3); padding: 5px; border-radius: 20%">
+                                        <img src="https://cdn-icons-png.flaticon.com/128/7711/7711811.png" width="40" alt="">
+                                    </div>
+                                    <h1>
+                                        Transaction Details
+                                    </h1>
+                                </div>
+                                <div class="reference-badge-cust">
+                                    Reference:
+                                    <strong style="margin-left: 4px;">{{$transaction_details->reference_no}}</strong>
+                                    <span class="copy-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </header>
+                        </div>
+                        <div class="col-md-12" style="margin-bottom: 0%">
                             @include('include.comment-box')
                         </div>
                     </div>
                 </div>
-            </div><br>
+            </div>
             @if(request()->segment(3) == "edit")
                 @if($transaction_details->repair_status == 8)
                     <form method="post" action="{{CRUDBooster::mainpath('edit-transaction-process/'.$transaction_details->header_id)}}" id="SubmitTransactionForm">                    
@@ -30,9 +71,8 @@
                 <input type="hidden" value="{{csrf_token()}}" name="_token" id="token">
             @endif
             @include('transaction_details.customer_details')
-            <br>
             @include('transaction_details.service_details')
-            <br>
+            
             @if($transaction_details->repair_status == 8 && request()->segment(3) == "detail" || CRUDBooster::getModulePath() == "returns_header")
                 <div class="row">
                     <div class="col-md-12">
@@ -160,21 +200,21 @@
                     </div>
                 </div><br>
             @elseif($transaction_details->repair_status == 8 && CRUDBooster::getModulePath() == "pay_diagnostic" && request()->segment(3) == "edit")
-            
+            <section class="card-cust" style="border-radius: 0%;">
                 <div class="row">    
                     <div class="col-md-6">
-                        <label class="require control-label col-md-4" style="margin-top:7px;">Memo Number:</label>
+                        <label class="require label-cus col-md-4" style="margin-top:7px;">Memo Number:</label>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" name="memo_number" id="memo_number" value="{{$transaction_details->memo_no}}" placeholder="Memo Number" required>
+                            <input type="text" class="input-cus" name="memo_number" id="memo_number" value="{{$transaction_details->memo_no}}" placeholder="Memo Number" required>
                         </div>
                     </div>
                      <div class="col-md-6">
                          <div class="row">
                             <div class="col-md-12">
-                                <label class="require control-label col-md-4" style="margin-top:7px;"><span class="requiredField">*</span>Diagnostic Fee:</label>
+                                <label class="require label-cus col-md-4" style="margin-top:7px;"><span class="requiredField">*</span>Diagnostic Fee:</label>
                                 <div class="col-md-8 input-icon">
                                     <input type="hidden" value="{{ (!empty($Diagnostic_Fee)) ? number_format($Diagnostic_Fee, 2, '.', '') : 0 }}" id="diagnostic_original_cost" >
-                                    <input name="diagnostic_cost" id="diagnostic_cost" value="{{ (!empty($transaction_details->diagnostic_cost)) ? number_format($transaction_details->diagnostic_cost, 2, '.', '') : 0 }}" onblur="AutoFormatDiagnosticPrice()" placeholder="Diagnostic Fee" type="text" class="form-control" required>
+                                    <input name="diagnostic_cost" id="diagnostic_cost" value="{{ (!empty($transaction_details->diagnostic_cost)) ? number_format($transaction_details->diagnostic_cost, 2, '.', '') : 0 }}" onblur="AutoFormatDiagnosticPrice()" placeholder="Diagnostic Fee" type="text" class="input-cus" required>
                                     <i>₱</i>
                                 </div>
                             </div>
@@ -191,22 +231,50 @@
                 </div>
                 <br><br>
                 <div class="row">
+                    <div class="col-md-12" style="margin: 7px">
+                        <label class="label-cus" style="margin: 0 5px 0 5px"><span class="requiredField">*</span>Warranty Status:</label>
+                    </div>
+                    <input type="hidden" id="warranty_status" value="{{$transaction_details->warranty_status}}">
                     <div class="col-md-12">
-                        <div class="col-md-3" style="margin-top:7px;">
-                            <label><span class="requiredField">*</span>Warranty Status:</label>
-                        </div>
-                        <input type="hidden" id="warranty_status" value="{{$transaction_details->warranty_status}}">
-                        <div class="col-md-3" style="margin-top:7px;">
-                            <label class="radio-inline control-label text-success"><input type="radio" name="warranty_status" value="IN WARRANTY" onchange="return WarrantyStatusChange(1)" required {{ $transaction_details->warranty_status == 'IN WARRANTY' ? 'checked' : ''}}><strong>IN WARRANTY</strong></label>
-                            <br>
-                        </div>
-                        <div class="col-md-3" style="margin-top:7px;">
-                            <label class="radio-inline control-label text-danger"><input type="radio" name="warranty_status" value="OUT OF WARRANTY" onchange="return WarrantyStatusChange(2)" required {{ $transaction_details->warranty_status == 'OUT OF WARRANTY' ? 'checked' : ''}}><strong>OUT OF WARRANTY</strong></label>
-                            <br>
-                        </div>
-                        <div class="col-md-3" style="margin-top:7px;">
-                            <label class="radio-inline control-label text-warning"><input type="radio" name="warranty_status" value="SPECIAL" onchange="return WarrantyStatusChange(3)" required {{ $transaction_details->warranty_status == 'SPECIAL' ? 'checked' : ''}}><strong>SPECIAL</strong></label>
-                            <br>
+                        <div class="row" style="margin: 0 5px 0 5px">
+                            <div class="col-md-4">
+                                <label class="warranty-option-cus">
+                                    <div class="radio-container-cus">
+                                    <input type="radio" name="warranty_status" value="IN WARRANTY" onchange="return WarrantyStatusChange(1)" required {{ $transaction_details->warranty_status == 'IN WARRANTY' ? 'checked' : ''}}>
+                                    <span class="radio-custom"></span>
+                                    </div>
+                                    <div class="option-content-cus">
+                                    <div class="option-title-cus">In Warranty</div>
+                                    <div class="option-description-cus">Product is covered under manufacturer warranty</div>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="warranty-option-cus">
+                                    <div class="radio-container-cus">
+                                    <input type="radio" name="warranty_status" value="OUT OF WARRANTY" onchange="return WarrantyStatusChange(2)" required {{ $transaction_details->warranty_status == 'OUT OF WARRANTY' ? 'checked' : ''}}>
+                                    <span class="radio-custom"></span>
+                                    </div>
+                                    <div class="option-content-cus">
+                                    <div class="option-title-cus">Out of Warranty</div>
+                                    <div class="option-description-cus">Product warranty has expired</div>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="warranty-option-cus">
+                                    <div class="radio-container-cus">
+                                    <input type="radio" name="warranty_status" value="SPECIAL" onchange="return WarrantyStatusChange(3)" required {{ $transaction_details->warranty_status == 'SPECIAL' ? 'checked' : ''}}>
+                                    <span class="radio-custom"></span>
+                                    </div>
+                                    <div class="option-content-cus">
+                                    <div class="option-title-cus">Special Coverage</div>
+                                    <div class="option-description-cus">Extended warranty or special program</div>
+                                    </div>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -224,7 +292,7 @@
                                     @else
                                         <option value="{{$pd->problem_details}}" >{{$pd->problem_details}}</option>
                                     @endif
-                                @endforeach
+                                    @endforeach
                             </select>
                         </div>
                     </div>
@@ -232,15 +300,15 @@
                 @else
                 <div class="row">
                     <div class="col-md-12">
-                        <label class="require control-label col-md-2"><span class="requiredField">*</span>Problem Details:</label>
-                        <div class="col-md-10" style="margin-top:7px;">
-                            <select data-placeholder="Choose problem details here..." class="form-control limitedNumbSelect2" name="problem_details[]" id="problem_details" onchange="OtherProblemDetail()" multiple="multiple" style="width:100% !important;" required {{ $transaction_details->repair_status == 3 ? 'disabled' : ''}}>
+                        <div class="col-md-12" style="margin-top:7px;">
+                            <label class="require label-cus"><span class="requiredField">*</span>Problem Details:</label>
+                            <select data-placeholder="Choose problem details here..." class="input-cus limitedNumbSelect2" name="problem_details[]" id="problem_details" onchange="OtherProblemDetail()" multiple="multiple" style="width:100% !important;" required {{ $transaction_details->repair_status == 3 ? 'disabled' : ''}}>
                                 @foreach($data['ProblemDetails'] as $key=>$pd)
                                     @if(in_array($pd->problem_details, $problem_details))
                                         <option value="{{$pd->problem_details}}" selected>{{$pd->problem_details}}</option>
                                     @else
                                         <option value="{{$pd->problem_details}}" >{{$pd->problem_details}}</option>
-                                    @endif
+                                        @endif
                                 @endforeach
                             </select>
                         </div>
@@ -251,33 +319,33 @@
                 @if(!empty($transaction_details->problem_details_other))
                     <div class="row" id="show_other_problem">    
                         <div class="col-md-12">
-                            <label class="require control-label col-md-2"><span class="requiredField">*</span>Other Problem Details:</label>
-                            <div class="col-md-10" style="margin-top:7px;">
-                                <input type="text" class="form-control" name="problem_details_other" id="problem_details_other" value="{{$transaction_details->problem_details_other}}" placeholder="Type your other problem details here" required>
+                            <div class="col-md-12" style="margin-top:7px;">
+                                <label class="require label-cus"><span class="requiredField">*</span>Other Problem Details:</label>
+                                <input type="text" class="input-cus" name="problem_details_other" id="problem_details_other" value="{{$transaction_details->problem_details_other}}" placeholder="Type your other problem details here" required>
                             </div>
                         </div>
                     </div>
                     <br>
                 @else
-                    <div class="row" id="show_other_problem"></div><br>
+                <div class="row" id="show_other_problem"></div><br>
                 @endif
                 <div class="row">
                     <div class="col-md-12">
-                        <label class="require control-label col-md-2">Other Remarks:</label>
-                        <div class="col-md-10" style="margin-top:7px;">
-                            <textarea placeholder="Type your other remarks here" name="other_remarks" rows="2" class="form-control" {{ $transaction_details->repair_status != 8 ? 'readonly' : '' }}>{{ $transaction_details->other_remarks }}</textarea>
+                        <div class="col-md-12" style="margin-top:7px;">
+                            <label class="require label-cus">Other Remarks:</label>
+                            <textarea placeholder="Type your other remarks here" name="other_remarks" rows="2" class="input-cus" {{ $transaction_details->repair_status != 8 ? 'readonly' : '' }}>{{ $transaction_details->other_remarks }}</textarea>
                         </div>
                     </div>
                 </div><br>
+            </section>
             @endif
 
             @if($transaction_details->repair_status != 8)
                 @include('transaction_details.technical_report')
-                <br>
-                @include('transaction_details.diagnostic_results')
-                <br>
+                @if (CRUDBooster::myPrivilegeId() != 9)
+                    @include('transaction_details.diagnostic_results')
+                @endif
                 @include('transaction_details.quotation')
-                <br>
             @endif
 
             <div class="panel-footer">

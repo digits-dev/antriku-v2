@@ -253,7 +253,6 @@
                     </tr> 
                 </table>  
                 <br>
-                <div style="page-break-after: always !important;"></div>
                 <table class="print-friendly" style="border-spacing:unset !important;width:100%;">
                     <thead class="customize-header-2">
                         <tr style="font-size: 13px;">
@@ -313,7 +312,7 @@
                         </tr>
                     </table>
                 </table>
-                <div style="page-break-after: always !important;"></div>
+                
                 <div style="text-align:justify;font-size: 11px;">
                     <h4 align="center" style="margin-top: 17px; margin-bottom: 0px;"><strong>TERMS & CONDITIONS</strong></h4> 
                     <br>

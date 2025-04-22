@@ -15,6 +15,7 @@ class AddNewColumnsInReturnsHeaderTable extends Migration
     {
         Schema::table('returns_header', function (Blueprint $table) {
             $table->string('customer_type', 100)->nullable();
+            $table->text('inspected_model_photo')->nullable();
             $table->string('unit_type', 50)->nullable();
             $table->string('store_purchase', 150)->nullable();
             $table->string('purchace_invoice_number', 255)->nullable();
@@ -34,6 +35,7 @@ class AddNewColumnsInReturnsHeaderTable extends Migration
     {
         Schema::table('returns_header', function (Blueprint $table) {
             $table->dropColumn('customer_type');
+            $table->dropColumn('inspected_model_photo');
             $table->dropColumn('unit_type');
             $table->dropColumn('store_purchase');
             $table->dropColumn('purchace_invoice_number');
