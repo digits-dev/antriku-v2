@@ -62,54 +62,58 @@
                 </div>
             </div>
             @if(request()->segment(3) == "edit")
-                @if($transaction_details->repair_status == 8)
-                    <form method="post" action="{{CRUDBooster::mainpath('edit-transaction-process/'.$transaction_details->header_id)}}" id="SubmitTransactionForm">                    
-                @else
-                    <form method="post" action="" id="SubmitTransactionForm">                
-                @endif
+                <form method="post" action="" id="SubmitTransactionForm">                
                 <input type="hidden" value="{{csrf_token()}}" name="_token" id="token">
             @endif
             @include('transaction_details.customer_details')
             @include('transaction_details.service_details')
             @include('transaction_details.uploade_invoice')
 
-            @if(!in_array($transaction_details->repair_status, [8, 11]))
+                {{-- Technical Report --}}
+            @if($transaction_details->case_status === 'MAIL-IN')
+                @include('mail_in.technical_report')
+            @elseif($transaction_details->case_status === 'CARRY-IN')
+                @include('carry_in.technical_report')
+            @else
                 @include('transaction_details.technical_report')
-                @if (CRUDBooster::myPrivilegeId() != 9)
-                    @include('transaction_details.diagnostic_results')
+            @endif
+
+            {{-- Diagnostic Results (only if privilege != 9) Spare Custodian --}}
+            @if (CRUDBooster::myPrivilegeId() != 9)
+                @if($transaction_details->case_status === 'MAIL-IN')
+                        @include('mail_in.diagnostic_results')
+                @elseif($transaction_details->case_status === 'CARRY-IN')
+                        @include('carry_in.diagnostic_results')
+                @else
+                        @include('transaction_details.diagnostic_results')
                 @endif
+            @endif
+
+            {{-- Quotation --}}
+            @if($transaction_details->case_status === 'MAIL-IN')
+                @include('mail_in.quotation')
+            @elseif($transaction_details->case_status === 'CARRY-IN')
+                @include('carry_in.quotation')
+            @else
                 @include('transaction_details.quotation')
             @endif
 
+
             <div class="panel-footer">
-                @if(request()->segment(3) == "getDetailView" || CRUDBooster::getModulePath() == "returns_header")
-                <a href="{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}" style="margin-left:20px;" class="btn btn-default pull-right"><i class="fa fa-chevron-circle-left"></i> BACK</a>
-                @elseif(request()->segment(3) == "edit")
-                
-                    @if($transaction_details->repair_status == 2 && CRUDBooster::getModulePath() == "to_pay_parts" && CRUDBooster::myPrivilegeId() != 2)
-                        <div class="col-md-12 alert alert-info" style="font-size:1.2vw;"><strong>Info! </strong>If the transaction is paid, please click Repair in Process button.</div>
-                    @endif
-                        
+              
                     <a href="{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}" class="btn btn-default pull-left"><i class="fa fa-chevron-circle-left"></i> BACK</a>
                     <input type="hidden" value="{{$data['transaction_details']->header_id}}" name="header_id" id="header_id">
                    
-                    @if($transaction_details->repair_status != 8)
-                        <input type="hidden" name="mainpath" id="mainpath" value="{{CRUDBooster::mainpath()}}">
-                        <input type="hidden" id="warranty_status" value="{{$transaction_details->warranty_status}}">
-                        <input type="hidden" name="action" id="action" value="">
-                    @endif
+                    <input type="hidden" name="mainpath" id="mainpath" value="{{CRUDBooster::mainpath()}}">
+                    <input type="hidden" id="warranty_status" value="{{$transaction_details->warranty_status}}">
+                    <input type="hidden" name="action" id="action" value="">
 
-                    @if($transaction_details->repair_status == 8 && CRUDBooster::getModulePath() == "pay_diagnostic")
-                        <button type="submit" id="paid" onclick="return changeStatus(9)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o"></i> PAID</button>
-                    @elseif($transaction_details->repair_status == 1 && CRUDBooster::getModulePath() == "to_diagnose")
+                    @if($transaction_details->repair_status == 10 && CRUDBooster::getModulePath() == "to_diagnose")
                         <button type="submit" id="save" onclick="return changeStatus('save')" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-floppy-o" aria-hidden="true"></i> SAVE</button>
                         <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
                     @elseif($transaction_details->repair_status == 3 && CRUDBooster::getModulePath() == "to_close" && CRUDBooster::myPrivilegeId() != 2)
                         <button type="submit" id="void" onclick="return changeStatus(5)" class="btn btn-danger pull-right buttonSubmit"/><i class="fa fa-check-square-o" aria-hidden="true"></i> CANCELLED/CLOSE</button>
-                    @elseif($transaction_details->repair_status == 7 && CRUDBooster::getModulePath() == "to_close" && CRUDBooster::myPrivilegeId() != 2)
-                        <button type="submit" id="close" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o" aria-hidden="true"></i> CLOSE</button>
                     @endif 
-                @endif
             </div>
             @if(request()->segment(3) == "edit") </form> @endif 
         </div>
@@ -117,12 +121,8 @@
 @endsection
 
 @push('bottom')
-    @if($transaction_details->repair_status == 8)
-        @include('frontliner.to_pay_diagnostic_transactions_script')
-        @include('technician.quotation_script')
-    @else
+
         @include('technician.to_diagnose_transaction_script')
-    @endif 
 
     <script>
         $(document).ready(function() {

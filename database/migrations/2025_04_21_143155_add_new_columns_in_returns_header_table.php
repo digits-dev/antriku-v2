@@ -23,6 +23,8 @@ class AddNewColumnsInReturnsHeaderTable extends Migration
             $table->text('accessories_included_remarks')->nullable();
             $table->string('files_backed_up', 10)->nullable();
             $table->string('icloud_sign_out', 10)->nullable();
+            $table->string('parts_replacement_cost')->nullable();
+            
         });
     }
 
@@ -43,6 +45,7 @@ class AddNewColumnsInReturnsHeaderTable extends Migration
             $table->dropColumn('accessories_included_remarks');
             $table->dropColumn('files_backed_up');
             $table->dropColumn('icloud_sign_out');
+            $table->dropColumn('parts_replacement_cost');
         });
     }
 }

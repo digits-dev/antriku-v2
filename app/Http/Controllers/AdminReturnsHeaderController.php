@@ -337,19 +337,10 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 			}
 		}
 
-		$ProblemDetails = implode(",", $request->problem_details);
+	
 		DB::table('returns_header')->where('id', $request->id)->update([
 			'email'   					=> $request->email,
 			'contact_no'   				=> $request->contact_no,
-			'diagnostic_cost'   		=> $request->diagnostic_cost,
-			'diagnostic_fee_status'		=> $status_diagnostic_fee,
-			'downpayment_status' 		=> $status_down_payment,
-			'final_payment_status' 		=> $status_final_payment,
-			'warranty_status'			=> $request->warranty_status,
-			'memo_no' 					=> $request->memo_number,
-			'problem_details'			=> $ProblemDetails,
-			'problem_details_other'		=> $request->problem_details_other,
-			'other_remarks'		        => $request->other_remarks,
 			'updated_by'            	=> CRUDBooster::myId()
 		]);
 
@@ -389,7 +380,7 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 					'send_diagnostic_payment_link' => 'YES'
 				]);
 			}
-		} elseif ($request->status_id == 9) {
+		} elseif ($request->status_id == 11) {
 
 			if ($request->hasFile('invoice')) {
 				$file = $request->file('invoice');

@@ -100,28 +100,9 @@
         var email = document.getElementById("email").value; 
         var contact_no = document.getElementById("contact_no").value; 
         var regex_contact_number = /^(09)[0-9]{9}$/;
-		var warranty_status = document.getElementById("warranty_status").value; 
-        var memo_number = document.getElementById("memo_number").value;
-        var diagnostic_cost = document.getElementById("diagnostic_cost").value;
-        var ProblemDetailArray = $('#problem_details').val();
         var invoice = $("#invoice")[0].files[0];
         let other_pd = false;
 
-        if(ProblemDetailArray !== null){
-            if(in_array("OTHERS", ProblemDetailArray)){
-                var problem_details_other = document.getElementById("problem_details_other").value;
-            }else{
-                var problem_details_other = '';
-            }
-
-            if(in_array("OTHERS", ProblemDetailArray) && isEmptyOrSpaces(problem_details_other)){
-                other_pd = true;
-            }else{
-                other_pd = false;
-            }
-        }else{
-            var problem_details_other = '';
-        }
 
         if(isEmptyOrSpaces(email))
         {
@@ -134,21 +115,12 @@
             swal('Error!','Contact Number is empty!','error');
         }else if(!regex_contact_number.test(contact_no))
         {
-            swal('Error!','Invalid format of Contact Number.','error');  
-        }else if(ProblemDetailArray === null)
-        {
-            swal('Warning!','Problem Details is required!','warning');
-        }else if(ProblemDetailArray !== null && other_pd)
-        { 
-            swal('Error!','Other Problem Details field is empty!','error');
         }else{
             $(".buttonSubmit").attr("disabled", "disable");
 
             var formData = new FormData();
             formData.append('header_id', header_id);
             formData.append('status_id', status_id);
-            formData.append('warranty_status', warranty_status);
-            formData.append('diagnostic_cost', diagnostic_cost);
             formData.append('email', email);
             formData.append('invoice', invoice); // File goes here
             formData.append('_token', '{!! csrf_token() !!}');
@@ -162,18 +134,7 @@
                 processData: false, // Important for file upload
                 success: function(result)
                 {
-                    if(status_id == 'send')
-                    {
-                        if(warranty_status == 'OUT OF WARRANTY'){
-                            swal({ title: "Info!", text: "PAYMENT LINK SENT!", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK"},
-                            function(){ $("#SubmitTransactionForm").submit(); });
-                        }else{
-                            swal({ 
-                            title: "Warning!", text: "Sending Payment Link is only applicable for Out Of Warranty Status.", 
-                            type: "warning", confirmButtonClass: "btn-primary", confirmButtonText: "OK"
-                            },function(){ $("#SubmitTransactionForm").submit(); });
-                        }
-                    }else if(status_id == 9){
+                 if(status_id == 11){
                         swal({
                         title: "Success!",
                         text: "DIAGNOSTIC FEE IS NOW PAID!",

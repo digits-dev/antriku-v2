@@ -303,7 +303,7 @@
 			$data['Diagnostic_Fee'] = DB::table('model_group')->where('id',$data['transaction_details']->model_group)->value('diagnostic_fee');
 			$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
 
-			$this->cbView('transaction_details.view_created_transaction_detail',$data);
+			$this->cbView('frontliner.to_pay_diagnostic_transactions',$data);
 		}
 
 	    /*
