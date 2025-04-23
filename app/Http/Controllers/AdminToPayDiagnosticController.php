@@ -274,7 +274,7 @@
 			$data['Branch'] = DB::table('branch')->leftJoin('cms_users', 'branch.id', '=', 'cms_users.branch_id')->where('cms_users.id',$data['transaction_details']->user_id)->first();
 			$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
 
-			$this->cbView('transaction_details.view_created_transaction_detail',$data);
+			$this->cbView('frontliner.frontliner_edit_transactions',$data);
 		}
 
 		public function getEdit($id) 
@@ -303,7 +303,7 @@
 			$data['Diagnostic_Fee'] = DB::table('model_group')->where('id',$data['transaction_details']->model_group)->value('diagnostic_fee');
 			$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
 
-			$this->cbView('frontliner.to_pay_diagnostic_transactions',$data);
+			$this->cbView('frontliner.frontliner_edit_transactions',$data);
 		}
 
 	    /*

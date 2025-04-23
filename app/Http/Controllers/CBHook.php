@@ -17,6 +17,6 @@ class CBHook extends Controller
 	*/
 	public function afterLogin()
 	{
-		Session::put('just_logged_in', true);
+		// Session::put('just_logged_in', true);
 	}
 }

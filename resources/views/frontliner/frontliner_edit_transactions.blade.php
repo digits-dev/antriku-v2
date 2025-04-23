@@ -73,13 +73,14 @@
             @include('transaction_details.service_details')
             @include('transaction_details.uploade_invoice')
 
-
             <div class="panel-footer">
-                
-                    <a href="{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}" class="btn btn-default pull-left"><i class="fa fa-chevron-circle-left"></i> BACK</a>
-                    <input type="hidden" value="{{$data['transaction_details']->header_id}}" name="header_id" id="header_id">
+                <a href="{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}" class="btn btn-default pull-left"><i class="fa fa-chevron-circle-left"></i> BACK</a>
+                <input type="hidden" value="{{$data['transaction_details']->header_id}}" name="header_id" id="header_id">
+                @if (CRUDBooster::getModulePath() == "pay_diagnostic")
                     <button type="submit" id="paid" onclick="return changeStatus(11)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o"></i> PAID</button>
-                 
+                @elseif(CRUDBooster::getModulePath() == "returns_header")
+                    <button type="button" id="print_receiving_form" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-print"></i> PRINT RECEIVING FORM</button>
+                @endif
             </div>
             @if(request()->segment(3) == "edit") </form> @endif 
         </div>
@@ -87,8 +88,7 @@
 @endsection
 
 @push('bottom')
-        @include('frontliner.to_pay_diagnostic_transactions_script')
-
+    @include('frontliner.frontliner_edit_transactions_script')
 
     <script>
         $(document).ready(function() {
@@ -117,6 +117,12 @@
                 setTimeout(function() {
                     $icon.html(originalIcon);
                 }, 1000);
+            });
+        });
+
+        $(document).ready(function() {
+            $('#print_receiving_form').on('click', function() {
+                window.location.href = ""
             });
         });
     </script>        

@@ -87,7 +87,7 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 		$data['Branch'] = DB::table('branch')->leftJoin('cms_users', 'branch.id', '=', 'cms_users.branch_id')->where('cms_users.id', $data['transaction_details']->user_id)->first();
 		$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
 
-		$this->cbView('transaction_details.view_created_transaction_detail', $data);
+		$this->cbView('frontliner.frontliner_edit_transactions', $data);
 	}
 
 	public function getAdd()
@@ -149,7 +149,7 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 		$data['Diagnostic_Fee'] = DB::table('model_group')->where('id', $data['transaction_details']->model_group)->value('diagnostic_fee');
 		$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
 
-		$this->cbView('transaction_details.view_created_transaction_detail', $data);
+		$this->cbView('frontliner.frontliner_edit_transactions', $data);
 	}
 
 	public function hook_query_index(&$query)
@@ -282,7 +282,8 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 		return (array(['header_id' => $headerID, 'ref_no' => $tracking_number, 'warranty_status' => $data['warranty_status']]));
 	}
 
-	private function save_inspected_model($marked_image_base64, $tracking_number, $headerID){
+	private function save_inspected_model($marked_image_base64, $tracking_number, $headerID)
+	{
 		if (isset($marked_image_base64) && !empty($marked_image_base64)) {
 			$base64Image = $marked_image_base64;
 			[$type, $data] = explode(',', $base64Image);
@@ -290,7 +291,7 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 			$fileName = $tracking_number . '_inspected_' . time() . '.png';
 			Storage::put("public/inspections/$fileName", $imageData);
 			DB::table('returns_header')->where('id', $headerID)->update([
-				'inspected_model_photo' => 'inspections/'.$fileName,
+				'inspected_model_photo' => 'inspections/' . $fileName,
 			]);
 		} else {
 			Log::error("Missing or invalid 'marked_image_base64' data.");
@@ -337,7 +338,7 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 			}
 		}
 
-	
+
 		DB::table('returns_header')->where('id', $request->id)->update([
 			'email'   					=> $request->email,
 			'contact_no'   				=> $request->contact_no,
@@ -384,10 +385,10 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 
 			if ($request->hasFile('invoice')) {
 				$file = $request->file('invoice');
-				$filename =    time() .  '_' . $request->header_id . '_' . $file->getClientOriginalName() ;
+				$filename =    time() .  '_' . $request->header_id . '_' . $file->getClientOriginalName();
 				$path = $file->storeAs('public/invoice', $filename);
-				
-				DB::table('returns_header')->where('id',$request->header_id)->update([
+
+				DB::table('returns_header')->where('id', $request->header_id)->update([
 					'invoice'   		=> $filename,
 					'repair_status' 			=> 9,
 					'updated_by'            	=> CRUDBooster::myId(),
