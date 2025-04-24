@@ -70,32 +70,32 @@
             @include('transaction_details.uploade_invoice')
 
                 {{-- Technical Report --}}
-            @if($transaction_details->case_status === 'MAIL-IN')
+            @if ($transaction_details->repair_status == 10)
+                @include('transaction_details.technical_report')
+            @elseif($transaction_details->case_status === 'MAIL-IN')
                 @include('mail_in.technical_report')
             @elseif($transaction_details->case_status === 'CARRY-IN')
                 @include('carry_in.technical_report')
-            @else
-                @include('transaction_details.technical_report')
             @endif
 
             {{-- Diagnostic Results (only if privilege != 9) Spare Custodian --}}
             @if (CRUDBooster::myPrivilegeId() != 9)
-                @if($transaction_details->case_status === 'MAIL-IN')
-                        @include('mail_in.diagnostic_results')
+                @if ($transaction_details->repair_status == 10)
+                    @include('transaction_details.diagnostic_results')
+                @elseif($transaction_details->case_status === 'MAIL-IN')
+                    @include('mail_in.diagnostic_results')
                 @elseif($transaction_details->case_status === 'CARRY-IN')
-                        @include('carry_in.diagnostic_results')
-                @else
-                        @include('transaction_details.diagnostic_results')
+                    @include('carry_in.diagnostic_results')
                 @endif
             @endif
 
             {{-- Quotation --}}
-            @if($transaction_details->case_status === 'MAIL-IN')
+            @if ($transaction_details->repair_status == 10)
+                @include('transaction_details.quotation')
+            @elseif($transaction_details->case_status === 'MAIL-IN')
                 @include('mail_in.quotation')
             @elseif($transaction_details->case_status === 'CARRY-IN')
                 @include('carry_in.quotation')
-            @else
-                @include('transaction_details.quotation')
             @endif
 
 
