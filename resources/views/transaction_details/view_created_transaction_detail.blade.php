@@ -107,6 +107,13 @@
                     <input type="hidden" name="mainpath" id="mainpath" value="{{CRUDBooster::mainpath()}}">
                     <input type="hidden" id="warranty_status" value="{{$transaction_details->warranty_status}}">
                     <input type="hidden" name="action" id="action" value="">
+                    
+                    <div id="mailin" style="display: {{ $transaction_details->case_status === 'MAIL-IN' ? 'block' : 'none' }};">
+                        @include('mail_in.mail_in_buttons')
+                    </div>
+                    <div id="carry-in" style="display: {{ $transaction_details->case_status === 'CARRY-IN' ? 'block' : 'none' }};">
+                        @include('carry_in.carry_in_buttons')
+                    </div>
 
                     @if($transaction_details->repair_status == 10 && CRUDBooster::getModulePath() == "to_diagnose")
                         <button type="submit" id="save" onclick="return changeStatus('save')" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-floppy-o" aria-hidden="true"></i> SAVE</button>
@@ -114,6 +121,8 @@
                     @elseif($transaction_details->repair_status == 3 && CRUDBooster::getModulePath() == "to_close" && CRUDBooster::myPrivilegeId() != 2)
                         <button type="submit" id="void" onclick="return changeStatus(5)" class="btn btn-danger pull-right buttonSubmit"/><i class="fa fa-check-square-o" aria-hidden="true"></i> CANCELLED/CLOSE</button>
                     @endif 
+
+                    
             </div>
             @if(request()->segment(3) == "edit") </form> @endif 
         </div>
@@ -123,8 +132,53 @@
 @push('bottom')
 
         @include('technician.to_diagnose_transaction_script')
-
+      
     <script>
+
+        function toggleCaseStatus() {
+            const selectedCase = $('input[name="case_status"]:checked').val();
+            console.log(selectedCase);
+            // Hide both initially
+            $('#mailin').hide();
+            $('#carry-in').hide();
+
+            // Show based on selected case
+            if (selectedCase === 'MAIL-IN') {
+                $('#mailin').show();
+            } else if (selectedCase === 'CARRY-IN') {
+                $('#carry-in').show();
+            }
+        }
+
+        function toggleWarrantyButton() {
+            let status = $('input[name="warranty_status"]:checked').val();
+            if (!status) {
+                status = $('select[name="warranty_status"]').val();
+            }
+
+            const selectedCase = $('input[name="case_status"]:checked').val();
+
+            // Hide all
+            $('#mailin-in-warranty, #mailin-out-warranty, #carryin-in-warranty, #carryin-out-warranty').hide();
+
+            // Show based on both case and warranty
+            if (selectedCase === 'MAIL-IN') {
+                if (status === 'IN WARRANTY') {
+                    $('#mailin-in-warranty').show();
+                } else {
+                    $('#mailin-out-warranty').show();
+                }
+            } else if (selectedCase === 'CARRY-IN') {
+                if (status === 'IN WARRANTY') {
+                    $('#carryin-in-warranty').show();
+                } else {
+                    $('#carryin-out-warranty').show();
+                }
+            }
+        }
+
+        
+
         $(document).ready(function() {
             $('.copy-icon').on('click', function() {
                 var $icon = $(this);
@@ -151,6 +205,14 @@
                 setTimeout(function() {
                     $icon.html(originalIcon);
                 }, 1000);
+            });
+
+            toggleCaseStatus();
+            toggleWarrantyButton();
+
+            $('input[name="case_status"], input[name="warranty_status"], select[name="warranty_status"]').on('change', function () {
+                toggleCaseStatus();
+                toggleWarrantyButton();
             });
         });
     </script>        

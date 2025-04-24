@@ -40,7 +40,7 @@
 			$this->col[] = ["label"=>"Model Group","name"=>"model"];
 			$this->col[] = ["label"=>"Technician Assigned","name"=>"technician_id", 'join' => 'cms_users,name'];
 			$this->col[] = ["label"=>"Date Received","name"=>"technician_accepted_at"];
-			$this->col[] = ["label"=>"Branch","name"=>"branch", 'join' => 'branch,branch_name'];
+			$this->col[] = ["label"=>"Branch","name"=>"branch", 'join' => 'branch,branch_name' ];
             // $this->col[] = ["label"=>"Print Technical Report","name"=>"print_technical_report"];
 			# END COLUMNS DO NOT REMOVE THIS LINE
 			
@@ -592,6 +592,8 @@
 					'parts_replacement_cost'	=> $all_data['replacement_cost'],
 					'case_status'				=> $all_data['case_status'],
                     'warranty_status' 			=> $all_data['warranty_status'],
+					'device_serial_number'		=> $all_data['device_serial_number'],
+					'defective_serial_number'	=> $all_data['defective_serial_number'],
 					// 'memo_no' 					=> $all_data['memo_number'],
                     'device_issue_description' 	=> $all_data['device_issue_description'],
                     'findings' 					=> $all_data['findings'],

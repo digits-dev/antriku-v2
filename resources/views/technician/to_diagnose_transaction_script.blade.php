@@ -104,6 +104,7 @@
     // validation for submitting form
     function changeStatus(status_id)
     {
+  
         var mainpath = document.getElementById("mainpath").value;  
         var header_id = document.getElementById("header_id").value;
         var warranty_status = document.getElementById("warranty_status").value;
@@ -148,7 +149,7 @@
         // For Cost Computation
         var all_cost = document.getElementById("costArray").value;
         var all_item_desc = document.getElementById("itemArray").value;
-        var software_cost = document.getElementById("software_cost").value;
+        // var software_cost = document.getElementById("software_cost").value ?? 0;
 
         //************************Validation for Array************************
         if(checkIfDuplicateExists(getscValue)){
@@ -265,7 +266,6 @@
         }else{
             proceed = true;
         }
-
         if(proceed){
             if(status_id == 'send' || status_id == 'save'){
                 $(".buttonSubmit").removeAttr("disabled");
@@ -284,7 +284,7 @@
                     'warranty_status': warranty_status,
                     'all_cost': all_cost,
                     'all_item_desc' : all_item_desc,
-                    'software_cost': software_cost,
+                    // 'software_cost': software_cost,
                     _token: '{!! csrf_token() !!}'
                     },
                 success: function(result)

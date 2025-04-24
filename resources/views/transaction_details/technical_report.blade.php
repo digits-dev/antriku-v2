@@ -93,7 +93,7 @@
                         <div class="col-md-6" style="margin-top:7px;">
                             <label class="warranty-option-cus">
                                 <div class="radio-container-cus">
-                                    <input type="radio" name="case_status" value="CARRY-IN" onchange="return toggleCallOut('CARRY-IN')" required {{ $transaction_details->case_status == 'CARRY-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}>
+                                    <input type="radio" name="case_status" value="CARRY-IN" required {{ $transaction_details->case_status == 'CARRY-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}>
                                     <span class="radio-custom"></span>
                                 </div>
                                 <div class="option-content-cus">
@@ -114,7 +114,7 @@
                         <div class="col-md-6" style="margin-top:7px;">
                             <label class="warranty-option-cus">
                                 <div class="radio-container-cus">
-                                    <input type="radio" name="case_status" value="MAIL-IN" onchange="return toggleCallOut('MAIL-IN')"  required {{ $transaction_details->case_status == 'MAIL-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}>
+                                    <input type="radio" name="case_status" value="MAIL-IN" required {{ $transaction_details->case_status == 'MAIL-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}>
                                     <span class="radio-custom"></span>
                                 </div>
                                 <div class="option-content-cus">
@@ -170,14 +170,27 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="row">    
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-6" style="margin-top: 5px;">
+                            <label class="label-cus">Device Serial Number:</label>
+                            <textarea placeholder="Type your Device Serial Number here" name="device_serial_number" rows="2" class="input-cus" {{ $transaction_details->repair_status != 10 ? 'readonly' : '' }}>{{ $transaction_details->device_serial_number }}</textarea>
+                        </div>
+                        <div class="col-md-6" style="margin-top: 5px;">
+                            <label class="label-cus"><span class="requiredField">*</span>Defective Serial Number (KBB):</label>
+                            <textarea placeholder="Type your Defective Serial Number here" name="defective_serial_number" rows="2" class="input-cus"  {{ $transaction_details->repair_status != 10 ? 'readonly' : '' }}>{{ $transaction_details->defective_serial_number }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">    
                     <div class="col-md-12">
                         <div class="col-md-12" style="margin-top: 5px;">
                             <label class="label-cus"><span class="requiredField">*</span>Device Issue Description:</label>
                             <textarea placeholder="Type your device issue description here" name="device_issue_description" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 10 ? 'readonly' : '' }}>{{ $transaction_details->device_issue_description }}</textarea>
                         </div>
                     </div>
-                </div> --}}
+                </div>
                 <div class="row">    
                     <div class="col-md-12">
                         <div class="col-md-12" style="margin-top: 5px;">
@@ -252,10 +265,10 @@
                 <div class="info-label-cust">Other Remarks</div>
                 <div class="info-value-cust">{{ $transaction_details->other_remarks ?? 'N/A' }}</div>
             </div>
-            {{-- <div class="info-item-cust">
+            <div class="info-item-cust">
                 <div class="info-label-cust">Device Issue Description</div>
                 <div class="info-value-cust">{{ $transaction_details->device_issue_description ?? 'N/A' }}</div>
-            </div> --}}
+            </div>
         </div>
         
         <div class="info-grid-cust">
