@@ -12,8 +12,8 @@
     @endif
     <div class="panel panel-default" id="main-pannel">
         <!-- <div class="row"></div> -->
-        <div class='panel-body'id="printableArea">    
-            <div> 
+        <div class='panel-body'>    
+            <div id="printableArea"> 
                 <style> 
                     .table-bordered-display { border: 1px solid #B8B8B8 !important; } 
                     table.print-friendly { page-break-inside: avoid; }
@@ -274,6 +274,7 @@
                     </tbody>
                 </table>
                 <br>
+                <div style="page-break-after: always !important;"></div>
                 <table style="page-break-inside: avoid !important;">
                     <table class="print-friendly" width="100%">
                         <thead>
@@ -312,10 +313,10 @@
                         </tr>
                     </table>
                 </table>
-                
+                {{-- <div style="page-break-after: always !important;"></div> --}}
                 <div style="text-align:justify;font-size: 11px;">
-                    <h4 align="center" style="margin-top: 17px; margin-bottom: 0px;"><strong>TERMS & CONDITIONS</strong></h4> 
-                    <br>
+                    {{-- <h4 align="center" style="margin-top: 17px; margin-bottom: 0px;"><strong>TERMS & CONDITIONS</strong></h4>  --}}
+                    {{-- <br> --}}
                     @include('include.terms_and_condition')
                         <div style="display: flex; align-items: center; justify-content: center;" id="signature_container">
                             <canvas id="signature-pad" class="signature-pad" width="500" height="130" 
@@ -329,7 +330,7 @@
                             <input type="hidden" name="signatureData" id="signatureData">
                         </center>
                 </div>
-                {{-- <div style="page-break-after: always !important;"></div> --}}
+                <div style="page-break-after: always !important;"></div>
                 <br>
                 <div style="text-align:justify;font-size: 11px;">
                     <h4 align="center" style="margin-top: 17px;"><strong>DATA PRIVACY CONSENT FORM</strong></h4> 
@@ -343,26 +344,18 @@
                         Date: <span> <u>{{now()}}</u> </span>
                 </div>
             </div>
+            <div class='no-print' style="margin-top: 10px; border-top: 1px solid lightgrey; padding-top: 10px;">
+                <form method="" id="myform" action="">
+                    <input type="hidden" value="{{$data['transaction_details']->header_id}}" name="header_id">
+                    <input type="hidden" value="1" name="print_form_type">
+                    <a href="{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}" class="btn btn-default pull-left"><i class="fa fa-chevron-circle-left"></i> BACK</a>
+                    <button class="btn btn-success pull-right" type="button" id="print" onclick="printDivision('printableArea')"> 
+                        <i class="fa fa-print"></i> Print as PDF 
+                    </button>
+                </form>
+                <button class="btn btn-primary" id="download-btn" style="display: none"></button>
+            </div>         
         </div> 
-        <div class='panel-footer no-print'>
-            <div class="row">
-                <div class="col-md-8">
-                    {{-- Print Receiving Form --}}
-                </div>
-                <div class="col-md-4">
-                    <form method="" id="myform" action="">
-                        <input type="hidden" value="{{$data['transaction_details']->header_id}}" name="header_id">
-                        <input type="hidden" value="1" name="print_form_type">
-                        <!-- <a href="{{ CRUDBooster::mainpath() }}" class="btn btn-default pull-right">Cancel</a> -->
-                        {{-- <a href="{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}" class="btn btn-default pull-right">Cancel</a> --}}
-                        <button class="btn btn-primary pull-right" style="margin-right: 10px;" type="button" id="print" onclick="printDivision('printableArea')"> 
-                            <i class="fa fa-print"></i> Print as PDF 
-                        </button>
-                    </form>
-                    <button class="btn btn-primary" id="download-btn" style="display: none"></button>
-                </div>
-            </div>
-        </div>         
     </div>
 @endsection
     
@@ -404,7 +397,8 @@
         let first_name = "{{$data['transaction_details']->first_name}}";
         let last_name = "{{$data['transaction_details']->last_name}}";
         let email_add = "{{$data['transaction_details']->email}}";
-        let file_name = "{{$data['transaction_details']->reference_no}}_RECEIVED_SIGNED_FORM.pdf";
+        let file_name = "{{$data['transaction_details']->reference_no}}_RECEIVING_SIGNED_FORM.pdf";
+        let form_type = "RECEIVING_SIGNED_FORM";
 
         let options = {
             margin: 7,
@@ -421,6 +415,8 @@
             formData.append("last_name", last_name);
             formData.append("email", email_add);
             formData.append("pdf", pdfBlob, file_name);
+            formData.append("form_type", form_type);
+            
             // Save PDF to drive 
             $.ajax({
                 url: "{{ route('upload_pdf') }}",

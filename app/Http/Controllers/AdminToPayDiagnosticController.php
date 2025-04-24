@@ -35,10 +35,8 @@
 			$this->col[] = ["label"=>"Reference No","name"=>"reference_no"];
 			$this->col[] = ["label"=>"Model Group","name"=>"model"];
             $this->col[] = ["label"=>"Print Receive Form","name"=>"print_receive_form"];
-			$this->col[] = ["label"=>"Send Diagnostic Payment Link","name"=>"send_diagnostic_payment_link"];
 			$this->col[] = ["label"=>"Diagnostic Payment Status","name"=>"diagnostic_fee_status"];
 			$this->col[] = ["label"=>"Diagnostic Fee","name"=>"diagnostic_cost"];
-			$this->col[] = ["label"=>"Diagnostic Payment URL","name"=>"diagnostic_fee_payment_url"];
 			$this->col[] = ["label"=>"Date Received","name"=>"created_at"];
             $this->col[] = ["label"=>"Updated By","name"=>"updated_by"];
 			# END COLUMNS DO NOT REMOVE THIS LINE
@@ -380,7 +378,7 @@
 				}
 			}
 
-			if($column_index == 4 || $column_index == 5){
+			if($column_index == 4){
 				if($column_value == 'YES'){
 					$column_value = '<span class="label label-success">'.$column_value.'</span>';
 				}elseif($column_value == 'NO'){
@@ -388,7 +386,7 @@
 				}
 			}
 
-			if($column_index == 6){
+			if($column_index == 5){
 				if($column_value == 'UNPAID'){
 					$column_value = '<span style="color: #F93154"><strong>'.$column_value.'</strong></span>';
 				}elseif($column_value == 'PAID'){
@@ -400,15 +398,11 @@
 				}
 			}
 
-			if($column_index == 7){
+			if($column_index == 6){
 				$column_value = '₱'.$column_value;
 			}
-
-			if($column_index == 8){
-				$column_value = "<a href='".$column_value."' target='_blank'>".$column_value."</a>";
-			}
             
-			if($column_index == 10){
+			if($column_index == 8){
 				$name = DB::table('cms_users')->where('id',$column_value)->value('name');
 				$column_value = $name;
 			}

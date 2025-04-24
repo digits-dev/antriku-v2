@@ -12,48 +12,127 @@
             @if($transaction_details->repair_status == 10 && CRUDBooster::getModulePath() == "to_diagnose" && request()->segment(3) == "edit")
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="col-md-12" style="margin-top: 12px;margin-bottom: 12px;">
+                        {{-- <div class="col-md-12" style="margin-top: 12px;margin-bottom: 12px;">
                             <div class="alert-cust alert-info-cust alert-with-icon-cust">
                                 <div class="alert-icon-cust">i</div>
                                     <span class="alert-title-cust">Info!</span> 
                                     If you are changing the Warranty Status make sure to click the rewind button.
                             </div>
+                        </div> --}}
+                        <div class="col-md-12" style="margin-top:7px;">
+                            <label class="label-cus"><span class="requiredField">*</span>Warranty Status:</label>
                         </div>
-                        <div class="col-md-3" style="margin-top:7px;">
-                            <label><span class="requiredField">*</span>Warranty Status:</label>
-                        </div>
-                        <div class="col-md-3" style="margin-top:7px;">
-                            <label class="radio-inline control-label text-success">
-                                <input type="radio" name="warranty_status" value="IN WARRANTY" onchange="return WarrantyStatusChange(1)" required {{ $transaction_details->warranty_status == 'IN WARRANTY' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}><strong>IN WARRANTY</strong>
+                        <div class="col-md-4">
+                            <label class="warranty-option-cus">
+                                <div class="radio-container-cus">
+                                <input type="radio" name="warranty_status" value="IN WARRANTY" value="IN WARRANTY" onchange="return WarrantyStatusChange(1)" required {{ $transaction_details->warranty_status == 'IN WARRANTY' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}>
+                                <span class="radio-custom"></span>
+                                </div>
+                                <div class="option-content-cus">
+                                <div class="option-title-cus">
+                                    In Warranty
+                                    <span class="pull-right text-success">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                            <path d="m9 12 2 2 4-4"></path>
+                                          </svg>
+                                    </span>
+                                </div>
+                                <div class="option-description-cus">Product under manufacturer warranty</div>
+                                </div>
                             </label>
-                            <br>
                         </div>
-                        <div class="col-md-3" style="margin-top:7px;">
-                            <label class="radio-inline control-label text-danger"><input type="radio" name="warranty_status" value="OUT OF WARRANTY" onchange="return WarrantyStatusChange(2)" required {{ $transaction_details->warranty_status == 'OUT OF WARRANTY' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}><strong>OUT OF WARRANTY</strong></label>
-                            <br>
+                        <div class="col-md-4">
+                            <label class="warranty-option-cus">
+                                <div class="radio-container-cus">
+                                <input type="radio" name="warranty_status" value="OUT OF WARRANTY" onchange="return WarrantyStatusChange(2)" required {{ $transaction_details->warranty_status == 'OUT OF WARRANTY' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}>
+                                <span class="radio-custom"></span>
+                                </div>
+                                <div class="option-content-cus">
+                                <div class="option-title-cus">
+                                    Out of Warranty
+                                    <span class="pull-right text-danger">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M19.69 14a6.9 6.9 0 0 0 .31-2V5l-8-3-3.16 1.18"></path>
+                                            <path d="M4.73 4.73 4 5v7c0 6 8 10 8 10a20.29 20.29 0 0 0 5.62-4.38"></path>
+                                            <line x1="2" y1="2" x2="22" y2="22"></line>
+                                          </svg>
+                                    </span>
+                                </div>
+                                <div class="option-description-cus">Product warranty has expired</div>
+                                </div>
+                            </label>
                         </div>
-                        <div class="col-md-3" style="margin-top:7px;">
-                            <label class="radio-inline control-label text-warning"><input type="radio" name="warranty_status" value="SPECIAL" onchange="return WarrantyStatusChange(3)" required {{ $transaction_details->warranty_status == 'SPECIAL' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}><strong>SPECIAL</strong></label>
-                            <br>
+                        <div class="col-md-4">
+                            <label class="warranty-option-cus">
+                                <div class="radio-container-cus">
+                                <input type="radio" name="warranty_status" value="SPECIAL" onchange="return WarrantyStatusChange(3)" required {{ $transaction_details->warranty_status == 'SPECIAL' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}>
+                                <span class="radio-custom"></span>
+                                </div>
+                                <div class="option-content-cus">
+                                <div class="option-title-cus">
+                                    Special Coverage
+                                    <span class="pull-right text-warning">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                            <polygon points="12 8 12.8 10.5 15.5 10.6 13.4 12.3 14 14.9 12 13.4 10 14.9 10.6 12.3 8.5 10.6 11.2 10.5 12 8"></polygon>
+                                          </svg>
+                                    </span>
+                                </div>
+                                <div class="option-description-cus">Extended warranty or special program</div>
+                                </div>
+                            </label>
                         </div>
                     </div>
                 </div> 
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="col-md-3" style="margin-top:7px;">
-                            <label><span class="requiredField">*</span>Case:</label>
+                        <div class="col-md-12" style="margin-top:7px;">
+                            <label class="label-cus"><span class="requiredField">*</span>Case Type:</label>
                         </div>
-                        <div class="col-md-3" style="margin-top:7px;">
-                            <label class="radio-inline control-label text-success"><input type="radio" name="case_status" value="CARRY-IN" onchange="return toggleCallOut('CARRY-IN')" required {{ $transaction_details->case_status == 'CARRY-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}><strong>CARRY-IN</strong></label>
-                            <br>
+                        <div class="col-md-6" style="margin-top:7px;">
+                            <label class="warranty-option-cus">
+                                <div class="radio-container-cus">
+                                    <input type="radio" name="case_status" value="CARRY-IN" onchange="return toggleCallOut('CARRY-IN')" required {{ $transaction_details->case_status == 'CARRY-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}>
+                                    <span class="radio-custom"></span>
+                                </div>
+                                <div class="option-content-cus">
+                                    <div class="option-title-cus">
+                                        CARRY-IN
+                                        <span class="pull-right" style="color:#00c0ef">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                                <polyline points="3.29 7 12 12 20.71 7"></polyline>
+                                                <line x1="12" y1="22" x2="12" y2="12"></line>
+                                              </svg>
+                                        </span>
+                                    </div>
+                                    <div class="option-description-cus">Bring product to Service Center</div>
+                                </div>
+                            </label>
                         </div>
-                        <div class="col-md-3" style="margin-top:7px;">
-                            <label class="radio-inline control-label text-danger"><input type="radio" name="case_status" value="MAIL-IN" onchange="return toggleCallOut('MAIL-IN')"  required {{ $transaction_details->case_status == 'MAIL-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}><strong>MAIL-IN</strong></label>
-                            <br>
+                        <div class="col-md-6" style="margin-top:7px;">
+                            <label class="warranty-option-cus">
+                                <div class="radio-container-cus">
+                                    <input type="radio" name="case_status" value="MAIL-IN" onchange="return toggleCallOut('MAIL-IN')"  required {{ $transaction_details->case_status == 'MAIL-IN' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}>
+                                    <span class="radio-custom"></span>
+                                </div>
+                                <div class="option-content-cus">
+                                    <div class="option-title-cus">
+                                        MAIL-IN
+                                        <span class="pull-right" style="color: #00c0ef">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                                                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                                              </svg>
+                                        </span>
+                                    </div>
+                                    <div class="option-description-cus">Ship your product to Apple Service Center</div>
+                                </div>
+                            </label>
                         </div>
                     </div>
                 </div> 
-                <br>
                 <?php $problem_details = explode(",", $transaction_details->problem_details); ?>
                 <div class="row">
                     <div class="col-md-12">

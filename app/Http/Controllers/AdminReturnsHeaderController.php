@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use crocodicstudio\crudbooster\helpers\CRUDBooster;
+use ZipArchive;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
+use App\Mail\EmailReceivePrintForm;
 use Illuminate\Support\Facades\Mail;
-use GuzzleHttp\Client;
-use ZipArchive;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
+use crocodicstudio\crudbooster\helpers\CRUDBooster;
+
 
 class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controllers\CBController
 {
@@ -44,6 +46,7 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 		$this->col[] = ["label" => "Model Group", "name" => "model"];
 		$this->col[] = ["label" => "Print Receive Form", "name" => "print_receive_form"];
 		$this->col[] = ["label" => "Warranty Type", "name" => "warranty_status"];
+		$this->col[] = ["label" => "Diagnostic Fee Status", "name" => "diagnostic_fee_status"];
 		$this->col[] = ["label" => "Diagnostic Fee", "name" => "diagnostic_cost"];
 		$this->col[] = ["label" => "Date Created", "name" => "created_at"];
 		$this->col[] = ["label" => "Updated By", "name" => "updated_by", "join" => "cms_users,name"];
@@ -155,9 +158,9 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 	public function hook_query_index(&$query)
 	{
 		if (CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6) {
-			$query->whereIn('repair_status', [8, 11])->where('print_receive_form', 'NO')->orderBy('id', 'asc');
+			$query->whereIn('repair_status', [11])->where('print_receive_form', 'NO')->where('diagnostic_fee_status', '!=', 'UNPAID')->orderBy('id', 'asc');
 		} else {
-			$query->whereIn('repair_status', [8, 11])->where('print_receive_form', 'NO')->where('branch', CRUDBooster::me()->branch_id)->orderBy('id', 'asc');
+			$query->whereIn('repair_status', [11])->where('print_receive_form', 'NO')->where('diagnostic_fee_status', '!=', 'UNPAID')->where('branch', CRUDBooster::me()->branch_id)->orderBy('id', 'asc');
 		}
 	}
 
@@ -190,7 +193,7 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 			}
 		}
 
-		if ($column_index == 5) {
+		if ($column_index == 5 || $column_index == 6) {
 			if ($column_value == 'OUT OF WARRANTY') {
 				$column_value = '<span style="color: #F93154"><strong>' . $column_value . '</strong></span>';
 			} elseif ($column_value == 'PAID') {
@@ -202,7 +205,7 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 			}
 		}
 
-		if ($column_index == 6) {
+		if ($column_index == 7) {
 			$column_value = '₱' . $column_value;
 		}
 	}
@@ -301,46 +304,15 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 	public function EditTransactionProcess(Request $request)
 	{
 		$transaction_details = DB::table('returns_header')->where('id', $request->id)->first();
-
-		if (!empty($transaction_details->diagnostic_fee_payment_url)) {
-			if ($transaction_details->repair_status == 1) {
-				$status_diagnostic_fee = 'PAID';
-			} else if ($transaction_details->diagnostic_fee_status == 'PAID') {
-				$status_diagnostic_fee = 'PAID';
-			} else {
-				$status_diagnostic_fee = 'PAID';
-			}
+		if ($transaction_details->warranty_status == "OUT OF WARRANTY") {
+			$status_diagnostic_fee = 'PAID';
 		} else {
-			if ($request->warranty_status == "OUT OF WARRANTY") {
-				$status_diagnostic_fee = 'PAID';
-			} else {
-				$status_diagnostic_fee = $request->warranty_status;
-			}
+			$status_diagnostic_fee = $transaction_details->warranty_status;
 		}
-
-		if (!empty($transaction_details->down_payment_url)) {
-			$status_down_payment = 'PAID';
-		} else {
-			if ($request->warranty_status == "OUT OF WARRANTY") {
-				$status_down_payment = 'UNPAID';
-			} else {
-				$status_down_payment = $request->warranty_status;
-			}
-		}
-
-		if (!empty($transaction_details->final_payment_url)) {
-			$status_final_payment = 'PAID';
-		} else {
-			if ($request->warranty_status == "OUT OF WARRANTY") {
-				$status_final_payment = 'UNPAID';
-			} else {
-				$status_final_payment = $request->warranty_status;
-			}
-		}
-
 
 		DB::table('returns_header')->where('id', $request->id)->update([
 			'email'   					=> $request->email,
+			'diagnostic_fee_status'		=> $status_diagnostic_fee,
 			'contact_no'   				=> $request->contact_no,
 			'updated_by'            	=> CRUDBooster::myId()
 		]);
@@ -390,7 +362,7 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 
 				DB::table('returns_header')->where('id', $request->header_id)->update([
 					'invoice'   		=> $filename,
-					'repair_status' 			=> 9,
+					'repair_status' 			=> 11,
 					'updated_by'            	=> CRUDBooster::myId(),
 					// 'paid_by'          => CRUDBooster::myId(),
 					// 'paid_at'   => date('Y-m-d H:i:s')
@@ -641,5 +613,137 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 		$response = $barangays_client->get("{$baseUrl}cities-municipalities/{$cityMunCode}/barangays/");
 		$barangays = json_decode($response->getBody(), true);
 		return response()->json($barangays);
+	}
+
+	public function verfiyEmail(Request $request)
+	{
+		$email = $request->input('email');
+		$apiKey = "b7b56faaa6eec3f22d39f55d68155f79";
+		$url = "http://apilayer.net/api/check?access_key={$apiKey}&email={$email}&smtp=1&format=1";
+
+		$client = new Client();
+		$response = $client->request('GET', $url);
+		$result = json_decode($response->getBody(), true);
+
+		if ($result['format_valid'] && $result['smtp_check']) {
+			return response()->json([
+				'valid_email' => 'Valid and active email.'
+			]);
+		} else {
+			return response()->json([
+				'invalid_email' => 'Invalid email or non-existent!'
+			]);
+		}
+	}
+
+	public function uploadPdf(Request $request)
+	{
+		// Validate
+		$request->validate([
+			'pdf' => 'required|mimes:pdf|max:25600',
+		]);
+
+		// save PDF file to Drive
+		$file = $request->file('pdf');
+		$fileName = date('Y-m-d') . '_' . $file->getClientOriginalName();
+
+		$existingFile = DB::table('pdf_files_tracker')->where('pdf_file_name', $fileName)->first();
+
+		if ($existingFile) {
+			return response()->json(['error' => 'PDF File already uploaded!', 'file_name' => $fileName], 400);
+		}
+
+		$formType = $request->input('form_type');
+		$diskMap = [
+			'RECEIVING_SIGNED_FORM' => 'google_type1',
+			'TECHNICAL_SIGNED_FORM' => 'google_type2',
+			'RELEASING_SIGNED_FORM' => 'google_type3',
+		];
+
+		$disk = $diskMap[$formType] ?? 'google'; 
+		$filePath = Storage::disk($disk)->put($fileName, file_get_contents($file));
+
+		if ($filePath) {
+			$created = DB::table('pdf_files_tracker')->insert([
+				'pdf_file_name' => $fileName,
+				'save_drive' => 1,
+				'save_drive_by' => CRUDBooster::myId(),
+				'save_drive_at' => now()
+			]);
+
+			if ($created) {
+				return response()->json(['message' => 'File uploaded successfully!', 'file_name' => $fileName]);
+			}
+		}
+
+		return response()->json(['error' => 'Failed to upload file'], 500);
+	}
+
+	public function sendPdf(Request $request)
+	{
+		// Validate the request
+		$request->validate([
+			'contact_no' => 'required',
+			'first_name' => 'required',
+			'last_name' => 'required',
+			'email' => 'required|email',
+			'pdf' => 'required|file|mimes:pdf|max:25600',
+		]);
+
+		$pdfFile = $request->file('pdf');
+		$fileName = date('Y-m-d') . '_' . $pdfFile->getClientOriginalName();
+		$pdfPath = storage_path('app/temp_pdfs/' . $fileName);
+
+		// Move file to storage
+		$pdfFile->storeAs('temp_pdfs', $fileName);
+
+		// Define ZIP file path
+		$zipFileName = pathinfo($fileName, PATHINFO_FILENAME) . '.zip';
+		$zipFilePath = storage_path('app/temp_pdfs/' . $zipFileName);
+
+		// Set encryption ZIP key
+		$contactNo = $request->contact_no;
+		$lastFourDigits = substr($contactNo, -4);
+		$firstLetterFirstName = strtoupper(substr($request->first_name, 0, 1));
+		$firstLetterLastName = strtoupper(substr($request->last_name, 0, 1));
+		$lastLetterLastName = strtoupper(substr($request->last_name, -1));
+		$zipPassword = $lastFourDigits . $firstLetterFirstName . $firstLetterLastName . $lastLetterLastName;
+
+		// ZIP archive and add the PDF with encryption
+		$zip = new ZipArchive();
+		if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
+			$zip->setPassword($zipPassword);
+			$zip->addFile($pdfPath, $fileName);
+			$zip->setEncryptionName($fileName, ZipArchive::EM_AES_256);
+			$zip->close();
+		} else {
+			return response()->json(['message' => 'Failed to create ZIP file.'], 500);
+		}
+
+		// Send Email in ZIP Attachment
+		Mail::to($request->email)->send(new EmailReceivePrintForm($zipFilePath, $zipFileName, $zipPassword));
+
+		// Delete tempt files
+		Storage::delete('temp_pdfs/' . $fileName);
+		Storage::delete('temp_pdfs/' . $zipFileName);
+
+		// Update Database Tracking
+		$track_pdf_file = DB::table('pdf_files_tracker')->where('pdf_file_name', $fileName)->first();
+
+		if ($track_pdf_file) {
+			$updated = DB::table('pdf_files_tracker')->where('pdf_file_name', $fileName)->update([
+				'send_email' => 1,
+				'send_email_by' => CRUDBooster::myId(),
+				'send_email_at' => now(),
+			]);
+
+			if ($updated) {
+				return response()->json([
+					'message' => 'PDF sent successfully!',
+					'email' => $request->email,
+					'file_name' => $fileName
+				], 200);
+			}
+		}
 	}
 }

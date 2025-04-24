@@ -113,8 +113,9 @@
         }else if(isEmptyOrSpaces(contact_no))
         {
             swal('Error!','Contact Number is empty!','error');
-        }else if(!regex_contact_number.test(contact_no))
-        {
+        // }else if(!regex_contact_number.test(contact_no))
+        //     swal('Error!','Wrong contact_no Format!','error');
+        // {
         }else{
             $(".buttonSubmit").attr("disabled", "disable");
 
