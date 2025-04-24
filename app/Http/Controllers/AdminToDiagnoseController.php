@@ -602,7 +602,7 @@
                     'updated_by'            	=> CRUDBooster::myId()
                 ]);
 
-				// *******************************For Diagnostic Test******************************
+				// ******************************For Diagnostic Test*******************************
 				$diagnosticTest = "";
 				$diagnosticId = implode(",", $all_data['test_result_id']);
 				for($b=0; $b < count($all_data['test_result_id']); $b++)
