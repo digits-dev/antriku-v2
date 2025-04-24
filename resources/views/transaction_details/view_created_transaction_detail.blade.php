@@ -106,10 +106,11 @@
                    
                     <input type="hidden" name="mainpath" id="mainpath" value="{{CRUDBooster::mainpath()}}">
                     <input type="hidden" id="warranty_status" value="{{$transaction_details->warranty_status}}">
+                    <input type="hidden" id="repair_status" value="{{ $transaction_details->repair_status }}">
                     <input type="hidden" name="action" id="action" value="">
                     
+                    @include('mail_in.mail_in_buttons')
                     <div id="mailin" style="display: {{ $transaction_details->case_status === 'MAIL-IN' ? 'block' : 'none' }};">
-                        @include('mail_in.mail_in_buttons')
                     </div>
                     <div id="carry-in" style="display: {{ $transaction_details->case_status === 'CARRY-IN' ? 'block' : 'none' }};">
                         @include('carry_in.carry_in_buttons')
@@ -207,8 +208,12 @@
                 }, 1000);
             });
 
+            const repairStatus = $('#repair_status').val();
+
+            if (repairStatus == 10) {
             toggleCaseStatus();
             toggleWarrantyButton();
+            }
 
             $('input[name="case_status"], input[name="warranty_status"], select[name="warranty_status"]').on('change', function () {
                 toggleCaseStatus();

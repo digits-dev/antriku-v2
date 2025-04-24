@@ -1,7 +1,19 @@
 <div id="mailin-in-warranty" style="display: {{ $transaction_details->warranty_status === 'IN WARRANTY' ? 'block' : 'none' }};">
-    <button type="submit" id="save" onclick="return changeStatus('save')" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
-        <i class="fa fa-floppy-o" aria-hidden="true"></i> IN WARRANTY MAIL IN
-    </button>
+    @if (CRUDBooster::myPrivilegeId() == 3)
+        @if ($transaction_details->repair_status == 12)
+        <button type="submit" id="save" onclick="return changeStatus(12)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+            <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
+        </button>
+        <button type="submit" id="reject" onclick="return changeStatus(13)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
+        @endif
+    @else
+        <button type="submit" id="save" onclick="return changeStatus('save')" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+            <i class="fa fa-floppy-o" aria-hidden="true"></i> IN WARRANTY MAIL IN
+        </button>
+        <button type="submit" id="save" onclick="return changeStatus(12)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+            <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
+        </button>
+    @endif
 </div>
 
 <div id="mailin-out-warranty" style="display: {{ $transaction_details->warranty_status === 'OUT OF WARRANTY' ? 'block' : 'none' }};">

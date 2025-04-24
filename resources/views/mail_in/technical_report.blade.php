@@ -160,18 +160,26 @@
                 <div class="info-value-cust">{{$transaction_details->problem_details_other}}</div>
             </div>
         @endif
-        
+        <div class="info-grid-cust">
+            <div class="info-item-cust">
+                <div class="info-label-cust">Device Serial Number:</div>
+                <div class="info-value-cust">{{ $transaction_details->device_serial_number ?? 'N/A' }}</div>
+            </div>
+            <div class="info-item-cust">
+                <div class="info-label-cust">Defective Serial Number (KBB):</div>
+                <div class="info-value-cust">{{ $transaction_details->defective_serial_number ?? 'N/A' }}</div>
+            </div>
+        </div>
         <div class="info-grid-cust">
             <div class="info-item-cust">
                 <div class="info-label-cust">Other Remarks</div>
                 <div class="info-value-cust">{{ $transaction_details->other_remarks ?? 'N/A' }}</div>
             </div>
-            {{-- <div class="info-item-cust">
+            <div class="info-item-cust">
                 <div class="info-label-cust">Device Issue Description</div>
                 <div class="info-value-cust">{{ $transaction_details->device_issue_description ?? 'N/A' }}</div>
-            </div> --}}
+            </div>
         </div>
-        
         <div class="info-grid-cust">
             <div class="info-item-cust">
                 <div class="info-label-cust">Findings</div>

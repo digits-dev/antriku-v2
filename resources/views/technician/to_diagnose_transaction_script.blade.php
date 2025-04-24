@@ -324,6 +324,11 @@
                         }, function(){
                             window.location.href = window.location.origin+"/admin/to_diagnose";
                         });
+                    }else if(status_id == 12){
+                        swal({ title: "Info!", text: "AWAITING CUSTOMER APPROVAL (MAIL-IN)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                        }, function(){
+                            window.location.href = window.location.origin+"/admin/to_diagnose";
+                        });
                     }else if(status_id == 'send'){
                         $(".buttonSubmit").removeAttr("disabled");
                         if(warranty_status == 'OUT OF WARRANTY'){

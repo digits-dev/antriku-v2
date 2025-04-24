@@ -707,7 +707,7 @@
             } 
 			// *********************************************************************************************
 
-		    $status_array = [1,2,3,4,5,6,7,8];
+		    $status_array = [1,2,3,4,5,6,7,8,12];
 		    if(in_array($request->status_id, $status_array)){
 		    	DB::table('returns_header')->where('id',$request->header_id)->update([
 				'repair_status' 			=> $request->status_id,
