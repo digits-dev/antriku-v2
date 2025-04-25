@@ -183,9 +183,9 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		//Your code here
 
 		if (CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6) {
-			$query->whereIn('repair_status', [1, 15])->where('print_receive_form', 'YES')->orderBy('id', 'ASC');
+			$query->whereIn('repair_status', [1,10,14,17])->where('print_receive_form', 'YES')->orderBy('id', 'ASC');
 		} else if (in_array(CRUDBooster::myPrivilegeId(), [4, 8])) {
-			$query->whereIn('repair_status', [1, 15])->where('print_receive_form', 'YES')->where('technician_id', CRUDBooster::myId())->orderBy('id', 'ASC');
+			$query->whereIn('repair_status', [1,10,14,17])->where('print_receive_form', 'YES')->where('technician_id', CRUDBooster::myId())->orderBy('id', 'ASC');
 		} else {
 			$query->where('repair_status', 1)->where('branch', CRUDBooster::me()->branch_id);
 			if (!empty(Session::get('toggle')) && Session::get('toggle') == "ON") {
@@ -201,7 +201,9 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 	{
 		//Your code here
 		$to_diagnose = DB::table('transaction_status')->where('id', '1')->first();
+		$ongoing_diagnosis = DB::table('transaction_status')->where('id', '10')->first();
 		$for_input_gsx_kbb = DB::table('transaction_status')->where('id', '14')->first();
+		$awaiting_apple_repair = DB::table('transaction_status')->where('id', '17')->first();
 
 	
 
@@ -210,6 +212,10 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 				$column_value = '<span class="label label-warning">' . $to_diagnose->status_name . '</span>';
 			} elseif ($column_value == $for_input_gsx_kbb->id) {
 				$column_value = '<span class="label label-warning">' . $for_input_gsx_kbb->status_name . '</span>';
+			}elseif ($column_value == $ongoing_diagnosis->id) {
+				$column_value = '<span class="label label-warning">' . $ongoing_diagnosis->status_name . '</span>';
+			} elseif ($column_value == $awaiting_apple_repair->id) {
+				$column_value = '<span class="label label-warning">' . $awaiting_apple_repair->status_name . '</span>';
 			} 
 		}
 
@@ -229,6 +235,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 	{
 		$all_data = array();
 		parse_str($request->all_data, $all_data);
+		
 
 		$transaction_details = DB::table('returns_header')->leftJoin('model', 'returns_header.model', '=', 'model.id')
 			->select('returns_header.*', 'returns_header.id as header_id', 'returns_header.created_by as user_id', 'model.id as model_id', 'model_name', 'model_photo', 'model_status')
@@ -410,7 +417,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		
 		// *********************************************************************************************
 
-		$status_array = [1,14,15,16];
+		$status_array = [1,14,15,16,17];
 		    if(in_array($request->status_id, $status_array)){
 		    	DB::table('returns_header')->where('id',$request->header_id)->update([
 				'repair_status' 			=> $request->status_id,
@@ -419,21 +426,23 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		}
 
 		if($request->status_id == 16){
+			DB::table('returns_header')->where('id',$request->header_id)->update([
+				'airwaybill_tn'   => $all_data['airwaybill_tn'],
+			]);
+			
+		}
 
+		if($request->status_id == 17){
 			if ($request->hasFile('waybill')) {
 				$file = $request->file('waybill');
 				$filename =    time() .  '_' . $request->header_id . '_' . $file->getClientOriginalName() ;
 				$path = $file->storeAs('public/waybill_upload', $filename);
 				
 				DB::table('returns_header')->where('id',$request->header_id)->update([
-					'airwaybill_tn'   => $all_data['airwaybill_tn'],
 					'airwaybill_upload'   => $filename,
-					'mail_in_shipped_by'   => CRUDBooster::myId(),
-					'mail_in_shipped_at'   => date('Y-m-d H:i:s'),
 				]);
 			}
 		}
-
 
 		return ($all_data);
 	}

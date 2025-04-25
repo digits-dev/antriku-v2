@@ -40,7 +40,7 @@
 		}
 		
 	    public function hook_query_index(&$query) {
-			$query->whereIn('repair_status',[15]);  
+			$query->whereIn('repair_status',[15,16]);  
 	    }
 
 	    /*
@@ -51,11 +51,15 @@
 	    */    
 	    public function hook_row_index($column_index,&$column_value) {	        
 	    	$for_mail_in_kbb = DB::table('transaction_status')->where('id','15')->first();
+	    	$awaiting_for_pick_up = DB::table('transaction_status')->where('id','16')->first();
 	
 
 			if($column_index == 1){
 				if($column_value == $for_mail_in_kbb->id){
 					$column_value = '<span class="label label-warning">'.$for_mail_in_kbb->status_name.'</span>';
+				}
+				if($column_value == $awaiting_for_pick_up->id){
+					$column_value = '<span class="label label-warning">'.$awaiting_for_pick_up->status_name.'</span>';
 				}
 				
 			}

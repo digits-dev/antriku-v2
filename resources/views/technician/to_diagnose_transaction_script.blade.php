@@ -269,6 +269,18 @@
         if (status_id == 'save') {
             $(".buttonSubmit").removeAttr("disabled");
         } 
+        var formData = new FormData();
+            formData.append("all_data", $("#SubmitTransactionForm").serialize());
+            formData.append("header_id", header_id);
+            formData.append("status_id", status_id);
+            formData.append("warranty_status", warranty_status);
+            formData.append("all_cost", all_cost);
+            formData.append("all_item_desc", all_item_desc);
+            formData.append("_token", '{!! csrf_token() !!}');
+
+            if(status_id == 17){
+                formData.append("waybill", $("#waybill")[0].files[0]); 
+            }
 
         swal({
             title: "Are you sure?",
@@ -285,15 +297,9 @@
                 $.ajax({
                     url: "{{ route('change-status') }}",
                     type: "POST",
-                    data: {
-                        'all_data': $("#SubmitTransactionForm").serialize(),
-                        'header_id': header_id,
-                        'status_id': status_id,
-                        'warranty_status': warranty_status,
-                        'all_cost': all_cost,
-                        'all_item_desc': all_item_desc,
-                        _token: '{!! csrf_token() !!}'
-                    },
+                    data: formData,
+                    processData: false,  // Important: Prevent jQuery from processing data
+                    contentType: false,  // Important: Prevent jQuery from setting content type
                     success: function (result) {
                         if (status_id == 'save') {
                             $(".buttonSubmit").removeAttr("disabled");
@@ -330,7 +336,13 @@
                             }, function(){
                                 window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
                             });
+                        }  else if (status_id == 17) {
+                            swal({ title: "Info!", text: "AWAITING APPLE REPAIR", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                            }, function(){
+                                window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
+                            });
                         } 
+                        
                     }
                 });
             }

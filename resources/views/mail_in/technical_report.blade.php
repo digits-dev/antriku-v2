@@ -131,7 +131,28 @@
     <div class="card-body-cust">
         <div class="info-grid-cust">
             <div class="info-item-cust">
-                <div class="info-label-cust">Warranty Status</div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-3" style="margin-top:7px;">
+                            <label><span class="requiredField">*</span>Warranty Status:</label>
+                        </div>
+                        <div class="col-md-3" style="margin-top:7px;">
+                            <label class="radio-inline control-label text-success">
+                                <input type="radio" name="warranty_status" value="IN WARRANTY" onchange="return WarrantyStatusChange(1)" required {{ $transaction_details->warranty_status == 'IN WARRANTY' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}><strong>IN WARRANTY</strong>
+                            </label>
+                            <br>
+                        </div>
+                        <div class="col-md-3" style="margin-top:7px;">
+                            <label class="radio-inline control-label text-danger"><input type="radio" name="warranty_status" value="OUT OF WARRANTY" onchange="return WarrantyStatusChange(2)" required {{ $transaction_details->warranty_status == 'OUT OF WARRANTY' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}><strong>OUT OF WARRANTY</strong></label>
+                            <br>
+                        </div>
+                        <div class="col-md-3" style="margin-top:7px;">
+                            <label class="radio-inline control-label text-warning"><input type="radio" name="warranty_status" value="SPECIAL" onchange="return WarrantyStatusChange(3)" required {{ $transaction_details->warranty_status == 'SPECIAL' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}><strong>SPECIAL</strong></label>
+                            <br>
+                        </div>
+                    </div>
+                </div> 
+                {{-- <div class="info-label-cust">Warranty Status</div>
                 <div class="info-value-cust">
                     @if($transaction_details->warranty_status == "OUT OF WARRANTY")
                         <div class="status-badge-cust danger" style="margin-top: 0rem">{{ $transaction_details->warranty_status }}</div>
@@ -140,7 +161,7 @@
                     @elseif($transaction_details->warranty_status == "SPECIAL")
                         <div class="status-badge-cust warning" style="margin-top: 0rem">{{ $transaction_details->warranty_status }}</div>
                     @endif
-                </div>
+                </div> --}}
             </div>
             <div class="info-item-cust">
                 <div class="info-label-cust">Case</div>

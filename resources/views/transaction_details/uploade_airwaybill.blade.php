@@ -243,7 +243,7 @@
         </style>
 @endpush
 
-@if(request()->segment(3) == "edit" && in_array($transaction_details->repair_status, [15]))
+@if(request()->segment(3) == "edit" && in_array($transaction_details->repair_status, [15, 16]))
 <div class="row">
     <div class="col-md-12">
         <div class="row"> 
@@ -269,41 +269,44 @@
         </div>
         <br>
         @else
-        <div class="info-grid-cust" style="width: 50%;">
-            <div class="info-item-cust">
-                <div class="info-label-cust">Airwaybill Tracking Number</div>
-                <div class="info-value-cust">{{ $transaction_details->airwaybill_tn ?? 'N/A' }}</div>
-            </div>
-        </div>
+   
         @endif
         @if (in_array($transaction_details->repair_status, [16]))
         <div class="upload-receipt">
-            <div class="upload-card">
-                <span class="header">Upload Airwaybill</span>
-                <p> Upload image (waybill).</p>
-                <div class="upload-file-container">
-                    <label for="waybill" id="drop-area">
-                        <input required id="waybill" name="waybill" type="file" accept="image/*"
-                        style="position: absolute; z-index: -1;">
-                        <div class="image-view" id="image-view">
-                            <div id="upload-text">
-                                <p style="color:#424242">Drag and drop or click here to upload</p>
-                                <span style="font-size: 12px; color: #777;">Upload any file from desktop</span>
-                            </div>
-                            <div class="file-info" style="display: none; margin-top: 10px;">
-                                <div class="logo_file_name">
-                                    <div class="flex pdf_logo">
-                                        <span style="font-weight: bold; color: rgb(100, 100, 100);">IMG</span>
-                                    </div>
-                                    <p id="file-name" style="display: none; margin-top: 10px; text-align:left;"></p>
+            <div>
+                <div class="info-grid-cust">
+                    <div class="info-item-cust">
+                        <div class="info-label-cust">Airwaybill Tracking Number</div>
+                        <div class="info-value-cust">{{ $transaction_details->airwaybill_tn ?? 'N/A' }}</div>
+                    </div>
+                </div>
+                <div class="upload-card">     
+                    <span class="header">Upload Airwaybill</span>
+                    <p> Upload image (waybill).</p>
+                    <div class="upload-file-container">
+                        <label for="waybill" id="drop-area">
+                            <input required id="waybill" name="waybill" type="file" accept="image/*"
+                            style="position: absolute; z-index: -1;">
+                            <div class="image-view" id="image-view">
+                                <div id="upload-text">
+                                    <p style="color:#424242">Drag and drop or click here to upload</p>
+                                    <span style="font-size: 12px; color: #777;">Upload any file from desktop</span>
                                 </div>
-                                <button id="remove-btn" style="display: none; margin-top: 10px; padding: 5px 10px; background-color: #d9534f; color: white; border: none; cursor: pointer; border-radius: 5px; inline-flex items-center justify-center gap-2">
-                                    X
-                                </button>
+                                <div class="file-info" style="display: none; margin-top: 10px;">
+                                    <div class="logo_file_name">
+                                        <div class="flex pdf_logo">
+                                            <span style="font-weight: bold; color: rgb(100, 100, 100);">IMG</span>
+                                        </div>
+                                        <p id="file-name" style="display: none; margin-top: 10px; text-align:left;"></p>
+                                    </div>
+                                    <button id="remove-btn" style="display: none; margin-top: 10px; padding: 5px 10px; background-color: #d9534f; color: white; border: none; cursor: pointer; border-radius: 5px; inline-flex items-center justify-center gap-2">
+                                        X
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        
-                </label>
+                            
+                    </label>
+                </div>
             </div>
             </div>
             <div class="preview" id="preview">
