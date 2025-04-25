@@ -25,6 +25,8 @@ class AddNewColumnsInReturnsHeaderTable extends Migration
             $table->string('icloud_sign_out', 10)->nullable();
             $table->string('parts_replacement_cost')->nullable();
             $table->string('defective_serial_number')->nullable();
+            $table->string('airwaybill_tn')->nullable();
+            $table->string('airwaybill_upload');
         });
     }
 
@@ -47,6 +49,9 @@ class AddNewColumnsInReturnsHeaderTable extends Migration
             $table->dropColumn('icloud_sign_out');
             $table->dropColumn('parts_replacement_cost');
             $table->dropColumn('defective_serial_number');
+            $table->dropColumn('airwaybill_tn');
+            $table->dropColumn('airwaybill_upload');
+            
         });
     }
 }

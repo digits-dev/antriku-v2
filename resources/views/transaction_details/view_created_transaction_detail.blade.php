@@ -98,6 +98,8 @@
                 @include('carry_in.quotation')
             @endif
 
+            @include('transaction_details.uploade_airwaybill')
+
             <section class="card-cust" style="border-radius: 0rem; padding: 1.2rem; border-top: 2px solid #e2e8f0">
               
                     <a href="{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}" class="btn btn-default pull-left"><i class="fa fa-chevron-circle-left"></i> BACK</a>
@@ -108,8 +110,8 @@
                     <input type="hidden" id="repair_status" value="{{ $transaction_details->repair_status }}">
                     <input type="hidden" name="action" id="action" value="">
                     
-                    @include('mail_in.mail_in_buttons')
                     <div id="mailin" style="display: {{ $transaction_details->case_status === 'MAIL-IN' ? 'block' : 'none' }};">
+                        @include('mail_in.mail_in_buttons')
                     </div>
                     <div id="carry-in" style="display: {{ $transaction_details->case_status === 'CARRY-IN' ? 'block' : 'none' }};">
                         @include('carry_in.carry_in_buttons')

@@ -63,7 +63,6 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 				'url'   => CRUDBooster::mainpath('edit/[id]'),
 				'icon'  => 'fa fa-pencil',
 				'color' => 'success',
-				'showIf'  => '[repair_status] == 10 or [repair_status] == 16',
 			];
 		}
 
@@ -184,9 +183,9 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		//Your code here
 
 		if (CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6) {
-			$query->whereIn('repair_status', [1, 10, 16, 23])->where('print_receive_form', 'YES')->orderBy('id', 'ASC');
+			$query->whereIn('repair_status', [1, 15])->where('print_receive_form', 'YES')->orderBy('id', 'ASC');
 		} else if (in_array(CRUDBooster::myPrivilegeId(), [4, 8])) {
-			$query->whereIn('repair_status', [1, 10, 16, 23])->where('print_receive_form', 'YES')->where('technician_id', CRUDBooster::myId())->orderBy('id', 'ASC');
+			$query->whereIn('repair_status', [1, 15])->where('print_receive_form', 'YES')->where('technician_id', CRUDBooster::myId())->orderBy('id', 'ASC');
 		} else {
 			$query->where('repair_status', 1)->where('branch', CRUDBooster::me()->branch_id);
 			if (!empty(Session::get('toggle')) && Session::get('toggle') == "ON") {
@@ -201,31 +200,17 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 	public function hook_row_index($column_index, &$column_value)
 	{
 		//Your code here
-		$pending = DB::table('transaction_status')->where('id', '1')->first();
-		$to_pay = DB::table('transaction_status')->where('id', '2')->first();
-		$rejected = DB::table('transaction_status')->where('id', '3')->first();
-		$repair_in_process = DB::table('transaction_status')->where('id', '4')->first();
-		$void = DB::table('transaction_status')->where('id', '5')->first();
-		$complete = DB::table('transaction_status')->where('id', '6')->first();
-		$pick_up = DB::table('transaction_status')->where('id', '7')->first();
-		$ongoing_diagnosis = DB::table('transaction_status')->where('id', '10')->first();
+		$to_diagnose = DB::table('transaction_status')->where('id', '1')->first();
+		$for_input_gsx_kbb = DB::table('transaction_status')->where('id', '14')->first();
+
+	
 
 		if ($column_index == 1) {
-			if ($column_value == $pending->id) {
-				$column_value = '<span class="label label-warning">' . $pending->status_name . '</span>';
-			} elseif ($column_value == $to_pay->id) {
-				$column_value = '<span class="label label-warning">' . $to_pay->status_name . '</span>';
-			} elseif ($column_value == $rejected->id) {
-				$column_value = '<span class="label label-danger">' . $rejected->status_name . '</span>';
-			} elseif ($column_value == $repair_in_process->id) {
-				$column_value = '<span class="label label-success">' . $repair_in_process->status_name . '</span>';
-			} elseif ($column_value == $void->id) {
-				$column_value = '<span class="label label-danger">' . $void->status_name . '</span>';
-			} elseif ($column_value == $pick_up->id) {
-				$column_value = '<span class="label label-success">' . $pick_up->status_name . '</span>';
-			} elseif ($column_value == $ongoing_diagnosis->id) {
-				$column_value = '<span class="label label-warning">' . $ongoing_diagnosis->status_name . '</span>';
-			}
+			if ($column_value == $to_diagnose->id) {
+				$column_value = '<span class="label label-warning">' . $to_diagnose->status_name . '</span>';
+			} elseif ($column_value == $for_input_gsx_kbb->id) {
+				$column_value = '<span class="label label-warning">' . $for_input_gsx_kbb->status_name . '</span>';
+			} 
 		}
 
 		if ($column_index == 3) {
@@ -236,39 +221,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 			}
 		}
 
-		if ($column_index == 4) {
-			if ($column_value == 'YES') {
-				$column_value = '<span class="label label-success">' . $column_value . '</span>';
-			} elseif ($column_value == 'NO') {
-				$column_value = '<span class="label label-danger">' . $column_value . '</span>';
-			}
-		}
-
-		if ($column_index == 5) {
-			if ($column_value == 'UNPAID') {
-				$column_value = '<span style="color: #F93154"><strong>' . $column_value . '</strong></span>';
-			} elseif ($column_value == 'PAID') {
-				$column_value = '<span style="color: #00B74A"><strong>' . $column_value . '</strong></span>';
-			} elseif ($column_value == 'IN WARRANTY') {
-				$column_value = '<span style="color: #1266F1"><strong>' . $column_value . '</strong></span>';
-			} elseif ($column_value == 'SPECIAL') {
-				$column_value = '<span style="color: #FFA900"><strong>' . $column_value . '</strong></span>';
-			}
-		}
-
-		if ($column_index == 6) {
-			$payments = DB::table('returns_payments')->where('id', $column_value)->first();
-			if (!empty($payments->downpayment_id)) {
-				$column_value = "<a href='" . $payments->downpayment_id . "'>" . $payments->downpayment_id . "</a>";
-			} else {
-				$column_value = "";
-			}
-		}
-
-		if ($column_index == 8) {
-			$name = DB::table('cms_users')->where('id', $column_value)->value('name');
-			$column_value = $name;
-		}
+	
 	}
 
 	// CHANGE TRANSACTION STATUS
@@ -454,9 +407,10 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 				}
 			}
 		}
+		
 		// *********************************************************************************************
 
-		    $status_array = [1,2,3,4,5,6,7,8,12];
+		$status_array = [1,14,15,16];
 		    if(in_array($request->status_id, $status_array)){
 		    	DB::table('returns_header')->where('id',$request->header_id)->update([
 				'repair_status' 			=> $request->status_id,
@@ -464,191 +418,23 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 			]);
 		}
 
-		if (URL::to('/') == "https://antriku.beyondthebox.ph") {
-			$email = $transaction_details[0]->email;
-		} else {
-			$email = "lewieadona@digits.ph";
-		}
+		if($request->status_id == 16){
 
-		// To Pay Diagnostic
-		if ($request->status_id == 8) {
-			DB::table('returns_header')->where('id', $request->header_id)->update([
-				'level3_personnel'          => CRUDBooster::myId(),
-				'level3_personnel_edited'   => date('Y-m-d H:i:s')
-			]);
-		}
-
-		// To Pay Parts and Sending of Quotations
-		if ($request->status_id == 2) {
-			$all_cost = explode(",", $request->all_cost);
-			$all_item_desc = explode(",", $request->all_item_desc);
-			$total_cost = 0;
-			foreach ($all_cost as $ac) {
-				$total_cost += intval($ac);
-			}
-
-			$parts_total_cost = $total_cost + $request->software_cost;
-			$downpayment = ($parts_total_cost) * 0.5;
-			$finalpayment = $parts_total_cost - $downpayment;
-
-			DB::table('returns_header')->where('id', $request->header_id)->update([
-				'parts_total_cost'			=> number_format($parts_total_cost, 2, '.', ''),
-				'downpayment_cost'			=> number_format($downpayment, 2, '.', ''),
-				'final_payment_cost'		=> number_format($finalpayment, 2, '.', ''),
-				'software_cost'				=> $request->software_cost,
-				'level3_personnel'          => CRUDBooster::myId(),
-				'level3_personnel_edited'   => date('Y-m-d H:i:s')
-			]);
-
-			$data = array();
-			$data['id'] = $request->header_id;
-			$data['reference_no'] = $transaction_details[0]->reference_no;
-			$data['software_cost'] = number_format($request->software_cost, 2, '.', ',');
-			$data['downpayment_cost'] = number_format($downpayment, 2, '.', ',');
-			$data['main_url'] = URL::to('/');
-
-			$allparts = DB::table('returns_body_item')->where('returns_header_id', $request->header_id)->get();
-			$parts_cost = "";
-			foreach ($all_cost as $key => $ac) {
-				if (!empty($ac)) {
-					$parts_cost .= "<tr>
-						<td style='text-align: left; padding: 10px; border: 1px solid rgb(184, 184, 184) !important;width: 20%;'>
-							<font face='Tahoma'>" . $all_item_desc[$key] . ":<br></font>
-						</td>
-						<td style='border: 1px solid #B8B8B8 !important;padding: 5px;width: 55%;'>
-							<font face='Tahoma'>₱" . number_format($ac, 2, '.', ',') . "</font>
-						</td>
-						</tr>";
-				}
-			}
-			$data['parts_cost'] = $parts_cost;
-
-			if ($request->warranty_status == 'OUT OF WARRANTY') {
-				CRUDBooster::sendEmail(['to' => $email, 'data' => $data, 'template' => 'send_payment_link_for_downpayment_email', 'attachments' => []]);
-				DB::table('returns_header')->where('id', $request->header_id)->update([
-					'send_down_payment_link' => 'YES'
+			if ($request->hasFile('waybill')) {
+				$file = $request->file('waybill');
+				$filename =    time() .  '_' . $request->header_id . '_' . $file->getClientOriginalName() ;
+				$path = $file->storeAs('public/waybill_upload', $filename);
+				
+				DB::table('returns_header')->where('id',$request->header_id)->update([
+					'airwaybill_tn'   => $all_data['airwaybill_tn'],
+					'airwaybill_upload'   => $filename,
+					'mail_in_shipped_by'   => CRUDBooster::myId(),
+					'mail_in_shipped_at'   => date('Y-m-d H:i:s'),
 				]);
 			}
 		}
 
-		// Repair In Process
-		if ($request->status_id == 4) {
-			if (!empty($transaction_details[0]->down_payment_url)) {
-				$status_down_payment = 'PAID';
-			} else {
-				if ($request->warranty_status == "OUT OF WARRANTY") {
-					$status_down_payment = 'UNPAID';
-				} else {
-					$status_down_payment = $request->warranty_status;
-				}
-			}
 
-			if (!empty($transaction_details[0]->final_payment_url)) {
-				$status_final_payment = 'PAID';
-			} else {
-				if ($request->warranty_status == "OUT OF WARRANTY") {
-					$status_final_payment = 'UNPAID';
-				} else {
-					$status_final_payment = $request->warranty_status;
-				}
-			}
-
-			DB::beginTransaction();
-			try {
-				DB::table('returns_header')->where('id', $request->header_id)->update([
-					'downpayment_status' 		=> $status_down_payment,
-					'final_payment_status' 		=> $status_final_payment,
-					'level4_personnel'          => CRUDBooster::myId(),
-					'level4_personnel_edited'   => date('Y-m-d H:i:s')
-				]);
-
-				DB::commit();
-			} catch (\Exception $e) {
-				DB::rollback();
-			}
-			CRUDBooster::sendEmail(['to' => $email, 'data' => $transaction_details[0], 'template' => 'repair_in_process_email', 'attachments' => []]);
-		}
-
-		//To Pick Up
-		if ($request->status_id == 7) {
-			DB::table('returns_header')->where('id', $request->header_id)->update([
-				'level5_personnel'          => CRUDBooster::myId(),
-				'level5_personnel_edited'   => date('Y-m-d H:i:s')
-			]);
-		}
-
-		// To Close For Complete
-		if ($request->status_id == 6) {
-			if ($request->warranty_status == "OUT OF WARRANTY") {
-				if (!empty($transaction_details[0]->final_payment_url)) {
-					$status_final_payment = 'PAID';
-				} else {
-					$status_final_payment = 'PAID';
-				}
-			} elseif ($request->warranty_status == "IN WARRANTY" || $request->warranty_status == "SPECIAL") {
-				if (!empty($data->final_payment_url)) {
-					$status_final_payment = 'PAID';
-				} else {
-					$status_final_payment = $request->warranty_status;
-				}
-			}
-
-			DB::table('returns_header')->where('id', $request->header_id)->update([
-				'final_payment_status' => $status_final_payment,
-			]);
-
-			$datalink = [];
-			if ($transaction_details[0]->branch == 1) {
-				$datalink['link'] = 'https://g.page/r/CX9SRYpaPiT5EBM/review';
-			} else {
-				$datalink['link'] = 'https://g.page/r/CUspcdS4LAekEBM/review';
-			}
-
-			$email = $transaction_details[0]->email;
-			CRUDBooster::sendEmail(['to' => $email, 'data' => $datalink, 'template' => 'customer_feedback', 'attachments' => []]);
-		}
-
-		// To Close For Complete or To Close For Cancel
-		if ($request->status_id == 6 || $request->status_id == 5) {
-			$total_time = time() - strtotime($data->created_at);
-			DB::table('returns_header')->where('id', $request->header_id)->update([
-				'level6_personnel'          => CRUDBooster::myId(),
-				'level6_personnel_edited'   => date('Y-m-d H:i:s'),
-				'service_time'   			=> date('H:i:s', $total_time)
-			]);
-		}
-
-		// Sending Link for To Close
-		if ($request->status_id == 'send') {
-			DB::table('returns_header')->where('id', $request->header_id)->update([
-				'send_final_payment_link' 		=> 'YES'
-			]);
-
-			$data = array();
-			$data['id'] = $request->header_id;
-			$data['reference_no'] = $transaction_details[0]->reference_no;
-			$data['software_cost'] = number_format($transaction_details[0]->software_cost, 2, '.', ',');
-			$data['downpayment_cost'] = number_format($transaction_details[0]->downpayment_cost, 2, '.', ',');
-			$data['main_url'] = URL::to('/');
-
-			$allparts = DB::table('returns_body_item')->where('returns_header_id', $request->header_id)->get();
-
-			$parts_cost = "";
-			foreach ($allparts as $key => $ap) {
-				$parts_cost .= "<tr>
-									<td style='text-align: left; padding: 10px; border: 1px solid rgb(184, 184, 184) !important;width: 20%;'>
-										<font face='Tahoma'>" . $ap->item_description . ":<br></font>
-									</td>
-									<td style='border: 1px solid #B8B8B8 !important;padding: 5px;width: 55%;'>
-										<font face='Tahoma'>₱" . number_format($ap->cost, 2, '.', ',') . "</font>
-									</td>
-									</tr>";
-			}
-			$data['parts_cost'] = $parts_cost;
-			if ($request->warranty_status == 'OUT OF WARRANTY') {
-				CRUDBooster::sendEmail(['to' => $email, 'data' => $data, 'template' => 'send_payment_link_for_final_payment_email', 'attachments' => []]);
-			}
-		}
 		return ($all_data);
 	}
 
