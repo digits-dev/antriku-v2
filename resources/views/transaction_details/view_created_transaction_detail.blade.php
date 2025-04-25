@@ -98,8 +98,7 @@
                 @include('carry_in.quotation')
             @endif
 
-
-            <div class="panel-footer">
+            <section class="card-cust" style="border-radius: 0rem; padding: 1.2rem; border-top: 2px solid #e2e8f0">
               
                     <a href="{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}" class="btn btn-default pull-left"><i class="fa fa-chevron-circle-left"></i> BACK</a>
                     <input type="hidden" value="{{$data['transaction_details']->header_id}}" name="header_id" id="header_id">
@@ -122,9 +121,9 @@
                     @elseif($transaction_details->repair_status == 3 && CRUDBooster::getModulePath() == "to_close" && CRUDBooster::myPrivilegeId() != 2)
                         <button type="submit" id="void" onclick="return changeStatus(5)" class="btn btn-danger pull-right buttonSubmit"/><i class="fa fa-check-square-o" aria-hidden="true"></i> CANCELLED/CLOSE</button>
                     @endif 
-
                     
             </div>
+            </section>
             @if(request()->segment(3) == "edit") </form> @endif 
         </div>
     </div>

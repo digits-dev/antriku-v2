@@ -149,7 +149,6 @@
         // For Cost Computation
         var all_cost = document.getElementById("costArray").value;
         var all_item_desc = document.getElementById("itemArray").value;
-        // var software_cost = document.getElementById("software_cost").value ?? 0;
 
         //************************Validation for Array************************
         if(checkIfDuplicateExists(getscValue)){

@@ -16,8 +16,8 @@
                 ?>
                 <thead>
                     <tr>
-                        <th>Test Type</th>
-                        <th>Result</th>
+                        <th style="text-align: center" class="text-uppercase">Test Type</th>
+                        <th style="text-align: center" class="text-uppercase">Result</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,20 +76,72 @@
                                     <td>
                                         <div class="row">
                                             <div class="col-md-3">
-                                                <input type="radio" name="test_result_{{$dt->id}}" value="1" {{ $test_result[$counter] == 1 ? 'checked' : ''}}> 
-                                                <span class="text-success"><strong>Passed</strong></span>
+                                                <label class="warranty-option-cus" style="padding: 5% 10% 5% 10%;">
+                                                    <div class="radio-container-cus">
+                                                        <input type="radio" name="test_result_{{$dt->id}}" value="1" {{ $test_result[$counter] == 1 ? 'checked' : ''}}>
+                                                        <span class="radio-custom"></span>
+                                                    </div>
+                                                    <div class="option-content-cus">
+                                                        <div class="option-title-cus">
+                                                            Passed
+                                                            <span class="pull-right text-success">
+                                                                <i class="fa fa-check-circle"></i>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </label>
                                             </div>
                                             <div class="col-md-3">
-                                                <input type="radio" name="test_result_{{$dt->id}}" value="2" {{ $test_result[$counter] == 2 ? 'checked' : ''}}> 
-                                                <span class="text-warning"><strong>Warning</strong></span>
+                                                <label class="warranty-option-cus" style="padding: 5% 10% 5% 10%;">
+                                                    <div class="radio-container-cus">
+                                                        <input type="radio" name="test_result_{{$dt->id}}" value="2" {{ $test_result[$counter] == 2 ? 'checked' : ''}}>
+                                                        <span class="radio-custom"></span>
+                                                    </div>
+                                                    <div class="option-content-cus">
+                                                        <div class="option-title-cus">
+                                                            Warning
+                                                            <span class="pull-right text-warning">
+                                                                <i class="fa fa-warning"></i>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </label>
                                             </div>
                                             <div class="col-md-3">
-                                                <input type="radio" name="test_result_{{$dt->id}}" value="3" {{ $test_result[$counter] == 3 ? 'checked' : ''}}> 
-                                                <span class="text-danger"><strong>Failed</strong></span>
+                                                <label class="warranty-option-cus" style="padding: 5% 10% 5% 10%;">
+                                                    <div class="radio-container-cus">
+                                                        <input type="radio" name="test_result_{{$dt->id}}" value="3" {{ $test_result[$counter] == 3 ? 'checked' : ''}}>
+                                                        <span class="radio-custom"></span>
+                                                    </div>
+                                                    <div class="option-content-cus">
+                                                        <div class="option-title-cus">
+                                                            Failed
+                                                            <span class="pull-right text-danger">
+                                                                <i class="fa fa-times-circle"></i>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </label>
                                             </div>
                                             <div class="col-md-3">
-                                                <input type="radio" name="test_result_{{$dt->id}}" value="4" {{ $test_result[$counter] == 4 || empty($test_result[$counter]) ? 'checked' : ''}}> 
-                                                <span class="text-dark"><strong>N/A</strong></span>
+                                                <label class="warranty-option-cus" style="padding: 5% 10% 5% 10%;">
+                                                    <div class="radio-container-cus">
+                                                        <input type="radio" name="test_result_{{$dt->id}}" value="4" {{ $test_result[$counter] == 4 || empty($test_result[$counter]) ? 'checked' : ''}}>
+                                                        <span class="radio-custom"></span>
+                                                    </div>
+                                                    <div class="option-content-cus">
+                                                        <div class="option-title-cus" style="color: gray;">
+                                                            N/A
+                                                            <span class="pull-right">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                    <circle cx="12" cy="12" r="10"></circle>
+                                                                    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                                                                    <text x="12" y="16" font-family="sans-serif" font-size="8" text-anchor="middle" fill="currentColor">N/A</text>
+                                                                </svg>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </label>
                                             </div>
                                         </div>
                                     </td>

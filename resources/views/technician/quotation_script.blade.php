@@ -19,7 +19,7 @@
     // auto format of cost
     function AutoFormatCost(cost_id)
     {
-        console.log(cost_id);
+        // console.log(cost_id);
         if(cost_id == 'cost'){
             var cost = document.getElementById("cost").value;
             var formatter = parseFloat(cost).toFixed(2);
@@ -66,18 +66,17 @@
         document.getElementById("gsx_ref").disabled = false;
         document.getElementById("cs_code").disabled = false;
         document.getElementById("service_code").disabled = false;
-        // document.getElementById("digits_code").disabled = false;
         document.getElementById("item_desc").disabled = false;
+        document.getElementById("qty").disabled = false;
         document.getElementById("cost").disabled = false;
 
         var header_id = document.getElementById("header_id").value;
         var gsx_ref = document.getElementById("gsx_ref").value;
         var cs_code = document.getElementById("cs_code").value;
-        // var apple_parts = document.getElementById("apple_parts").value;
         var service_code = document.getElementById("service_code").value;
         var serial_no = document.getElementById("serial_no").value;
-        // var digits_code = document.getElementById("digits_code").value;
         var item_desc = document.getElementById("item_desc").value;
+        var qty = document.getElementById("qty").value;
         var cost = document.getElementById("cost").value;
         let stop = false;
 
@@ -89,7 +88,7 @@
             return false;
         }
 
-        if(isEmptyOrSpaces(gsx_ref) == false || isEmptyOrSpaces(cs_code) == false || isEmptyOrSpaces(service_code) == false || isEmptyOrSpaces(serial_no) == false || isEmptyOrSpaces(item_desc) == false || isEmptyOrSpaces(cost) == false)
+        if(isEmptyOrSpaces(gsx_ref) == false || isEmptyOrSpaces(cs_code) == false || isEmptyOrSpaces(service_code) == false || isEmptyOrSpaces(serial_no) == false || isEmptyOrSpaces(item_desc) == false || isEmptyOrSpaces(qty) == false || isEmptyOrSpaces(cost) == false)
         {
             if(isEmptyOrSpaces(service_code) == false){
                 $.ajax({
@@ -120,6 +119,9 @@
             }else if(isEmptyOrSpaces(item_desc) == true)
             {
                 swal('Info!','Item Description is required.');
+            }else if(isEmptyOrSpaces(qty) == true)
+            {
+                swal('Info!','Qty is required.');
             }else if(isEmptyOrSpaces(cost) == true){
                 swal('Info!','Price is required.');
             }else{
@@ -127,19 +129,28 @@
                 ({ 
                     url: "{{ route('add-quotation') }}",
                     type: "POST",
-                    data: {'id' : header_id, 'gsx_ref' : gsx_ref, 'cs_code' : cs_code, 'service_code' : service_code, 'serial_no' : serial_no, 'item_desc' : item_desc, 'cost' : cost, _token: '{!! csrf_token() !!}'},
+                    data: {
+                        'id' : header_id, 
+                        'gsx_ref' : gsx_ref, 
+                        'cs_code' : cs_code, 
+                        'service_code' : service_code, 
+                        'serial_no' : serial_no, 
+                        'item_desc' : item_desc, 
+                        'qty' : qty,
+                        'cost' : cost, 
+                        _token: '{!! csrf_token() !!}'
+                    },
                     success: function(result)
                     {
                         var showData = '';
                         showData += '<tr class="nr row_num" id="rowID'+ result.quotation.id +'"><input type="hidden" class="getidValue" name="header_id" value="'+ result.quotation.id +'">';
                         showData += '<input type="hidden" name="header_id" value="">'; 
-                        showData += '<td style="padding: 1px !important;"><input class="input-cus text-center getscValue" type="text" id="service_code_'+ result.quotation.id +'" value="'+ result.quotation.service_code +'" placeholder="Enter Service Code" readonly /></td>';
+                        showData += '<td style="padding: 1px !important;"><input class="input-cus text-center getscValue" type="text" id="service_code_'+ result.quotation.id +'" value="'+ result.quotation.service_code +'" placeholder="Enter Service Code" readonly style="background: lightgrey" /></td>';
                         showData += '<td style="padding: 1px !important;"><input class="input-cus text-center getgsxValue" type="text" id="gsx_code_'+ result.quotation.id +'" oninput="gsx_data('+ result.quotation.id +')" value="'+ result.quotation.gsx_ref +'" placeholder="Enter GSX Reference"/></td>';
                         showData += '<td style="padding: 1px !important;"><input class="input-cus text-center getcsValue" type="text" id="cs_code_'+ result.quotation.id +'" value="'+ result.quotation.cs_code +'" placeholder="Enter CS Code"/></td>';
-                        // showData += '<td style="padding: 1px !important;"><input class="input-cus text-center getapValue" type="text" id="apple_parts_'+ result.quotation.id +'" value="'+ result.quotation.apple_parts +'" placeholder="Enter Apple Parts Number"/></td>';
                         showData += '<td style="padding: 1px !important;"><input class="input-cus text-center getserialValue" type="text" value="'+ result.quotation.serial_no +'" placeholder="Enter Apple Parts Number"/></td>';
-                        // showData += '<td style="padding: 1px !important;"><input class="input-cus text-center getdcValue" type="text" id="digits_code_'+ result.quotation.id +'" value="'+ result.quotation.digits_code +'" placeholder="Enter Item Code" readonly /></td>';
-                        showData += '<td style="padding: 1px !important;"><input class="input-cus text-center getitemValue" type="text" id="item_desc_'+ result.quotation.id +'" value="'+ result.quotation.item_description +'" placeholder="Enter Item Description" readonly /></td>';
+                        showData += '<td style="padding: 1px !important;"><input class="input-cus text-center getitemValue" type="text" id="item_desc_'+ result.quotation.id +'" value="'+ result.quotation.item_description +'" placeholder="Enter Item Description" readonly style="background: lightgrey" /></td>';
+                        showData += '<td style="padding: 1px !important;"><input class="input-cus text-center getqtyValue" type="text" id="qty'+ result.quotation.id +'" value="'+ result.quotation.qty_status +'" placeholder="Search Item" readonly style="background: lightgrey; color: '+ (result.quotation.qty_status == "Available" ? "#16a34a" : "#ef4444") +'" /></td>';
                         showData += '<td style="padding: 1px !important;"><input class="input-cus text-center getcostValue" type="number" onblur="AutoFormatCost('+ result.quotation.id +')" id="price_'+ result.quotation.id +'" value="'+ result.quotation.cost +'" min="0" max="9999" step="any" placeholder="Enter Price"></td>';
                         showData += '<td style="padding: 5px !important;" class="text-center"><a onclick="RemoveRow('+ result.quotation.id +')"><i class="fa fa-close fa-2x remove" style="color:red"></i></a></td>';
                         showData += '</tr>';
@@ -147,12 +158,39 @@
                         $("#gsx_ref").val('');        
                         $("#cs_code").val('');  
                         $("#service_code").val('');
-                        // $("#apple_parts").val('');
                         $("#serial_no").val('');
-                        // $("#digits_code").val('');
                         $("#item_desc").val('');
+                        $("#qty").val('');
                         $("#cost").val('');
-                        $('table .nr:last').before(showData);   
+                        $('table .nr:last').before(showData);  
+
+                        // display buttons logic 
+                        let caseStatus = $('[name="case_status"]').val()?.trim();
+                        let warrantyStatus = $('[name="warranty_status"]').val()?.trim();
+
+                        let all_item_qty = $('.getqtyValue').map(function () {
+                            return $(this).val().trim().toLowerCase();
+                        }).get();
+
+                        const allUnavailable = all_item_qty.includes("unavailable");
+                        const filteredQty = all_item_qty.filter(qty => qty !== "");
+                        const allAvailable = filteredQty.length > 0 && filteredQty.every(qty => qty === "available");
+
+                        if (allUnavailable && caseStatus === 'CARRY-IN' && warrantyStatus === 'IN WARRANTY') {
+                            $('#inwarranty_carryin_btns').show();
+                            $('.iw_cin_unavailable_btn').show();
+                            $('.iw_cin_available_btn').hide();
+                        } else if (allAvailable && caseStatus === 'CARRY-IN' && warrantyStatus === 'IN WARRANTY') {
+                            $('.iw_cin_unavailable_btn').hide();
+                            $('.iw_cin_available_btn').show();
+                            $('#inwarranty_carryin_btns').show();
+                        } else {
+                            $('.iw_cin_unavailable_btn').hide();
+                            $('.iw_cin_available_btn').hide();
+                            $('#inwarranty_carryin_btns').hide();
+                        }
+                        // end of buttons display logic
+
                     }
                 });
             }
@@ -173,6 +211,34 @@
             success: function(result)
             {
                 $('#rowID'+row_id).remove();
+                
+                // display buttons logic 
+                let caseStatus = $('[name="case_status"]').val()?.trim();
+                let warrantyStatus = $('[name="warranty_status"]').val()?.trim();
+
+                let all_item_qty = $('.getqtyValue').map(function () {
+                    return $(this).val().trim().toLowerCase();
+                }).get();
+
+                const allUnavailable = all_item_qty.includes("unavailable");
+                const filteredQty = all_item_qty.filter(qty => qty !== "");
+                const allAvailable = filteredQty.length > 0 && filteredQty.every(qty => qty === "available");
+
+                if (allUnavailable && caseStatus === 'CARRY-IN' && warrantyStatus === 'IN WARRANTY') {
+                    $('#inwarranty_carryin_btns').show();
+                    $('.iw_cin_unavailable_btn').show();
+                    $('.iw_cin_available_btn').hide();
+                } else if (allAvailable && caseStatus === 'CARRY-IN' && warrantyStatus === 'IN WARRANTY') {
+                    $('.iw_cin_unavailable_btn').hide();
+                    $('.iw_cin_available_btn').show();
+                    $('#inwarranty_carryin_btns').show();
+                } else {
+                    $('.iw_cin_unavailable_btn').hide();
+                    $('.iw_cin_available_btn').hide();
+                    $('#inwarranty_carryin_btns').hide();
+                }
+                // end of buttons display logic
+
             }
         });
     }
@@ -192,13 +258,40 @@
                 success: function(result)
                 { 
                     if(result.length > 0){
-                        // $("#digits_code").val(result[0].digits_code);
                         $("#item_desc").val(result[0].item_description);
+                        $("#qty").val(result[0].qty).css('color', (result[0].qty > 0 ? '#16a34a' : '#ef4444'));
                         $("#cost").val(result[0].cost);
+                        
+                        // display buttons logic 
+                        let caseStatus = $('[name="case_status"]').val()?.trim();
+                        let warrantyStatus = $('[name="warranty_status"]').val()?.trim();
+
+                        let all_item_qty = $('.getqtyValue').map(function () {
+                            return $(this).val().trim().toLowerCase();
+                        }).get();
+
+                        const allUnavailable = all_item_qty.includes("unavailable");
+                        const filteredQty = all_item_qty.filter(qty => qty !== "");
+                        const allAvailable = filteredQty.length > 0 && filteredQty.every(qty => qty === "available");
+
+                        if (allUnavailable || result[0].qty < 1 && caseStatus === 'CARRY-IN' && warrantyStatus === 'IN WARRANTY') {
+                            $('#inwarranty_carryin_btns').show();
+                            $('.iw_cin_unavailable_btn').show();
+                            $('.iw_cin_available_btn').hide();
+                        } else if (allAvailable || result[0].qty > 0 && caseStatus === 'CARRY-IN' && warrantyStatus === 'IN WARRANTY') {
+                            $('.iw_cin_unavailable_btn').hide();
+                            $('.iw_cin_available_btn').show();
+                            $('#inwarranty_carryin_btns').show();
+                        } else {
+                            $('.iw_cin_unavailable_btn').hide();
+                            $('.iw_cin_available_btn').hide();
+                            $('#inwarranty_carryin_btns').hide();
+                        }
+                        // end of buttons display logic
 
                         document.getElementById("service_code").disabled = true;
-                        // document.getElementById("digits_code").disabled = true;
                         document.getElementById("item_desc").disabled = true;
+                        document.getElementById("qty").disabled = true;
                     }
                 }
             });
@@ -215,13 +308,13 @@
                 success: function(result)
                 { 
                     if(result.length > 0){
-                        // $("#digits_code_"+row_id).val(result[0].digits_code);
                         $("#item_desc_"+row_id).val(result[0].item_description);
+                        $("#qty_"+row_id).val(result[0].qty).css('color', 'green');
                         $("#price_"+row_id).val(result[0].cost);
 
                         document.getElementById("service_code_"+row_id).disabled = true;
-                        // document.getElementById("digits_code_"+row_id).disabled = true;
                         document.getElementById("item_desc_"+row_id).disabled = true;
+                        document.getElementById("qty"+row_id).disabled = true;
                     }
                 }
             });
@@ -295,9 +388,6 @@
         if (!list.is(event.target) && list.has(event.target).length === 0) { list.hide(); }
     });
     
-    
-// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    
     // preventing form submit for add fee button
     $(document).on('click', '#add_diagnostic_fee', function(e){
         var diagnostic_original_cost = document.getElementById("diagnostic_original_cost").value;
@@ -322,24 +412,31 @@
         $("#diagnostic_cost").val(formatter);
         
     }
-    
-     // adding original cost of software fee
-    // function AddDiagnosticFee()
-    // {
-    //     var diagnostic_original_cost = document.getElementById("diagnostic_original_cost").value;
-    //     $("#add_diagnostic_fee").attr("disabled", "disable");
-    //     $("#diagnostic_cost").val(diagnostic_original_cost);
-        
-    //     return false;
-    // }
 
-    // reset value of software fee
-    // function ResetDiagnosticFee()
-    // {
-    //     $("#add_diagnostic_fee").attr("disabled", false);
-    //     var diagnostic_cost = document.getElementById("diagnostic_cost").value;
-    //     $("#software_cost").val('0.00');
-    //     return false;
-    // }
+    $(document).ready(function () {
+        let caseStatus = $('[name="case_status"]').val()?.trim();
+        let warrantyStatus = $('[name="warranty_status"]').val()?.trim();
 
+        let all_item_qty = $('.getqtyValue').map(function () {
+            return $(this).val().trim().toLowerCase();
+        }).get();
+
+        const allUnavailable = all_item_qty.includes("unavailable");
+        const filteredQty = all_item_qty.filter(qty => qty !== "");
+        const allAvailable = filteredQty.length > 0 && filteredQty.every(qty => qty === "available");
+
+        if (allUnavailable && caseStatus === 'CARRY-IN' && warrantyStatus === 'IN WARRANTY') {
+            $('#inwarranty_carryin_btns').show();
+            $('.iw_cin_unavailable_btn').show();
+            $('.iw_cin_available_btn').hide();
+        } else if (allAvailable && caseStatus === 'CARRY-IN' && warrantyStatus === 'IN WARRANTY') {
+            $('.iw_cin_unavailable_btn').hide();
+            $('.iw_cin_available_btn').show();
+            $('#inwarranty_carryin_btns').show();
+        } else {
+            $('.iw_cin_unavailable_btn').hide();
+            $('.iw_cin_available_btn').hide();
+            $('#inwarranty_carryin_btns').hide();
+        }
+    });
 </script>

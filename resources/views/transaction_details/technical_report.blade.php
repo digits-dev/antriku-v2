@@ -151,7 +151,7 @@
                     </div>
                 </div>
                 @if(!empty($transaction_details->problem_details_other))
-                    <div class="row" id="show_other_problem">    
+                    <div class="row" id="show_other_problem" style="margin-top: 5px">    
                         <div class="col-md-12">
                             <div class="col-md-12">
                                 <label class="label-cus"><span class="requiredField">*</span>Other Problem Details:</label>
@@ -174,18 +174,18 @@
                     <div class="col-md-12">
                         <div class="col-md-6" style="margin-top: 5px;">
                             <label class="label-cus">Device Serial Number:</label>
-                            <textarea placeholder="Type your Device Serial Number here" name="device_serial_number" rows="2" class="input-cus" {{ $transaction_details->repair_status != 10 ? 'readonly' : '' }}>{{ $transaction_details->device_serial_number }}</textarea>
+                            <input placeholder="Type your Device Serial Number here" name="device_serial_number" class="input-cus" {{ $transaction_details->repair_status != 10 ? 'readonly' : '' }} value="{{ $transaction_details->device_serial_number }}"/>
                         </div>
                         <div class="col-md-6" style="margin-top: 5px;">
                             <label class="label-cus"><span class="requiredField">*</span>Defective Serial Number (KBB):</label>
-                            <textarea placeholder="Type your Defective Serial Number here" name="defective_serial_number" rows="2" class="input-cus"  {{ $transaction_details->repair_status != 10 ? 'readonly' : '' }}>{{ $transaction_details->defective_serial_number }}</textarea>
+                            <input placeholder="Type your Defective Serial Number here" name="defective_serial_number" class="input-cus"  {{ $transaction_details->repair_status != 10 ? 'readonly' : '' }} value="{{ $transaction_details->defective_serial_number }}">
                         </div>
                     </div>
                 </div>
                 
                 <div class="row">    
                     <div class="col-md-12">
-                        <div class="col-md-12" style="margin-top: 5px;">
+                        <div class="col-md-12" style="margin-top: 10px;">
                             <label class="label-cus"><span class="requiredField">*</span>Device Issue Description:</label>
                             <textarea placeholder="Type your device issue description here" name="device_issue_description" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 10 ? 'readonly' : '' }}>{{ $transaction_details->device_issue_description }}</textarea>
                         </div>
