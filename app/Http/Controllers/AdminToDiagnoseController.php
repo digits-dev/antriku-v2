@@ -235,7 +235,6 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 	{
 		$all_data = array();
 		parse_str($request->all_data, $all_data);
-		
 
 		$transaction_details = DB::table('returns_header')->leftJoin('model', 'returns_header.model', '=', 'model.id')
 			->select('returns_header.*', 'returns_header.id as header_id', 'returns_header.created_by as user_id', 'model.id as model_id', 'model_name', 'model_photo', 'model_status')
@@ -376,7 +375,10 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 			if (!empty($service_code[$i]) || !empty($gsx_ref[$i]) || !empty($cs_code[$i]) || !empty($serial_no[$i]) || !empty($item_desc[$i]) || !empty($cost[$i])) {
 				$bodyItem = DB::table('returns_body_item')->where('returns_header_id', $all_data['header_id'])->where('service_code', $service_code[$i])->first();
 				$parts_item_description = DB::table('parts_item_master')->where('spare_parts', trim($service_code[$i]))->get();
+				$item_spare_additional_type = (!empty($all_data['new_spare_req']) && $all_data['new_spare_req'] == 'Additional-Required-Pending') ? 'Additional-Required-Pending' : 'Additional-Standard';
+
 				if (!empty($bodyItem->id) && !empty($service_code[$i])) {
+
 					DB::table('returns_body_item')->where('id', $row_id[$i])->update([
 						'service_code'		=> $service_code[$i],
 						'gsx_ref'			=> $gsx_ref[$i],
@@ -384,6 +386,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 						'item_description'	=> $parts_item_description[0]->item_description,
 						'qty'				=> $parts_item_description[0]->qty,
 						'qty_status'		=> $parts_item_description[0]->qty > 0 ? 'Available' : 'Unavailable',
+						'item_parts_id'		=> $parts_item_description[0]->id,
 						'cost'				=> $cost[$i],
 						'updated_by'		=> CRUDBooster::myId()
 					]);
@@ -400,6 +403,8 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 						'item_description'	=> $parts_item_description[0]->item_description,
 						'qty'				=> $parts_item_description[0]->qty,
 						'qty_status'		=> $parts_item_description[0]->qty > 0 ? 'Available' : 'Unavailable',
+						'item_parts_id'		=> $parts_item_description[0]->id,
+						'item_spare_additional_type' => $item_spare_additional_type,
 						'cost'				=> $cost[$i],
 						'created_by'		=> CRUDBooster::myId(),
 						'updated_by'		=> CRUDBooster::myId()
@@ -417,7 +422,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		
 		// *********************************************************************************************
 
-		$status_array = [1,14,15,16,17];
+		$status_array = [1,14,15,16,17,19,29,31,34,35,36];
 		    if(in_array($request->status_id, $status_array)){
 		    	DB::table('returns_header')->where('id',$request->header_id)->update([
 				'repair_status' 			=> $request->status_id,
@@ -441,6 +446,79 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 				DB::table('returns_header')->where('id',$request->header_id)->update([
 					'airwaybill_upload'   => $filename,
 				]);
+			}
+		}
+
+		if($request->status_id == 29){			
+			$get_jo = DB::table('returns_body_item')->where('returns_header_id', $request->header_id)->get();
+
+			// Separate items
+			$additionalStandard = [];
+			$additionalPending = [];
+
+			// Group items based on 'item_spare_additional_type'
+			foreach ($get_jo as $item) {
+				if ($item->qty_status == 'Available') {
+					if ($item->item_spare_additional_type == 'Additional-Standard') {
+						$additionalStandard[] = $item;
+					} elseif ($item->item_spare_additional_type == 'Additional-Required-Pending') {
+						$additionalPending[] = $item;
+					}
+				}
+			}
+
+			if (count($additionalPending) > 0) {
+				// Reserve "Additional-Required-Pending" only
+				foreach ($additionalPending as $item) {
+					DB::table('inventory_reservations')->insert([
+						'parts_item_master_id' => $item->item_parts_id,
+						'return_header_id'     => $request->header_id,
+						'reserved_qty'         => 1,
+						'created_by'           => CRUDBooster::myId(),
+					]);
+				}
+			} else {
+				// Reserve all the available qty with "Additional-Standard"
+				foreach ($additionalStandard as $item) {
+					DB::table('inventory_reservations')->insert([
+						'parts_item_master_id' => $item->item_parts_id,
+						'return_header_id'     => $request->header_id,
+						'reserved_qty'         => 1,
+						'created_by'           => CRUDBooster::myId(),
+					]);
+				}
+			}
+
+		}
+
+		if ($request->status_id == 31) {
+			DB::beginTransaction();
+		
+			try {
+				$get_reservation_per_jo = DB::table('inventory_reservations')
+					->where('return_header_id', $request->header_id)
+					->get();
+		
+				foreach ($get_reservation_per_jo as $item) {
+					DB::table('parts_item_master')
+						->where('id', $item->parts_item_master_id)
+						->update([
+							'qty' => DB::raw('qty - ' . $item->reserved_qty),
+							'updated_by' => CRUDBooster::myId(),
+							'updated_at' => now(),
+						]);
+		
+					DB::table('inventory_reservations')
+						->where('id', $item->id)
+						->update([
+							'status' => 'Confirmed / Deducted',
+							'updated_at' => now(),
+						]);
+				}
+		
+				DB::commit();
+			} catch (\Exception $e) {
+				DB::rollBack(); 
 			}
 		}
 
@@ -481,10 +559,20 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		} else {
 			$qty = '0';
 		}
+		if (!empty($request->item_parts_id)) {
+			$item_parts_id = $request->item_parts_id;
+		} else {
+			$item_parts_id = '99999';
+		}
 		if (!empty($request->cost)) {
 			$cost = $request->cost;
 		} else {
 			$cost = '';
+		}
+		if (!empty($request->transaction_status)) {
+			$transaction_status = $request->transaction_status;
+		} else {
+			$transaction_status = '';
 		}
 
 		$bodyItemID = DB::table('returns_body_item')->insertGetId([
@@ -495,6 +583,8 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 			'item_description'	=> $item_desc,
 			'qty'				=> $qty,
 			'qty_status'		=> $qty > 0 ? 'Available' : 'Unavailable',
+			'item_parts_id'		=> $item_parts_id,
+			'item_spare_additional_type' => $transaction_status == 34 ? 'Additional-Required-Pending' : 'Additional-Standard',
 			'cost'				=> $cost,
 			'created_by'		=> CRUDBooster::myId(),
 			'updated_by'		=> CRUDBooster::myId()

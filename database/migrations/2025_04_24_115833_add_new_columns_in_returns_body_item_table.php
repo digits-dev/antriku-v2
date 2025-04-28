@@ -16,6 +16,8 @@ class AddNewColumnsInReturnsBodyItemTable extends Migration
         Schema::table('returns_body_item', function (Blueprint $table) {
             $table->bigInteger('qty')->default(0)->after('date_ordered');
             $table->text('qty_status', 30)->after('qty');
+            $table->bigInteger('item_parts_id')->after('qty_status');
+            $table->enum('item_spare_additional_type', ['Additional-Standard', 'Additional-Required-Pending', 'Additional-Required-Yes', 'Additional-Required-No'])->default('Additional-Standard')->after('item_parts_id');
         });
     }
 
@@ -29,6 +31,7 @@ class AddNewColumnsInReturnsBodyItemTable extends Migration
         Schema::table('returns_body_item', function (Blueprint $table) {
             $table->dropColumn('qty');
             $table->dropColumn('qty_status');
+            $table->dropColumn('item_parts_id');
         });
     }
 }

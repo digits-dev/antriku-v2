@@ -3873,3 +3873,136 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
       width: 100%;
   }
 }
+
+
+.container-qor {
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 500px;
+  padding: 32px;
+}
+
+.toggle-container {
+  margin-bottom: 24px;
+}
+
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.toggle-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.toggle-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 4px;
+}
+
+.toggle-description {
+  font-size: 14px;
+  color: #718096;
+}
+
+/* Modern Toggle Switch */
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e2e8f0;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+input:checked + .toggle-slider {
+  background: linear-gradient(to right, #3b82f6, #6366f1);
+}
+
+input:focus + .toggle-slider {
+  box-shadow: 0 0 1px #3b82f6;
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(28px);
+}
+
+/* Checkmark inside toggle when active */
+.toggle-slider:after {
+  content: "✓";
+  position: absolute;
+  color: white;
+  font-size: 12px;
+  left: 10px;
+  top: 7px;
+  opacity: 0;
+  transition: 0.4s;
+}
+
+input:checked + .toggle-slider:after {
+  opacity: 1;
+}
+
+/* Hover effect */
+.toggle-slider:hover {
+  background-color: #cbd5e0;
+}
+
+input:checked + .toggle-slider:hover {
+  background: linear-gradient(to right, #2563eb, #4f46e5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .container-qor {
+    padding: 24px 16px;
+  }
+  
+  .toggle-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .toggle {
+    align-self: flex-start;
+  }
+}

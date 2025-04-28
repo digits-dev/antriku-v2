@@ -58,6 +58,7 @@
     // adding rows in quotation table
     function AddQuotation()
     {
+        let transaction_status = $('#transaction_status').val();
         document.getElementById("addQuotes").disabled = true;
         setTimeout(function() {
             document.getElementById("addQuotes").disabled = false;
@@ -77,6 +78,7 @@
         var serial_no = document.getElementById("serial_no").value;
         var item_desc = document.getElementById("item_desc").value;
         var qty = document.getElementById("qty").value;
+        var item_parts_id = document.getElementById("item_parts_id").value;
         var cost = document.getElementById("cost").value;
         let stop = false;
 
@@ -88,7 +90,7 @@
             return false;
         }
 
-        if(isEmptyOrSpaces(gsx_ref) == false || isEmptyOrSpaces(cs_code) == false || isEmptyOrSpaces(service_code) == false || isEmptyOrSpaces(serial_no) == false || isEmptyOrSpaces(item_desc) == false || isEmptyOrSpaces(qty) == false || isEmptyOrSpaces(cost) == false)
+        if(isEmptyOrSpaces(gsx_ref) == false || isEmptyOrSpaces(cs_code) == false || isEmptyOrSpaces(service_code) == false || isEmptyOrSpaces(serial_no) == false || isEmptyOrSpaces(item_desc) == false || isEmptyOrSpaces(qty) == false || isEmptyOrSpaces(item_parts_id) || isEmptyOrSpaces(cost) == false)
         {
             if(isEmptyOrSpaces(service_code) == false){
                 $.ajax({
@@ -122,6 +124,9 @@
             }else if(isEmptyOrSpaces(qty) == true)
             {
                 swal('Info!','Qty is required.');
+            }else if(isEmptyOrSpaces(item_parts_id) == true)
+            {
+                swal('Info!','Missing item_parts_id.');
             }else if(isEmptyOrSpaces(cost) == true){
                 swal('Info!','Price is required.');
             }else{
@@ -137,32 +142,36 @@
                         'serial_no' : serial_no, 
                         'item_desc' : item_desc, 
                         'qty' : qty,
+                        'item_parts_id' : item_parts_id,
                         'cost' : cost, 
+                        'transaction_status' : transaction_status,
                         _token: '{!! csrf_token() !!}'
                     },
                     success: function(result)
                     {
                         var showData = '';
-                        showData += '<tr class="nr row_num" id="rowID'+ result.quotation.id +'"><input type="hidden" class="getidValue" name="header_id" value="'+ result.quotation.id +'">';
+                        showData += '<tr class="nr row_num" id="rowID'+ result.quotation.id +'" style="background: ' + (result.item_spare_additional_type != 'Additional-Standard' ? '#FFC785' : '') + ';"><input type="hidden" class="getidValue" name="header_id" value="'+ result.quotation.id +'">';
                         showData += '<input type="hidden" name="header_id" value="">'; 
-                        showData += '<td style="padding: 1px !important;"><input class="input-cus text-center getscValue" type="text" id="service_code_'+ result.quotation.id +'" value="'+ result.quotation.service_code +'" placeholder="Enter Service Code" readonly style="background: lightgrey" /></td>';
-                        showData += '<td style="padding: 1px !important;"><input class="input-cus text-center getgsxValue" type="text" id="gsx_code_'+ result.quotation.id +'" oninput="gsx_data('+ result.quotation.id +')" value="'+ result.quotation.gsx_ref +'" placeholder="Enter GSX Reference"/></td>';
-                        showData += '<td style="padding: 1px !important;"><input class="input-cus text-center getcsValue" type="text" id="cs_code_'+ result.quotation.id +'" value="'+ result.quotation.cs_code +'" placeholder="Enter CS Code"/></td>';
-                        showData += '<td style="padding: 1px !important;"><input class="input-cus text-center getserialValue" type="text" value="'+ result.quotation.serial_no +'" placeholder="Enter Apple Parts Number"/></td>';
-                        showData += '<td style="padding: 1px !important;"><input class="input-cus text-center getitemValue" type="text" id="item_desc_'+ result.quotation.id +'" value="'+ result.quotation.item_description +'" placeholder="Enter Item Description" readonly style="background: lightgrey" /></td>';
-                        showData += '<td style="padding: 1px !important;"><input class="input-cus text-center getqtyValue" type="text" id="qty'+ result.quotation.id +'" value="'+ result.quotation.qty_status +'" placeholder="Search Item" readonly style="background: lightgrey; color: '+ (result.quotation.qty_status == "Available" ? "#16a34a" : "#ef4444") +'" /></td>';
-                        showData += '<td style="padding: 1px !important;"><input class="input-cus text-center getcostValue" type="number" onblur="AutoFormatCost('+ result.quotation.id +')" id="price_'+ result.quotation.id +'" value="'+ result.quotation.cost +'" min="0" max="9999" step="any" placeholder="Enter Price"></td>';
+                        showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getscValue" type="text" id="service_code_'+ result.quotation.id +'" value="'+ result.quotation.service_code +'" placeholder="Enter Service Code" readonly style="background: lightgrey" /></td>';
+                        showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getgsxValue" type="text" id="gsx_code_'+ result.quotation.id +'" oninput="gsx_data('+ result.quotation.id +')" value="'+ result.quotation.gsx_ref +'" placeholder="Enter GSX Reference"/></td>';
+                        showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getcsValue" type="text" id="cs_code_'+ result.quotation.id +'" value="'+ result.quotation.cs_code +'" placeholder="Enter CS Code"/></td>';
+                        showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getserialValue" type="text" value="'+ result.quotation.serial_no +'" placeholder="Enter Apple Parts Number"/></td>';
+                        showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getitemValue" type="text" id="item_desc_'+ result.quotation.id +'" value="'+ result.quotation.item_description +'" placeholder="Enter Item Description" readonly style="background: lightgrey" /></td>';
+                        showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getqtyValue" type="text" id="qty'+ result.quotation.id +'" value="'+ result.quotation.qty_status +'" placeholder="Search Item" readonly style="background: lightgrey; color: '+ (result.quotation.qty_status == "Available" ? "#16a34a" : "#ef4444") +'" /></td>';
+                        showData += '<td style="padding: 3px !important; display:none"><input class="input-cus text-center getitemparstidValue" type="hidden" id="item_parts_id'+ result.quotation.id +'" value="'+ result.quotation.item_parts_id +'" placeholder="Search Item" readonly style="background: lightgrey;" /></td>';
+                        showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getcostValue" type="number" onblur="AutoFormatCost('+ result.quotation.id +')" id="price_'+ result.quotation.id +'" value="'+ result.quotation.cost +'" min="0" max="9999" step="any" placeholder="Enter Price"></td>';
                         showData += '<td style="padding: 5px !important;" class="text-center"><a onclick="RemoveRow('+ result.quotation.id +')"><i class="fa fa-close fa-2x remove" style="color:red"></i></a></td>';
                         showData += '</tr>';
-
+                        
                         $("#gsx_ref").val('');        
                         $("#cs_code").val('');  
                         $("#service_code").val('');
                         $("#serial_no").val('');
                         $("#item_desc").val('');
                         $("#qty").val('');
+                        $("#item_parts_id").val('');
                         $("#cost").val('');
-                        $('table .nr:last').before(showData);  
+                        $('table .nr:last').before(showData); 
 
                         // display buttons logic 
                         let caseStatus = $('[name="case_status"]').val()?.trim();
@@ -190,6 +199,8 @@
                             $('#inwarranty_carryin_btns').hide();
                         }
                         // end of buttons display logic
+
+                        $('#additional-toggle').attr('disabled', true);
 
                     }
                 });
@@ -239,6 +250,9 @@
                 }
                 // end of buttons display logic
 
+                
+                $('#additional-toggle').attr('disabled', false);
+
             }
         });
     }
@@ -260,8 +274,14 @@
                     if(result.length > 0){
                         $("#item_desc").val(result[0].item_description);
                         $("#qty").val(result[0].qty).css('color', (result[0].qty > 0 ? '#16a34a' : '#ef4444'));
+                        $("#item_parts_id").val(result[0].id);
                         $("#cost").val(result[0].cost);
                         
+                        let transaction_status = $('#transaction_status').val();
+                        if(transaction_status == 34){
+                            $("#new_spare_req").val('Additional-Required-Pending');
+                        }
+
                         // display buttons logic 
                         let caseStatus = $('[name="case_status"]').val()?.trim();
                         let warrantyStatus = $('[name="warranty_status"]').val()?.trim();
@@ -292,6 +312,7 @@
                         document.getElementById("service_code").disabled = true;
                         document.getElementById("item_desc").disabled = true;
                         document.getElementById("qty").disabled = true;
+                        document.getElementById("item_parts_id").disabled = true;
                     }
                 }
             });
@@ -310,11 +331,18 @@
                     if(result.length > 0){
                         $("#item_desc_"+row_id).val(result[0].item_description);
                         $("#qty_"+row_id).val(result[0].qty).css('color', 'green');
+                        $("#item_parts_id").val(result[0].id);
                         $("#price_"+row_id).val(result[0].cost);
+
+                        let transaction_status = $('#transaction_status').val();
+                        if(transaction_status == 34){
+                            $("#new_spare_req").val('Additional-Required-Pending');
+                        }
 
                         document.getElementById("service_code_"+row_id).disabled = true;
                         document.getElementById("item_desc_"+row_id).disabled = true;
                         document.getElementById("qty"+row_id).disabled = true;
+                        document.getElementById("item_parts_id"+row_id).disabled = true;
                     }
                 }
             });
@@ -439,4 +467,15 @@
             $('#inwarranty_carryin_btns').hide();
         }
     });
+
+    function erase_wrong_filter(){
+        $('.getscValue2').val('').attr('disabled', false);
+        $('.getgsxValue2').val('');
+        $('.getcsValue2').val('');
+        $('.getserialValue2').val('');
+        $('.getitemValue2').val('').attr('disabled', false);
+        $('.getqtyValue2').val('');
+        $('.getitemparstidValue2').val('');
+        $('.getcostValue2').val('');
+    }
 </script>

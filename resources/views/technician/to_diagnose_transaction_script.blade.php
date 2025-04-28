@@ -176,6 +176,49 @@
             }
         }
 
+        if(status_id == 34){
+            for(var i=0; i < getgsxValue.length-1; ++i) {
+                if(isEmptyOrSpaces(getgsxValue[i]) == true){
+                    $('.getgsxValue').css('border', '1px solid red');
+                    setTimeout(function () {
+                        swal('Info!','GSX Reference is required.');
+                    }, 1000);
+                    return false;
+                }
+                $('.getgsxValue').css('border', '');
+            }
+        }
+
+        if(status_id == 35){
+            let all_item_parts_type = $('.item_spare_additional_type').map(function () {
+                return $(this).val().trim().toLowerCase();
+            }).get();
+            let new_spare_req = $('#new_spare_req').val().trim().toLowerCase();
+            const has_additional_required = all_item_parts_type.includes("additional-required-pending");
+            const has_new_spare_req = new_spare_req.includes("additional-required-pending");
+
+            if (has_additional_required == false && has_new_spare_req == false) {
+                setTimeout(function () {
+                    swal('Info!','Please add new required spare parts.');
+                }, 1000);
+                return false;
+            }
+        }
+
+        let transaction_status = $('#transaction_status').val();
+        if(status_id == 19 && transaction_status != 35){
+            for(var i=0; i < getserialValue.length-1; ++i) {
+                if(isEmptyOrSpaces(getserialValue[i]) == true){
+                    $('.getserialValue').css('border', '1px solid red');
+                    setTimeout(function () {
+                        swal('Info!','KGB Serial Number is required.');
+                    }, 1000);
+                    return false;
+                }
+                $('.getserialValue').css('border', '');
+            }
+        }
+
         for(var i=0; i < getscValue.length-1; ++i) {
             if(isEmptyOrSpaces(getscValue[i]) == false){
                 $.ajax({
@@ -336,13 +379,48 @@
                             }, function(){
                                 window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
                             });
+
                         }  else if (status_id == 17) {
                             swal({ title: "Info!", text: "AWAITING APPLE REPAIR", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
                             }, function(){
                                 window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
                             });
-                        } 
+                        }
                         
+                        else if (status_id == 29) {
+                            swal({ title: "Info!", text: "For Spare part release (Carry In)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                            }, function(){
+                                window.location.href = window.location.origin+"/admin/to_diagnose";
+                            });
+                        }
+
+                        else if (status_id == 31) {
+                            swal({ title: "Info!", text: "SPARE PART RELEASED", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                            }, function(){
+                                window.location.href = window.location.origin+"/admin/spare_parts_releasing";
+                            });
+                        }
+
+                        else if (status_id == 34) {
+                            swal({ title: "Info!", text: "ON GOING REPAIR ", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                            }, function(){
+                                window.location.href = window.location.origin+"/admin/pending_repair";
+                            });
+                        }
+
+                        else if (status_id == 35) {
+                            swal({ title: "Info!", text: "CALLOUT: ADDITIONAL SPARE PARTS (CARRY IN)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                            }, function(){
+                                window.location.href = window.location.origin+"/admin/pending_repair";
+                            });
+                        }
+
+                        else if (status_id == 19) {
+                            swal({ title: "Info!", text: "CALLOUT: AWAITING CUSTOMER PICK UP (GOOD UNIT)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                            }, function(){
+                                window.location.href = window.location.origin+"/admin/pending_repair";
+                            });
+                        }
                     }
                 });
             }
