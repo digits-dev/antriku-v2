@@ -122,6 +122,9 @@ Route::group(['middleware' => ['web']], function () {
     // Lead Tech assigning
     Route::get('/admin/to_assign/GetTechnicians','AdminToAssignController@GetTechnicians');
     Route::post('/admin/to_assign/AssignTechnician','AdminToAssignController@AssignTechnician');  
+
+    // Call out recorder
+    Route::post('/admin/call_out/call_out','AdminCallOutController@callOut');
 });
 
  

@@ -178,7 +178,7 @@
                         </div>
                         <div class="col-md-6" style="margin-top: 5px;">
                             <label class="label-cus"><span class="requiredField">*</span>Defective Serial Number (KBB):</label>
-                            <input placeholder="Type your Defective Serial Number here" name="defective_serial_number" class="input-cus"  {{ $transaction_details->repair_status != 10 ? 'readonly' : '' }} value="{{ $transaction_details->defective_serial_number }}">
+                            <input placeholder="Type your Defective Serial Number here" name="defective_serial_number" class="input-cus" required  {{ $transaction_details->repair_status != 10 ? 'readonly' : '' }} value="{{ $transaction_details->defective_serial_number }}">
                         </div>
                     </div>
                 </div>

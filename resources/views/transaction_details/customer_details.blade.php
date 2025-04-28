@@ -34,7 +34,7 @@
                 <div class="info-item-cust">
                     <div class="info-label-cust">{{ trans('labels.form-label.contact_no') }}</div>
                     <div class="info-value-cust">
-                        <input type="input" name="contact_no" id="contact_no" value="{{$transaction_details->contact_no}}" placeholder="09#########" pattern="[09][0-9]{10}" style="border:none; outline: none;"  autocomplete="off" required/>
+                        <input type="input" name="contact_no" id="contact_no" value="{{$transaction_details->contact_no}}" placeholder="09#########" style="border:none; outline: none;"  autocomplete="off" required/>
                     </div>
                 </div>
             @endif

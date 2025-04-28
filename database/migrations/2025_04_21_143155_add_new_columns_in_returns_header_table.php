@@ -26,7 +26,8 @@ class AddNewColumnsInReturnsHeaderTable extends Migration
             $table->string('parts_replacement_cost')->nullable();
             $table->string('defective_serial_number')->nullable();
             $table->string('airwaybill_tn')->nullable();
-            $table->string('airwaybill_upload');
+            $table->string('airwaybill_upload')->nullable();
+            $table->string('invoice_number')->nullable();
         });
     }
 
@@ -51,6 +52,7 @@ class AddNewColumnsInReturnsHeaderTable extends Migration
             $table->dropColumn('defective_serial_number');
             $table->dropColumn('airwaybill_tn');
             $table->dropColumn('airwaybill_upload');
+            $table->dropColumn('invoice_number');
             
         });
     }

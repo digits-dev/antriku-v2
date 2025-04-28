@@ -49,28 +49,35 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 	public function hook_query_index(&$query)
 	{
 		if (CRUDBooster::myPrivilegeId() == 3) {
-			$query->whereIn('repair_status', [12, 35, 19])->where('branch', CRUDBooster::me()->branch_id);
+			$query->whereIn('repair_status', [12, 35, 19,21,47])->where('branch', CRUDBooster::me()->branch_id);
 		} else {
-			$query->whereIn('repair_status', [12, 35, 19]);
+			$query->whereIn('repair_status', [12, 35, 19,21,47]);
 		}
 	}
 
+	 
+	    public function hook_row_index($column_index,&$column_value) {	 
+			$callout_awaiting_customer_approval_mail_in = DB::table('transaction_status')->where('id','12')->first();
+			$for_spare_parts_release_carry_in = DB::table('transaction_status')->where('id','18')->first();
+			$callout_awaiting_customer_approval_mail_in_oow = DB::table('transaction_status')->where('id','21')->first();
+			$for_tech_assessment_iw = DB::table('transaction_status')->where('id', '47')->first();
 
-	public function hook_row_index($column_index, &$column_value)
-	{
-		$callout_awaiting_customer_approval_mail_in = DB::table('transaction_status')->where('id', '12')->first();
-		$callout_additional_spare_parts_carry_in = DB::table('transaction_status')->where('id', '35')->first();
-		$callout_awaiting_customer_pick_up_good_for_unit = DB::table('transaction_status')->where('id', '19')->first();
-
-		if ($column_index == 1) {
-			if ($column_value == $callout_awaiting_customer_approval_mail_in->id) {
-				$column_value = '<span class="label label-info">' . $callout_awaiting_customer_approval_mail_in->status_name . '</span>';
-			} else if ($column_value == $callout_awaiting_customer_pick_up_good_for_unit->id) {
-				$column_value = '<span class="label label-info">' . $callout_awaiting_customer_pick_up_good_for_unit->status_name . '</span>';
-			} else if ($column_value == $callout_additional_spare_parts_carry_in->id) {
-				$column_value = '<span class="label label-info">' . $callout_additional_spare_parts_carry_in->status_name . '</span>';
+	    
+			if($column_index == 1){
+				if($column_value == $callout_awaiting_customer_approval_mail_in->id){
+					$column_value = '<span class="label label-info">'.$callout_awaiting_customer_approval_mail_in->status_name.'</span>';
+				}
+				if($column_value == $for_spare_parts_release_carry_in->id){
+					$column_value = '<span class="label label-info">'.$for_spare_parts_release_carry_in->status_name.'</span>';
+				}
+				if($column_value == $callout_awaiting_customer_approval_mail_in_oow->id){
+					$column_value = '<span class="label label-info">'.$callout_awaiting_customer_approval_mail_in_oow->status_name.'</span>';
+				}
+				if($column_value == $for_tech_assessment_iw->id){
+					$column_value = '<span class="label label-info">'.$for_tech_assessment_iw->status_name.'</span>';
+				}
+				
 			}
-		}
 		if ($column_index == 3) {
 			$models = DB::table('model')->where('id', $column_value)->first();
 			if ($models) {
@@ -152,11 +159,11 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 			->select('returns_body_item.*', 'returns_body_item.returns_header_id as header_id', 'returns_serial.returns_header_id as serial_header_id', 'returns_serial.returns_body_item_id as serial_body_item_id', 'returns_serial.serial_number as serial_no')
 			->where('returns_body_item.returns_header_id', $id)->get();
 
-		$data['Branch'] = DB::table('branch')->leftJoin('cms_users', 'branch.id', '=', 'cms_users.branch_id')->where('cms_users.id', $data['transaction_details']->user_id)->first();
-		$data['imfs'] = DB::table('product_item_master')->where('status', 'ACTIVE')->get();
-		$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
-		$data['TechTesting'] = DB::table('tech_testing')->where('test_type_status', 'ACTIVE')->where('model_group_id', '!=', NULL)->orderBy('description', 'ASC')->get();
-		// $data['CallOutCount'] = DB::table('call_out_recorder')->where('returns_header_id', $id)->where('status_id', $data['transaction_details']->repair_status)->count();
+			$data['Branch'] = DB::table('branch')->leftJoin('cms_users', 'branch.id', '=', 'cms_users.branch_id')->where('cms_users.id',$data['transaction_details']->user_id)->first();
+			$data['imfs'] = DB::table('product_item_master')->where('status', 'ACTIVE')->get();
+			$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
+			$data['TechTesting'] = DB::table('tech_testing')->where('test_type_status', 'ACTIVE')->where('model_group_id','!=',NULL)->orderBy('description', 'ASC')->get();
+			$data['CallOutCount'] = DB::table('call_out_recorder')->where('returns_header_id', $id)->where('status_id', $data['transaction_details']->repair_status)->count();
 
 		$this->cbView('transaction_details.view_created_transaction_detail', $data);
 	}

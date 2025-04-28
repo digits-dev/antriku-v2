@@ -99,6 +99,8 @@
         var header_id = document.getElementById("header_id").value;
         var email = document.getElementById("email").value; 
         var contact_no = document.getElementById("contact_no").value; 
+        var invoice_number = document.getElementById("invoice_number").value; 
+        var diagnostic_cost = document.getElementById("diagnostic_cost").value; 
         var regex_contact_number = /^(09)[0-9]{9}$/;
         var invoice = $("#invoice")[0].files[0];
         let other_pd = false;
@@ -123,6 +125,8 @@
             formData.append('header_id', header_id);
             formData.append('status_id', status_id);
             formData.append('email', email);
+            formData.append('diagnostic_cost', diagnostic_cost);
+            formData.append('invoice_number', invoice_number);
             formData.append('invoice', invoice); // File goes here
             formData.append('_token', '{!! csrf_token() !!}');
 
@@ -197,4 +201,18 @@
 			$("#warranty_status").val("SPECIAL");
 		}
 	}
+
+    function validateBeforeChangeStatus(status_id) {
+        let form = document.getElementById("SubmitTransactionForm"); 
+
+        // Check if form fields are valid
+        if (!form.checkValidity()) {
+            form.reportValidity(); // Trigger browser validation messages
+            return false; // Stop execution if validation fails
+        }
+
+        // If validation passes, trigger the existing function
+        return changeStatus(status_id);
+        }
+
 </script>

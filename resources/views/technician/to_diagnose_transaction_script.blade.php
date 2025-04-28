@@ -104,10 +104,10 @@
     // validation for submitting form
     function changeStatus(status_id)
     {
-  
         var mainpath = document.getElementById("mainpath").value;  
         var header_id = document.getElementById("header_id").value;
         var warranty_status = document.getElementById("warranty_status").value;
+        var case_status = document.getElementById("case_status").value;
         var gsx_ref = document.getElementById("gsx_ref").value;
         var cs_code = document.getElementById("cs_code").value;
         var service_code = document.getElementById("service_code").value;
@@ -326,8 +326,8 @@
             }
 
         swal({
-            title: "Are you sure?",
-            text: "Do you want to proceed?",
+            title: case_status == 'MAIL-IN' && status_id == 20 ? "This will change the Warranty Status to Out of Warranty" : "Are you sure?",
+            text:  "Do you want to proceed??",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#00b8d9",
@@ -359,12 +359,12 @@
                             }, function(){
                                 window.location.href = window.location.origin+"/admin/to_diagnose";
                             });
-                        }else if (status_id == 12) {
+                        }else if ([12, 21].includes(status_id)) {
                             swal({ title: "Info!", text: "AWAITING CUSTOMER APPROVAL (MAIL-IN)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
                             }, function(){
                                 window.location.href = window.location.origin+"/admin/to_diagnose";
                             });
-                        } else if (status_id == 14) {
+                        } else if ([14, 23].includes(status_id)) {
                             swal({ title: "Info!", text: "FOR INPUT GSX KBB (MAIL IN)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
                             }, function(){
                                 window.location.href = window.location.origin+"/admin/to_diagnose";
@@ -385,38 +385,48 @@
                             }, function(){
                                 window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
                             });
-                        }
-                        
-                        else if (status_id == 29) {
+                        } else if (status_id == 18) {
+                            swal({ title: "Info!", text: "FOR TECH ASSESSMENT", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                            }, function(){
+                                window.location.href = window.location.origin+"/admin/spare_parts_receiving";
+                            });
+                        } else if (status_id == 19) {
+                            swal({ title: "Info!", text: "CALLOUT: AWAITING CUSTOMER PICK UP (GOOD UNIT)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                            }, function(){
+                                window.location.href = window.location.origin+"/admin/spare_parts_receiving";
+                            });
+                        }else if (status_id == 20) {
+                            swal({ title: "Info!", text: "CALLOUT: FOR CUSTOMER PAYMENT (PARTS)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                            }, function(){
+                                window.location.href = window.location.origin+"/admin/to_diagnose";
+                            });
+                        }else if (status_id == 22) {
+                            swal({ title: "Info!", text: "AWAITING CUSTOMER APPROVAL (MAIL-IN)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                            }, function(){
+                                window.location.href = window.location.origin+"/admin/to_diagnose";
+                            });
+                        }  else if (status_id == 47) {
+                            swal({ title: "Info!", text: "AWAITING APPLE REPAIR (IW)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                            }, function(){
+                                window.location.href = window.location.origin+"/admin/to_diagnose";
+                            });
+                        }  else if (status_id == 29) {
                             swal({ title: "Info!", text: "For Spare part release (Carry In)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
                             }, function(){
                                 window.location.href = window.location.origin+"/admin/to_diagnose";
                             });
-                        }
-
-                        else if (status_id == 31) {
+                        } else if (status_id == 31) {
                             swal({ title: "Info!", text: "SPARE PART RELEASED", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
                             }, function(){
                                 window.location.href = window.location.origin+"/admin/spare_parts_releasing";
                             });
-                        }
-
-                        else if (status_id == 34) {
+                        } else if (status_id == 34) {
                             swal({ title: "Info!", text: "ON GOING REPAIR ", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
                             }, function(){
                                 window.location.href = window.location.origin+"/admin/pending_repair";
                             });
-                        }
-
-                        else if (status_id == 35) {
+                        } else if (status_id == 35) {
                             swal({ title: "Info!", text: "CALLOUT: ADDITIONAL SPARE PARTS (CARRY IN)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                            }, function(){
-                                window.location.href = window.location.origin+"/admin/pending_repair";
-                            });
-                        }
-
-                        else if (status_id == 19) {
-                            swal({ title: "Info!", text: "CALLOUT: AWAITING CUSTOMER PICK UP (GOOD UNIT)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
                             }, function(){
                                 window.location.href = window.location.origin+"/admin/pending_repair";
                             });
@@ -477,5 +487,62 @@
 			$("#warranty_status").val("SPECIAL");
 		}
 	}
+
+    function callOut(status_id) {
+            let header_id = $('#header_id').val();
+
+            swal({
+                title: "Are you sure you want to call out?",
+                text: "This will record the call out!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#008000",
+                confirmButtonText: "Yes!",
+                cancelButtonText: "No, cancel!",
+                closeOnConfirm: false,
+                closeOnCancel: false
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url: "/admin/call_out/call_out",
+                        type: "POST",
+                        data: {
+                            returns_header_id: header_id,
+                            status_id: status_id,
+                            _token: $('meta[name="csrf-token"]').attr('content') // CSRF Token
+                        },
+                        success: function (response) {
+                            swal({
+                            title: "Success!",
+                            text: "Call out has been recorded.",
+                            type: "success"
+                        }, function () {
+                            location.reload(); // Reload the page after clicking "OK"
+                        });
+                        },
+                        error: function (xhr) {
+                            swal("Error!", "Something went wrong. Please try again.", "error");
+                        }
+                    });
+                } else {
+                    swal("Cancelled", "Your call out has been cancelled.", "error");
+                }
+            });
+        }
+
+        function validateBeforeChangeStatus(status_id) {
+        let form = document.getElementById("SubmitTransactionForm"); 
+
+        // Check if form fields are valid
+        if (!form.checkValidity()) {
+            form.reportValidity(); // Trigger browser validation messages
+            return false; // Stop execution if validation fails
+        }
+
+        // If validation passes, trigger the existing function
+        return changeStatus(status_id);
+    }
+
 
 </script>

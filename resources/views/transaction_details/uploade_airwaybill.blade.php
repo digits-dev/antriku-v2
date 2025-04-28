@@ -351,9 +351,9 @@
                         <div class="info-value-cust">{{ $transaction_details->airwaybill_tn ?? 'N/A' }}</div>
                     </div>
                 </div>
-            <div class="uploaded-image-container">
-                <img class="uploaded-image" src="{{ Storage::url('waybill_upload/' . $transaction_details->airwaybill_upload) }}" alt="Airwaybill">
-            </div>
+                <div class="uploaded-image-container">
+                    <img class="uploaded-image" src="{{ Storage::url('waybill_upload/' . $transaction_details->airwaybill_upload) }}" alt="Airwaybill">
+                </div>
             </div>
         </div>
     </div>

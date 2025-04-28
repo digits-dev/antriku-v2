@@ -107,6 +107,7 @@
                    
                     <input type="hidden" name="mainpath" id="mainpath" value="{{CRUDBooster::mainpath()}}">
                     <input type="hidden" id="warranty_status" value="{{$transaction_details->warranty_status}}">
+                    <input type="hidden" id="case_status" value="{{$transaction_details->case_status}}">
                     <input type="hidden" id="repair_status" value="{{ $transaction_details->repair_status }}">
                     <input type="hidden" name="action" id="action" value="">
                     
@@ -138,8 +139,7 @@
     <script>
 
         function toggleCaseStatus() {
-            const selectedCase = $('input[name="case_status"]:checked').val();
-            console.log(selectedCase);
+            const selectedCase = $('input[name="case_status"]:checked').val() ?? $('#case_status').val();
             // Hide both initially
             $('#mailin').hide();
             $('#carry-in').hide();
@@ -153,12 +153,8 @@
         }
 
         function toggleWarrantyButton() {
-            let status = $('input[name="warranty_status"]:checked').val();
-            if (!status) {
-                status = $('select[name="warranty_status"]').val();
-            }
-
-            const selectedCase = $('input[name="case_status"]:checked').val();
+            let status = $('input[name="warranty_status"]:checked').val() ?? $('#warranty_status').val();
+            let selectedCase = $('input[name="case_status"]:checked').val() ?? $('#case_status').val();
 
             // Hide all
             $('#mailin-in-warranty, #mailin-out-warranty, #carryin-in-warranty, #carryin-out-warranty').hide();

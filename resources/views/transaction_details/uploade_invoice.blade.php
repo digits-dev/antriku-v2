@@ -252,41 +252,56 @@
                     <div style="background: rgba(255, 255, 255, 0.911); padding: 2px 7px 2px 7px; border-radius: 20%; margin-right: 3px">
                         <i class="bi bi-tools"></i>
                     </div>
-                    Invoice
+                    Charges Fee
                 </div>
             </div> 
         </div> 
         
-        
         <div class="upload-receipt">
-            <div class="upload-card">
-                <span class="header">Upload Invoice</span>
-                <p> Upload image (Invoice).</p>
-                <div class="upload-file-container">
-                    <label for="invoice" id="drop-area">
-                        <input required id="invoice" name="invoice" type="file" accept="image/*"
-                        style="position: absolute; z-index: -1;">
-                        <div class="image-view" id="image-view">
-                            <div id="upload-text">
-                                <p style="color:#424242">Drag and drop or click here to upload</p>
-                                <span style="font-size: 12px; color: #777;">Upload any file from desktop</span>
-                            </div>
-                            <div class="file-info" style="display: none; margin-top: 10px;">
-                                <div class="logo_file_name">
-                                    <div class="flex pdf_logo">
-                                        <span style="font-weight: bold; color: rgb(100, 100, 100);">IMG</span>
-                                    </div>
-                                    <p id="file-name" style="display: none; margin-top: 10px; text-align:left;"></p>
+            <div>
+                <div style="margin-bottom: 10px;">
+                    <label class="label-cus" style="margin-bottom: 6px;">
+                        <span class="required">*</span> Diagnostic Fee:
+                    </label>
+                    <input type="text" id="diagnostic_cost" name="diagnostic_cost" placeholder="Enter Diagnostic Fee"
+                            class="input-cus" autocomplete="off" required />
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label class="label-cus" style="margin-bottom: 6px;">
+                        <span class="required">*</span> Invoice Number:
+                    </label>
+                    <input type="text" id="invoice_number" name="invoice_number" placeholder="Enter Invoice Number"
+                            class="input-cus" autocomplete="off" required />
+                </div>
+                <div class="upload-card">
+                    <span class="header">Upload Invoice</span>
+                    <p> Upload image (Invoice).</p>
+                    <div class="upload-file-container">
+                        <label for="invoice" id="drop-area">
+                            <input required id="invoice" name="invoice" type="file" accept="image/*"
+                            style="position: absolute; z-index: -1;">
+                            <div class="image-view" id="image-view">
+                                <div id="upload-text">
+                                    <p style="color:#424242">Drag and drop or click here to upload</p>
+                                    <span style="font-size: 12px; color: #777;">Upload any file from desktop</span>
                                 </div>
-                                <button id="remove-btn" style="display: none; margin-top: 10px; padding: 5px 10px; background-color: #d9534f; color: white; border: none; cursor: pointer; border-radius: 5px; inline-flex items-center justify-center gap-2">
-                                    X
-                                </button>
+                                <div class="file-info" style="display: none; margin-top: 10px;">
+                                    <div class="logo_file_name">
+                                        <div class="flex pdf_logo">
+                                            <span style="font-weight: bold; color: rgb(100, 100, 100);">IMG</span>
+                                        </div>
+                                        <p id="file-name" style="display: none; margin-top: 10px; text-align:left;"></p>
+                                    </div>
+                                    <button id="remove-btn" style="display: none; margin-top: 10px; padding: 5px 10px; background-color: #d9534f; color: white; border: none; cursor: pointer; border-radius: 5px; inline-flex items-center justify-center gap-2">
+                                        X
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        
-                </label>
+                            
+                    </label>
+                </div>
             </div>
-            </div>
+        </div>
             <div class="preview" id="preview">
                 <span class="header"> Invoice Image Preview</span>
                 <p>View and verify your invoice image before uploading</p>
@@ -316,13 +331,25 @@
                         <div style="background: rgba(255, 255, 255, 0.911); padding: 2px 7px 2px 7px; border-radius: 20%; margin-right: 3px">
                             <i class="bi bi-tools"></i>
                         </div>
-                        Uploaded Invoice
+                        Charges Fee
                     </div>
                 </div> 
             </div> 
-         
-            <div class="uploaded-image-container">
-                <img class="uploaded-image" src="{{ Storage::url('invoice/' . $transaction_details->invoice) }}" alt="invoice">
+            <div class="card-body-cust">
+                <div class="info-grid-cust">
+                    <div class="info-item-cust">
+                        <div class="info-label-cust">Diagnostic Fee</div>
+                        <div class="info-value-cust">{{ $transaction_details->diagnostic_cost ?? 'N/A' }}</div>
+                    </div>
+                    <div class="info-item-cust">
+                        <div class="info-label-cust">Invoice Number</div>
+                        <div class="info-value-cust">{{ $transaction_details->invoice_number ?? 'N/A' }}</div>
+                    </div>
+                </div>
+                <div class="info-label-cust">Invoice</div>
+                <div class="uploaded-image-container">
+                    <img class="uploaded-image" src="{{ Storage::url('invoice/' . $transaction_details->invoice) }}" alt="invoice">
+                </div>
             </div>
         </div>
     </div>

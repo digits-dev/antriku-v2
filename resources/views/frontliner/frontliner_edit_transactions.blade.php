@@ -77,7 +77,7 @@
                 <a href="{{ CRUDBooster::adminPath() }}/{{ CRUDBooster::getModulePath() }}" class="btn btn-default pull-left"><i class="fa fa-chevron-circle-left"></i> BACK</a>
                 <input type="hidden" value="{{$data['transaction_details']->header_id}}" name="header_id" id="header_id">
                 @if (CRUDBooster::getModulePath() == "pay_diagnostic" && $transaction_details->repair_status == 8)
-                    <button type="submit" id="paid" onclick="return changeStatus(11)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o"></i> PAID</button>
+                    <button type="submit" id="paid" onclick="return validateBeforeChangeStatus(11)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-check-square-o"></i> PAID</button>
                 @elseif(CRUDBooster::getModulePath() == "returns_header" && $transaction_details->repair_status == 11)
                     <button type="button" id="print_receiving_form" class="btn btn-success pull-right" style="margin-left: 20px;"><i class="fa fa-print"></i> PRINT RECEIVING FORM</button>
                 @endif

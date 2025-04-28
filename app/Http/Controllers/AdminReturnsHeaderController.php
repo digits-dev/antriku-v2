@@ -330,30 +330,7 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 			->select('returns_header.*', 'returns_header.id as header_id', 'returns_header.created_by as user_id', 'model.id as model_id', 'model_name', 'model_photo', 'model_status')
 			->where('returns_header.id', $request->header_id)->get();
 
-		if ($request->status_id == 'send') {
-			if ($request->warranty_status == 'OUT OF WARRANTY') {
-				$data = array();
-				$data['id'] = $request->header_id;
-				$data['reference_no'] = $transaction_details[0]->reference_no;
-				$data['first_name'] = $transaction_details[0]->first_name;
-				$data['last_name'] = $transaction_details[0]->last_name;
-				$data['diagnostic_cost'] = number_format($request->diagnostic_cost, 2, '.', ',');
-				$data['model_name'] = $transaction_details[0]->model_name;
-				$data['main_url'] = URL::to('/');
-
-				if (URL::to('/') == "https://antriku.beyondthebox.ph") {
-					$email = $request->email;
-				} else {
-					$email = "lewieadona@digits.ph";
-				}
-
-				CRUDBooster::sendEmail(['to' => $email, 'data' => $data, 'template' => 'send_payment_link_for_diagnostic_fee_email', 'attachments' => []]);
-
-				DB::table('returns_header')->where('id', $request->header_id)->update([
-					'send_diagnostic_payment_link' => 'YES'
-				]);
-			}
-		} elseif ($request->status_id == 11) {
+		if ($request->status_id == 11) {
 
 			if ($request->hasFile('invoice')) {
 				$file = $request->file('invoice');
@@ -361,6 +338,8 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 				$path = $file->storeAs('public/invoice', $filename);
 
 				DB::table('returns_header')->where('id', $request->header_id)->update([
+					'invoice_number'    => $request->invoice_number,
+					'diagnostic_cost'    => $request->diagnostic_cost,
 					'invoice'   		=> $filename,
 					'repair_status' 			=> 11,
 					'updated_by'            	=> CRUDBooster::myId(),
