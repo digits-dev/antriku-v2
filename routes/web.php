@@ -125,6 +125,9 @@ Route::group(['middleware' => ['web']], function () {
 
     // Call out recorder
     Route::post('/admin/call_out/call_out','AdminCallOutController@callOut');
+
+    // receive_spare_part
+    Route::post('/admin/receive_spare_part','AdminSparePartsReceivingController@receiveSparePart')->name('receive_spare_part');
 });
 
  

@@ -67,22 +67,27 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 	public function hook_query_index(&$query)
 	{
 		if (in_array(CRUDBooster::myPrivilegeId(), [4, 8])) {
-			$query->where('technician_id', CRUDBooster::myId())->whereIn('repair_status', [31, 34])
+			$query->where('technician_id', CRUDBooster::myId())->whereIn('repair_status', [30, 31, 34])
 				->orderby('returns_header.id', 'ASC');
 		} else {
-			$query->whereIn('repair_status', [31, 34]);
+			$query->whereIn('repair_status', [30, 31, 34]);
 		}
 	}
 
 	public function hook_row_index($column_index, &$column_value)
 	{
+		$for_order_spare_part_carry_in = DB::table('transaction_status')->where('id', '30')->first();
 		$spare_part_release = DB::table('transaction_status')->where('id', '31')->first();
 		$ongoing_repair = DB::table('transaction_status')->where('id', '34')->first();
 
 		if ($column_index == 1) {
+			if ($column_value == $for_order_spare_part_carry_in->id) {
+				$column_value = '<span class="label label-warning">' . $for_order_spare_part_carry_in->status_name . '</span>';
+			}
 			if ($column_value == $spare_part_release->id) {
 				$column_value = '<span class="label label-warning">' . $spare_part_release->status_name . '</span>';
-			}else if ($column_value == $ongoing_repair->id) {
+			}
+			if ($column_value == $ongoing_repair->id) {
 				$column_value = '<span class="label label-warning">' . $ongoing_repair->status_name . '</span>';
 			}
 		}

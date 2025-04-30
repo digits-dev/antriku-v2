@@ -151,11 +151,15 @@
         var all_item_desc = document.getElementById("itemArray").value;
 
         //************************Validation for Array************************
-        if(checkIfDuplicateExists(getscValue)){
-            setTimeout(function () {
-                swal('Error!','The Spare Part you entered is already in the list.','error');
-            }, 1000);
-            return false;
+
+        const doaToggle = document.getElementById('doa-toggle');
+        if(!doaToggle.checked){
+            if(checkIfDuplicateExists(getscValue)){
+                setTimeout(function () {
+                    swal('Error!','The Spare Part you entered is already in the list.','error');
+                }, 1000);
+                return false;
+            }
         }
 
         for(var i=0; i < getitemValue.length-1; ++i) {
@@ -176,7 +180,7 @@
             }
         }
 
-        if(status_id == 34){
+        if(status_id == 31){
             for(var i=0; i < getgsxValue.length-1; ++i) {
                 if(isEmptyOrSpaces(getgsxValue[i]) == true){
                     $('.getgsxValue').css('border', '1px solid red');
@@ -189,20 +193,36 @@
             }
         }
 
-        if(status_id == 35){
+        if (status_id == 35) {
             let all_item_parts_type = $('.item_spare_additional_type').map(function () {
                 return $(this).val().trim().toLowerCase();
             }).get();
+
             let new_spare_req = $('#new_spare_req').val().trim().toLowerCase();
+
             const has_additional_required = all_item_parts_type.includes("additional-required-pending");
             const has_new_spare_req = new_spare_req.includes("additional-required-pending");
 
-            if (has_additional_required == false && has_new_spare_req == false) {
+            if (!has_additional_required && !has_new_spare_req) {
                 setTimeout(function () {
-                    swal('Info!','Please add new required spare parts.');
+                    swal('Info!', 'You enabled "Additional Required", please add new required spare parts to proceed. If not, please switch it off.');
                 }, 1000);
-                return false;
+                return false; 
             }
+
+            // for (var i = 0; i < getserialValue.length - 1; ++i) {
+            //     if (isEmptyOrSpaces(getserialValue[i])) {
+            //         // Only highlight the specific input that has an error
+            //         $('.getserialValue').eq(i).css('border', '1px solid red');
+
+            //         setTimeout(function () {
+            //             swal('Info!', 'KGB Serial Number is required.');
+            //         }, 1000);
+            //         return false; 
+            //     } else {
+            //         $('.getserialValue').eq(i).css('border', ''); 
+            //     }
+            // }
         }
 
         let transaction_status = $('#transaction_status').val();
@@ -415,10 +435,20 @@
                             }, function(){
                                 window.location.href = window.location.origin+"/admin/to_diagnose";
                             });
+                        } else if (status_id == 30) {
+                            swal({ title: "Info!", text: "FOR ORDER SPARE PART (CARRY IN)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                            }, function(){
+                                window.location.href = window.location.origin+"/admin/to_diagnose";
+                            });
                         } else if (status_id == 31) {
                             swal({ title: "Info!", text: "SPARE PART RELEASED", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
                             }, function(){
                                 window.location.href = window.location.origin+"/admin/spare_parts_releasing";
+                            });
+                        } else if (status_id == 33) {
+                            swal({ title: "Info!", text: "CALLOUT: ORDERING SPARE PARTS", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
+                            }, function(){
+                                window.location.href = window.location.origin+"/admin/pending_repair";
                             });
                         } else if (status_id == 34) {
                             swal({ title: "Info!", text: "ON GOING REPAIR ", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",

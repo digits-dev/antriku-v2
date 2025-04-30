@@ -38,7 +38,7 @@
                                             <span class="toggle-description">Dead on arrival verification process</span>
                                         </div>
                                         <label class="toggle">
-                                            <input type="checkbox" id="doa-toggle">
+                                            <input type="checkbox" id="doa-toggle" name="doa_jo" value="no" onclick="this.value = this.checked ? 'yes' : 'no';">
                                             <span class="toggle-slider"></span>
                                         </label>
                                     </div>
@@ -49,7 +49,7 @@
                     <div class="col-md-4" id="add_parts_btn" style="display: {{ in_array($transaction_details->repair_status, [34, 35]) ? 'none' : '' }}">
                         <div class="col-md-12">
                             <button onclick="AddQuotation()" id="addQuotes" style="margin-top:5px" class="btn btn-warning pull-right"><i class="fa fa-plus" aria-hidden="true"></i> Add Parts</button>
-                            <input type="hidden" value="{{$transaction_details->repair_status}}" id="transaction_status">
+                            <input type="hidden" value="{{$transaction_details->repair_status}}" id="transaction_status" name="recent_treansaction_status">
                         </div>
                     </div>
                 </div>
@@ -71,16 +71,22 @@
                                         <th width="10%" class="text-center" style="padding: 1px !important;">CS Code</th>
                                         <th width="10%" class="text-center" style="padding: 1px !important;">KGB Serial Number</th>
                                         <th width="20%" class="text-center" style="padding: 1px !important;">Item Description</th>
-                                        <th width="7%" class="text-center" style="padding: 1px !important;">Qty</th>
+                                        <th width="9%" class="text-center" style="padding: 1px !important;">Qty</th>
                                         <th width="7%" class="text-center" style="padding: 1px !important; display:none">Item Parts ID</th>
                                         <th width="9%" class="text-center" style="padding: 1px !important;">Price</th>
                                         <th width="1%" class="text-center" style="padding: 1px !important;"></th>
                                     </tr>
                                     <tr id="quotelist">
+                                        <input type="hidden" value="{{$transaction_details->repair_status}}" name="recent_treansaction_status">
                                         @if(!empty($data['quotation']))
                                             @foreach($data['quotation'] as $qt)
+                                            <input type="hidden" class="hidden_doa_jo" name="doa_jo" value="no">
                                             <input type="hidden" value="{{$qt->item_spare_additional_type}}" class="item_spare_additional_type">
-                                                <tr class="nr row_num" id="rowID{{$qt->id}}" style="background: {{ $qt->item_spare_additional_type != 'Additional-Standard' ? '#FFC785' : '' }}">
+                                                <tr class="nr row_num" id="rowID{{$qt->id}}"
+                                                    style="background: 
+                                                        {{ $qt->item_spare_additional_type == 'Additional-Standard-DOA' ? '#443627' : 
+                                                        ($qt->item_spare_additional_type != 'Additional-Standard' ? '#FFC785' : '') }}"
+                                                    >
                                                     <input type="hidden"class="getidValue" value="{{$qt->id}}">
                                                     <td style="padding: 3px !important;">
                                                         <input class="input-cus text-center getscValue" type="text" id="service_code_{{$qt->id}}" oninput="gsx_data('{{$qt->id}}')" value="{{ $qt->service_code }}" placeholder="Enter Spare Part Number" readonly {{ !in_array($transaction_details->repair_status, [10]) ? 'readonly' : ''}} style="background: lightgrey">
@@ -94,21 +100,42 @@
                                                     <td style="padding: 3px !important;">                        
                                                         <input class="input-cus text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter KGB Serial Number" {{ !in_array($transaction_details->repair_status, [10, 34]) ? 'readonly' : ''}} style="background: {{ !in_array($transaction_details->repair_status, [10, 34]) ? 'lightgrey' : ''}}">
                                                     </td>
-                                                    <td style="padding: 3px !important;"><input class="input-cus text-center getitemValue" type="text" id="item_desc_{{$qt->id}}" value="{{ $qt->item_description }}" placeholder="Enter Item Description" readonly {{ !in_array($transaction_details->repair_status, [10]) ? 'readonly' : ''}} style="background: lightgrey"></td>
-                                                    <td style="padding: 3px !important;"><input class="input-cus text-center getqtyValue" type="text" id="qty_{{$qt->id}}" value="{{$qt->qty_status}}" readonly {{ !in_array($transaction_details->repair_status, [10]) ? 'readonly' : ''}} style="background: lightgrey; color: {{$qt->qty_status == 'Available' ? '#16a34a' : '#ef4444'}}"></td>
-                                                    <td style="padding: 1px !important; display:none"><input class="input-cus text-center getitemparstidValue" type="hidden" id="item_parts_id_{{$qt->id}}" value="{{$qt->item_parts_id}}" readonly></td>
+                                                    <td style="padding: 3px !important;">
+                                                        <input class="input-cus text-center getitemValue" type="text" id="item_desc_{{$qt->id}}" value="{{ $qt->item_description }}" placeholder="Enter Item Description" readonly {{ !in_array($transaction_details->repair_status, [10]) ? 'readonly' : ''}} style="background: lightgrey">
+                                                    </td>
+                                                    <td style="padding: 3px !important;">
+                                                        <input class="input-cus text-center getqtyValue" type="text" id="qty_{{$qt->id}}" value="{{$qt->qty_status}}" readonly 
+                                                               style="font-weight:500; background: lightgrey; color:{{ $qt->qty_status == 'Available-DOA' ? '#443627' : ($qt->qty_status == 'Available' ? '#16a34a' : '#ef4444') }}">
+                                                    </td>
+                                                    <td style="padding: 1px !important; display:none">
+                                                        <input class="input-cus text-center getitemparstidValue" type="hidden" id="item_parts_id_{{$qt->id}}" value="{{$qt->item_parts_id}}" readonly>
+                                                    </td>
                                                     <td style="padding: 3px !important;"><input class="input-cus text-center getcostValue" type="number" onblur="AutoFormatCost('{{$qt->id}}')" id="price_{{$qt->id}}" value="{{ $qt->cost }}" min="0" max="9999" step="any" placeholder="Enter Price" {{ !in_array($transaction_details->repair_status, [10]) ? 'readonly' : ''}} style="background: {{ !in_array($transaction_details->repair_status, [10]) ? 'lightgrey' : ''}}"></td> 
                                                     @if(in_array($transaction_details->repair_status, [10, 34])) 
                                                         <td style="padding: 5px !important;" class="text-center {{$qt->item_spare_additional_type == 'Additional-Standard' && $transaction_details->repair_status == 34 ? 'hidden' : ''}}">
                                                             <a onclick="RemoveRow('{{$qt->id}}')"><i class="fa fa-close fa-2x remove" style="color:red"></i></a>
                                                         </td>
-                                                    {{-- @elseif(in_array($transaction_details->repair_status, [29]) && $qt->qty_status == 'Unavailable') 
+                                                    @elseif(in_array($transaction_details->repair_status, [33]) && CRUDBooster::myPrivilegeId() == 9 && $qt->qty_status == 'Unavailable') 
                                                         <td style="padding: 5px !important;" class="text-center">
-                                                            <button type="button" class="btn btn-success btn-sm" onclick="receive_parts('{{$qt->item_parts_id}}')">
-                                                                <i class="fa fa-check" style="color: limegreen"></i>
+                                                            <button type="button" class="btn btn-success spare_receiving_btn" onclick="receive_parts({{$qt->item_parts_id}})">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-labelledby="receiveIconTitle" style="vertical-align: -0.125em; margin-right: 1px;">
+                                                                    <title id="receiveIconTitle">Inventory Receiving Quantity</title>
+                                                                    <!-- Truck body -->
+                                                                    <path d="M1 3h15v13H1z" fill="#e8f5e9" />
+                                                                    <!-- Truck cabin -->
+                                                                    <path d="M16 8h4l3 3v5h-7V8z" fill="#c8e6c9" />
+                                                                    <!-- Wheels -->
+                                                                    <circle cx="5.5" cy="18.5" r="2.5" />
+                                                                    <circle cx="18.5" cy="18.5" r="2.5" />
+                                                                    <!-- Package in the back of the truck -->
+                                                                    <rect x="7" y="8" width="5" height="5" rx="1" fill="#81c784" />
+                                                                    <!-- Quantity badge -->
+                                                                    <circle cx="19" cy="5" r="4" fill="#ff9800" stroke="#ff9800" />
+                                                                    <text x="19" y="7" dominant-baseline="middle" text-anchor="middle" fill="white" style="font-size: 6px; font-weight: bold;">+</text>
+                                                                </svg>
                                                                 Receive
                                                             </button>
-                                                        </td>  --}}
+                                                        </td> 
                                                     @endif
                                                 </tr>
                                             @endforeach
@@ -236,7 +263,7 @@
 </div>
 </section>
 @endif
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const additionalToggle = document.getElementById('additional-toggle');
@@ -250,10 +277,14 @@
                 $('.iw_cin_no_additional_spare_part').hide();
                 $('#doa-toggle').attr('disabled', 'disabled');
             } else if (doaToggle.checked) {
+                $('.hidden_doa_jo').val('yes');
                 $('.iw_cin_doa').show();
+                $('#add_parts_btn').show();
+                $('#spare_parts_filter').show();
                 $('.iw_cin_no_additional_spare_part').hide();
                 $('#additional-toggle').attr('disabled', 'disabled');
             } else {
+                $('.hidden_doa_jo').val('no');
                 $('.iw_cin_doa').hide();
                 $('#add_parts_btn').hide();
                 $('#spare_parts_filter').hide();
@@ -274,6 +305,8 @@
         }).get();
         
         const has_additional_required = all_item_parts_type.includes("additional-required-pending");
+        const has_doa_jo = all_item_parts_type.includes("additional-standard-doa");
+
         if (has_additional_required) {
             $('#additional-toggle').prop('checked', true).attr('disabled', true);
             updateStatus();
@@ -281,6 +314,77 @@
             $('#additional-toggle').prop('checked', false).attr('disabled', false);
         }
 
+        if(has_doa_jo){
+            $('#doa-toggle').prop('checked', true).attr('disabled', true);
+            updateStatus();
+        } else {
+            $('#doa-toggle').prop('checked', false).attr('disabled', false);
+        }
+
     });
+
+    function receive_parts(item_parts_id){
+        let spare_parts_id = item_parts_id;
+        let header_id = $('#header_id').val();
+
+        $.ajax({
+            url: "{{ route('receive_spare_part') }}",
+            type: "POST",
+            data: {
+                'spare_parts_id' : spare_parts_id,
+                'header_id' : header_id,
+                _token: '{!! csrf_token() !!}',
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            beforeSend: function () {
+                Swal.fire({
+                    icon: "info",
+                    title: "Item Receiving",
+                    text: "Please wait...",
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => Swal.showLoading()
+                });
+            },
+            success: function (response) {
+                if(response.success == true){
+                    Swal.fire({
+                        icon: "success",
+                        title: response.message,
+                        html: `This is also marked as reserved Qty, since this item is ordered for this Job Order.`,
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        timer: 2000,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    }).then(() => {
+                        window.location.reload();
+                });
+
+                } else if (response.success == false) {
+                    Swal.fire({
+                        icon: "error",
+                        title: response.message,
+                        allowOutsideClick: false,
+                        showConfirmButton: true,
+                    });
+                }
+            },
+            error: function (xhr, error) {
+                Swal.close();
+                Swal.fire({
+                    title: "Can't receive this item, try again!",
+                    html: "Something went wrong!",
+                    icon: "error",
+                    timer: 3000,
+                    didOpen: () => Swal.showLoading()
+                });setTimeout(() => {
+                },3000)
+            }
+        });
+    }
 </script>
     

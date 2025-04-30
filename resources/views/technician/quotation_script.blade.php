@@ -64,6 +64,8 @@
             document.getElementById("addQuotes").disabled = false;
         }, 1000);
 
+        let doa_jo = $('#doa-toggle').val();
+
         document.getElementById("gsx_ref").disabled = false;
         document.getElementById("cs_code").disabled = false;
         document.getElementById("service_code").disabled = false;
@@ -85,9 +87,12 @@
         var getscValue = $('.getscValue').map((_,el) => el.value).get()
         $("#scArray").val(getscValue);
 
-        if(checkIfDuplicateExists(getscValue)){
-            swal('Error!','The Spare Part you entered is already in the list.','error');
-            return false;
+        const doaToggle = document.getElementById('doa-toggle');
+        if(!doaToggle.checked){
+            if(checkIfDuplicateExists(getscValue)){
+                swal('Error!','The Spare Part you entered is already in the list.','error');
+                return false;
+            }
         }
 
         if(isEmptyOrSpaces(gsx_ref) == false || isEmptyOrSpaces(cs_code) == false || isEmptyOrSpaces(service_code) == false || isEmptyOrSpaces(serial_no) == false || isEmptyOrSpaces(item_desc) == false || isEmptyOrSpaces(qty) == false || isEmptyOrSpaces(item_parts_id) || isEmptyOrSpaces(cost) == false)
@@ -145,12 +150,14 @@
                         'item_parts_id' : item_parts_id,
                         'cost' : cost, 
                         'transaction_status' : transaction_status,
+                        'doa_jo' : doa_jo,
                         _token: '{!! csrf_token() !!}'
                     },
                     success: function(result)
                     {
+                        let transaction_status = $('#transaction_status').val();
                         var showData = '';
-                        showData += '<tr class="nr row_num" id="rowID'+ result.quotation.id +'" style="background: ' + (result.item_spare_additional_type != 'Additional-Standard' ? '#FFC785' : '') + ';"><input type="hidden" class="getidValue" name="header_id" value="'+ result.quotation.id +'">';
+                        showData += '<tr class="nr row_num" id="rowID'+ result.quotation.id +'" style="background: ' + (result.item_spare_additional_type === 'Additional-Standard-DOA' ? '#443627' : (result.item_spare_additional_type !== 'Additional-Standard' && transaction_status == 34 ? '#FFC785' : '')) + ';"<input type="hidden" class="getidValue" name="header_id" value="'+ result.quotation.id +'">';
                         showData += '<input type="hidden" name="header_id" value="">'; 
                         showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getscValue" type="text" id="service_code_'+ result.quotation.id +'" value="'+ result.quotation.service_code +'" placeholder="Enter Service Code" readonly style="background: lightgrey" /></td>';
                         showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getgsxValue" type="text" id="gsx_code_'+ result.quotation.id +'" oninput="gsx_data('+ result.quotation.id +')" value="'+ result.quotation.gsx_ref +'" placeholder="Enter GSX Reference"/></td>';
@@ -162,7 +169,7 @@
                         showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getcostValue" type="number" onblur="AutoFormatCost('+ result.quotation.id +')" id="price_'+ result.quotation.id +'" value="'+ result.quotation.cost +'" min="0" max="9999" step="any" placeholder="Enter Price"></td>';
                         showData += '<td style="padding: 5px !important;" class="text-center"><a onclick="RemoveRow('+ result.quotation.id +')"><i class="fa fa-close fa-2x remove" style="color:red"></i></a></td>';
                         showData += '</tr>';
-                        
+
                         $("#gsx_ref").val('');        
                         $("#cs_code").val('');  
                         $("#service_code").val('');
@@ -201,6 +208,7 @@
                         // end of buttons display logic
 
                         $('#additional-toggle').attr('disabled', true);
+                        $('#doa-toggle').attr('disabled', true);
 
                     }
                 });
@@ -252,6 +260,7 @@
 
                 
                 $('#additional-toggle').attr('disabled', false);
+                $('#doa-toggle').attr('disabled', false);
 
             }
         });
@@ -465,6 +474,23 @@
             $('.iw_cin_unavailable_btn').hide();
             $('.iw_cin_available_btn').hide();
             $('#inwarranty_carryin_btns').hide();
+        }
+    });
+
+    $(document).ready(function() {
+        let all_item_qty = $('.getqtyValue').map(function () {
+            return $(this).val().trim().toLowerCase();
+        }).get();
+
+        const allUnavailable = all_item_qty.includes("unavailable");
+        if(allUnavailable){
+            $('.for_spare_part_release_unav').hide();
+            $('.proceed_yes_av').hide();
+            $('.proceed_yes_unav').show();
+        } else {
+            $('.for_spare_part_release_unav').show();
+            $('.proceed_yes_unav').hide();
+            $('.proceed_yes_av').show();
         }
     });
 

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use crocodicstudio\crudbooster\helpers\CRUDBooster;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class AdminSparePartsReceivingController extends \crocodicstudio\crudbooster\controllers\CBController
@@ -42,18 +44,17 @@ class AdminSparePartsReceivingController extends \crocodicstudio\crudbooster\con
 
 	public function hook_query_index(&$query)
 	{
-		$query->whereIn('repair_status', [47])->orderBy('id', 'ASC');
-
+		$query->whereIn('repair_status', [33, 47])->orderBy('id', 'ASC');
 	}
 
 	public function hook_row_index($column_index, &$column_value)
 	{
-		$for_spare_parts_release_carry_in = DB::table('transaction_status')->where('id', '29')->first();
+		$callout_ordering_spare_part = DB::table('transaction_status')->where('id', '33')->first();
 		$for_tech_assessment_iw = DB::table('transaction_status')->where('id', '47')->first();
 
 		if ($column_index == 1) {
-			if ($column_value == $for_spare_parts_release_carry_in->id) {
-				$column_value = '<span class="label label-warning">' . $for_spare_parts_release_carry_in->status_name . '</span>';
+			if ($column_value == $callout_ordering_spare_part->id) {
+				$column_value = '<span class="label label-warning">' . $callout_ordering_spare_part->status_name . '</span>';
 			}
 			if ($column_value == $for_tech_assessment_iw->id) {
 				$column_value = '<span class="label label-warning">' . $for_tech_assessment_iw->status_name . '</span>';
@@ -145,10 +146,51 @@ class AdminSparePartsReceivingController extends \crocodicstudio\crudbooster\con
 		$data['imfs'] = DB::table('product_item_master')->where('status', 'ACTIVE')->get();
 		$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
 		$data['TechTesting'] = DB::table('tech_testing')->where('test_type_status', 'ACTIVE')->where('model_group_id', '!=', NULL)->orderBy('description', 'ASC')->get();
+		$data['CallOutCount'] = DB::table('call_out_recorder')->where('returns_header_id', $id)->where('status_id', $data['transaction_details']->repair_status)->count();
 
 		$this->cbView('transaction_details.view_created_transaction_detail', $data);
 	}
 
+	public function receiveSparePart(Request $request)
+	{
+		$spare_parts_id = $request->spare_parts_id;
+		$header_id = $request->header_id;
 
+		DB::beginTransaction();
 
+		try {
+			DB::table('parts_item_master')->where('id', $spare_parts_id)
+				->update([
+					'qty' => DB::raw('qty + 1'),
+					'updated_by' => CRUDBooster::myId(),
+					'updated_at' => now(),
+				]);
+
+			DB::table('returns_body_item')->where('returns_header_id', $header_id)
+				->where('item_parts_id', $spare_parts_id)
+				->update([
+					'qty' => DB::raw('qty + 1'),
+					'qty_status' => 'Available',
+					'item_spare_additional_type' => 'Additional-Required-Yes',
+					'updated_by' => CRUDBooster::myId(),
+					'updated_at' => now(),
+				]);
+
+			DB::table('inventory_reservations')->insert([
+				'parts_item_master_id' => $spare_parts_id,
+				'return_header_id' => $header_id,
+				'reserved_qty' => 1,
+				'created_by' => CRUDBooster::myId(),
+				'created_at' => now(),
+				'updated_at' => now(),
+			]);
+
+			DB::commit();
+			return response()->json(['success' => true, 'message' => 'Spare part received successfully.']);
+		} catch (\Exception $e) {
+			DB::rollBack();
+			Log::error('Error receiving spare part: ' . $e->getMessage());
+			return response()->json(['success' => false, 'message' => 'Failed to receive spare part.'], 500);
+		}
+	}
 }
