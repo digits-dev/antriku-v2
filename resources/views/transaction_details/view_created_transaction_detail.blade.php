@@ -99,6 +99,8 @@
             @endif
 
             @include('transaction_details.uploade_airwaybill')
+            @include('transaction_details.uploade_rpf')
+            
 
             <section class="card-cust" style="border-radius: 0rem; padding: 1.2rem; border-top: 2px solid #e2e8f0">
               

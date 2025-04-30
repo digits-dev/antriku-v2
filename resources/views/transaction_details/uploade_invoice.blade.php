@@ -35,7 +35,7 @@
             align-items: center;
         }
 
-        #drop-area {
+        #drop-area-invoice {
             width: 500px;
             height: 150px;
             background: #fff;
@@ -277,7 +277,7 @@
                     <span class="header">Upload Invoice</span>
                     <p> Upload image (Invoice).</p>
                     <div class="upload-file-container">
-                        <label for="invoice" id="drop-area">
+                        <label for="invoice" id="drop-area-invoice">
                             <input required id="invoice" name="invoice" type="file" accept="image/*"
                             style="position: absolute; z-index: -1;">
                             <div class="image-view" id="image-view">
@@ -436,17 +436,17 @@
         });
 
 
-        $('#drop-area').on('dragover', function(e) {
+        $('#drop-area-invoice').on('dragover', function(e) {
             e.preventDefault();
             dropArea.addClass("drag-over");
         })
-        $('#drop-area').on("dragleave", function(e) {
+        $('#drop-area-invoice').on("dragleave", function(e) {
             e.preventDefault();
             dropArea.removeClass("drag-over");
             imageView.removeClass("drag-over");
         });
 
-        $('#drop-area').on('drop', function(e) {
+        $('#drop-area-invoice').on('drop', function(e) {
             e.preventDefault();
             dropArea.removeClass("drag-over"); 
             imageView.addClass("drag-over"); 

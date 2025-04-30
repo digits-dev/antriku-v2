@@ -35,20 +35,26 @@ class AdminSparePartsReceivingController extends \crocodicstudio\crudbooster\con
 
 		# START COLUMNS DO NOT REMOVE THIS LINE
 		$this->col = [];
-		$this->col[] = ["label" => "Repair Status", "name" => "repair_status"];
+		$this->col[] = ["label" => "Status", "name" => "repair_status"];
 		$this->col[] = ["label" => "Reference No", "name" => "reference_no"];
 		$this->col[] = ["label" => "Model Group", "name" => "model"];
+		$this->col[] = ["label" => "Warranty Status", "name" => "warranty_status"];
+		$this->col[] = ["label" => "Case Status", "name" => "case_status"];
+		$this->col[] = ["label" => "Technician Assigned", "name" => "technician_id", 'join' => 'cms_users,name'];
+		$this->col[] = ["label" => "Date Received", "name" => "technician_accepted_at"];
+		$this->col[] = ["label" => "Branch", "name" => "branch", 'join' => 'branch,branch_name'];
 		# END COLUMNS DO NOT REMOVE THIS LINE
 
 	}
 
 	public function hook_query_index(&$query)
 	{
-		$query->whereIn('repair_status', [33, 47])->orderBy('id', 'ASC');
+		$query->whereIn('repair_status', [26,33, 47])->orderBy('id', 'ASC');
 	}
 
 	public function hook_row_index($column_index, &$column_value)
 	{
+		$awaiting_apple_repair = DB::table('transaction_status')->where('id', '26')->first();
 		$callout_ordering_spare_part = DB::table('transaction_status')->where('id', '33')->first();
 		$for_tech_assessment_iw = DB::table('transaction_status')->where('id', '47')->first();
 
@@ -59,6 +65,9 @@ class AdminSparePartsReceivingController extends \crocodicstudio\crudbooster\con
 			if ($column_value == $for_tech_assessment_iw->id) {
 				$column_value = '<span class="label label-warning">' . $for_tech_assessment_iw->status_name . '</span>';
 			}
+			if ($column_value == $awaiting_apple_repair->id) {
+				$column_value = '<span class="label label-warning">' . $awaiting_apple_repair->status_name . '</span>';
+			}
 		}
 
 		if ($column_index == 3) {
@@ -68,6 +77,18 @@ class AdminSparePartsReceivingController extends \crocodicstudio\crudbooster\con
 				$column_value = '<span class="label label-info">' . $model_group->model_group_name . '</span>';
 			}
 		}
+		if($column_index == 4){
+			if($column_value == 'IN WARRANTY'){
+				$column_value = '<span style="color: #00B74A"><strong>'.$column_value.'</strong></span>';
+			}elseif($column_value == 'OUT OF WARRANTY'){
+				$column_value = '<span style="color: #F93154"><strong>'.$column_value.'</strong></span>';
+			}
+		}
+
+		if($column_index == 5){
+			$column_value = '<span style="color: #1266F1"><strong>'.$column_value.'</strong></span>';
+		}
+		
 	}
 
 	public function cbView($template, $data)

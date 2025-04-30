@@ -35,7 +35,7 @@
             align-items: center;
         }
 
-        #drop-area-waybill {
+        #drop-area-rpf-invoice {
             width: 500px;
             height: 150px;
             background: #fff;
@@ -243,7 +243,7 @@
         </style>
 @endpush
 
-@if(request()->segment(3) == "edit" && in_array($transaction_details->repair_status, [15, 16]))
+@if(request()->segment(3) == "edit" && in_array($transaction_details->repair_status, [21]))
 <div class="row">
     <div class="col-md-12">
         <div class="row"> 
@@ -252,40 +252,18 @@
                     <div style="background: rgba(255, 255, 255, 0.911); padding: 2px 7px 2px 7px; border-radius: 20%; margin-right: 3px">
                         <i class="bi bi-tools"></i>
                     </div>
-                    Airwaybill 
+                    Replacement Parts Fee
                 </div>
             </div> 
         </div> 
-      
-        @if (is_null($transaction_details->airwaybill_tn))
-        <div class="col-md-12" style="margin: 10px;" >
-            <div style="width: 50%;">
-                <label class="label-cus" style="margin-bottom: 6px;">
-                    <span class="required">*</span> Airwaybill Tracking Number
-                </label>
-                <input type="text" name="airwaybill_tn" placeholder="Enter Airwaybill Tracking Number"
-                       class="input-cus" autocomplete="off" required />
-            </div>
-        </div>
-        <br>
-        @else
-   
-        @endif
-        @if (in_array($transaction_details->repair_status, [16]))
+        
         <div class="upload-receipt">
-            <div>
-                <div class="info-grid-cust">
-                    <div class="info-item-cust">
-                        <div class="info-label-cust">Airwaybill Tracking Number</div>
-                        <div class="info-value-cust">{{ $transaction_details->airwaybill_tn ?? 'N/A' }}</div>
-                    </div>
-                </div>
-                <div class="upload-card">     
-                    <span class="header">Upload Airwaybill</span>
-                    <p> Upload image (waybill).</p>
+                <div class="upload-card">
+                    <span class="header">Upload RPF Invoice</span>
+                    <p> Upload image (Invoice).</p>
                     <div class="upload-file-container">
-                        <label for="waybill" id="drop-area-waybill">
-                            <input required id="waybill" name="waybill" type="file" accept="image/*"
+                        <label for="rpf_invoice" id="drop-area-rpf-invoice">
+                            <input required id="rpf_invoice" name="rpf_invoice" type="file" accept="image/*"
                             style="position: absolute; z-index: -1;">
                             <div class="image-view" id="image-view">
                                 <div id="upload-text">
@@ -308,10 +286,9 @@
                     </label>
                 </div>
             </div>
-            </div>
             <div class="preview" id="preview">
-                <span class="header"> Airwaybill Image Preview</span>
-                <p>View and verify your waybill image before uploading</p>
+                <span class="header">RPF Invoice Image Preview</span>
+                <p>View and verify your RPF invoice image before uploading</p>
                 <div class="image-preview" id="image-preview">
                     <div id="no-receipt-message" style="font-size: 14px; color: #777;">
                         <i class="fa fa-exclamation-circle" aria-hidden="true" style="font-size: 40px"></i>
@@ -319,19 +296,17 @@
                             No Image Selected
                         </p>
                         <p>
-                            Upload a waybill using the form on the left to see a preview here
+                            Upload an RPF invoice using the form on the left to see a preview here
                         </p>
                     </div>
                 </div>
                 
             </div>
         </div>
-        @endif
-    
     </div>
 </div>
 @else
-    @if (!is_null($transaction_details->airwaybill_upload))
+    @if (!is_null($transaction_details->rpf_invoice))
     <div class="row">
         <div class="col-md-12">
             <div class="row"> 
@@ -340,19 +315,14 @@
                         <div style="background: rgba(255, 255, 255, 0.911); padding: 2px 7px 2px 7px; border-radius: 20%; margin-right: 3px">
                             <i class="bi bi-tools"></i>
                         </div>
-                        Uploaded Airwaybill
+                        Replacement Parts Fee
                     </div>
                 </div> 
             </div> 
             <div class="card-body-cust">
-                <div class="info-grid-cust" style="width: 50%;">
-                    <div class="info-item-cust">
-                        <div class="info-label-cust">Airwaybill Tracking Number</div>
-                        <div class="info-value-cust">{{ $transaction_details->airwaybill_tn ?? 'N/A' }}</div>
-                    </div>
-                </div>
+                <div class="info-label-cust">RPF Invoice</div>
                 <div class="uploaded-image-container">
-                    <img class="uploaded-image" src="{{ Storage::url('waybill_upload/' . $transaction_details->airwaybill_upload) }}" alt="Airwaybill">
+                    <img class="uploaded-image" src="{{ Storage::url('rpf_invoice/' . $transaction_details->rpf_invoice) }}" alt="rpf_invoice">
                 </div>
             </div>
         </div>
@@ -368,7 +338,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             const dropArea = $("#image-view");
-            const inputFile = $("#waybill");
+            const inputFileRPF = $("#rpf_invoice");
             const imageView = $("#image-preview");
             const removeBtn = $("#remove-btn");
             const fileNameText = $("#file-name");
@@ -381,12 +351,12 @@
 
   
 
-            inputFile.on("change", uploadImage);
+            inputFileRPF.on("change", uploadImageRPF);
             removeBtn.on("click", removeImage);
      
-            function uploadImage() {
+            function uploadImageRPF() {
                 $(".image-upload").remove();
-                let file = inputFile.prop("files")[0]; 
+                let file = inputFileRPF.prop("files")[0]; 
 
                 if (file && isImage(file.name)) {
                     let img = $("<img>").addClass("image-upload");
@@ -413,7 +383,7 @@
             }
 
             function removeImage() {
-                inputFile.val(""); 
+                inputFileRPF.val(""); 
                 fileInfo.hide();
                 removeBtn.hide();
                 uploadText.show();
@@ -440,25 +410,25 @@
         });
 
 
-        $('#drop-area-waybill').on('dragover', function(e) {
+        $('#drop-area-rpf-invoice').on('dragover', function(e) {
             e.preventDefault();
             dropArea.addClass("drag-over");
         })
-        $('#drop-area-waybill').on("dragleave", function(e) {
+        $('#drop-area-rpf-invoice').on("dragleave", function(e) {
             e.preventDefault();
             dropArea.removeClass("drag-over");
             imageView.removeClass("drag-over");
         });
 
-        $('#drop-area-waybill').on('drop', function(e) {
+        $('#drop-area-rpf-invoice').on('drop', function(e) {
             e.preventDefault();
             dropArea.removeClass("drag-over"); 
             imageView.addClass("drag-over"); 
 
             const droppedFiles = e.originalEvent.dataTransfer.files;
             if (droppedFiles.length > 0) {
-                inputFile.prop("files", droppedFiles);
-                uploadImage();
+                inputFileRPF.prop("files", droppedFiles);
+                uploadImageRPF();
             }
         });
 
@@ -469,6 +439,8 @@
             let ext = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase();
             return imageExtensions.includes(ext);
         }
+
+      
 
     </script>
 @endpush

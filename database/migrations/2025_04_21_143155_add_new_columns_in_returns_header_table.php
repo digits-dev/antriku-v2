@@ -28,6 +28,7 @@ class AddNewColumnsInReturnsHeaderTable extends Migration
             $table->string('airwaybill_tn')->nullable();
             $table->string('airwaybill_upload')->nullable();
             $table->string('invoice_number')->nullable();
+            $table->string('rpf_invoice_number')->nullable();
         });
     }
 
@@ -53,7 +54,7 @@ class AddNewColumnsInReturnsHeaderTable extends Migration
             $table->dropColumn('airwaybill_tn');
             $table->dropColumn('airwaybill_upload');
             $table->dropColumn('invoice_number');
-            
+            $table->dropColumn('rpf_invoice_number');
         });
     }
 }

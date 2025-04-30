@@ -344,6 +344,9 @@
             if(status_id == 17){
                 formData.append("waybill", $("#waybill")[0].files[0]); 
             }
+            if(status_id == 23){
+                formData.append("rpf_invoice", $("#rpf_invoice")[0].files[0]); 
+            }
 
         swal({
             title: case_status == 'MAIL-IN' && status_id == 20 ? "This will change the Warranty Status to Out of Warranty" : "Are you sure?",
@@ -374,92 +377,43 @@
                                 location.reload();
                             });
                         }
-                        else if(status_id == 8){
-                            swal({ title: "Info!", text: "STATUS: TO PAY DIAGNOSTIC", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                            }, function(){
-                                window.location.href = window.location.origin+"/admin/to_diagnose";
-                            });
-                        }else if ([12, 21].includes(status_id)) {
-                            swal({ title: "Info!", text: "AWAITING CUSTOMER APPROVAL (MAIL-IN)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                            }, function(){
-                                window.location.href = window.location.origin+"/admin/to_diagnose";
-                            });
-                        } else if ([14, 23].includes(status_id)) {
-                            swal({ title: "Info!", text: "FOR INPUT GSX KBB (MAIL IN)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                            }, function(){
-                                window.location.href = window.location.origin+"/admin/to_diagnose";
-                            });
-                        }  else if (status_id == 15) {
-                            swal({ title: "Info!", text: "FOR MAIL IN KBB (MAIL IN)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                            }, function(){
-                                window.location.href = window.location.origin+"/admin/to_diagnose";
-                            });
-                        } else if (status_id == 16) {
-                            swal({ title: "Info!", text: "AWAITING FOR PICK UP (LOGISTICS)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                            }, function(){
-                                window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
-                            });
+                        else {
+                            const statusMessages = {
+                                8: "STATUS: TO PAY DIAGNOSTIC",
+                                12: "AWAITING CUSTOMER APPROVAL (MAIL-IN)",
+                                21: "AWAITING CUSTOMER APPROVAL (MAIL-IN)",
+                                14: "FOR INPUT GSX KBB (MAIL IN)",
+                                23: "FOR INPUT GSX KBB (MAIL IN)",
+                                15: "FOR MAIL IN KBB (MAIL IN)",
+                                16: "AWAITING FOR PICK UP (LOGISTICS)",
+                                17: "AWAITING APPLE REPAIR",
+                                26: "AWAITING APPLE REPAIR",
+                                18: "FOR TECH ASSESSMENT",
+                                19: "CALLOUT: AWAITING CUSTOMER PICK UP (GOOD UNIT)",
+                                20: "CALLOUT: FOR CUSTOMER PAYMENT (PARTS)",
+                                22: "AWAITING CUSTOMER APPROVAL (MAIL-IN)",
+                                27: "FOR TECH ASSESSMENT",
+                                28: "CALLOUT: AWAITING CUSTOMER PICK UP (GOOD UNIT)",
+                                47: "AWAITING APPLE REPAIR (IW)",
+                                29: "For Spare part release (Carry In)",
+                                30 : "FOR ORDER SPARE PART (CARRY IN)"
+                                31: "SPARE PART RELEASED",
+                                33: "CALLOUT: ORDERING SPARE PARTS",
+                                34: "ON GOING REPAIR",
+                                35: "CALLOUT: ADDITIONAL SPARE PARTS (CARRY IN)"
+                            };
 
-                        }  else if (status_id == 17) {
-                            swal({ title: "Info!", text: "AWAITING APPLE REPAIR", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                            }, function(){
-                                window.location.href = window.location.origin+"/admin/pending_mail_in_shipment";
-                            });
-                        } else if (status_id == 18) {
-                            swal({ title: "Info!", text: "FOR TECH ASSESSMENT", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                            }, function(){
-                                window.location.href = window.location.origin+"/admin/spare_parts_receiving";
-                            });
-                        } else if (status_id == 19) {
-                            swal({ title: "Info!", text: "CALLOUT: AWAITING CUSTOMER PICK UP (GOOD UNIT)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                            }, function(){
-                                window.location.href = window.location.origin+"/admin/spare_parts_receiving";
-                            });
-                        }else if (status_id == 20) {
-                            swal({ title: "Info!", text: "CALLOUT: FOR CUSTOMER PAYMENT (PARTS)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                            }, function(){
-                                window.location.href = window.location.origin+"/admin/to_diagnose";
-                            });
-                        }else if (status_id == 22) {
-                            swal({ title: "Info!", text: "AWAITING CUSTOMER APPROVAL (MAIL-IN)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                            }, function(){
-                                window.location.href = window.location.origin+"/admin/to_diagnose";
-                            });
-                        }  else if (status_id == 47) {
-                            swal({ title: "Info!", text: "AWAITING APPLE REPAIR (IW)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                            }, function(){
-                                window.location.href = window.location.origin+"/admin/to_diagnose";
-                            });
-                        }  else if (status_id == 29) {
-                            swal({ title: "Info!", text: "For Spare part release (Carry In)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                            }, function(){
-                                window.location.href = window.location.origin+"/admin/to_diagnose";
-                            });
-                        } else if (status_id == 30) {
-                            swal({ title: "Info!", text: "FOR ORDER SPARE PART (CARRY IN)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                            }, function(){
-                                window.location.href = window.location.origin+"/admin/to_diagnose";
-                            });
-                        } else if (status_id == 31) {
-                            swal({ title: "Info!", text: "SPARE PART RELEASED", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                            }, function(){
-                                window.location.href = window.location.origin+"/admin/spare_parts_releasing";
-                            });
-                        } else if (status_id == 33) {
-                            swal({ title: "Info!", text: "CALLOUT: ORDERING SPARE PARTS", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                            }, function(){
-                                window.location.href = window.location.origin+"/admin/pending_repair";
-                            });
-                        } else if (status_id == 34) {
-                            swal({ title: "Info!", text: "ON GOING REPAIR ", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                            }, function(){
-                                window.location.href = window.location.origin+"/admin/pending_repair";
-                            });
-                        } else if (status_id == 35) {
-                            swal({ title: "Info!", text: "CALLOUT: ADDITIONAL SPARE PARTS (CARRY IN)", type: "info", confirmButtonClass: "btn-primary", confirmButtonText: "OK",
-                            }, function(){
-                                window.location.href = window.location.origin+"/admin/pending_repair";
-                            });
+                            if (statusMessages[status_id]) {
+                                swal({
+                                    title: "Info!",
+                                    text: statusMessages[status_id],
+                                    type: "info",
+                                    confirmButtonClass: "btn-primary",
+                                    confirmButtonText: "OK"
+                                }, function () {
+                                    window.location.href = "{{ CRUDBooster::mainpath() }}";
+                                });
+                            }
                         }
                     }
                 });

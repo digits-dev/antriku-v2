@@ -30,12 +30,14 @@
 
 			# START COLUMNS DO NOT REMOVE THIS LINE
 			$this->col = [];
-			$this->col[] = ["label"=>"Status","name"=>"repair_status"];
-			$this->col[] = ["label"=>"Reference No","name"=>"reference_no"];
-			$this->col[] = ["label"=>"Model Group","name"=>"model"];
-			$this->col[] = ["label"=>"Technician Assigned","name"=>"technician_id", 'join' => 'cms_users,name'];
-			$this->col[] = ["label"=>"Date Received","name"=>"technician_accepted_at"];
-			$this->col[] = ["label"=>"Branch","name"=>"branch", 'join' => 'branch,branch_name' ];
+			$this->col[] = ["label" => "Status", "name" => "repair_status"];
+			$this->col[] = ["label" => "Reference No", "name" => "reference_no"];
+			$this->col[] = ["label" => "Model Group", "name" => "model"];
+			$this->col[] = ["label" => "Warranty Status", "name" => "warranty_status"];
+			$this->col[] = ["label" => "Case Status", "name" => "case_status"];
+			$this->col[] = ["label" => "Technician Assigned", "name" => "technician_id", 'join' => 'cms_users,name'];
+			$this->col[] = ["label" => "Date Received", "name" => "technician_accepted_at"];
+			$this->col[] = ["label" => "Branch", "name" => "branch", 'join' => 'branch,branch_name'];
 
 			$this->addaction = array();
 			if (CRUDBooster::myPrivilegeId() == 8) {
@@ -78,7 +80,7 @@
 
 
 		public function hook_query_index(&$query) {
-			$query->whereIn('repair_status', [1,9,13,15,16,18,19,24])->where('print_receive_form', 'YES')->orderBy('id', 'ASC'); 
+			$query->whereIn('repair_status', [1,9,13,15,16,18,19,23,24])->where('print_receive_form', 'YES')->orderBy('id', 'ASC'); 
 	    }
  
 		public function hook_row_index($column_index,&$column_value) 
@@ -119,6 +121,17 @@
 					$model_group = DB::table('model_group')->where('id',$models->model_group)->first();
 					$column_value = '<span class="label label-info">'.$model_group->model_group_name.'</span>';
 				}
+			}
+			if($column_index == 4){
+				if($column_value == 'IN WARRANTY'){
+					$column_value = '<span style="color: #00B74A"><strong>'.$column_value.'</strong></span>';
+				}elseif($column_value == 'OUT OF WARRANTY'){
+					$column_value = '<span style="color: #F93154"><strong>'.$column_value.'</strong></span>';
+				}
+			}
+	
+			if($column_index == 5){
+				$column_value = '<span style="color: #1266F1"><strong>'.$column_value.'</strong></span>';
 			}
 
 	    }

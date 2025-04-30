@@ -42,11 +42,11 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		$this->col[] = ["label" => "Status", "name" => "repair_status"];
 		$this->col[] = ["label" => "Reference No", "name" => "reference_no"];
 		$this->col[] = ["label" => "Model Group", "name" => "model"];
+		$this->col[] = ["label" => "Warranty Status", "name" => "warranty_status"];
+		$this->col[] = ["label" => "Case Status", "name" => "case_status"];
 		$this->col[] = ["label" => "Technician Assigned", "name" => "technician_id", 'join' => 'cms_users,name'];
 		$this->col[] = ["label" => "Date Received", "name" => "technician_accepted_at"];
 		$this->col[] = ["label" => "Branch", "name" => "branch", 'join' => 'branch,branch_name'];
-		// $this->col[] = ["label"=>"Print Technical Report","name"=>"print_technical_report"];
-		# END COLUMNS DO NOT REMOVE THIS LINE
 
 		$this->addaction = array();
 
@@ -184,18 +184,10 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		//Your code here
 
 		if (CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6) {
-			$query->whereIn('repair_status', [1, 10, 14, 17, 18, 20])->where('print_receive_form', 'YES')->orderBy('id', 'ASC');
+			$query->whereIn('repair_status', [1, 10, 14, 17, 18, 20,23,27])->where('print_receive_form', 'YES')->orderBy('id', 'ASC');
 		} else if (in_array(CRUDBooster::myPrivilegeId(), [4, 8])) {
-			$query->whereIn('repair_status', [1, 10, 14, 17, 18, 20])->where('print_receive_form', 'YES')->where('technician_id', CRUDBooster::myId())->orderBy('id', 'ASC');
-		} else {
-			$query->where('repair_status', 1)->where('branch', CRUDBooster::me()->branch_id);
-			if (!empty(Session::get('toggle')) && Session::get('toggle') == "ON") {
-				$query->where('updated_by', CRUDBooster::me()->id)->orderBy('id', 'ASC');
-			} else {
-				// $query->where('branch', CRUDBooster::me()->branch_id)->orderBy('id', 'ASC'); 
-				$query->orderBy('id', 'ASC');
-			}
-		}
+			$query->whereIn('repair_status', [1, 10, 14, 17, 18, 20,23,27])->where('print_receive_form', 'YES')->where('technician_id', CRUDBooster::myId())->orderBy('id', 'ASC');
+		} 
 	}
 
 	public function hook_row_index($column_index, &$column_value)
@@ -207,6 +199,8 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		$awaiting_apple_repair = DB::table('transaction_status')->where('id', '17')->first();
 		$for_tech_assessment = DB::table('transaction_status')->where('id', '18')->first();
 		$for_customers_payment_parts = DB::table('transaction_status')->where('id', '20')->first();
+		$for_input_gsx_kbb_oow = DB::table('transaction_status')->where('id', '23')->first();
+		$for_tech_assessment_oow = DB::table('transaction_status')->where('id', '27')->first();
 
 
 
@@ -223,7 +217,11 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 				$column_value = '<span class="label label-warning">' . $for_tech_assessment->status_name . '</span>';
 			} elseif ($column_value == $for_customers_payment_parts->id) {
 				$column_value = '<span class="label label-warning">' . $for_customers_payment_parts->status_name . '</span>';
-			}
+			} elseif ($column_value == $for_input_gsx_kbb_oow->id) {
+				$column_value = '<span class="label label-warning">' . $for_input_gsx_kbb_oow->status_name . '</span>';
+			} elseif ($column_value == $for_tech_assessment_oow->id) {
+				$column_value = '<span class="label label-warning">' . $for_tech_assessment_oow->status_name . '</span>';
+			} 
 		}
 
 		if ($column_index == 3) {
@@ -233,6 +231,19 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 				$column_value = '<span class="label label-info">' . $model_group->model_group_name . '</span>';
 			}
 		}
+		
+		if($column_index == 4){
+			if($column_value == 'IN WARRANTY'){
+				$column_value = '<span style="color: #00B74A"><strong>'.$column_value.'</strong></span>';
+			}elseif($column_value == 'OUT OF WARRANTY'){
+				$column_value = '<span style="color: #F93154"><strong>'.$column_value.'</strong></span>';
+			}
+		}
+
+		if($column_index == 5){
+			$column_value = '<span style="color: #1266F1"><strong>'.$column_value.'</strong></span>';
+		}
+
 	}
 
 	// CHANGE TRANSACTION STATUS
@@ -425,8 +436,8 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 
 		// *********************************************************************************************
 
-		$status_array = [1, 14, 15, 16, 17, 29, 30, 31, 33, 34, 35, 36, 18, 19, 20, 21, 22, 47];
-		if (in_array($request->status_id, $status_array)) {
+		$status_array = [1, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 26, 27, 28, 29, 30, 31, 33, 34, 35, 36, 47];
+		    if(in_array($request->status_id, $status_array)){
 			DB::table('returns_header')->where('id', $request->header_id)->update([
 				'repair_status' 			=> $request->status_id,
 				'updated_by'            	=> CRUDBooster::myId()
@@ -475,6 +486,28 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 			DB::table('returns_header')->where('id', $request->header_id)->update([
 				'warranty_status'   => $all_data['warranty_status'],
 			]);
+		}
+		if($request->status_id == 23){
+			if ($request->hasFile('rpf_invoice')) {
+				$file = $request->file('rpf_invoice');
+				$filename =    time() .  '_' . $request->header_id . '_' . $file->getClientOriginalName() ;
+				$path = $file->storeAs('public/rpf_invoice', $filename);
+				
+				DB::table('returns_header')->where('id',$request->header_id)->update([
+					'rpf_invoice'   => $filename,
+				]);
+			}
+		}
+		if($request->status_id == 23){
+			if ($request->hasFile('rpf_invoice')) {
+				$file = $request->file('rpf_invoice');
+				$filename =    time() .  '_' . $request->header_id . '_' . $file->getClientOriginalName() ;
+				$path = $file->storeAs('public/rpf_invoice', $filename);
+				
+				DB::table('returns_header')->where('id',$request->header_id)->update([
+					'rpf_invoice'   => $filename,
+				]);
+			}
 		}
 
 		if ($request->status_id == 29 && $all_data['recent_treansaction_status'] != 33) {

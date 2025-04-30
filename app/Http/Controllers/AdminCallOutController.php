@@ -38,6 +38,8 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 		$this->col[] = ["label" => "Status", "name" => "repair_status"];
 		$this->col[] = ["label" => "Reference No", "name" => "reference_no"];
 		$this->col[] = ["label" => "Model Group", "name" => "model"];
+		$this->col[] = ["label" => "Warranty Status", "name" => "warranty_status"];
+		$this->col[] = ["label" => "Case Status", "name" => "case_status"];
 		$this->col[] = ["label" => "Technician Assigned", "name" => "technician_id", 'join' => 'cms_users,name'];
 		$this->col[] = ["label" => "Date Received", "name" => "technician_accepted_at"];
 		$this->col[] = ["label" => "Branch", "name" => "branch", 'join' => 'branch,branch_name'];
@@ -97,6 +99,20 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 				$column_value = '<span class="label label-info">' . $model_group->model_group_name . '</span>';
 			}
 		}
+
+		if($column_index == 4){
+			if($column_value == 'IN WARRANTY'){
+				$column_value = '<span style="color: #00B74A"><strong>'.$column_value.'</strong></span>';
+			}elseif($column_value == 'OUT OF WARRANTY'){
+				$column_value = '<span style="color: #F93154"><strong>'.$column_value.'</strong></span>';
+			}
+		}
+
+		if($column_index == 5){
+			$column_value = '<span style="color: #1266F1"><strong>'.$column_value.'</strong></span>';
+		}
+		
+
 	}
 
 	public function cbView($template, $data)
