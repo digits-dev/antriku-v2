@@ -152,15 +152,15 @@
 
         //************************Validation for Array************************
 
-        const doaToggle = document.getElementById('doa-toggle');
-        if(!doaToggle.checked){
-            if(checkIfDuplicateExists(getscValue)){
-                setTimeout(function () {
-                    swal('Error!','The Spare Part you entered is already in the list.','error');
-                }, 1000);
-                return false;
-            }
-        }
+        // const doaToggle = document.getElementById('doa-toggle');
+        // if(!doaToggle.checked){
+        //     if(checkIfDuplicateExists(getscValue)){
+        //         setTimeout(function () {
+        //             swal('Error!','The Spare Part you entered is already in the list.','error');
+        //         }, 1000);
+        //         return false;
+        //     }
+        // }
 
         for(var i=0; i < getitemValue.length-1; ++i) {
             if(isEmptyOrSpaces(getitemValue[i]) == true){
@@ -381,26 +381,26 @@
                             const statusMessages = {
                                 8: "STATUS: TO PAY DIAGNOSTIC",
                                 12: "AWAITING CUSTOMER APPROVAL (MAIL-IN)",
-                                21: "AWAITING CUSTOMER APPROVAL (MAIL-IN)",
                                 14: "FOR INPUT GSX KBB (MAIL IN)",
-                                23: "FOR INPUT GSX KBB (MAIL IN)",
                                 15: "FOR MAIL IN KBB (MAIL IN)",
                                 16: "AWAITING FOR PICK UP (LOGISTICS)",
                                 17: "AWAITING APPLE REPAIR",
-                                26: "AWAITING APPLE REPAIR",
                                 18: "FOR TECH ASSESSMENT",
                                 19: "CALLOUT: AWAITING CUSTOMER PICK UP (GOOD UNIT)",
                                 20: "CALLOUT: FOR CUSTOMER PAYMENT (PARTS)",
+                                21: "AWAITING CUSTOMER APPROVAL (MAIL-IN)",
                                 22: "AWAITING CUSTOMER APPROVAL (MAIL-IN)",
+                                23: "FOR INPUT GSX KBB (MAIL IN)",
+                                26: "AWAITING APPLE REPAIR",
                                 27: "FOR TECH ASSESSMENT",
                                 28: "CALLOUT: AWAITING CUSTOMER PICK UP (GOOD UNIT)",
-                                47: "AWAITING APPLE REPAIR (IW)",
                                 29: "For Spare part release (Carry In)",
-                                30 : "FOR ORDER SPARE PART (CARRY IN)"
+                                30: "FOR ORDER SPARE PART (CARRY IN)",
                                 31: "SPARE PART RELEASED",
                                 33: "CALLOUT: ORDERING SPARE PARTS",
                                 34: "ON GOING REPAIR",
-                                35: "CALLOUT: ADDITIONAL SPARE PARTS (CARRY IN)"
+                                35: "CALLOUT: ADDITIONAL SPARE PARTS (CARRY IN)",
+                                47: "AWAITING APPLE REPAIR (IW)",
                             };
 
                             if (statusMessages[status_id]) {
