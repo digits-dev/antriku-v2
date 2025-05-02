@@ -6,6 +6,9 @@
             <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
         </button>
         <button type="submit" id="reject" onclick="return changeStatus(13)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
+        <button type="button" id="call_out" onclick="callOut(12)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+            <i class="fa fa-phone"></i> CALL OUT ({{ $CallOutCount }})
+        </button>
         @elseif ($transaction_details->repair_status == 47)
         <button type="button" id="call_out" onclick="callOut(47)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
             <i class="fa fa-phone"></i> CALL OUT ({{ $CallOutCount }})
@@ -15,7 +18,7 @@
   {{-- SPARE CUSTODIAN BUTTONS --}}
     @elseif (CRUDBooster::myPrivilegeId() == 9)
         @if ($transaction_details->repair_status == 15)
-        <button type="submit" id="save" onclick="return changeStatus(16)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+        <button type="submit" id="save" onclick="return validateBeforeChangeStatus(16)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
             <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
         </button>
         @elseif ($transaction_details->repair_status == 16)
@@ -71,6 +74,14 @@
         <button type="submit" id="save" onclick="return changeStatus(27)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
             <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
         </button>
+    @elseif ($transaction_details->repair_status == 24)
+        <button type="submit" id="save" onclick="return changeStatus(25)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+            <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
+        </button>
+    @elseif ($transaction_details->repair_status == 25)
+        <button type="submit" id="save" onclick="return changeStatus(26)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+            <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
+        </button>
     @endif
  
     {{-- LEAD TECH AND TECHNICIAN --}}
@@ -89,7 +100,7 @@
             </button>
         @elseif ($transaction_details->repair_status == 23)
             @if (is_null($transaction_details->airwaybill_upload))
-                <button type="submit" id="save" onclick="return changeStatus(21)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+                <button type="submit" id="save" onclick="return changeStatus(24)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
                     <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
                 </button>
             @else

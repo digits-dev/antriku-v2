@@ -332,13 +332,12 @@
             formData.append("all_item_desc", all_item_desc);
             formData.append("_token", '{!! csrf_token() !!}');
 
-        if(status_id == 17){
-            formData.append("waybill", $("#waybill")[0].files[0]); 
-        }
-
-        if(status_id == 23){
-            formData.append("rpf_invoice", $("#rpf_invoice")[0].files[0]); 
-        }
+            if([17,26].includes(status_id)){
+                formData.append("waybill", $("#waybill")[0].files[0]); 
+            }
+            if(status_id == 23){
+                formData.append("rpf_invoice", $("#rpf_invoice")[0].files[0]); 
+            }
 
         Swal.fire({
             icon: case_status == 'MAIL-IN' && status_id == 20 ? 'info' : 'question',
@@ -387,6 +386,8 @@
                                 21: "AWAITING CUSTOMER APPROVAL (MAIL-IN)",
                                 22: "AWAITING CUSTOMER APPROVAL (MAIL-IN)",
                                 23: "FOR INPUT GSX KBB (MAIL IN)",
+                                24: "FOR MAIL IN KBB (MAIL IN)",
+                                25: "AWAITING FOR PICK UP (LOGISTICS)",
                                 26: "AWAITING APPLE REPAIR",
                                 27: "FOR TECH ASSESSMENT",
                                 28: "CALLOUT: AWAITING CUSTOMER PICK UP (GOOD UNIT)",

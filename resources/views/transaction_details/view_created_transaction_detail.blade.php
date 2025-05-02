@@ -99,8 +99,13 @@
                 @include('carry_in.quotation')
             @endif
 
-            @include('transaction_details.uploade_airwaybill')
-            @include('transaction_details.uploade_rpf')
+            @if (!is_null($transaction_details->airwaybill_upload))
+                @include('transaction_details.uploade_airwaybill')
+                @include('transaction_details.uploade_rpf')
+            @else
+                @include('transaction_details.uploade_rpf')
+                @include('transaction_details.uploade_airwaybill')
+            @endif
             
 
             <section class="card-cust" style="border-radius: 0rem; padding: 1.2rem; border-top: 2px solid #e2e8f0">
@@ -114,20 +119,22 @@
                     <input type="hidden" id="repair_status" value="{{ $transaction_details->repair_status }}">
                     <input type="hidden" name="action" id="action" value="">
                     
-                    <div id="mailin" style="display: {{ $transaction_details->case_status === 'MAIL-IN' ? 'block' : 'none' }};">
-                        @include('mail_in.mail_in_buttons')
-                    </div>
-                    <div id="carry-in" style="display: {{ $transaction_details->case_status === 'CARRY-IN' ? 'block' : 'none' }};">
-                        @include('carry_in.carry_in_buttons')
-                    </div>
-
+                    @if (request()->segment(3) == "edit")
+                        <div id="mailin" style="display: {{ $transaction_details->case_status === 'MAIL-IN' ? 'block' : 'none' }};">
+                            @include('mail_in.mail_in_buttons')
+                        </div>
+                        <div id="carry-in" style="display: {{ $transaction_details->case_status === 'CARRY-IN' ? 'block' : 'none' }};">
+                            @include('carry_in.carry_in_buttons')
+                        </div>
+                    @endif
+                
                     @if($transaction_details->repair_status == 10 && CRUDBooster::getModulePath() == "to_diagnose")
                         <button type="submit" id="save" onclick="return changeStatus('save')" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-floppy-o" aria-hidden="true"></i> SAVE</button>
                         <button type="submit" id="reject" onclick="return changeStatus(3)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
                     @elseif($transaction_details->repair_status == 3 && CRUDBooster::getModulePath() == "to_close" && CRUDBooster::myPrivilegeId() != 2)
                         <button type="submit" id="void" onclick="return changeStatus(5)" class="btn btn-danger pull-right buttonSubmit"/><i class="fa fa-check-square-o" aria-hidden="true"></i> CANCELLED/CLOSE</button>
                     @endif 
-                    
+
             </div>
             </section>
             @if(request()->segment(3) == "edit") </form> @endif 

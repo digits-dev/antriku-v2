@@ -243,7 +243,7 @@
         </style>
 @endpush
 
-@if(request()->segment(3) == "edit" && in_array($transaction_details->repair_status, [15, 16]))
+@if(request()->segment(3) == "edit" && in_array($transaction_details->repair_status, [15, 16, 24, 25]))
 <div class="row">
     <div class="col-md-12">
         <div class="row"> 
@@ -271,7 +271,7 @@
         @else
    
         @endif
-        @if (in_array($transaction_details->repair_status, [16]))
+        @if (in_array($transaction_details->repair_status, [16, 25]))
         <div class="upload-receipt">
             <div>
                 <div class="info-grid-cust">

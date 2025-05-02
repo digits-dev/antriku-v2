@@ -80,38 +80,23 @@
 
 
 		public function hook_query_index(&$query) {
-			$query->whereIn('repair_status', [1,9,13,15,16,18,19,23,24])->where('print_receive_form', 'YES')->orderBy('id', 'ASC'); 
+			$query->whereNotIn('repair_status', [1, 8, 11, 19, 28 ])->where('print_receive_form', 'YES')->orderBy('id', 'ASC'); 
 	    }
  
-		public function hook_row_index($column_index,&$column_value) 
-		{	        
-			//Your code here
-			$pending = DB::table('transaction_status')->where('id','1')->first();
-			$ongoing_diagnosis = DB::table('transaction_status')->where('id','9')->first();
-			$ongoing_repair = DB::table('transaction_status')->where('id','13')->first();
-			$spare_sparts_received = DB::table('transaction_status')->where('id','15')->first();
-			$shipped_mail_in = DB::table('transaction_status')->where('id','16')->first();
-			$replacement_parts_paid = DB::table('transaction_status')->where('id','18')->first();
-			$for_parts_ordering = DB::table('transaction_status')->where('id','19')->first();
-			$to_assign = DB::table('transaction_status')->where('id','24')->first();
+		public function hook_row_index($column_index, &$column_value) 
+		{
+			if ($column_index == 1) {
+				
+				$statuses = DB::table('transaction_status')
+								->pluck('status_name', 'id');
 
-			if($column_index == 1){
-				if($column_value == $pending->id){
-					$column_value = '<span class="label label-warning">'.$pending->status_name.'</span>';
-				}elseif($column_value == $ongoing_diagnosis->id){
-					$column_value = '<span class="label label-warning">'.$ongoing_diagnosis->status_name.'</span>';
-				}elseif($column_value == $ongoing_repair->id){
-					$column_value = '<span class="label label-warning">'.$ongoing_repair->status_name.'</span>';
-				}elseif($column_value == $spare_sparts_received->id){
-					$column_value = '<span class="label label-warning">'.$spare_sparts_received->status_name.'</span>';
-				}elseif($column_value == $shipped_mail_in->id){
-					$column_value = '<span class="label label-warning">'.$shipped_mail_in->status_name.'</span>';
-				}elseif($column_value == $replacement_parts_paid->id){
-					$column_value = '<span class="label label-warning">'.$replacement_parts_paid->status_name.'</span>';
-				}elseif($column_value == $for_parts_ordering->id){
-					$column_value = '<span class="label label-warning">'.$for_parts_ordering->status_name.'</span>';
-				}elseif($column_value == $to_assign->id){
-					$column_value = '<span class="label label-warning" style="background-color: #00c0ef !important">'.$to_assign->status_name.'</span>';
+				$custom_styles = [
+					9 => 'background-color: #00c0ef !important', 
+				];
+	
+				if (isset($statuses[$column_value])) {
+					$style = $custom_styles[$column_value] ?? '';
+					$column_value = '<span class="label label-warning" style="'.$style.'">'.$statuses[$column_value].'</span>';
 				}
 			}
 
