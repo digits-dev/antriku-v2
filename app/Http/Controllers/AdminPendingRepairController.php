@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use crocodicstudio\crudbooster\helpers\CRUDBooster;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AdminPendingRepairController extends \crocodicstudio\crudbooster\controllers\CBController
 {
@@ -101,19 +103,18 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 				$column_value = '<span class="label label-info">' . $model_group->model_group_name . '</span>';
 			}
 		}
-		
-		if($column_index == 4){
-			if($column_value == 'IN WARRANTY'){
-				$column_value = '<span style="color: #00B74A"><strong>'.$column_value.'</strong></span>';
-			}elseif($column_value == 'OUT OF WARRANTY'){
-				$column_value = '<span style="color: #F93154"><strong>'.$column_value.'</strong></span>';
+
+		if ($column_index == 4) {
+			if ($column_value == 'IN WARRANTY') {
+				$column_value = '<span style="color: #00B74A"><strong>' . $column_value . '</strong></span>';
+			} elseif ($column_value == 'OUT OF WARRANTY') {
+				$column_value = '<span style="color: #F93154"><strong>' . $column_value . '</strong></span>';
 			}
 		}
 
-		if($column_index == 5){
-			$column_value = '<span style="color: #1266F1"><strong>'.$column_value.'</strong></span>';
+		if ($column_index == 5) {
+			$column_value = '<span style="color: #1266F1"><strong>' . $column_value . '</strong></span>';
 		}
-
 	}
 
 	public function cbView($template, $data)
@@ -194,5 +195,65 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 		$data['TechTesting'] = DB::table('tech_testing')->where('test_type_status', 'ACTIVE')->where('model_group_id', '!=', NULL)->orderBy('description', 'ASC')->get();
 
 		$this->cbView('transaction_details.view_created_transaction_detail', $data);
+	}
+
+	public function filterDoaSparePart(Request $request)
+	{
+		$get_spare_part = DB::table('parts_item_master')->where('id', $request->spare_parts_id)->first();
+
+		if (!empty($get_spare_part)) {
+			return response()->json(['success' => true, 'message' => 'Successfully filtered.', 'response_data' => $get_spare_part]);
+		} else {
+			return response()->json(['success' => false, 'message' => 'Successfully filtered.']);
+		}
+	}
+
+	public function saveDoaSparePart(Request $request)
+	{
+		$request->validate([
+			'header_id' => 'required|integer',
+			'spare_part_code' => 'required|string',
+			'doa_item_desc' => 'required|string',
+			'doa_item_qty' => 'required|numeric',
+			'doa_item_id' => 'required|integer',
+			'doa_item_price' => 'required|numeric',
+		]);
+
+		DB::beginTransaction();
+
+		try {
+			// Update existing record for DOA
+			DB::table('returns_body_item')
+				->where('returns_header_id', $request->header_id)
+				->where('item_parts_id', $request->doa_item_id)
+				->update([
+					'qty_status' => 'Available-DOA',
+					'updated_by' => CRUDBooster::myId(),
+					'updated_at' => now(),
+				]);
+
+			// Insert new DOA spare part
+			DB::table('returns_body_item')->insert([
+				'returns_header_id' => $request->header_id,
+				'item_description' => $request->doa_item_desc,
+				'service_code' => $request->spare_part_code,
+				'qty' => $request->doa_item_qty,
+				'qty_status' => $request->doa_item_qty > 0 ? 'Available' : 'Unavailable',
+				'item_parts_id' => $request->doa_item_id,
+				'item_spare_additional_type' => 'Additional-Standard-DOA',
+				'cost' => $request->doa_item_price,
+				'created_by' => CRUDBooster::myId(),
+				'created_at' => now(),
+			]);
+
+			DB::commit();
+
+			return response()->json(['success' => true, 'message' => 'DOA spare part saved successfully.']);
+		} catch (\Exception $e) {
+			DB::rollBack();
+			Log::error('Failed to save DOA spare part: ' . $e->getMessage());
+
+			return response()->json(['success' => false, 'message' => 'Failed to save DOA spare part.'], 500);
+		}
 	}
 }

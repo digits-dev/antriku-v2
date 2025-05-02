@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css">
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @include('include.css')
 <style>
     .content{

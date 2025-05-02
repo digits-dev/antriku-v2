@@ -177,22 +177,31 @@ class AdminSparePartsReceivingController extends \crocodicstudio\crudbooster\con
 		$spare_parts_id = $request->spare_parts_id;
 		$header_id = $request->header_id;
 
+		$get_item_if_exist = DB::table('returns_body_item')
+			->where('returns_header_id', $header_id)
+			->where('item_parts_id', $spare_parts_id)
+			->where('qty_status', '!=', 'Available-DOA')
+			->orderBy('id', 'DESC')
+			->first();
+
 		DB::beginTransaction();
 
 		try {
-			DB::table('parts_item_master')->where('id', $spare_parts_id)
+			DB::table('parts_item_master')->where('id', $get_item_if_exist->item_parts_id)
 				->update([
 					'qty' => DB::raw('qty + 1'),
 					'updated_by' => CRUDBooster::myId(),
 					'updated_at' => now(),
 				]);
-
-			DB::table('returns_body_item')->where('returns_header_id', $header_id)
-				->where('item_parts_id', $spare_parts_id)
+			
+				
+			DB::table('returns_body_item')->where('id', $get_item_if_exist->id)
 				->update([
 					'qty' => DB::raw('qty + 1'),
 					'qty_status' => 'Available',
-					'item_spare_additional_type' => 'Additional-Required-Yes',
+					'item_spare_additional_type' => $get_item_if_exist->item_spare_additional_type == 'Additional-Standard-DOA' 
+						? 'Additional-Standard-DOA-Yes' 
+						: 'Additional-Required-Yes',
 					'updated_by' => CRUDBooster::myId(),
 					'updated_at' => now(),
 				]);

@@ -1,4 +1,3 @@
-
 <script type="text/javascript">
 
     // preventing form submit for add fee button
@@ -87,12 +86,9 @@
         var getscValue = $('.getscValue').map((_,el) => el.value).get()
         $("#scArray").val(getscValue);
 
-        const doaToggle = document.getElementById('doa-toggle');
-        if(!doaToggle.checked){
-            if(checkIfDuplicateExists(getscValue)){
-                swal('Error!','The Spare Part you entered is already in the list.','error');
-                return false;
-            }
+        if(checkIfDuplicateExists(getscValue)){
+            swal('Error!','The Spare Part you entered is already in the list.','error');
+            return false;
         }
 
         if(isEmptyOrSpaces(gsx_ref) == false || isEmptyOrSpaces(cs_code) == false || isEmptyOrSpaces(service_code) == false || isEmptyOrSpaces(serial_no) == false || isEmptyOrSpaces(item_desc) == false || isEmptyOrSpaces(qty) == false || isEmptyOrSpaces(item_parts_id) || isEmptyOrSpaces(cost) == false)
@@ -157,7 +153,20 @@
                     {
                         let transaction_status = $('#transaction_status').val();
                         var showData = '';
-                        showData += '<tr class="nr row_num" id="rowID'+ result.quotation.id +'" style="background: ' + (result.item_spare_additional_type === 'Additional-Standard-DOA' ? '#443627' : (result.item_spare_additional_type !== 'Additional-Standard' && transaction_status == 34 ? '#FFC785' : '')) + ';"<input type="hidden" class="getidValue" name="header_id" value="'+ result.quotation.id +'">';
+                        let bgColor = '';
+
+                        if (result.quotation.item_spare_additional_type === 'Additional-Standard-DOA') {
+                            bgColor = '#443627';
+                            
+                        } else if (
+                            result.quotation.item_spare_additional_type !== 'Additional-Standard' &&
+                            result.quotation.item_spare_additional_type !== 'Additional-Standard-DOA' &&
+                            transaction_status == 34
+                        ) {
+                            bgColor = '#FFC785';
+                        }
+
+                        showData += '<tr class="nr row_num" id="rowID'+ result.quotation.id +'" style="background:' + bgColor + ';"><input type="hidden" class="getidValue" name="header_id" value="'+ result.quotation.id +'">';
                         showData += '<input type="hidden" name="header_id" value="">'; 
                         showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getscValue" type="text" id="service_code_'+ result.quotation.id +'" value="'+ result.quotation.service_code +'" placeholder="Enter Service Code" readonly style="background: lightgrey" /></td>';
                         showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getgsxValue" type="text" id="gsx_code_'+ result.quotation.id +'" oninput="gsx_data('+ result.quotation.id +')" value="'+ result.quotation.gsx_ref +'" placeholder="Enter GSX Reference"/></td>';
@@ -504,4 +513,343 @@
         $('.getitemparstidValue2').val('');
         $('.getcostValue2').val('');
     }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const additionalToggle = document.getElementById('additional-toggle');
+        const doaToggle = document.getElementById('doa-toggle');
+    
+        function updateStatus() {
+            if (additionalToggle.checked) {
+                $('#add_parts_btn').show();
+                $('#spare_parts_filter').show();
+                $('.iw_cin_additional_spare_part').show();
+                $('.iw_cin_no_additional_spare_part').hide();
+                $('#doa-toggle').attr('disabled', 'disabled');
+            } else if (doaToggle.checked) {
+                $('.hidden_doa_jo').val('yes');
+                $('#doa_item_filters').show();
+                $('#add_doa_item_part').show();
+                $('.iw_cin_no_additional_spare_part').hide();
+                $('#additional-toggle').attr('disabled', 'disabled');
+            } else {
+                $('.hidden_doa_jo').val('no');
+                $('#doa_item_filters').hide();
+                $('#add_parts_btn').hide();
+                $('#add_doa_item_part').hide();
+                $('#spare_parts_filter').hide();
+                $('.iw_cin_additional_spare_part').hide();
+                $('.iw_cin_no_additional_spare_part').show();
+                $('#doa-toggle').removeAttr('disabled');
+                $('#additional-toggle').removeAttr('disabled');
+            }
+        }
+    
+        additionalToggle.addEventListener('change', updateStatus);
+        doaToggle.addEventListener('change', updateStatus);
+    
+        updateStatus();
+
+        let all_item_parts_type = $('.item_spare_additional_type').map(function () {
+            return $(this).val().trim().toLowerCase();
+        }).get();
+        
+        const has_additional_required = all_item_parts_type.includes("additional-required-pending");
+        const has_doa_jo = all_item_parts_type.includes("additional-standard-doa");
+
+        if (has_additional_required) {
+            $('#additional-toggle').prop('checked', true).attr('disabled', true);
+            updateStatus();
+        } else {
+            $('#additional-toggle').prop('checked', false).attr('disabled', false);
+        }
+
+        if(has_doa_jo){
+            $('#doa-toggle').prop('checked', true).attr('disabled', true);
+            updateStatus();
+        } else {
+            $('#doa-toggle').prop('checked', false).attr('disabled', false);
+        }
+
+    });
+
+    function receive_parts(item_parts_id){
+        let spare_parts_id = item_parts_id;
+        let header_id = $('#header_id').val();
+
+        $.ajax({
+            url: "{{ route('receive_spare_part') }}",
+            type: "POST",
+            data: {
+                'spare_parts_id' : spare_parts_id,
+                'header_id' : header_id,
+                _token: '{!! csrf_token() !!}',
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            beforeSend: function () {
+                Swal.fire({
+                    icon: "info",
+                    title: "Item Receiving",
+                    text: "Please wait...",
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => Swal.showLoading()
+                });
+            },
+            success: function (response) {
+                if(response.success == true){
+                    Swal.fire({
+                        icon: "success",
+                        title: response.message,
+                        html: `This is also marked as reserved Qty, since this item is ordered for this Job Order.`,
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        timer: 2000,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    }).then(() => {
+                        window.location.reload();
+                });
+
+                } else if (response.success == false) {
+                    Swal.fire({
+                        icon: "error",
+                        title: response.message,
+                        allowOutsideClick: false,
+                        showConfirmButton: true,
+                    });
+                }
+            },
+            error: function (xhr, error) {
+                Swal.close();
+                Swal.fire({
+                    title: "Can't receive this item, try again!",
+                    html: "Something went wrong!",
+                    icon: "error",
+                    timer: 3000,
+                    didOpen: () => Swal.showLoading()
+                });setTimeout(() => {
+                },3000)
+            }
+        });
+    }
+
+    function filter_doa_item(){
+        let spare_parts_code = $('#spare_parts_code').val();
+        
+        if(spare_parts_code !== 'default'){
+            $.ajax({
+                url: "{{ route('filter_doa_spare_part') }}",
+                type: "POST",
+                data: {
+                    'spare_parts_id' : spare_parts_code,
+                    _token: '{!! csrf_token() !!}',
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                beforeSend: function () {
+                    Swal.fire({
+                        icon: "info",
+                        title: "Filtering Item Parts",
+                        text: "Please wait...",
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+                },
+                success: function (response) {
+                    if(response.success == true){
+                        Swal.close();
+                        $('#spare_part_code').val(response.response_data.spare_parts);
+                        $('#doa_item_desc').val(response.response_data.item_description);
+                        $('#doa_item_qty').val(response.response_data.qty);
+                        $('#doa_item_id').val(response.response_data.id);
+                        $('#erase_wrong_filter_doa').show();
+
+                    } else if (response.success == false) {
+                        Swal.fire({
+                            icon: "error",
+                            title: response.message,
+                            allowOutsideClick: false,
+                            showConfirmButton: true,
+                        });
+                        $('#erase_wrong_filter_doa').hide();
+                    }
+                },
+                error: function (xhr, error) {
+                    $('#erase_wrong_filter_doa').hide();
+                    Swal.close();
+                    Swal.fire({
+                        title: "Can't filter this item, try again!",
+                        html: "Something went wrong!",
+                        icon: "error",
+                        timer: 3000,
+                        didOpen: () => Swal.showLoading()
+                    });setTimeout(() => {
+                    },3000)
+                }
+            });
+        } else {
+            $('#spare_part_code').val('');
+            $('#doa_item_desc').val('');
+            $('#doa_item_qty').val('');
+            $('#doa_item_id').val('');
+            $('#erase_wrong_filter_doa').hide();
+        }
+    }
+
+    $('#add_doa_parts').on('click', function () {
+        if (
+            isEmptyValidator('#spare_parts_code', 'Spare Part Code') ||
+            isEmptyValidator('#doa_item_desc', 'Item Description') ||
+            isEmptyValidator('#doa_item_qty', 'Quantity') ||
+            isEmptyValidator('#doa_item_price', 'Price')
+        ) {
+            return;
+        }
+
+        let header_id = $('#header_id').val();
+        let spare_part_code = $('#spare_part_code').val();
+        let doa_item_desc = $('#doa_item_desc').val();
+        let doa_item_qty = $('#doa_item_qty').val();
+        let doa_item_id = $('#doa_item_id').val();
+        let doa_item_price = $('#doa_item_price').val();
+
+        $.ajax({
+            url: "{{ route('save_add_doa_parts') }}",
+            type: "POST",
+            data: {
+                'header_id' : header_id,
+                'spare_part_code' : spare_part_code,
+                'doa_item_desc' : doa_item_desc,
+                'doa_item_qty' : doa_item_qty,
+                'doa_item_id' : doa_item_id,
+                'doa_item_price' : doa_item_price,
+                _token: '{!! csrf_token() !!}',
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            beforeSend: function () {
+                Swal.fire({
+                    icon: "info",
+                    title: "Saving DOA Item Parts",
+                    text: "Please wait...",
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => Swal.showLoading()
+                });
+            },
+            success: function (response) {
+                if(response.success == true){
+                    Swal.fire({
+                        icon: "success",
+                        title: response.message,
+                        text: "Please wait...",
+                        allowOutsideClick: false,
+                        showConfirmButton: true,
+                        timer: 1000,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    }).then(() => {
+                        sessionStorage.setItem("scrollToBottomAfterReload", "true");
+                        window.location.reload();
+                });
+
+                } else if (response.success == false) {
+                    Swal.fire({
+                        icon: "error",
+                        title: response.message,
+                        allowOutsideClick: false,
+                        showConfirmButton: true,
+                    });
+                    $('#erase_wrong_filter_doa').hide();
+                }
+            },
+            error: function (xhr, error) {
+                $('#erase_wrong_filter_doa').hide();
+                Swal.close();
+                Swal.fire({
+                    title: "Can't save this item, try again!",
+                    html: "Something went wrong!",
+                    icon: "error",
+                    timer: 3000,
+                    didOpen: () => Swal.showLoading()
+                });setTimeout(() => {
+                },3000)
+            }
+        });
+    });
+
+    function isEmptyValidator(selector, fieldName) {
+        const value = $(selector).val().trim();
+
+        if (value === '' || value === 'default') {
+            Swal.fire({
+                icon: 'warning',
+                title: `${fieldName} is required.`,
+                text: `Please fill out all the required fields for DOA.`,
+                confirmButtonText: 'Okay, Got it',
+            });
+            $(selector).focus(); 
+            $(selector).css('border', '1px solid red');
+            return true;
+        } else {
+            $(selector).css('border', '');
+            return false;
+        }
+    }
+</script>
+
+<script>
+    // FOR AUTO scrollTo BOTTOM
+    document.addEventListener("DOMContentLoaded", function () {
+        if (sessionStorage.getItem("scrollToBottomAfterReload") === "true") {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+            sessionStorage.removeItem("scrollToBottomAfterReload");
+        }
+    });
+
+    // AUTO FORMAL DOA COST PRICE 
+    $('#doa_item_price').on('blur', function () {
+        let value = parseFloat($(this).val());
+        if (!isNaN(value)) {
+            $(this).val(value.toFixed(2));
+        }
+    });
+
+    // for DOA filter eraser 
+    function erase_wrong_filter_doa(){
+        $('#spare_parts_code').val('default').trigger('change');
+    }
+
+    $(document).ready(function(){
+        let transaction_status = $('#transaction_status').val();
+        let all_item_parts_type = $('.item_spare_additional_type').map(function () {
+            return $(this).val().trim().toLowerCase();
+        }).get();
+
+        let item_qty_status = $('.getqtyValue').map(function () {
+            return $(this).val().trim().toLowerCase();
+        }).get();
+        
+        const is_unavailable = item_qty_status.includes("unavailable");
+        const is_available = item_qty_status.includes("available");
+        const has_doa_jo = all_item_parts_type.includes("additional-standard-doa");
+
+        if(has_doa_jo && is_unavailable && transaction_status == 34){
+            $('.iw_cin_doa_unav').show();
+        } else if (has_doa_jo && is_available && transaction_status == 34){
+            $('.iw_cin_doa_av').show();
+        } else {
+            $('.iw_cin_doa_unav').hide();
+            $('.iw_cin_doa_av').hide();
+        }
+    });
 </script>

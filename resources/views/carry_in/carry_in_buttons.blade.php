@@ -37,7 +37,10 @@
     @endif
     @if ($transaction_details->repair_status == 34)
         <div>
-            <button type="submit" id="save" onclick="return changeStatus(34)" class="btn btn-danger pull-right buttonSubmit iw_cin_doa" style="display: none">
+            <button type="submit" id="save" onclick="return changeStatus(29)" class="btn btn-success pull-right buttonSubmit iw_cin_doa_av" style="display: none">
+                <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, DOA
+            </button>
+            <button type="submit" id="save" onclick="return changeStatus(30)" class="btn btn-danger pull-right buttonSubmit iw_cin_doa_unav" style="display: none">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, DOA
             </button>
             <button type="submit" id="save" onclick="return changeStatus(35)" class="btn btn-danger pull-right buttonSubmit iw_cin_additional_spare_part" style="display: none">

@@ -128,6 +128,12 @@ Route::group(['middleware' => ['web']], function () {
 
     // receive_spare_part
     Route::post('/admin/receive_spare_part','AdminSparePartsReceivingController@receiveSparePart')->name('receive_spare_part');
+
+    // filter_doa_spare_part
+    Route::post('/admin/filter_spare_part','AdminPendingRepairController@filterDoaSparePart')->name('filter_doa_spare_part');
+
+    // save_doa_spare_part
+    Route::post('/admin/save_doa_spare_part','AdminPendingRepairController@saveDoaSparePart')->name('save_add_doa_parts');
 });
 
  

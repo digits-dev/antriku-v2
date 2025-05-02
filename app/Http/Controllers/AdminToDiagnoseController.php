@@ -512,20 +512,23 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 
 		if ($request->status_id == 29 && $all_data['recent_treansaction_status'] != 33) {
 			$get_jo = DB::table('returns_body_item')->where('returns_header_id', $request->header_id)->get();
-
+		
 			$additionalStandard = [];
 			$additionalPending = [];
-
+			$additionalStandardDOA = [];
+		
 			foreach ($get_jo as $item) {
 				if ($item->qty_status == 'Available') {
 					if ($item->item_spare_additional_type == 'Additional-Standard') {
 						$additionalStandard[] = $item;
 					} elseif ($item->item_spare_additional_type == 'Additional-Required-Pending') {
 						$additionalPending[] = $item;
+					} elseif ($item->item_spare_additional_type == 'Additional-Standard-DOA') {
+						$additionalStandardDOA[] = $item;
 					}
 				}
 			}
-
+		
 			if (count($additionalPending) > 0) {
 				// Reserve "Additional-Required-Pending" only
 				foreach ($additionalPending as $item) {
@@ -535,13 +538,28 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 						'reserved_qty'         => 1,
 						'created_by'           => CRUDBooster::myId(),
 					]);
-
-					DB::table('returns_body_item')->where('id', $item->id)
-						->update([
-							'item_spare_additional_type' => 'Additional-Required-Yes',
-							'updated_by' => CRUDBooster::myId(),
-							'updated_at' => now(),
-						]);
+		
+					DB::table('returns_body_item')->where('id', $item->id)->update([
+						'item_spare_additional_type' => 'Additional-Required-Yes',
+						'updated_by' => CRUDBooster::myId(),
+						'updated_at' => now(),
+					]);
+				}
+			} elseif (count($additionalStandardDOA) > 0) {
+				// Corrected loop: reserve "Additional-Standard-DOA"
+				foreach ($additionalStandardDOA as $item) {
+					DB::table('inventory_reservations')->insert([
+						'parts_item_master_id' => $item->item_parts_id,
+						'return_header_id'     => $request->header_id,
+						'reserved_qty'         => 1,
+						'created_by'           => CRUDBooster::myId(),
+					]);
+		
+					DB::table('returns_body_item')->where('id', $item->id)->update([
+						'item_spare_additional_type' => 'Additional-Standard-DOA-Yes',
+						'updated_by' => CRUDBooster::myId(),
+						'updated_at' => now(),
+					]);
 				}
 			} else {
 				// Reserve all the available qty with "Additional-Standard"
@@ -554,7 +572,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 					]);
 				}
 			}
-		}
+		}		
 
 		if ($request->status_id == 31) {
 			DB::beginTransaction();
@@ -686,8 +704,39 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 	public function DeleteQuotation(Request $request)
 	{
 		$data = array();
-		DB::table('returns_body_item')->where('id', $request->id)->delete();
-		DB::table('returns_serial')->where('returns_body_item_id', $request->id)->delete();
+
+		DB::beginTransaction();
+
+		try {
+			$item = DB::table('returns_body_item')->where('id', $request->id)->first();
+
+			if ($item && $item->item_spare_additional_type === 'Additional-Standard-DOA') {
+				// $item_to_update = DB::table('returns_body_item')
+				// 	->where('returns_header_id', $item->returns_header_id)
+				// 	->where('item_parts_id', $item->item_parts_id)
+				// 	->where('item_spare_additional_type', '!=', 'Additional-Standard-DOA')
+				// 	->orderBy('id', 'DESC')
+				// 	->first();
+
+				DB::table('returns_body_item')
+					->where('item_parts_id', $item->item_parts_id)
+					->where('qty_status', 'Available-DOA')
+					->update([
+						'qty_status' => 'Available',
+						'updated_by' => CRUDBooster::myId(),
+						'updated_at' => now(),
+					]);
+			}
+
+			DB::table('returns_body_item')->where('id', $request->id)->delete();
+			DB::table('returns_serial')->where('returns_body_item_id', $request->id)->delete();
+
+			DB::commit();
+		} catch (\Exception $e) {
+			DB::rollBack();
+			Log::error('DeleteQuotation failed: ' . $e->getMessage());
+		}
+
 		return ($data);
 	}
 

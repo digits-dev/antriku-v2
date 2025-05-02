@@ -62,6 +62,19 @@
             <div class="box-body">
                 <div class="table-responsive borderline" style="overflow-x:unset !important; border-top: 1px solid lightgrey;">
                     <div class="pic-container">
+                        <div class="row" style="margin: 5px 0 15px 0;">
+                            <div class="col-md-12 text-uppercase">
+                                <span style="background: rgb(212, 212, 212); padding: 10px; border-radius: 10px; text-align:center; margin: 5px 5px 5px 0;">
+                                    <i class="bi bi-box2-fill" style="margin-right:3px; color: white;"></i> Good Spare Parts
+                                </span>
+                                <span style="background: #FFC785; padding: 10px; border-radius: 10px; text-align:center; margin: 5px;">
+                                    <i class="bi bi-box2-fill" style="margin-right:3px; color: #f98501;"></i> <span style="color:white"> Additional Spare Parts </span>
+                                </span>
+                                <span style="background: #443627; padding: 10px; border-radius: 10px; text-align:center; margin: 5px;">
+                                    <i class="bi bi-box2-fill" style="margin-right:3px; color: #8e6d4b;"></i> <span style="color:white">Additional DOA Spare Parts</span>
+                                </span>
+                            </div>
+                        </div>
                         <div class="pic-row">
                             <table class="table table-bordered" id="dynamic_field">
                                 <tbody>
@@ -74,7 +87,7 @@
                                         <th width="9%" class="text-center" style="padding: 1px !important;">Qty</th>
                                         <th width="7%" class="text-center" style="padding: 1px !important; display:none">Item Parts ID</th>
                                         <th width="9%" class="text-center" style="padding: 1px !important;">Price</th>
-                                        <th width="1%" class="text-center" style="padding: 1px !important;"></th>
+                                        <th width="1%" class="text-center" style="padding: 1px !important;">-</th>
                                     </tr>
                                     <tr id="quotelist">
                                         <input type="hidden" value="{{$transaction_details->repair_status}}" name="recent_treansaction_status">
@@ -84,7 +97,10 @@
                                             <input type="hidden" value="{{$qt->item_spare_additional_type}}" class="item_spare_additional_type">
                                                 <tr class="nr row_num" id="rowID{{$qt->id}}"
                                                     style="background: 
-                                                        {{ $qt->item_spare_additional_type == 'Additional-Standard-DOA' ? '#443627' : 
+                                                        {{ in_array($qt->item_spare_additional_type, [
+                                                                'Additional-Standard-DOA', 
+                                                                'Additional-Standard-DOA-Yes',
+                                                            ]) ? '#443627' : 
                                                         ($qt->item_spare_additional_type != 'Additional-Standard' ? '#FFC785' : '') }}"
                                                     >
                                                     <input type="hidden"class="getidValue" value="{{$qt->id}}">
@@ -112,7 +128,13 @@
                                                     </td>
                                                     <td style="padding: 3px !important;"><input class="input-cus text-center getcostValue" type="number" onblur="AutoFormatCost('{{$qt->id}}')" id="price_{{$qt->id}}" value="{{ $qt->cost }}" min="0" max="9999" step="any" placeholder="Enter Price" {{ !in_array($transaction_details->repair_status, [10]) ? 'readonly' : ''}} style="background: {{ !in_array($transaction_details->repair_status, [10]) ? 'lightgrey' : ''}}"></td> 
                                                     @if(in_array($transaction_details->repair_status, [10, 34])) 
-                                                        <td style="padding: 5px !important;" class="text-center {{$qt->item_spare_additional_type == 'Additional-Standard' && $transaction_details->repair_status == 34 ? 'hidden' : ''}}">
+                                                        <td style="padding: 5px !important;" class="text-center {{ 
+                                                            in_array($qt->item_spare_additional_type, [
+                                                                'Additional-Standard', 
+                                                                'Additional-Standard-DOA-Yes', 
+                                                                'Additional-Required-Yes',
+                                                                'Additional-Required-No',
+                                                            ]) ? 'hidden' : '' }}">
                                                             <a onclick="RemoveRow('{{$qt->id}}')"><i class="fa fa-close fa-2x remove" style="color:red"></i></a>
                                                         </td>
                                                     @elseif(in_array($transaction_details->repair_status, [33]) && CRUDBooster::myPrivilegeId() == 9 && $qt->qty_status == 'Unavailable') 
@@ -163,30 +185,87 @@
                                             @endif
                                         </td>
                                     </tr>
-                                        <input type="hidden" name="header_id" id="header_id" value="{{ $transaction_details->header_id }}">
-                                        <input type="hidden" name="number_of_rows" id="number_of_rows">
-                                        <input type="hidden" name="row_id" id="rowidArray">
-                                        <input type="hidden" name="service_code" id="scArray">
-                                        <input type="hidden" name="gsx_ref" id="gsxArray">
-                                        <input type="hidden" name="cs_code" id="csArray">
-                                        <input type="hidden" name="serial_no" id="serialArray">
-                                        <input type="hidden" name="item_desc" id="itemArray">
-                                        <input type="hidden" name="qty" id="qtyArray">
-                                        <input type="hidden" name="item_parts_id" id="itempartsidArray">
-                                        <input type="hidden" name="cost" id="costArray">
+
+                                    <input type="hidden" name="header_id" id="header_id" value="{{ $transaction_details->header_id }}">
+                                    <input type="hidden" name="number_of_rows" id="number_of_rows">
+                                    <input type="hidden" name="row_id" id="rowidArray">
+                                    <input type="hidden" name="service_code" id="scArray">
+                                    <input type="hidden" name="gsx_ref" id="gsxArray">
+                                    <input type="hidden" name="cs_code" id="csArray">
+                                    <input type="hidden" name="serial_no" id="serialArray">
+                                    <input type="hidden" name="item_desc" id="itemArray">
+                                    <input type="hidden" name="qty" id="qtyArray">
+                                    <input type="hidden" name="item_parts_id" id="itempartsidArray">
+                                    <input type="hidden" name="cost" id="costArray">
                                 </tbody>
                             </table>
+
+                            @if ($transaction_details->repair_status == 34)
+                                <div class="row">
+                                    <div class="col-md-12" id="add_doa_item_part">
+                                        <button type="button" id="add_doa_parts" style="margin-top:5px" class="btn btn-warning pull-right">
+                                            <i class="fa fa-plus"></i> 
+                                            Add DOA Parts
+                                        </button>
+                                        <input type="hidden" value="{{$transaction_details->repair_status}}" id="transaction_status" name="recent_treansaction_status">
+                                    </div>
+                                </div>
+                                <table id="doa_item_filters">
+                                    <thead>
+                                        <tr class="tbl_header_color text-uppercase" style="padding: 3px !important;">
+                                            <th colspan="5">For DOA Item Filters</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{-- for DOA filters  --}}
+                                        <tr {{ !in_array($transaction_details->repair_status, [10, 34]) ? 'hidden' : ''}} style="display:show" id="spare_parts_filter_for_doa">
+                                            <td style="padding: 1px !important;position: relative;" width="10%">
+                                                {{-- <input class="input-cus text-center"  type="text" placeholder="Enter Spare Part Number"> --}}
+                                                <select name="spare_parts_code" autocomplete="off" class="js-example-basic-single input-cus" id="spare_parts_code" onchange="filter_doa_item()"> 
+                                                    <option selected value="default">Filter here...</option>
+                                                    @foreach($data['quotation'] as $per_qt_filter)
+                                                        @if ($per_qt_filter->item_spare_additional_type != 'Additional-Standard-DOA' && ($per_qt_filter->qty_status != 'Available-DOA'))
+                                                            <option value="{{$per_qt_filter->item_parts_id}}">{{$per_qt_filter->service_code}}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                                <input type="hidden" id="spare_part_code">
+                                            </td>
+                                            <td style="padding: 1px !important;" width="10%">
+                                                <input class="input-cus text-center" type="text" placeholder="Enter GSX Reference" readonly style="background: lightgrey">
+                                            </td>
+                                            <td style="padding: 1px !important;" width="10%">
+                                                <input class="input-cus text-center" type="text" placeholder="Enter CS Code" readonly style="background: lightgrey">
+                                            </td>
+                                            <td style="padding: 1px !important;" width="10%">
+                                                <input class="input-cus text-center" type="text" placeholder="Enter KGB Serial Number" readonly style="background: lightgrey">
+                                            </td>
+                                            <td style="padding: 1px !important;" width="20%">
+                                                <input class="input-cus text-center" type="text" id="doa_item_desc" placeholder="Enter Item Description">
+                                            </td>
+                                            <td style="padding: 1px !important;" width="9%">
+                                                <input class="input-cus text-center" type="text" id="doa_item_qty" placeholder="Search Item" readonly style="background: lightgrey">
+                                            </td>
+                                            <td style="padding: 1px !important; display:none" width="7%">
+                                                <input class="input-cus text-center" id="doa_item_id" type="hidden" placeholder="Search Item" readonly style="background: lightgrey">
+                                            </td>
+                                            <td style="padding: 1px !important;" width="9%">
+                                                <input class="input-cus text-center" id="doa_item_price" type="number" min="0" max="9999" step="any"  placeholder="Enter Price">
+                                            </td> 
+                                            <td style="padding: 5px !important;" class="text-center" width="1%"> 
+                                                <i class="fa fa-times" id="erase_wrong_filter_doa" onclick="erase_wrong_filter_doa()" style="display:none; font-size: 24px; color: rgb(235, 63, 92)"></i> 
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-@push('bottom')
-    @include('technician.quotation_script')
-@endpush
-
+   
 @else
 <div class="row">
     <div class="col-md-12">
@@ -209,7 +288,7 @@
                                     </tr>
                                     <tr>
                                         @if(request()->segment(3) == "getDetailView")
-                                            @if(!empty($quotation))
+                                        @if(!empty($quotation))
                                                 @foreach($quotation as $qt)
                                                     <tr>
                                                         <td style="padding: 5px !important;" class="text-center table-bordered-display"><p>{{ $qt->service_code }}</p></td>
@@ -222,7 +301,7 @@
                                                         <td style="padding: 5px !important;" class="text-center table-bordered-display"><p>₱{{ $qt->cost }}</p></td> 
                                                     </tr>
                                                 @endforeach
-                                            @else
+                                                @else
                                                 <tr>
                                                     <td class="table-bordered-display" style="padding: 5px !important;border-width: 1px !important;background-color:#EDEDED;text-align: center;" colspan="7">
                                                         <p><i class="fa fa-search"></i> No Data Available</p>
@@ -263,128 +342,7 @@
 </div>
 </section>
 @endif
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const additionalToggle = document.getElementById('additional-toggle');
-        const doaToggle = document.getElementById('doa-toggle');
-    
-        function updateStatus() {
-            if (additionalToggle.checked) {
-                $('#add_parts_btn').show();
-                $('#spare_parts_filter').show();
-                $('.iw_cin_additional_spare_part').show();
-                $('.iw_cin_no_additional_spare_part').hide();
-                $('#doa-toggle').attr('disabled', 'disabled');
-            } else if (doaToggle.checked) {
-                $('.hidden_doa_jo').val('yes');
-                $('.iw_cin_doa').show();
-                $('#add_parts_btn').show();
-                $('#spare_parts_filter').show();
-                $('.iw_cin_no_additional_spare_part').hide();
-                $('#additional-toggle').attr('disabled', 'disabled');
-            } else {
-                $('.hidden_doa_jo').val('no');
-                $('.iw_cin_doa').hide();
-                $('#add_parts_btn').hide();
-                $('#spare_parts_filter').hide();
-                $('.iw_cin_additional_spare_part').hide();
-                $('.iw_cin_no_additional_spare_part').show();
-                $('#doa-toggle').removeAttr('disabled');
-                $('#additional-toggle').removeAttr('disabled');
-            }
-        }
-    
-        additionalToggle.addEventListener('change', updateStatus);
-        doaToggle.addEventListener('change', updateStatus);
-    
-        updateStatus();
 
-        let all_item_parts_type = $('.item_spare_additional_type').map(function () {
-            return $(this).val().trim().toLowerCase();
-        }).get();
-        
-        const has_additional_required = all_item_parts_type.includes("additional-required-pending");
-        const has_doa_jo = all_item_parts_type.includes("additional-standard-doa");
-
-        if (has_additional_required) {
-            $('#additional-toggle').prop('checked', true).attr('disabled', true);
-            updateStatus();
-        } else {
-            $('#additional-toggle').prop('checked', false).attr('disabled', false);
-        }
-
-        if(has_doa_jo){
-            $('#doa-toggle').prop('checked', true).attr('disabled', true);
-            updateStatus();
-        } else {
-            $('#doa-toggle').prop('checked', false).attr('disabled', false);
-        }
-
-    });
-
-    function receive_parts(item_parts_id){
-        let spare_parts_id = item_parts_id;
-        let header_id = $('#header_id').val();
-
-        $.ajax({
-            url: "{{ route('receive_spare_part') }}",
-            type: "POST",
-            data: {
-                'spare_parts_id' : spare_parts_id,
-                'header_id' : header_id,
-                _token: '{!! csrf_token() !!}',
-            },
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            beforeSend: function () {
-                Swal.fire({
-                    icon: "info",
-                    title: "Item Receiving",
-                    text: "Please wait...",
-                    allowOutsideClick: false,
-                    showConfirmButton: false,
-                    didOpen: () => Swal.showLoading()
-                });
-            },
-            success: function (response) {
-                if(response.success == true){
-                    Swal.fire({
-                        icon: "success",
-                        title: response.message,
-                        html: `This is also marked as reserved Qty, since this item is ordered for this Job Order.`,
-                        allowOutsideClick: false,
-                        showConfirmButton: false,
-                        timer: 2000,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    }).then(() => {
-                        window.location.reload();
-                });
-
-                } else if (response.success == false) {
-                    Swal.fire({
-                        icon: "error",
-                        title: response.message,
-                        allowOutsideClick: false,
-                        showConfirmButton: true,
-                    });
-                }
-            },
-            error: function (xhr, error) {
-                Swal.close();
-                Swal.fire({
-                    title: "Can't receive this item, try again!",
-                    html: "Something went wrong!",
-                    icon: "error",
-                    timer: 3000,
-                    didOpen: () => Swal.showLoading()
-                });setTimeout(() => {
-                },3000)
-            }
-        });
-    }
-</script>
-    
+@push('bottom')
+    @include('technician.quotation_script')
+@endpush

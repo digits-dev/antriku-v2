@@ -151,16 +151,20 @@
         var all_item_desc = document.getElementById("itemArray").value;
 
         //************************Validation for Array************************
+        let all_item_parts_type = $('.item_spare_additional_type').map(function () {
+            return $(this).val().trim().toLowerCase();
+        }).get();
+        const has_doa_jo = all_item_parts_type.includes("additional-standard-doa");
+        const has_doa_jo_yes = all_item_parts_type.includes("additional-standard-doa-yes");
 
-        // const doaToggle = document.getElementById('doa-toggle');
-        // if(!doaToggle.checked){
-        //     if(checkIfDuplicateExists(getscValue)){
-        //         setTimeout(function () {
-        //             swal('Error!','The Spare Part you entered is already in the list.','error');
-        //         }, 1000);
-        //         return false;
-        //     }
-        // }
+        if(has_doa_jo == false && has_doa_jo_yes == false){
+            if(checkIfDuplicateExists(getscValue)){
+                setTimeout(function () {
+                    swal('Error!','The Spare Part you entered is already in the list.','error');
+                }, 1000);
+                return false;
+            }
+        }
 
         for(var i=0; i < getitemValue.length-1; ++i) {
             if(isEmptyOrSpaces(getitemValue[i]) == true){
@@ -209,20 +213,6 @@
                 }, 1000);
                 return false; 
             }
-
-            // for (var i = 0; i < getserialValue.length - 1; ++i) {
-            //     if (isEmptyOrSpaces(getserialValue[i])) {
-            //         // Only highlight the specific input that has an error
-            //         $('.getserialValue').eq(i).css('border', '1px solid red');
-
-            //         setTimeout(function () {
-            //             swal('Info!', 'KGB Serial Number is required.');
-            //         }, 1000);
-            //         return false; 
-            //     } else {
-            //         $('.getserialValue').eq(i).css('border', ''); 
-            //     }
-            // }
         }
 
         let transaction_status = $('#transaction_status').val();
@@ -332,6 +322,7 @@
         if (status_id == 'save') {
             $(".buttonSubmit").removeAttr("disabled");
         } 
+
         var formData = new FormData();
             formData.append("all_data", $("#SubmitTransactionForm").serialize());
             formData.append("header_id", header_id);
@@ -341,43 +332,48 @@
             formData.append("all_item_desc", all_item_desc);
             formData.append("_token", '{!! csrf_token() !!}');
 
-            if(status_id == 17){
-                formData.append("waybill", $("#waybill")[0].files[0]); 
-            }
-            if(status_id == 23){
-                formData.append("rpf_invoice", $("#rpf_invoice")[0].files[0]); 
-            }
+        if(status_id == 17){
+            formData.append("waybill", $("#waybill")[0].files[0]); 
+        }
 
-        swal({
-            title: case_status == 'MAIL-IN' && status_id == 20 ? "This will change the Warranty Status to Out of Warranty" : "Are you sure?",
-            text:  "Do you want to proceed??",
-            type: "warning",
+        if(status_id == 23){
+            formData.append("rpf_invoice", $("#rpf_invoice")[0].files[0]); 
+        }
+
+        Swal.fire({
+            icon: case_status == 'MAIL-IN' && status_id == 20 ? 'info' : 'question',
+            title: case_status == 'MAIL-IN' && status_id == 20
+                ? "This will change the Warranty Status to Out of Warranty"
+                : "Are you sure?",
+            text: "Do you want to proceed?",
             showCancelButton: true,
             confirmButtonColor: "#00b8d9",
             confirmButtonText: "Yes, proceed!",
             cancelButtonText: "Cancel",
-            closeOnConfirm: false
-        }, function (isConfirm) {
-            if (isConfirm) {
+            allowOutsideClick: false
+        }).then((result) => {
+            if (result.isConfirmed) {
                 $(".buttonSubmit").attr("disabled", "disabled");
+
                 $.ajax({
                     url: "{{ route('change-status') }}",
                     type: "POST",
                     data: formData,
-                    processData: false,  // Important: Prevent jQuery from processing data
-                    contentType: false,  // Important: Prevent jQuery from setting content type
+                    processData: false,
+                    contentType: false,
                     success: function (result) {
                         if (status_id == 'save') {
                             $(".buttonSubmit").removeAttr("disabled");
-                            swal({
+
+                            Swal.fire({
                                 title: "Success!",
                                 text: "Transaction Details are saved.",
-                                type: "success"
-                            }, function () {
+                                icon: "success"
+                            }).then(() => {
                                 location.reload();
                             });
-                        }
-                        else {
+
+                        } else {
                             const statusMessages = {
                                 8: "STATUS: TO PAY DIAGNOSTIC",
                                 12: "AWAITING CUSTOMER APPROVAL (MAIL-IN)",
@@ -404,13 +400,12 @@
                             };
 
                             if (statusMessages[status_id]) {
-                                swal({
+                                Swal.fire({
                                     title: "Info!",
                                     text: statusMessages[status_id],
-                                    type: "info",
-                                    confirmButtonClass: "btn-primary",
+                                    icon: "info",
                                     confirmButtonText: "OK"
-                                }, function () {
+                                }).then(() => {
                                     window.location.href = "{{ CRUDBooster::mainpath() }}";
                                 });
                             }
@@ -426,33 +421,49 @@
     }
 
     // confirmation for send quotation button
-    $(document).on('click', '#repair', function(e){
-        swal({
+    $(document).on('click', '#repair', function(e) {
+        e.preventDefault();
+
+        Swal.fire({
+            icon: "warning",
             title: "Are you sure?",
-            text: "Click the save button to check the transaction details before sending a quotation", type: "warning",
-            showCancelButton: true, confirmButtonColor: "#5CB85C", confirmButtonText: "Send Quotation", 
-            cancelButtonText: "Cancel", closeOnConfirm: false, showLoaderOnConfirm: true
-        },
-        function(isConfirm) {
-            if (isConfirm) {
+            text: "Click the save button to check the transaction details before sending a quotation",
+            showCancelButton: true,
+            confirmButtonColor: "#5CB85C",
+            confirmButtonText: "Send Quotation",
+            cancelButtonText: "Cancel",
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
                 return changeStatus(2);
-            } else {
-                e.preventDefault();
             }
         });
-        e.preventDefault();
     });
 
     // confirmation for close button
-    $(document).on('click', '#close', function(e){
-        swal({ 
-            title:"Do you want to proceed?", text:"Ensure that the customer has received their item before clicking YES.", type:"warning", 
-            confirmButtonText:"Yes", confirmButtonColor:"#5CB85C", showCancelButton:true, cancelButtonText:"No", closeOnConfirm: false, showLoaderOnConfirm: true
-        }, function(){
-            return changeStatus(6);
-        });
-        
+    $(document).on('click', '#close', function(e) {
         e.preventDefault();
+
+        Swal.fire({
+            icon: "warning",
+            title: "Do you want to proceed?",
+            text: "Ensure that the customer has received their item before clicking YES.",
+            confirmButtonText: "Yes",
+            confirmButtonColor: "#5CB85C",
+            showCancelButton: true,
+            cancelButtonText: "No",
+            allowOutsideClick: false, 
+            didOpen: () => {
+                Swal.showLoading(); 
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                return changeStatus(6);
+            }
+        });
     });
 
     // prevent multiple submit of form
@@ -473,60 +484,53 @@
 	}
 
     function callOut(status_id) {
-            let header_id = $('#header_id').val();
+        let header_id = $('#header_id').val();
 
-            swal({
-                title: "Are you sure you want to call out?",
-                text: "This will record the call out!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#008000",
-                confirmButtonText: "Yes!",
-                cancelButtonText: "No, cancel!",
-                closeOnConfirm: false,
-                closeOnCancel: false
-            },
-            function (isConfirm) {
-                if (isConfirm) {
-                    $.ajax({
-                        url: "/admin/call_out/call_out",
-                        type: "POST",
-                        data: {
-                            returns_header_id: header_id,
-                            status_id: status_id,
-                            _token: $('meta[name="csrf-token"]').attr('content') // CSRF Token
-                        },
-                        success: function (response) {
-                            swal({
+        Swal.fire({
+            title: "Are you sure you want to call out?",
+            text: "This will record the call out!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#008000",
+            confirmButtonText: "Yes!",
+            cancelButtonText: "No, cancel!",
+            allowOutsideClick: false 
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/admin/call_out/call_out",
+                    type: "POST",
+                    data: {
+                        returns_header_id: header_id,
+                        status_id: status_id,
+                        _token: $('meta[name="csrf-token"]').attr('content') 
+                    },
+                    success: function(response) {
+                        Swal.fire({
                             title: "Success!",
                             text: "Call out has been recorded.",
-                            type: "success"
-                        }, function () {
-                            location.reload(); // Reload the page after clicking "OK"
+                            icon: "success"
+                        }).then(() => {
+                            location.reload(); 
                         });
-                        },
-                        error: function (xhr) {
-                            swal("Error!", "Something went wrong. Please try again.", "error");
-                        }
-                    });
-                } else {
-                    swal("Cancelled", "Your call out has been cancelled.", "error");
-                }
-            });
-        }
-
-        function validateBeforeChangeStatus(status_id) {
-        let form = document.getElementById("SubmitTransactionForm"); 
-
-        // Check if form fields are valid
-        if (!form.checkValidity()) {
-            form.reportValidity(); // Trigger browser validation messages
-            return false; // Stop execution if validation fails
-        }
-
-        // If validation passes, trigger the existing function
-        return changeStatus(status_id);
+                    },
+                    error: function(xhr) {
+                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                    }
+                });
+            } else {
+                Swal.fire("Cancelled", "Your call out has been cancelled.", "error");
+            }
+        });
     }
 
+    function validateBeforeChangeStatus(status_id) {
+        let form = document.getElementById("SubmitTransactionForm"); 
 
+        if (!form.checkValidity()) {
+            form.reportValidity(); 
+            return false; 
+        }
+        return changeStatus(status_id);
+    }
 </script>
