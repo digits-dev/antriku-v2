@@ -56,7 +56,7 @@
                                                         @elseif(CRUDBooster::getModulePath() == "to_pay_parts" && CRUDBooster::myPrivilegeId() == 4)
                                                             <input class="input-cus text-center getgsxValue" type="text" id="gsx_code_{{$qt->id}}"  value="{{ $qt->gsx_ref }}" placeholder="Enter GSX Reference">
                                                         @else
-                                                            <input class="input-cus text-center getgsxValue" type="text" id="gsx_code_{{$qt->id}}"  value="{{ $qt->gsx_ref }}" placeholder="Enter GSX Reference" {{ CRUDBooster::myPrivilegeId() == 3 || !in_array($transaction_details->repair_status, [10, 14, 47]) ? 'readonly' : ''}}>
+                                                            <input class="input-cus text-center getgsxValue" type="text" id="gsx_code_{{$qt->id}}"  value="{{ $qt->gsx_ref }}" placeholder="Enter GSX Reference" {{ CRUDBooster::myPrivilegeId() == 3 || !in_array($transaction_details->repair_status, [10, 14, 23, 47]) ? 'readonly' : ''}}>
                                                         @endif
                                                     </td>
                                                     <td style="padding: 1px !important;"><input class="input-cus text-center getcsValue" type="text" id="cs_code_{{$qt->id}}" value="{{ $qt->cs_code }}" placeholder="Enter CS Code" {{ CRUDBooster::myPrivilegeId() == 3 || !in_array($transaction_details->repair_status, [10, 14, 47]) ? 'readonly' : ''}}></td>

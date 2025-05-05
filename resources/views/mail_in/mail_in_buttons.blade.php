@@ -66,6 +66,9 @@
             <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
         </button>
         <button type="submit" id="reject" onclick="return changeStatus(22)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;"><i class="fa fa-ban" aria-hidden="true"></i> CANCEL</button>
+        <button type="button" id="call_out" onclick="callOut(21)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+            <i class="fa fa-phone"></i> CALL OUT ({{ $CallOutCount }})
+        </button>
         @endif
      
     {{-- SPARE CUSTODIAN BUTTONS --}}
@@ -79,7 +82,7 @@
             <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
         </button>
     @elseif ($transaction_details->repair_status == 25)
-        <button type="submit" id="save" onclick="return changeStatus(26)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+        <button type="submit" id="save" onclick="return validateBeforeChangeStatus(26)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
             <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
         </button>
     @endif

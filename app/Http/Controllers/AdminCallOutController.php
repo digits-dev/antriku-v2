@@ -51,59 +51,24 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 	public function hook_query_index(&$query)
 	{
 		if (CRUDBooster::myPrivilegeId() == 3) {
-			$query->whereIn('repair_status', [12, 28, 33, 35, 38, 19, 21, 43, 45,47])->where('branch', CRUDBooster::me()->branch_id);
+			$query->whereIn('repair_status', [12, 13, 19, 21, 22, 28, 33, 35, 38, 43, 45, 47])->where('branch', CRUDBooster::me()->branch_id);
 		} else {
-			$query->whereIn('repair_status', [12, 28, 33, 35, 38, 19,21, 43, 45,47]);
+			$query->whereIn('repair_status', [12, 13, 19, 21, 22,  28, 33, 35, 38, 43, 45, 47]);
 		}
 	}
 
 	 
-	    public function hook_row_index($column_index,&$column_value) {	 
-			$callout_awaiting_customer_approval_mail_in = DB::table('transaction_status')->where('id','12')->first();
-			$for_spare_parts_release_carry_in = DB::table('transaction_status')->where('id','18')->first();
-			$awaiting_customer_pick_up_good_for_unit = DB::table('transaction_status')->where('id','19')->first();
-			$callout_awaiting_customer_approval_mail_in_oow = DB::table('transaction_status')->where('id','21')->first();
-			$callout_ordering_spare_part = DB::table('transaction_status')->where('id', '33')->first();
-			$callout_additional_spare_part_carry_in = DB::table('transaction_status')->where('id', '35')->first();
-			$awaiting_customer_pick_up_cancelled_carry_in = DB::table('transaction_status')->where('id', '38')->first();
-			$callout_ordering_spare_part_oow = DB::table('transaction_status')->where('id', '45')->first();
-			$for_tech_assessment_iw = DB::table('transaction_status')->where('id', '47')->first();
-			$awaiting_customer_pick_up_good_for_unit_oow = DB::table('transaction_status')->where('id','28')->first();
-			$callout_additional_spare_part_carry_in_oow = DB::table('transaction_status')->where('id', '43')->first();
-	    
-			if($column_index == 1){
-				if($column_value == $callout_awaiting_customer_approval_mail_in->id){
-					$column_value = '<span class="label label-info">'.$callout_awaiting_customer_approval_mail_in->status_name.'</span>';
-				}
-				if($column_value == $for_spare_parts_release_carry_in->id){
-					$column_value = '<span class="label label-info">'.$for_spare_parts_release_carry_in->status_name.'</span>';
-				}
-				if($column_value == $callout_awaiting_customer_approval_mail_in_oow->id){
-					$column_value = '<span class="label label-info">'.$callout_awaiting_customer_approval_mail_in_oow->status_name.'</span>';
-				}
-				if($column_value == $for_tech_assessment_iw->id){
-					$column_value = '<span class="label label-info">'.$for_tech_assessment_iw->status_name.'</span>';
-				}
-				if($column_value == $callout_additional_spare_part_carry_in->id){
-					$column_value = '<span class="label label-info">'.$callout_additional_spare_part_carry_in->status_name.'</span>';
-				}
-				if($column_value == $awaiting_customer_pick_up_good_for_unit->id){
-					$column_value = '<span class="label label-info">'.$awaiting_customer_pick_up_good_for_unit->status_name.'</span>';
-				}
-				if($column_value == $callout_ordering_spare_part->id){
-					$column_value = '<span class="label label-info">'.$callout_ordering_spare_part->status_name.'</span>';
-				}
-				if($column_value == $awaiting_customer_pick_up_cancelled_carry_in->id){
-					$column_value = '<span class="label label-info">'.$awaiting_customer_pick_up_cancelled_carry_in->status_name.'</span>';
-				}
-				if($column_value == $callout_ordering_spare_part_oow->id){
-					$column_value = '<span class="label label-info">'.$callout_ordering_spare_part_oow->status_name.'</span>';
-				}
-				if($column_value == $awaiting_customer_pick_up_good_for_unit_oow->id){
-					$column_value = '<span class="label label-info">'.$awaiting_customer_pick_up_good_for_unit_oow->status_name.'</span>';
-				}
-				if($column_value == $callout_additional_spare_part_carry_in_oow->id){
-					$column_value = '<span class="label label-info">'.$callout_additional_spare_part_carry_in_oow->status_name.'</span>';
+		public function hook_row_index($column_index, &$column_value) {
+			if ($column_index == 1) {
+		
+				$statuses = DB::table('transaction_status')->pluck('status_name', 'id');
+		
+				$cancelled = [13, 22, 38];
+		
+				if (isset($statuses[$column_value])) {
+					$labelClass = in_array($column_value, $cancelled) ? 'label-danger' : 'label-info';
+					$statusText = $statuses[$column_value];
+					$column_value = '<span class="label ' . $labelClass . '">' . $statusText . '</span>';
 				}
 				
 			}
