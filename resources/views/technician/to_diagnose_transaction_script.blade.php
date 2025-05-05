@@ -184,7 +184,7 @@
             }
         }
 
-        if(status_id == 31){
+        if(status_id == 31 || status_id == 41){
             for(var i=0; i < getgsxValue.length-1; ++i) {
                 if(isEmptyOrSpaces(getgsxValue[i]) == true){
                     $('.getgsxValue').css('border', '1px solid red');
@@ -335,9 +335,13 @@
             if([17,26].includes(status_id)){
                 formData.append("waybill", $("#waybill")[0].files[0]); 
             }
-            if(status_id == 23){
+            
+            let transaction_status = $('#transaction_status').val();
+            if ([23, 39, 40].includes(status_id) && ![45, 43, 42].includes(Number(transaction_status))) {
                 formData.append("rpf_invoice", $("#rpf_invoice")[0].files[0]); 
             }
+
+
 
         Swal.fire({
             icon: case_status == 'MAIL-IN' && status_id == 20 ? 'info' : 'question',
@@ -397,6 +401,13 @@
                                 33: "CALLOUT: ORDERING SPARE PARTS",
                                 34: "ON GOING REPAIR",
                                 35: "CALLOUT: ADDITIONAL SPARE PARTS (CARRY IN)",
+                                38: "CALLOUT: FOR PICK UP BY CUSTOMER (CANCELLED – CARRY IN)",
+                                39: "FOR SPARE PART RELEASE (CARRY IN)",
+                                40: "FOR ORDER SPARE PART (CARRY IN)",
+                                41: "SPARE PART RELEASED",
+                                42: "ON GOING REPAIR",
+                                43: "CALLOUT: ADDITIONAL SPARE PARTS (CARRY IN)",
+                                45: "CALLOUT: ORDERING SPARE PARTS",
                                 47: "AWAITING APPLE REPAIR (IW)",
                             };
 

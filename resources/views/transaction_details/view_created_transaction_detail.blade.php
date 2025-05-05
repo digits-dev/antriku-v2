@@ -90,6 +90,15 @@
                 @endif
             @endif
 
+            
+            @if (!is_null($transaction_details->airwaybill_upload))
+            @include('transaction_details.uploade_airwaybill')
+            @include('transaction_details.uploade_rpf')
+            @else
+            @include('transaction_details.uploade_rpf')
+            @include('transaction_details.uploade_airwaybill')
+            @endif
+            
             {{-- Quotation --}}
             @if ($transaction_details->repair_status == 10)
                 @include('transaction_details.quotation')
@@ -98,15 +107,6 @@
             @elseif($transaction_details->case_status === 'CARRY-IN')
                 @include('carry_in.quotation')
             @endif
-
-            @if (!is_null($transaction_details->airwaybill_upload))
-                @include('transaction_details.uploade_airwaybill')
-                @include('transaction_details.uploade_rpf')
-            @else
-                @include('transaction_details.uploade_rpf')
-                @include('transaction_details.uploade_airwaybill')
-            @endif
-            
 
             <section class="card-cust" style="border-radius: 0rem; padding: 1.2rem; border-top: 2px solid #e2e8f0">
               

@@ -86,9 +86,17 @@
         var getscValue = $('.getscValue').map((_,el) => el.value).get()
         $("#scArray").val(getscValue);
 
-        if(checkIfDuplicateExists(getscValue)){
-            swal('Error!','The Spare Part you entered is already in the list.','error');
-            return false;
+        let all_item_parts_type = $('.item_spare_additional_type').map(function () {
+            return $(this).val().trim().toLowerCase();
+        }).get();
+
+        const has_additional_doa = all_item_parts_type.includes("additional-standard-doa-yes");
+
+        if(!has_additional_doa){
+            if(checkIfDuplicateExists(getscValue)){
+                swal('Error!','The Spare Part you entered is already in the list.','error');
+                return false;
+            }
         }
 
         if(isEmptyOrSpaces(gsx_ref) == false || isEmptyOrSpaces(cs_code) == false || isEmptyOrSpaces(service_code) == false || isEmptyOrSpaces(serial_no) == false || isEmptyOrSpaces(item_desc) == false || isEmptyOrSpaces(qty) == false || isEmptyOrSpaces(item_parts_id) || isEmptyOrSpaces(cost) == false)
@@ -161,7 +169,7 @@
                         } else if (
                             result.quotation.item_spare_additional_type !== 'Additional-Standard' &&
                             result.quotation.item_spare_additional_type !== 'Additional-Standard-DOA' &&
-                            transaction_status == 34
+                            [34, 42].includes(Number(transaction_status))
                         ) {
                             bgColor = '#FFC785';
                         }
@@ -190,8 +198,8 @@
                         $('table .nr:last').before(showData); 
 
                         // display buttons logic 
-                        let caseStatus = $('[name="case_status"]').val()?.trim();
-                        let warrantyStatus = $('[name="warranty_status"]').val()?.trim();
+                        let caseStatus = $('#case_status').val();
+                        let warrantyStatus = $('#warranty_status').val();
 
                         let all_item_qty = $('.getqtyValue').map(function () {
                             return $(this).val().trim().toLowerCase();
@@ -206,13 +214,25 @@
                             $('.iw_cin_unavailable_btn').show();
                             $('.iw_cin_available_btn').hide();
                         } else if (allAvailable && caseStatus === 'CARRY-IN' && warrantyStatus === 'IN WARRANTY') {
-                            $('.iw_cin_unavailable_btn').hide();
-                            $('.iw_cin_available_btn').show();
                             $('#inwarranty_carryin_btns').show();
+                            $('.iw_cin_available_btn').show();
+                            $('.iw_cin_unavailable_btn').hide();
+                        // } else if (allUnavailable && caseStatus === 'CARRY-IN' && warrantyStatus === 'OUT OF WARRANTY') {
+                        //     $('#outofwarranty_carryin_btns').show();
+                        //     $('.oow_cin_unavailable_btn').show();
+                        //     $('.oow_cin_available_btn').hide();
+                        // } else if (allAvailable && caseStatus === 'CARRY-IN' && warrantyStatus === 'OUT OF WARRANTY') {
+                        //     $('#outofwarranty_carryin_btns').show();
+                        //     $('.oow_cin_available_btn').show();
+                        //     $('.oow_cin_unavailable_btn').hide();
                         } else {
+                            $('#inwarranty_carryin_btns').hide();
                             $('.iw_cin_unavailable_btn').hide();
                             $('.iw_cin_available_btn').hide();
-                            $('#inwarranty_carryin_btns').hide();
+
+                            // $('#outofwarranty_carryin_btns').hide();
+                            // $('.oow_cin_available_btn').hide();
+                            // $('.oow_cin_unavailable_btn').hide();
                         }
                         // end of buttons display logic
 
@@ -241,8 +261,8 @@
                 $('#rowID'+row_id).remove();
                 
                 // display buttons logic 
-                let caseStatus = $('[name="case_status"]').val()?.trim();
-                let warrantyStatus = $('[name="warranty_status"]').val()?.trim();
+                let caseStatus = $('#case_status').val();
+                let warrantyStatus = $('#warranty_status').val();
 
                 let all_item_qty = $('.getqtyValue').map(function () {
                     return $(this).val().trim().toLowerCase();
@@ -257,13 +277,25 @@
                     $('.iw_cin_unavailable_btn').show();
                     $('.iw_cin_available_btn').hide();
                 } else if (allAvailable && caseStatus === 'CARRY-IN' && warrantyStatus === 'IN WARRANTY') {
-                    $('.iw_cin_unavailable_btn').hide();
-                    $('.iw_cin_available_btn').show();
                     $('#inwarranty_carryin_btns').show();
+                    $('.iw_cin_available_btn').show();
+                    $('.iw_cin_unavailable_btn').hide();
+                // } else if (allUnavailable && caseStatus === 'CARRY-IN' && warrantyStatus === 'OUT OF WARRANTY') {
+                //     $('#outofwarranty_carryin_btns').show();
+                //     $('.oow_cin_unavailable_btn').show();
+                //     $('.oow_cin_available_btn').hide();
+                // } else if (allAvailable && caseStatus === 'CARRY-IN' && warrantyStatus === 'OUT OF WARRANTY') {
+                //     $('#outofwarranty_carryin_btns').show();
+                //     $('.oow_cin_available_btn').show();
+                //     $('.oow_cin_unavailable_btn').hide();
                 } else {
+                    $('#inwarranty_carryin_btns').hide();
                     $('.iw_cin_unavailable_btn').hide();
                     $('.iw_cin_available_btn').hide();
-                    $('#inwarranty_carryin_btns').hide();
+
+                    // $('#outofwarranty_carryin_btns').hide();
+                    // $('.oow_cin_available_btn').hide();
+                    // $('.oow_cin_unavailable_btn').hide();
                 }
                 // end of buttons display logic
 
@@ -296,13 +328,13 @@
                         $("#cost").val(result[0].cost);
                         
                         let transaction_status = $('#transaction_status').val();
-                        if(transaction_status == 34){
+                        if([34, 43].includes(Number(transaction_status))){
                             $("#new_spare_req").val('Additional-Required-Pending');
                         }
 
                         // display buttons logic 
-                        let caseStatus = $('[name="case_status"]').val()?.trim();
-                        let warrantyStatus = $('[name="warranty_status"]').val()?.trim();
+                        let caseStatus = $('#case_status').val();
+                        let warrantyStatus = $('#warranty_status').val();
 
                         let all_item_qty = $('.getqtyValue').map(function () {
                             return $(this).val().trim().toLowerCase();
@@ -317,13 +349,25 @@
                             $('.iw_cin_unavailable_btn').show();
                             $('.iw_cin_available_btn').hide();
                         } else if (allAvailable || result[0].qty > 0 && caseStatus === 'CARRY-IN' && warrantyStatus === 'IN WARRANTY') {
-                            $('.iw_cin_unavailable_btn').hide();
-                            $('.iw_cin_available_btn').show();
                             $('#inwarranty_carryin_btns').show();
+                            $('.iw_cin_available_btn').show();
+                            $('.iw_cin_unavailable_btn').hide();
+                        // } else if (allUnavailable || result[0].qty < 1 && caseStatus === 'CARRY-IN' && warrantyStatus === 'OUT OF WARRANTY') {
+                        //     $('#outofwarranty_carryin_btns').show();
+                        //     $('.oow_cin_unavailable_btn').show();
+                        //     $('.oow_cin_available_btn').hide();
+                        // } else if (allAvailable || result[0].qty > 0 && caseStatus === 'CARRY-IN' && warrantyStatus === 'OUT OF WARRANTY') {
+                        //     $('#outofwarranty_carryin_btns').show();
+                        //     $('.oow_cin_available_btn').show();
+                        //     $('.oow_cin_unavailable_btn').hide();
                         } else {
+                            $('#inwarranty_carryin_btns').hide();
                             $('.iw_cin_unavailable_btn').hide();
                             $('.iw_cin_available_btn').hide();
-                            $('#inwarranty_carryin_btns').hide();
+
+                            // $('#outofwarranty_carryin_btns').hide();
+                            // $('.oow_cin_available_btn').hide();
+                            // $('.oow_cin_unavailable_btn').hide();
                         }
                         // end of buttons display logic
 
@@ -460,8 +504,9 @@
     }
 
     $(document).ready(function () {
-        let caseStatus = $('[name="case_status"]').val()?.trim();
-        let warrantyStatus = $('[name="warranty_status"]').val()?.trim();
+        let transaction_status = $('#transaction_status').val();
+        let caseStatus = $('#case_status').val();
+        let warrantyStatus = $('#warranty_status').val();
 
         let all_item_qty = $('.getqtyValue').map(function () {
             return $(this).val().trim().toLowerCase();
@@ -476,13 +521,25 @@
             $('.iw_cin_unavailable_btn').show();
             $('.iw_cin_available_btn').hide();
         } else if (allAvailable && caseStatus === 'CARRY-IN' && warrantyStatus === 'IN WARRANTY') {
-            $('.iw_cin_unavailable_btn').hide();
-            $('.iw_cin_available_btn').show();
             $('#inwarranty_carryin_btns').show();
+            $('.iw_cin_available_btn').show();
+            $('.iw_cin_unavailable_btn').hide();
+        } else if (allUnavailable && transaction_status == 20 && caseStatus === 'CARRY-IN' && warrantyStatus === 'OUT OF WARRANTY') {
+            $('#outofwarranty_carryin_btns').show();
+            $('.oow_cin_unavailable_btn').show();
+            $('.oow_cin_available_btn').hide();
+        } else if (allAvailable && transaction_status == 20 && caseStatus === 'CARRY-IN' && warrantyStatus === 'OUT OF WARRANTY') {
+            $('#outofwarranty_carryin_btns').show();
+            $('.oow_cin_available_btn').show();
+            $('.oow_cin_unavailable_btn').hide();
         } else {
+            $('#inwarranty_carryin_btns').hide();
             $('.iw_cin_unavailable_btn').hide();
             $('.iw_cin_available_btn').hide();
-            $('#inwarranty_carryin_btns').hide();
+
+            $('#outofwarranty_carryin_btns').hide();
+            $('.oow_cin_available_btn').hide();
+            $('.oow_cin_unavailable_btn').hide();
         }
     });
 
@@ -494,10 +551,12 @@
         const allUnavailable = all_item_qty.includes("unavailable");
         if(allUnavailable){
             $('.for_spare_part_release_unav').hide();
+            $('.for_spare_part_release_unav_oow').hide();
             $('.proceed_yes_av').hide();
             $('.proceed_yes_unav').show();
         } else {
             $('.for_spare_part_release_unav').show();
+            $('.for_spare_part_release_unav_oow').show();
             $('.proceed_yes_unav').hide();
             $('.proceed_yes_av').show();
         }
@@ -525,13 +584,17 @@
                 $('#add_parts_btn').show();
                 $('#spare_parts_filter').show();
                 $('.iw_cin_additional_spare_part').show();
+                $('.oow_cin_additional_spare_part').show();
                 $('.iw_cin_no_additional_spare_part').hide();
+                $('.oow_cin_no_additional_spare_part').hide();
                 $('#doa-toggle').attr('disabled', 'disabled');
             } else if (doaToggle.checked) {
                 $('.hidden_doa_jo').val('yes');
                 $('#doa_item_filters').show();
                 $('#add_doa_item_part').show();
                 $('.iw_cin_no_additional_spare_part').hide();
+                $('.oow_cin_additional_spare_part').hide();
+                $('.oow_cin_no_additional_spare_part').hide();
                 $('#additional-toggle').attr('disabled', 'disabled');
             } else {
                 $('.hidden_doa_jo').val('no');
@@ -540,6 +603,7 @@
                 $('#add_doa_item_part').hide();
                 $('#spare_parts_filter').hide();
                 $('.iw_cin_additional_spare_part').hide();
+                $('.oow_cin_no_additional_spare_part').show();
                 $('.iw_cin_no_additional_spare_part').show();
                 $('#doa-toggle').removeAttr('disabled');
                 $('#additional-toggle').removeAttr('disabled');
@@ -574,66 +638,76 @@
 
     });
 
-    function receive_parts(item_parts_id){
-        let spare_parts_id = item_parts_id;
-        let header_id = $('#header_id').val();
+    function receive_parts(item_parts_id) {
+        Swal.fire({
+            title: 'Confirm Receive',
+            text: 'Are you sure you want to receive this item?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, receive it',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let spare_parts_id = item_parts_id;
+                let header_id = $('#header_id').val();
 
-        $.ajax({
-            url: "{{ route('receive_spare_part') }}",
-            type: "POST",
-            data: {
-                'spare_parts_id' : spare_parts_id,
-                'header_id' : header_id,
-                _token: '{!! csrf_token() !!}',
-            },
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            beforeSend: function () {
-                Swal.fire({
-                    icon: "info",
-                    title: "Item Receiving",
-                    text: "Please wait...",
-                    allowOutsideClick: false,
-                    showConfirmButton: false,
-                    didOpen: () => Swal.showLoading()
-                });
-            },
-            success: function (response) {
-                if(response.success == true){
-                    Swal.fire({
-                        icon: "success",
-                        title: response.message,
-                        html: `This is also marked as reserved Qty, since this item is ordered for this Job Order.`,
-                        allowOutsideClick: false,
-                        showConfirmButton: false,
-                        timer: 2000,
-                        didOpen: () => {
-                            Swal.showLoading();
+                $.ajax({
+                    url: "{{ route('receive_spare_part') }}",
+                    type: "POST",
+                    data: {
+                        'spare_parts_id': spare_parts_id,
+                        'header_id': header_id,
+                        _token: '{!! csrf_token() !!}',
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    beforeSend: function () {
+                        Swal.fire({
+                            icon: "info",
+                            title: "Item Receiving",
+                            text: "Please wait...",
+                            allowOutsideClick: false,
+                            showConfirmButton: false,
+                            didOpen: () => Swal.showLoading()
+                        });
+                    },
+                    success: function (response) {
+                        if (response.success == true) {
+                            Swal.fire({
+                                icon: "success",
+                                title: response.message,
+                                html: `This is also marked as reserved Qty, since this item is ordered for this Job Order.`,
+                                allowOutsideClick: false,
+                                showConfirmButton: false,
+                                timer: 2000,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            }).then(() => {
+                                window.location.reload();
+                            });
+
+                        } else if (response.success == false) {
+                            Swal.fire({
+                                icon: "error",
+                                title: response.message,
+                                allowOutsideClick: false,
+                                showConfirmButton: true,
+                            });
                         }
-                    }).then(() => {
-                        window.location.reload();
+                    },
+                    error: function (xhr, error) {
+                        Swal.close();
+                        Swal.fire({
+                            title: "Can't receive this item, try again!",
+                            html: "Something went wrong!",
+                            icon: "error",
+                            timer: 3000,
+                            didOpen: () => Swal.showLoading()
+                        });
+                    }
                 });
-
-                } else if (response.success == false) {
-                    Swal.fire({
-                        icon: "error",
-                        title: response.message,
-                        allowOutsideClick: false,
-                        showConfirmButton: true,
-                    });
-                }
-            },
-            error: function (xhr, error) {
-                Swal.close();
-                Swal.fire({
-                    title: "Can't receive this item, try again!",
-                    html: "Something went wrong!",
-                    icon: "error",
-                    timer: 3000,
-                    didOpen: () => Swal.showLoading()
-                });setTimeout(() => {
-                },3000)
             }
         });
     }
@@ -843,13 +917,19 @@
         const is_available = item_qty_status.includes("available");
         const has_doa_jo = all_item_parts_type.includes("additional-standard-doa");
 
-        if(has_doa_jo && is_unavailable && transaction_status == 34){
+        if(has_doa_jo && is_unavailable && [34, 42].includes(Number(transaction_status))){
             $('.iw_cin_doa_unav').show();
-        } else if (has_doa_jo && is_available && transaction_status == 34){
+            $('.oow_cin_doa_unav').show();
+        } else if (has_doa_jo && is_available && [34, 42].includes(Number(transaction_status))){
             $('.iw_cin_doa_av').show();
+            $('.oow_cin_doa_av').show();
         } else {
             $('.iw_cin_doa_unav').hide();
             $('.iw_cin_doa_av').hide();
+
+            $('.oow_cin_doa_unav').hide();
+            $('.oow_cin_doa_av').hide();
+
         }
     });
 </script>

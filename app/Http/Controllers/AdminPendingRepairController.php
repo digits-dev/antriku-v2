@@ -71,10 +71,10 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 	public function hook_query_index(&$query)
 	{
 		if (in_array(CRUDBooster::myPrivilegeId(), [4, 8])) {
-			$query->where('technician_id', CRUDBooster::myId())->whereIn('repair_status', [30, 31, 34])
+			$query->where('technician_id', CRUDBooster::myId())->whereIn('repair_status', [30, 31, 34, 40, 41, 42])
 				->orderby('returns_header.id', 'ASC');
 		} else {
-			$query->whereIn('repair_status', [30, 31, 34]);
+			$query->whereIn('repair_status', [30, 31, 34, 40, 41, 42]);
 		}
 	}
 
@@ -83,6 +83,9 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 		$for_order_spare_part_carry_in = DB::table('transaction_status')->where('id', '30')->first();
 		$spare_part_release = DB::table('transaction_status')->where('id', '31')->first();
 		$ongoing_repair = DB::table('transaction_status')->where('id', '34')->first();
+		$for_order_spare_part_carry_in_oow = DB::table('transaction_status')->where('id', '40')->first();
+		$spare_part_release_oow = DB::table('transaction_status')->where('id', '41')->first();
+		$ongoing_repair_oow = DB::table('transaction_status')->where('id', '42')->first();
 
 		if ($column_index == 1) {
 			if ($column_value == $for_order_spare_part_carry_in->id) {
@@ -93,6 +96,15 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 			}
 			if ($column_value == $ongoing_repair->id) {
 				$column_value = '<span class="label label-warning">' . $ongoing_repair->status_name . '</span>';
+			}
+			if ($column_value == $for_order_spare_part_carry_in_oow->id) {
+				$column_value = '<span class="label label-warning">' . $for_order_spare_part_carry_in_oow->status_name . '</span>';
+			}
+			if ($column_value == $spare_part_release_oow->id) {
+				$column_value = '<span class="label label-warning">' . $spare_part_release_oow->status_name . '</span>';
+			}
+			if ($column_value == $ongoing_repair_oow->id) {
+				$column_value = '<span class="label label-warning">' . $ongoing_repair_oow->status_name . '</span>';
 			}
 		}
 

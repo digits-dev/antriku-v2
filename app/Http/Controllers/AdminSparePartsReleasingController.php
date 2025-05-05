@@ -42,11 +42,11 @@ class AdminSparePartsReleasingController extends \crocodicstudio\crudbooster\con
 	public function hook_query_index(&$query)
 	{
 		if (CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 9) {
-			$query->whereIn('repair_status', [29])->where('print_receive_form', 'YES')->orderBy('id', 'ASC');
+			$query->whereIn('repair_status', [29,39])->where('print_receive_form', 'YES')->orderBy('id', 'ASC');
 		} else if (in_array(CRUDBooster::myPrivilegeId(), [9])) {
-			$query->whereIn('repair_status', [29])->where('print_receive_form', 'YES')->where('technician_id', CRUDBooster::myId())->orderBy('id', 'ASC');
+			$query->whereIn('repair_status', [29,39])->where('print_receive_form', 'YES')->where('technician_id', CRUDBooster::myId())->orderBy('id', 'ASC');
 		} else {
-			$query->where('repair_status', 29)->where('branch', CRUDBooster::me()->branch_id);
+			$query->whereIn('repair_status', [29,39])->where('branch', CRUDBooster::me()->branch_id);
 			if (!empty(Session::get('toggle')) && Session::get('toggle') == "ON") {
 				$query->where('updated_by', CRUDBooster::me()->id)->orderBy('id', 'ASC');
 			} else {
@@ -59,10 +59,14 @@ class AdminSparePartsReleasingController extends \crocodicstudio\crudbooster\con
 	public function hook_row_index($column_index, &$column_value)
 	{
 		$for_spare_parts_release_carry_in = DB::table('transaction_status')->where('id', '29')->first();
+		$for_spare_parts_release_carry_in_oow = DB::table('transaction_status')->where('id', '39')->first();
 
 		if ($column_index == 1) {
 			if ($column_value == $for_spare_parts_release_carry_in->id) {
 				$column_value = '<span class="label label-warning">' . $for_spare_parts_release_carry_in->status_name . '</span>';
+			}
+			if ($column_value == $for_spare_parts_release_carry_in_oow->id) {
+				$column_value = '<span class="label label-warning">' . $for_spare_parts_release_carry_in_oow->status_name . '</span>';
 			}
 		}
 

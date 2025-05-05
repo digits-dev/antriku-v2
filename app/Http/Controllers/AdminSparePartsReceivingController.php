@@ -37,6 +37,7 @@ class AdminSparePartsReceivingController extends \crocodicstudio\crudbooster\con
 		$this->col = [];
 		$this->col[] = ["label" => "Status", "name" => "repair_status"];
 		$this->col[] = ["label" => "Reference No", "name" => "reference_no"];
+		$this->col[] = ["label" => "GSX", "name" => "id"];
 		$this->col[] = ["label" => "Model Group", "name" => "model"];
 		$this->col[] = ["label" => "Warranty Status", "name" => "warranty_status"];
 		$this->col[] = ["label" => "Case Status", "name" => "case_status"];
@@ -49,13 +50,35 @@ class AdminSparePartsReceivingController extends \crocodicstudio\crudbooster\con
 
 	public function hook_query_index(&$query)
 	{
-		$query->whereIn('repair_status', [26,33, 47])->orderBy('id', 'ASC');
+		$query->whereIn('repair_status', [26,33,45,47])->orderBy('id', 'ASC');
+
+		if (request()->filled('search_gsx')) {
+			$searchInput = request()->get('search_gsx');
+			
+			// Split by comma, trim each part, and remove empty values
+			$terms = array_filter(array_map('trim', explode(',', $searchInput)));
+		
+			if (!empty($terms)) {
+				$query->whereExists(function ($subQuery) use ($terms) {
+					$subQuery->select(DB::raw(1))
+						->from('returns_body_item')
+						->whereColumn('returns_body_item.returns_header_id', 'returns_header.id')
+						->where(function ($innerQuery) use ($terms) {
+							foreach ($terms as $term) {
+								$innerQuery->orWhere('returns_body_item.gsx_ref', 'like', "%{$term}%");
+							}
+						});
+				});
+			}
+		}
+
 	}
 
 	public function hook_row_index($column_index, &$column_value)
 	{
 		$awaiting_apple_repair = DB::table('transaction_status')->where('id', '26')->first();
 		$callout_ordering_spare_part = DB::table('transaction_status')->where('id', '33')->first();
+		$callout_ordering_spare_part_oow = DB::table('transaction_status')->where('id', '45')->first();
 		$for_tech_assessment_iw = DB::table('transaction_status')->where('id', '47')->first();
 
 		if ($column_index == 1) {
@@ -68,16 +91,36 @@ class AdminSparePartsReceivingController extends \crocodicstudio\crudbooster\con
 			if ($column_value == $awaiting_apple_repair->id) {
 				$column_value = '<span class="label label-warning">' . $awaiting_apple_repair->status_name . '</span>';
 			}
+			if ($column_value == $callout_ordering_spare_part_oow->id) {
+				$column_value = '<span class="label label-warning">' . $callout_ordering_spare_part_oow->status_name . '</span>';
+			}
 		}
 
 		if ($column_index == 3) {
+			$gsxList = DB::table('returns_body_item')
+				->where('returns_header_id', $column_value)
+				->pluck('gsx_ref') 
+				->filter() 
+				->toArray();
+
+			if (!empty($gsxList)) {
+				$column_value = implode(' ', array_map(function($gsx) {
+					return "<span class='label label-info'>{$gsx}</span>";
+				}, $gsxList));
+				
+			} else {
+				$column_value = "Empty GSX"; 
+			}
+		}
+
+		if ($column_index == 4) {
 			$models = DB::table('model')->where('id', $column_value)->first();
 			if ($models) {
 				$model_group = DB::table('model_group')->where('id', $models->model_group)->first();
 				$column_value = '<span class="label label-info">' . $model_group->model_group_name . '</span>';
 			}
 		}
-		if($column_index == 4){
+		if($column_index == 5){
 			if($column_value == 'IN WARRANTY'){
 				$column_value = '<span style="color: #00B74A"><strong>'.$column_value.'</strong></span>';
 			}elseif($column_value == 'OUT OF WARRANTY'){
@@ -85,9 +128,9 @@ class AdminSparePartsReceivingController extends \crocodicstudio\crudbooster\con
 			}
 		}
 
-		if($column_index == 5){
+		if($column_index == 6){
 			$column_value = '<span style="color: #1266F1"><strong>'.$column_value.'</strong></span>';
-		}
+		}	
 		
 	}
 
@@ -201,7 +244,9 @@ class AdminSparePartsReceivingController extends \crocodicstudio\crudbooster\con
 					'qty_status' => 'Available',
 					'item_spare_additional_type' => $get_item_if_exist->item_spare_additional_type == 'Additional-Standard-DOA' 
 						? 'Additional-Standard-DOA-Yes' 
-						: 'Additional-Required-Yes',
+						: ($get_item_if_exist->item_spare_additional_type == 'Additional-Standard' 
+							? 'Additional-Standard-UNAV-Received' 
+							: 'Additional-Required-Yes'),
 					'updated_by' => CRUDBooster::myId(),
 					'updated_at' => now(),
 				]);

@@ -436,7 +436,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 
 		// *********************************************************************************************
 
-		$status_array = [1, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 33, 34, 35, 36, 47];
+		$status_array = [1, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 33, 34, 35, 38, 39, 40, 41, 42, 43, 45, 47];
 		    if(in_array($request->status_id, $status_array)){
 			DB::table('returns_header')->where('id', $request->header_id)->update([
 				'repair_status' 			=> $request->status_id,
@@ -481,24 +481,14 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 			}
 		}
 
-		if ($request->status_id == 20) {
+		// if ($request->status_id == 20) {
 
-			DB::table('returns_header')->where('id', $request->header_id)->update([
-				'warranty_status'   => $all_data['warranty_status'],
-			]);
-		}
-		if($request->status_id == 23){
-			if ($request->hasFile('rpf_invoice')) {
-				$file = $request->file('rpf_invoice');
-				$filename =    time() .  '_' . $request->header_id . '_' . $file->getClientOriginalName() ;
-				$path = $file->storeAs('public/rpf_invoice', $filename);
-				
-				DB::table('returns_header')->where('id',$request->header_id)->update([
-					'rpf_invoice'   => $filename,
-				]);
-			}
-		}
-		if($request->status_id == 23){
+		// 	DB::table('returns_header')->where('id', $request->header_id)->update([
+		// 		'warranty_status'   => $all_data['warranty_status'],
+		// 	]);
+		// }
+
+		if (in_array($request->status_id, [23, 39, 40]) && !in_array($all_data['recent_treansaction_status'], [45, 43, 42])) {
 			if ($request->hasFile('rpf_invoice')) {
 				$file = $request->file('rpf_invoice');
 				$filename =    time() .  '_' . $request->header_id . '_' . $file->getClientOriginalName() ;
@@ -510,7 +500,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 			}
 		}
 
-		if ($request->status_id == 29 && $all_data['recent_treansaction_status'] != 33) {
+		if (in_array($request->status_id, [29,39]) && $all_data['recent_treansaction_status'] != 33) {
 			$get_jo = DB::table('returns_body_item')->where('returns_header_id', $request->header_id)->get();
 		
 			$additionalStandard = [];
@@ -574,7 +564,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 			}
 		}		
 
-		if ($request->status_id == 31) {
+		if (in_array($request->status_id, [31,41])) {
 			DB::beginTransaction();
 
 			try {
@@ -677,7 +667,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 			'qty'				=> $qty,
 			'qty_status'		=> $qty > 0 ? 'Available' : 'Unavailable',
 			'item_parts_id'		=> $item_parts_id,
-			'item_spare_additional_type' => $transaction_status == 34 ? ($request->doa_jo == 'yes' ? 'Additional-Standard-DOA' : 'Additional-Required-Pending'): 'Additional-Standard',
+			'item_spare_additional_type' => in_array($transaction_status, [34, 42]) ? ($request->doa_jo == 'yes' ? 'Additional-Standard-DOA' : 'Additional-Required-Pending'): 'Additional-Standard',
 			'cost'				=> $cost,
 			'created_by'		=> CRUDBooster::myId(),
 			'updated_by'		=> CRUDBooster::myId()
@@ -711,16 +701,15 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 			$item = DB::table('returns_body_item')->where('id', $request->id)->first();
 
 			if ($item && $item->item_spare_additional_type === 'Additional-Standard-DOA') {
-				// $item_to_update = DB::table('returns_body_item')
-				// 	->where('returns_header_id', $item->returns_header_id)
-				// 	->where('item_parts_id', $item->item_parts_id)
-				// 	->where('item_spare_additional_type', '!=', 'Additional-Standard-DOA')
-				// 	->orderBy('id', 'DESC')
-				// 	->first();
+				$item_to_update = DB::table('returns_body_item')
+					->where('returns_header_id', $item->returns_header_id)
+					->where('item_parts_id', $item->item_parts_id)
+					->where('item_spare_additional_type', '!=', 'Additional-Standard-DOA')
+					->orderBy('id', 'DESC')
+					->first();
 
 				DB::table('returns_body_item')
-					->where('item_parts_id', $item->item_parts_id)
-					->where('qty_status', 'Available-DOA')
+					->where('id', $item_to_update->id)
 					->update([
 						'qty_status' => 'Available',
 						'updated_by' => CRUDBooster::myId(),
@@ -743,7 +732,23 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 	// checking if gsx is existing
 	public function CheckGSX(Request $request)
 	{
-		$data = DB::table('parts_item_master')->where('spare_parts', $request->gsx)->get();
+		$data = DB::table('parts_item_master as pim')
+			->where('pim.spare_parts', $request->gsx)
+			->get()
+			->map(function ($item) {
+				// Get total "Pending" reservation qty
+				$pendingReservedQty = DB::table('inventory_reservations')
+					->where('parts_item_master_id', $item->id)
+					->where('status', 'Pending')
+					->sum('reserved_qty');
+
+				// If equal, set qty to 0
+				if ($pendingReservedQty == $item->qty) {
+					$item->qty = 0;
+				}
+
+				return $item;
+			});
 		return ($data);
 	}
 

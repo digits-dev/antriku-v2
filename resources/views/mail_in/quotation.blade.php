@@ -112,6 +112,10 @@
                                     <input type="hidden" name="serial_no" id="serialArray">
                                     <input type="hidden" name="item_desc" id="itemArray">
                                     <input type="hidden" name="cost" id="costArray">
+
+                                    <input type="hidden" value="{{$transaction_details->warranty_status}}" id="warranty_status">
+                                    <input type="hidden" value="{{$transaction_details->case_status}}" id="case_status">
+
                                 </tbody>
                             </table>
                         </div>

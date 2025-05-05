@@ -33,6 +33,7 @@ class AdminTransactionStatusController extends \crocodicstudio\crudbooster\contr
 		# START COLUMNS DO NOT REMOVE THIS LINE
 		$this->col = [];
 		$this->col[] = ["label" => "Status Name", "name" => "status_name"];
+		$this->col[] = ["label" => "Warranty Status", "name" => "warranty_status"];
 		$this->col[] = ["label" => "Status", "name" => "status"];
 		$this->col[] = ["label" => "Date Created", "name" => "created_at"];
 		$this->col[] = ["label" => "Date Updated", "name" => "updated_at"];
@@ -44,6 +45,7 @@ class AdminTransactionStatusController extends \crocodicstudio\crudbooster\contr
 		$this->form = [];
 		$this->form[] = ['label' => 'Status Name', 'name' => 'status_name', 'type' => 'text', 'validation' => 'required|min:1|max:255', 'width' => 'col-sm-7'];
 		$this->form[] = ['label' => 'Status', 'name' => 'status', 'type' => 'select', 'validation' => 'required|min:1|max:255', 'width' => 'col-sm-7', 'dataenum' => 'ACTIVE;INACTIVE'];
+		$this->form[] = ['label' => 'Warranty Status', 'name' => 'warranty_status', 'type' => 'select', 'validation' => 'required|min:1|max:255', 'width' => 'col-sm-7', 'dataenum' => 'IN WARRANTY;OUT OF WARRANTY'];
 		# END FORM DO NOT REMOVE THIS LINE
 
 	}
@@ -74,6 +76,14 @@ class AdminTransactionStatusController extends \crocodicstudio\crudbooster\contr
 		}
 
 		if ($column_index == 2) {
+			if ($column_value == 'OUT OF WARRANTY') {
+				$column_value = '<span style="color: #F93154"><strong>' . $column_value . '</strong></span>';
+			} elseif ($column_value == 'IN WARRANTY') {
+				$column_value = '<span style="color: #00B74A"><strong>' . $column_value . '</strong></span>';
+			}
+		}
+
+		if ($column_index == 3) {
 			if ($column_value == 'INACTIVE') {
 				$column_value = '<span style="color: #F93154"><strong>' . $column_value . '</strong></span>';
 			} elseif ($column_value == 'ACTIVE') {
@@ -81,11 +91,11 @@ class AdminTransactionStatusController extends \crocodicstudio\crudbooster\contr
 			}
 		}
 
-		if ($column_index == 3 || $column_index == 4) {
+		if ($column_index == 4 || $column_index == 5) {
 			$column_value = date('F j, Y H:i:s', strtotime($column_value));
 		}
 
-		if ($column_index == 5 || $column_index == 6) {
+		if ($column_index == 6 || $column_index == 7) {
 			$name = DB::table('cms_users')->where('id', $column_value)->value('name');
 			$column_value = $name;
 		}
