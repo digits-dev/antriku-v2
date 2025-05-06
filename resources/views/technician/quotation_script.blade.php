@@ -572,6 +572,40 @@
         $('.getitemparstidValue2').val('');
         $('.getcostValue2').val('');
     }
+
+    function addDefectiveRow() {
+    const $lastRow = $('#dynamic_field_defective tbody tr:last-child');
+    const kbb = $lastRow.find('input[name="kbb_name[]"]').val()?.trim();
+    const serial = $lastRow.find('input[name="serial_number[]"]').val()?.trim();
+
+    if (!kbb || !serial) {
+        swal('Info!', 'Fill out the last row before adding a new one.', 'info');
+        return;
+    }
+
+    const newRow = `
+        <tr>
+            <td style="padding: 1px !important;">
+                <input class="input-cus text-center" type="text" name="kbb_name[]" placeholder="Enter Defective KBB Name">
+            </td>
+            <td style="padding: 1px !important;">
+                <input class="input-cus text-center" type="text" name="serial_number[]" placeholder="Enter Defective Serial Number">
+            </td>
+            <td class="text-center" style="padding: 1px !important;">
+                <button class="btn btn-danger btn-sm removeRow">
+                    <i class="fa fa-times"></i>
+                </button>
+            </td>
+        </tr>`;
+
+    $('#dynamic_field_defective tbody').append(newRow);
+}
+
+    $(document).on('click', '.removeRow', function() {
+        $(this).closest('tr').remove();
+    });
+
+
 </script>
 
 <script>

@@ -105,21 +105,7 @@
             gap: 20px;
             padding: 20px;
         }
-        .uploaded-image-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            width: 100%;
-            border: 1px solid #e5e5e5;
-            border-radius: 5px;
-            padding: 20px;
-        }
-        .uploaded-image {
-            width: 400px;
-            height: 400px;
-            object-fit: cover;
-        }
+       
         .preview {
             display: flex;
             flex-direction: column;

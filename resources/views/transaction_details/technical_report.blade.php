@@ -162,61 +162,62 @@
                 @else
                     <div class="row" id="show_other_problem"></div>
                 @endif
-                <div class="row">    
-                    <div class="col-md-12">
-                        <div class="col-md-12" style="margin-top: 5px;">
+                <div class="col-md-12">
+                    <div class="row">    
+                        <div class="col-md-6" style="margin-top: 5px;">
                             <label class="label-cus">Other Remarks:</label>
                             <textarea placeholder="Type your other remarks here" name="other_remarks" rows="2" class="input-cus" {{ $transaction_details->repair_status != 10 ? 'readonly' : '' }}>{{ $transaction_details->other_remarks }}</textarea>
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-6" style="margin-top: 5px;">
-                            <label class="label-cus">Device Serial Number:</label>
-                            <input placeholder="Type your Device Serial Number here" name="device_serial_number" class="input-cus" {{ $transaction_details->repair_status != 10 ? 'readonly' : '' }} value="{{ $transaction_details->device_serial_number }}"/>
-                        </div>
-                        <div class="col-md-6" style="margin-top: 5px;">
-                            <label class="label-cus"><span class="requiredField">*</span>Defective Serial Number (KBB):</label>
-                            <input placeholder="Type your Defective Serial Number here" name="defective_serial_number" class="input-cus" required  {{ $transaction_details->repair_status != 10 ? 'readonly' : '' }} value="{{ $transaction_details->defective_serial_number }}">
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row">    
-                    <div class="col-md-12">
-                        <div class="col-md-12" style="margin-top: 10px;">
+                        <div class="col-md-6" style="margin-top: 10px;">
                             <label class="label-cus"><span class="requiredField">*</span>Device Issue Description:</label>
                             <textarea placeholder="Type your device issue description here" name="device_issue_description" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 10 ? 'readonly' : '' }}>{{ $transaction_details->device_issue_description }}</textarea>
                         </div>
                     </div>
                 </div>
-                <div class="row">    
-                    <div class="col-md-12">
-                        <div class="col-md-12" style="margin-top: 5px;">
+                <div class="col-md-12">
+                    <div class="row">    
+                        <div class="col-md-6" style="margin-top: 5px;">
                             <label class="label-cus"><span class="requiredField">*</span>Findings:</label>
                             <textarea placeholder="Type your findings here" name="findings" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 10 ? 'readonly' : ''}}>{{ $transaction_details->findings }}</textarea>
                         </div>
-                    </div>
-                </div>
-                <div class="row">    
-                    <div class="col-md-12">
-                        <div class="col-md-12" style="margin-top: 5px;">
+                        <div class="col-md-6" style="margin-top: 5px;">
                             <label class="label-cus"><span class="requiredField">*</span>Resolution:</label>
                             <textarea placeholder="Type your resolution here" name="resolution" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 10 ? 'readonly' : ''}}>{{ $transaction_details->resolution }}</textarea>
                         </div>
                     </div>
                 </div>
-                @if ($transaction_details->warranty_status == "OUT OF WARRANTY")
-                    <div class="row">    
-                        <div class="col-md-12">
-                            <div class="col-md-12" style="margin-top: 5px;">
-                                <label class="label-cus"><span class="requiredField">*</span>Parts Replacement Cost:</label>
-                                <textarea placeholder="Type your Parts Replacement Cost here" name="replacement_cost" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 10 ? 'readonly' : ''}}>{{ $transaction_details->parts_replacement_cost }}</textarea>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12 ">
+                            <button onclick="addDefectiveRow()" id="add_defective_row" style="margin-top:5px" class="btn btn-warning pull-right"><i class="fa fa-plus" aria-hidden="true"></i> Add Defective</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box-body">
+                            <div class="table-responsive borderline" style="overflow-x:unset !important; border-top: 1px solid lightgrey;">
+                                <div class="pic-container">
+                                    <div class="pic-row">
+                                        <table class="table table-bordered" id="dynamic_field_defective">
+                                            <tbody>
+                                                <tr class="tbl_header_color" style="padding: 1px !important;">
+                                                    <th width="10%" class="text-center" style="padding: 1px !important;">Defective KBB Name</th>
+                                                    <th width="10%" class="text-center" style="padding: 1px !important;">Defective Serial Number</th>
+                                                    <th width="2%" class="text-center" style="padding: 1px !important;"></th>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 1px !important;"><input class="input-cus text-center" type="text" name="kbb_name[]"  placeholder="Enter Defective KBB Name"></td>
+                                                    <td style="padding: 1px !important;"><input class="input-cus text-center" type="text" name="serial_number[]" placeholder="Enter Defective Serial Number"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                @endif
+                </div>
             </div>
         </div>
         <br>
@@ -282,12 +283,6 @@
             </div>
         </div>
         
-        @if ($transaction_details->warranty_status == "OUT OF WARRANTY")
-            <div class="info-item-cust">
-                <div class="info-label-cust">Parts Replacement Cost</div>
-                <div class="info-value-cust">{{ $transaction_details->parts_replacement_cost ?? 'N/A' }}</div>
-            </div>
-        @endif
     </div>
     @endif
 </section>

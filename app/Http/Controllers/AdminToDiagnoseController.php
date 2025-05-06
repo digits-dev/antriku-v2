@@ -133,7 +133,8 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		$data['quotation'] = DB::table('returns_body_item')->leftJoin('returns_serial', 'returns_body_item.id', '=', 'returns_serial.returns_body_item_id')
 			->select('returns_body_item.*', 'returns_body_item.returns_header_id as header_id', 'returns_serial.returns_header_id as serial_header_id', 'returns_serial.returns_body_item_id as serial_body_item_id', 'returns_serial.serial_number as serial_no')
 			->where('returns_body_item.returns_header_id', $id)->get();
-
+			
+		$data['defective_serial_numbers'] = DB::table('defective_serial_number')->where('returns_header_id', $id)->get();
 		$data['Branch'] = DB::table('branch')->leftJoin('cms_users', 'branch.id', '=', 'cms_users.branch_id')->where('cms_users.id', $data['transaction_details']->user_id)->first();
 		$data['imfs'] = DB::table('product_item_master')->where('status', 'ACTIVE')->get();
 		$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
@@ -170,7 +171,8 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		$data['quotation'] = DB::table('returns_body_item')->leftJoin('returns_serial', 'returns_body_item.id', '=', 'returns_serial.returns_body_item_id')
 			->select('returns_body_item.*', 'returns_body_item.returns_header_id as header_id', 'returns_serial.returns_header_id as serial_header_id', 'returns_serial.returns_body_item_id as serial_body_item_id', 'returns_serial.serial_number as serial_no')
 			->where('returns_body_item.returns_header_id', $id)->get();
-
+			
+		$data['defective_serial_numbers'] = DB::table('defective_serial_number')->where('returns_header_id', $id)->get();
 		$data['Branch'] = DB::table('branch')->leftJoin('cms_users', 'branch.id', '=', 'cms_users.branch_id')->where('cms_users.id', $data['transaction_details']->user_id)->first();
 		$data['imfs'] = DB::table('product_item_master')->where('status', 'ACTIVE')->get();
 		$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
@@ -285,10 +287,8 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 				'problem_details'			=> $ProblemDetails,
 				'problem_details_other'		=> $all_data['problem_details_other'],
 				'other_remarks'		        => $all_data['other_remarks'],
-				'parts_replacement_cost'	=> $all_data['replacement_cost'],
 				'case_status'				=> $all_data['case_status'],
 				'warranty_status' 			=> $all_data['warranty_status'],
-				'device_serial_number'		=> $all_data['device_serial_number'],
 				'defective_serial_number'	=> $all_data['defective_serial_number'],
 				'device_issue_description' 	=> $all_data['device_issue_description'],
 				'findings' 					=> $all_data['findings'],
@@ -326,6 +326,15 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 					'updated_by' 				=> CRUDBooster::myId()
 				]);
 			}
+
+			foreach ($all_data['kbb_name'] as $key => $kbb) {
+				DB::table('defective_serial_number')->insert([
+					'returns_header_id' 		=> $all_data['header_id'],
+					'defective_kbb_name'       => $kbb,
+					'defective_serial_number'  => $all_data['serial_number'][$key],
+				]);
+			}
+			// *********************************************************************************
 		}
 
 		// ***************************************For Quotation*********************************

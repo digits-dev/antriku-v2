@@ -108,16 +108,6 @@
                         </div>
                     </div>
                 </div>
-                @if ($transaction_details->warranty_status == "OUT OF WARRANTY")
-                    <div class="row">    
-                        <div class="col-md-12">
-                            <div class="col-md-12" style="margin-top: 5px;">
-                                <label class="label-cus"><span class="requiredField">*</span>Parts Replacement Cost:</label>
-                                <textarea placeholder="Type your Parts Replacement Cost here" name="replacement_cost" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 10 ? 'readonly' : ''}}>{{ $transaction_details->parts_replacement_cost }}</textarea>
-                            </div>
-                        </div>
-                    </div>
-                @endif
             </div>
         </div>
         <br>
@@ -183,16 +173,6 @@
         @endif
         <div class="info-grid-cust">
             <div class="info-item-cust">
-                <div class="info-label-cust">Device Serial Number:</div>
-                <div class="info-value-cust">{{ $transaction_details->device_serial_number ?? 'N/A' }}</div>
-            </div>
-            <div class="info-item-cust">
-                <div class="info-label-cust">Defective Serial Number (KBB):</div>
-                <div class="info-value-cust">{{ $transaction_details->defective_serial_number ?? 'N/A' }}</div>
-            </div>
-        </div>
-        <div class="info-grid-cust">
-            <div class="info-item-cust">
                 <div class="info-label-cust">Other Remarks</div>
                 <div class="info-value-cust">{{ $transaction_details->other_remarks ?? 'N/A' }}</div>
             </div>
@@ -211,12 +191,35 @@
                 <div class="info-value-cust">{{ $transaction_details->resolution ?? 'N/A' }}</div>
             </div>
         </div>
-        
-        @if ($transaction_details->warranty_status == "OUT OF WARRANTY")
-            <div class="info-item-cust">
-                <div class="info-label-cust">Parts Replacement Cost</div>
-                <div class="info-value-cust">{{ $transaction_details->parts_replacement_cost ?? 'N/A' }}</div>
+        @if($defective_serial_numbers->isNotEmpty())
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-12">
+                    <div class="box-body no-padding">
+                        <div class="table-responsive">
+                            <div class="pic-container">
+                                <div class="pic-row">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr class="tbl_header_color" style="padding: 1px !important;">
+                                                <th width="10%" class="text-center table-bordered-display" style="padding: 5px !important;">Defective KBB Name</th>
+                                                <th width="10%" class="text-center table-bordered-display" style="padding: 5px !important;">Defective Serial Number</th>
+                                            </tr>
+                                            @foreach($defective_serial_numbers as $serial)
+                                                <tr>
+                                                    <td style="padding: 5px !important;" class="text-center table-bordered-display"><p>{{ $serial->defective_kbb_name }}</p></td>
+                                                    <td style="padding: 5px !important;" class="text-center table-bordered-display"><p>{{ $serial->defective_serial_number }}</p></td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
         @endif
     </div>
     @endif

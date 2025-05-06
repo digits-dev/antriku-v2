@@ -51,9 +51,9 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 	public function hook_query_index(&$query)
 	{
 		if (CRUDBooster::myPrivilegeId() == 3) {
-			$query->whereIn('repair_status', [12, 13, 19, 21, 22, 28, 33, 35, 38, 43, 45, 47, 48])->where('branch', CRUDBooster::me()->branch_id);
+			$query->whereIn('repair_status', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])->where('branch', CRUDBooster::me()->branch_id);
 		} else {
-			$query->whereIn('repair_status', [12, 13, 19, 21, 22,  28, 33, 35, 38, 43, 45, 47, 48]);
+			$query->whereIn('repair_status', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48]);
 		}
 	}
 
@@ -130,6 +130,8 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 			->select('returns_body_item.*', 'returns_body_item.returns_header_id as header_id', 'returns_serial.returns_header_id as serial_header_id', 'returns_serial.returns_body_item_id as serial_body_item_id', 'returns_serial.serial_number as serial_no')
 			->where('returns_body_item.returns_header_id', $id)->get();
 
+		$data['defective_serial_numbers'] = DB::table('defective_serial_number')->where('returns_header_id', $id)->get();
+
 		$data['Branch'] = DB::table('branch')->leftJoin('cms_users', 'branch.id', '=', 'cms_users.branch_id')->where('cms_users.id', $data['transaction_details']->user_id)->first();
 		$data['imfs'] = DB::table('product_item_master')->where('status', 'ACTIVE')->get();
 		$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
@@ -167,11 +169,12 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 			->select('returns_body_item.*', 'returns_body_item.returns_header_id as header_id', 'returns_serial.returns_header_id as serial_header_id', 'returns_serial.returns_body_item_id as serial_body_item_id', 'returns_serial.serial_number as serial_no')
 			->where('returns_body_item.returns_header_id', $id)->get();
 
-			$data['Branch'] = DB::table('branch')->leftJoin('cms_users', 'branch.id', '=', 'cms_users.branch_id')->where('cms_users.id',$data['transaction_details']->user_id)->first();
-			$data['imfs'] = DB::table('product_item_master')->where('status', 'ACTIVE')->get();
-			$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
-			$data['TechTesting'] = DB::table('tech_testing')->where('test_type_status', 'ACTIVE')->where('model_group_id','!=',NULL)->orderBy('description', 'ASC')->get();
-			$data['CallOutCount'] = DB::table('call_out_recorder')->where('returns_header_id', $id)->where('status_id', $data['transaction_details']->repair_status)->count();
+		$data['defective_serial_numbers'] = DB::table('defective_serial_number')->where('returns_header_id', $id)->get();
+		$data['Branch'] = DB::table('branch')->leftJoin('cms_users', 'branch.id', '=', 'cms_users.branch_id')->where('cms_users.id',$data['transaction_details']->user_id)->first();
+		$data['imfs'] = DB::table('product_item_master')->where('status', 'ACTIVE')->get();
+		$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
+		$data['TechTesting'] = DB::table('tech_testing')->where('test_type_status', 'ACTIVE')->where('model_group_id','!=',NULL)->orderBy('description', 'ASC')->get();
+		$data['CallOutCount'] = DB::table('call_out_recorder')->where('returns_header_id', $id)->where('status_id', $data['transaction_details']->repair_status)->count();
 
 		$this->cbView('transaction_details.view_created_transaction_detail', $data);
 	}

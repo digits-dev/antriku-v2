@@ -69,6 +69,10 @@
         <button type="button" id="call_out" onclick="callOut(21)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
             <i class="fa fa-phone"></i> CALL OUT ({{ $CallOutCount }})
         </button>
+        @elseif ($transaction_details->repair_status == 26)
+        <button type="button" id="call_out" onclick="callOut(26)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+            <i class="fa fa-phone"></i> CALL OUT ({{ $CallOutCount }})
+        </button>
         @endif
      
     {{-- SPARE CUSTODIAN BUTTONS --}}
