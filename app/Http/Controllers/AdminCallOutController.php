@@ -51,9 +51,9 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 	public function hook_query_index(&$query)
 	{
 		if (CRUDBooster::myPrivilegeId() == 3) {
-			$query->whereIn('repair_status', [12, 13, 19, 21, 22, 28, 33, 35, 38, 43, 45, 47])->where('branch', CRUDBooster::me()->branch_id);
+			$query->whereIn('repair_status', [12, 13, 19, 21, 22, 28, 33, 35, 38, 43, 45, 47, 48])->where('branch', CRUDBooster::me()->branch_id);
 		} else {
-			$query->whereIn('repair_status', [12, 13, 19, 21, 22,  28, 33, 35, 38, 43, 45, 47]);
+			$query->whereIn('repair_status', [12, 13, 19, 21, 22,  28, 33, 35, 38, 43, 45, 47, 48]);
 		}
 	}
 

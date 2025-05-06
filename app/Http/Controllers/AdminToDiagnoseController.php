@@ -252,6 +252,8 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		$all_data = array();
 		parse_str($request->all_data, $all_data);
 
+		// dd($all_data);exit;
+
 		$transaction_details = DB::table('returns_header')->leftJoin('model', 'returns_header.model', '=', 'model.id')
 			->select('returns_header.*', 'returns_header.id as header_id', 'returns_header.created_by as user_id', 'model.id as model_id', 'model_name', 'model_photo', 'model_status')
 			->where('returns_header.id', $all_data['header_id'])->get();
@@ -276,41 +278,9 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 			]);
 		}
 
-		if (!empty($transaction_details[0]->diagnostic_fee_payment_url)) {
-			$status_diagnostic_fee = 'PAID';
-		} else {
-			if ($all_data['warranty_status'] == "OUT OF WARRANTY") {
-				$status_diagnostic_fee = 'PAID';
-			} else {
-				$status_diagnostic_fee = $all_data['warranty_status'];
-			}
-		}
-
-		if (!empty($transaction_details[0]->down_payment_url)) {
-			$status_down_payment = 'PAID';
-		} else {
-			if ($all_data['warranty_status'] == "OUT OF WARRANTY") {
-				$status_down_payment = 'UNPAID';
-			} else {
-				$status_down_payment = $all_data['warranty_status'];
-			}
-		}
-
-		if (!empty($transaction_details[0]->final_payment_url)) {
-			$status_final_payment = 'PAID';
-		} else {
-			if ($all_data['warranty_status'] == "OUT OF WARRANTY") {
-				$status_final_payment = 'UNPAID';
-			} else {
-				$status_final_payment = $all_data['warranty_status'];
-			}
-		}
 		if ($transaction_details[0]->repair_status == 10) {
 			$ProblemDetails = implode(",", $all_data['problem_details']);
 			DB::table('returns_header')->where('id', $all_data['header_id'])->update([
-				// 'diagnostic_fee_status'		=> $status_diagnostic_fee,
-				// 'downpayment_status' 		=> $status_down_payment,
-				// 'final_payment_status' 		=> $status_final_payment,
 				'warranty_expiration_date' 	=> date('Y-m-d', strtotime($all_data['warranty_expiration_date'])),
 				'problem_details'			=> $ProblemDetails,
 				'problem_details_other'		=> $all_data['problem_details_other'],
@@ -320,7 +290,6 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 				'warranty_status' 			=> $all_data['warranty_status'],
 				'device_serial_number'		=> $all_data['device_serial_number'],
 				'defective_serial_number'	=> $all_data['defective_serial_number'],
-				// 'memo_no' 					=> $all_data['memo_number'],
 				'device_issue_description' 	=> $all_data['device_issue_description'],
 				'findings' 					=> $all_data['findings'],
 				'resolution' 				=> $all_data['resolution'],
@@ -357,7 +326,6 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 					'updated_by' 				=> CRUDBooster::myId()
 				]);
 			}
-			// *********************************************************************************
 		}
 
 		// ***************************************For Quotation*********************************
@@ -404,10 +372,36 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 						'cost'				=> $cost[$i],
 						'updated_by'		=> CRUDBooster::myId()
 					]);
-					DB::table('returns_serial')->where('returns_header_id', $all_data['header_id'])->where('returns_body_item_id', $row_id[$i])->update([
-						'serial_number'		=> $serial_no[$i],
-						'updated_by'		=> CRUDBooster::myId()
-					]);
+					// DB::table('returns_serial')->where('returns_header_id', $all_data['header_id'])->where('returns_body_item_id', $row_id[$i])->update([
+					// 	'serial_number'		=> $serial_no[$i],
+					// 	'updated_by'		=> CRUDBooster::myId()
+					// ]);
+
+					$existing = DB::table('returns_serial')
+						->where('returns_header_id', $all_data['header_id'])
+						->where('returns_body_item_id', $row_id[$i])
+						->first();
+
+					if ($existing) {
+						// Update if exists
+						DB::table('returns_serial')
+							->where('returns_header_id', $all_data['header_id'])
+							->where('returns_body_item_id', $row_id[$i])
+							->update([
+								'serial_number' => $serial_no[$i],
+								'updated_by'    => CRUDBooster::myId()
+							]);
+					} else {
+						// Insert if not exists
+						DB::table('returns_serial')->insert([
+							'returns_header_id'    => $all_data['header_id'],
+							'returns_body_item_id'=> $row_id[$i],
+							'serial_number'        => $serial_no[$i],
+							'created_by'           => CRUDBooster::myId(),
+							'updated_by'           => CRUDBooster::myId()
+						]);
+					}
+
 				} else if (empty($bodyItem->id) && !empty($service_code[$i])) {
 					$bodyItemID = DB::table('returns_body_item')->insertGetId([
 						'returns_header_id'	=> $all_data['header_id'],
@@ -436,7 +430,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 
 		// *********************************************************************************************
 
-		$status_array = [1, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 33, 34, 35, 38, 39, 40, 41, 42, 43, 45, 47];
+		$status_array = [1, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 33, 34, 35, 38, 39, 40, 41, 42, 43, 45, 47, 48];
 		    if(in_array($request->status_id, $status_array)){
 			DB::table('returns_header')->where('id', $request->header_id)->update([
 				'repair_status' 			=> $request->status_id,
@@ -500,8 +494,18 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 			}
 		}
 
-		if (in_array($request->status_id, [29,39]) && $all_data['recent_treansaction_status'] != 33) {
-			$get_jo = DB::table('returns_body_item')->where('returns_header_id', $request->header_id)->get();
+		if (in_array($request->status_id, [29,30,39]) && !in_array($all_data['recent_treansaction_status'], [33])) {
+
+			if(in_array($all_data['recent_treansaction_status'], [34, 35, 42, 43])){
+				$get_jo = DB::table('returns_body_item')
+					->where('returns_header_id', $request->header_id)
+					->whereIn('item_spare_additional_type', ['Additional-Required-Pending', 'Additional-Standard-DOA'])
+					->get();
+			} else {
+				$get_jo = DB::table('returns_body_item')
+					->where('returns_header_id', $request->header_id)
+					->get();
+			}
 		
 			$additionalStandard = [];
 			$additionalPending = [];
@@ -562,7 +566,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 					]);
 				}
 			}
-		}		
+		}			
 
 		if (in_array($request->status_id, [31,41])) {
 			DB::beginTransaction();
@@ -742,14 +746,14 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 					->where('status', 'Pending')
 					->sum('reserved_qty');
 
-				// If equal, set qty to 0
-				if ($pendingReservedQty == $item->qty) {
-					$item->qty = 0;
-				}
+				// Subtract pending reserved qty from current qty
+				$item->qty = max(0, $item->qty - $pendingReservedQty);
 
 				return $item;
 			});
-		return ($data);
+
+		return $data;
+
 	}
 
 	// checking if search spare part number

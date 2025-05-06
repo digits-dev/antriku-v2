@@ -116,9 +116,9 @@
             padding: 20px;
         }
         .uploaded-image {
-            width: 400px;
-            height: 400px;
-            object-fit: cover;
+            width: 100%;
+            /* height: 400px; */
+            /* object-fit: cover; */
         }
         .preview {
             display: flex;

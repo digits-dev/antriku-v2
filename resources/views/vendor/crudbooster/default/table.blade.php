@@ -49,12 +49,38 @@
 <form id='form-table' method='post' action='{{CRUDBooster::mainpath("action-selected")}}'>
     <input type='hidden' name='button_name' value=''/>
     <input type='hidden' name='_token' value='{{csrf_token()}}'/>
-    <div style="margin: 10px; border-radius: 7px; border: 1px solid lightgrey; overflow:auto">
-    <table id='table_dashboard' class="table table-hover table-striped table-bordered">
+    {{-- <div style="margin: 10px; border-radius: 7px; border: 1px solid lightgrey; overflow:auto"> --}}
+        <div class="table-container-customized">
+    <table id='table_dashboard' class="table table-hover table-striped" style="border: none !important">
         <thead>
         <tr class="active">
             <?php if($button_bulk_action):?>
-            <th width='3%'><input type='checkbox' id='checkall'/></th>
+            <th width='3%'>
+                {{-- <input type='checkbox' id='checkall'/> --}}
+                <input 
+                    type="checkbox" 
+                    id="checkall" 
+                    onclick="this.style.backgroundColor = this.checked ? '#4f46e5' : 'white'; 
+                            this.style.backgroundImage = this.checked ? 'url(\'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2216%22 height=%2216%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%223%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226 12 10 16 18 8%22></polyline></svg>\')' : 'none';
+                            this.style.backgroundPosition = 'center';
+                            this.style.backgroundRepeat = 'no-repeat';
+                            this.style.backgroundSize = '12px';"
+                    style="
+                        appearance: none;
+                        -webkit-appearance: none;
+                        width: 15px;
+                        height: 15px;
+                        border: 2px solid lightgrey;
+                        border-radius: 4px;
+                        margin-right: 10px;
+                        display: inline-block;
+                        position: relative;
+                        cursor: pointer;
+                        transition: all 0.2s ease-in-out;
+                        background-color: white;
+                    "
+                />
+            </th>
             <?php endif;?>
             <?php if($show_numbering):?>
             <th width="1%">{{ cbLang('no') }}</th>
@@ -189,11 +215,11 @@
         <tfoot>
         <tr>
             <?php if($button_bulk_action):?>
-            <th style="border: 1px solid lightgrey !important">&nbsp;</th>
+            <th>&nbsp;</th>
             <?php endif;?>
 
             <?php if($show_numbering):?>
-            <th style="border: 1px solid lightgrey !important">&nbsp;</th>
+            <th>&nbsp;</th>
             <?php endif;?>
 
             <?php
@@ -202,34 +228,34 @@
                 $colname = $col['label'];
                 $width = (isset($col['width'])) ?$col['width']: "auto";
 		$style = (isset($col['style'])) ? $col['style']: "";
-                echo "<th width='$width' $style style='border: 1px solid lightgrey !important'>$colname</th>";
+                echo "<th width='$width' $style>$colname</th>";
             }
             ?>
 
             @if($button_table_action)
                 @if(CRUDBooster::isUpdate() || CRUDBooster::isDelete() || CRUDBooster::isRead())
-                    <th style="border: 1px solid lightgrey !important"> -</th>
+                    <th > -</th>
                 @endif
             @endif
         </tr>
         </tfoot>
     </table>
-    
-    {{-- pagination part  --}}
-    <div class="col-md-8">
+</div>
+{{-- pagination part  --}}
+<div class="pagination-container-customized">
+    <div class="pagination-links-customized">
         {!! urldecode(str_replace("/?","?",$result->appends(Request::all())->render())) !!}
     </div>
-        <?php
-            $from = $result->count() ? ($result->perPage() * $result->currentPage() - $result->perPage() + 1) : 0;
-            $to = $result->perPage() * $result->currentPage() - $result->perPage() + $result->count();
-            $total = $result->total();
-        ?>
-    <div class="col-md-4">
-        <span class="pull-right">{{ cbLang("filter_rows_total") }}
-            : {{ $from }} {{ cbLang("filter_rows_to") }} {{ $to }} {{ cbLang("filter_rows_of") }} {{ $total }}
+    <?php
+        $from = $result->count() ? ($result->perPage() * $result->currentPage() - $result->perPage() + 1) : 0;
+        $to = $result->perPage() * $result->currentPage() - $result->perPage() + $result->count();
+        $total = $result->total();
+    ?>
+    <div class="pagination-info-customized ">
+        <span>{{ cbLang("filter_rows_total") }}
+            : <strong>{{ $from }}</strong> {{ cbLang("filter_rows_to") }} <strong>{{ $to }}</strong> {{ cbLang("filter_rows_of") }} <strong>{{ $total }}</strong>
         </span>
     </div>
-
 </div>
 
 </form><!--END FORM TABLE-->
@@ -599,3 +625,37 @@
         </div>
     @endpush
 @endif
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+    // Add loading state when clicking on pagination or sort links
+    const paginationLinks = document.querySelectorAll('.pagination-links-customized a, #table_dashboard th a');
+    paginationLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            const tableContainer = document.querySelector('.table-container-customized');
+            const loadingOverlay = document.createElement('div');
+            loadingOverlay.className = 'loading-overlay-customized';
+            
+            const spinner = document.createElement('div');
+            spinner.className = 'spinner-customized';
+            loadingOverlay.appendChild(spinner);
+            
+            tableContainer.style.position = 'relative';
+            tableContainer.appendChild(loadingOverlay);
+        });
+    });
+    
+    // Enhance checkboxes
+    const checkAll = document.getElementById('checkall');
+    if (checkAll) {
+        checkAll.addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('#table_dashboard tbody input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+    }
+});
+</script>
+    

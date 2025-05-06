@@ -413,6 +413,7 @@
                                 43: "CALLOUT: ADDITIONAL SPARE PARTS (CARRY IN)",
                                 45: "CALLOUT: ORDERING SPARE PARTS",
                                 47: "AWAITING APPLE REPAIR (IW)",
+                                48: "CALLOUT: AWAITING CUSTOMER APPROVAL",
                             };
 
                             if (statusMessages[status_id]) {

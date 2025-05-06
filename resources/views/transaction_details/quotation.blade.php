@@ -33,7 +33,7 @@
                         <div class="pic-row">
                             <table class="table table-bordered" id="dynamic_field">
                                 <tbody>
-                                    <tr class="tbl_header_color" style="padding: 1px !important;">
+                                    <tr class="tbl_header_color text-uppercase" style="padding: 1px !important;">
                                         <th width="10%" class="text-center" style="padding: 1px !important;">Spare Part#</th>
                                         <th width="10%" class="text-center" style="padding: 1px !important;">GSX Reference</th>
                                         <th width="10%" class="text-center" style="padding: 1px !important;">CS Code</th>
@@ -61,9 +61,6 @@
                                                     </td>
                                                     <td style="padding: 1px !important;"><input class="input-cus text-center getcsValue" type="text" id="cs_code_{{$qt->id}}" value="{{ $qt->cs_code }}" placeholder="Enter CS Code" {{ !in_array($transaction_details->repair_status, [10]) ? 'readonly' : ''}}></td>
                                                     <td style="padding: 1px !important;">
-                                                        
-                                                       
-                                                        
                                                         @if(CRUDBooster::getModulePath() == "to_close" && CRUDBooster::myPrivilegeId() == 1)
                                                             <input class="input-cus text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter KGB Serial Number">
                                                         @elseif(CRUDBooster::getModulePath() == "to_close" && CRUDBooster::myPrivilegeId() == 2)

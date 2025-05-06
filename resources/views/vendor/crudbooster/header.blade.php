@@ -64,6 +64,20 @@
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
 
+                <li>
+                    <div>
+                        <i class="bi bi-clock-fill"></i>
+                        <span>
+                            04:46:29
+                        </span>
+
+                        <i class="bi bi-calendar-day-fill"></i>
+                        <span>
+                            10-11-2025
+                        </span>
+                    </div>
+                </li>
+
                 <li class="dropdown notifications-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" title='Notifications' aria-expanded="false" id="notification_bell">
                         <i id='icon_notification' class="fa fa-bell-o"></i>

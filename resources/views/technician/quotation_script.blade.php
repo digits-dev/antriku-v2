@@ -524,11 +524,11 @@
             $('#inwarranty_carryin_btns').show();
             $('.iw_cin_available_btn').show();
             $('.iw_cin_unavailable_btn').hide();
-        } else if (allUnavailable && transaction_status == 20 && caseStatus === 'CARRY-IN' && warrantyStatus === 'OUT OF WARRANTY') {
+        } else if (allUnavailable && transaction_status == 48 && caseStatus === 'CARRY-IN' && warrantyStatus === 'OUT OF WARRANTY') {
             $('#outofwarranty_carryin_btns').show();
             $('.oow_cin_unavailable_btn').show();
             $('.oow_cin_available_btn').hide();
-        } else if (allAvailable && transaction_status == 20 && caseStatus === 'CARRY-IN' && warrantyStatus === 'OUT OF WARRANTY') {
+        } else if (allAvailable && transaction_status == 48 && caseStatus === 'CARRY-IN' && warrantyStatus === 'OUT OF WARRANTY') {
             $('#outofwarranty_carryin_btns').show();
             $('.oow_cin_available_btn').show();
             $('.oow_cin_unavailable_btn').hide();
@@ -674,10 +674,19 @@
                     },
                     success: function (response) {
                         if (response.success == true) {
+
+                            $(document).ready(function() {
+                                let all_item_qty = $('.getqtyValue').map(function () {
+                                    return $(this).val().trim().toLowerCase();
+                                }).get();
+
+                                const allAvailable = all_item_qty.includes("available");
+                            });
+
                             Swal.fire({
                                 icon: "success",
                                 title: response.message,
-                                html: `This is also marked as reserved Qty, since this item is ordered for this Job Order.`,
+                                html: `This is also marked as reserved Qty, since this item is ordered for this Job Order. <br>`,
                                 allowOutsideClick: false,
                                 showConfirmButton: false,
                                 timer: 2000,

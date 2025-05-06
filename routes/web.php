@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminProductItemMasterController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
@@ -134,6 +135,9 @@ Route::group(['middleware' => ['web']], function () {
 
     // save_doa_spare_part
     Route::post('/admin/save_doa_spare_part','AdminPendingRepairController@saveDoaSparePart')->name('save_add_doa_parts');
+
+    // ITEM MASTER API
+    // Route::get('/admin/apple_items_created', [AdminProductItemMasterController::class, 'getItemsCreatedAPI']);
 });
 
  

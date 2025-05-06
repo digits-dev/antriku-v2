@@ -71,7 +71,7 @@
                                     <i class="bi bi-box2-fill" style="margin-right:3px; color: #f98501;"></i> <span style="color:white"> Additional Spare Parts </span>
                                 </span>
                                 <span style="background: #443627; padding: 10px; border-radius: 10px; text-align:center; margin: 5px;">
-                                    <i class="bi bi-box2-fill" style="margin-right:3px; color: #8e6d4b;"></i> <span style="color:white">Additional DOA Spare Parts</span>
+                                    <i class="bi bi-box2-fill" style="margin-right:3px; color: #8e6d4b;"></i> <span style="color:white"> DOA Spare Parts</span>
                                 </span>
                             </div>
                         </div>
@@ -137,6 +137,7 @@
                                                                 'Additional-Standard-DOA-Yes', 
                                                                 'Additional-Required-Yes',
                                                                 'Additional-Required-No',
+                                                                'Additional-Standard-UNAV-Received'
                                                             ]) ? 'hidden' : '' }}">
                                                             <a onclick="RemoveRow('{{$qt->id}}')"><i class="fa fa-close fa-2x remove" style="color:red"></i></a>
                                                         </td>
