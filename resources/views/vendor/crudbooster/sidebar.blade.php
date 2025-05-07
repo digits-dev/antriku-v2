@@ -77,7 +77,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel">
             <div class="pull-{{ cbLang('left') }} image">
-                <img src="{{ CRUDBooster::myPhoto() }}" class="img-circle" alt="{{ cbLang('user_image') }}"/>
+                <img src="{{ CRUDBooster::myPhoto() }}" class="img-circle" style="height: 45px;" alt="{{ cbLang('user_image') }}"/>
             </div>
             <div class="pull-{{ cbLang('left') }} info">
                 <p>{{ CRUDBooster::myName() }}</p>
