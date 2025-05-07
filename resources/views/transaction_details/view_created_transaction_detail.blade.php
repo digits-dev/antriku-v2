@@ -244,20 +244,31 @@
      
     function print_technical_from_confirm() {
         let header_id = $('#header_id').val();
+        let warranty_status = $('#warranty_status').val();
 
-        Swal.fire({
-            icon: 'question',
-            title: "Confirmation!",
-            text: "Are you sure you want to proceed printing Technical form?",
-            confirmButtonText: "Yes, Please",
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = window.location.origin + "/admin/to_close/PrintTechnicalReport/" + header_id;
+        if(warranty_status == 'OUT OF WARRANTY'){
+            let form = document.getElementById("SubmitTransactionForm"); 
+
+            if (!form.checkValidity()) {
+                form.reportValidity(); 
+                return false; 
             }
-        });
+        } else {
+            Swal.fire({
+                icon: 'question',
+                title: "Confirmation!",
+                text: "Are you sure you want to proceed printing Technical form?",
+                confirmButtonText: "Yes, Please",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    
+                    window.location.href = window.location.origin + "/admin/to_close/PrintTechnicalReport/" + header_id;
+                }
+            });
+        }
     }
     </script>        
 @endpush
