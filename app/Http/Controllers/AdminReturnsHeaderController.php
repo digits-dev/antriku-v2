@@ -540,6 +540,7 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 			]);
 		} elseif ($data['print_form_type'] == 3) {
 			DB::table('returns_header')->where('id', $header_id)->update([
+				'repair_status' 			=> 6,
 				'print_release_form' 	 	=> "YES",
 				'updated_by'	     		=> CRUDBooster::myId()
 			]);

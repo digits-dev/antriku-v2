@@ -166,16 +166,14 @@
                 </h1>
 
 
-                <ol class="breadcrumb" style="font-size: 14px;">   
+                <ol class="breadcrumb text-uppercase" style="font-size: 12px;">   
                     <li>
-                        <i>
-                            <a href="{{CRUDBooster::adminPath()}}">
-                                <img src="https://cdn-icons-png.flaticon.com/128/1828/1828631.png" width="20px" alt=""> Dashboard
-                            </a>
-                        </i>
+                        <a href="{{CRUDBooster::adminPath()}}">
+                            <img src="https://cdn-icons-png.flaticon.com/128/1828/1828673.png" width="12px" style="margin-bottom: 5px" alt=""> Dashboard
+                        </a>
                     </li>
                     <li class="active">
-                        <i>{{$module->name}}</i>
+                        {{$module->name}}
                     </li>
                 </ol>
             @else

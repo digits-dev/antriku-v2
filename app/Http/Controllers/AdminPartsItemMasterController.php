@@ -32,7 +32,7 @@
 			$this->col = [];
 			$this->col[] = ["label"=>"Spare Parts","name"=>"spare_parts"];
 			$this->col[] = ["label"=>"Item Description","name"=>"item_description"];
-			// $this->col[] = ["label"=>"Cost","name"=>"cost"];
+			$this->col[] = ["label"=>"Qty","name"=>"qty"];
 			$this->col[] = ["label"=>"Status","name"=>"gsx_item_status"];
 			$this->col[] = ["label"=>"Date Created","name"=>"created_at"];
 			$this->col[] = ["label"=>"Date Updated","name"=>"updated_at"];

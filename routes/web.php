@@ -137,6 +137,9 @@ Route::group(['middleware' => ['web']], function () {
     // save_doa_spare_part
     Route::post('/admin/save_doa_spare_part','AdminPendingRepairController@saveDoaSparePart')->name('save_add_doa_parts');
 
+    //Inventory
+    Route::get('/admin/parts_item_master_stocks/stock_ordering','AdminPartsItemMasterStocksController@stockOrder');
+
     // ITEM MASTER API
     // Route::get('/admin/apple_items_created', [AdminProductItemMasterController::class, 'getItemsCreatedAPI']);
 });

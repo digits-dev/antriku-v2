@@ -91,21 +91,42 @@
 
             <!-- Sidebar Menu -->
             <ul class="sidebar-menu">
-                <li class="header">{{cbLang("menu_navigation")}}</li>
+                <li class="header text-uppercase">{{cbLang("menu_navigation")}}</li>
                 <!-- Optionally, you can add icons to the links -->
 
                 <?php $dashboard = CRUDBooster::sidebarDashboard();?>
                 @if($dashboard)
                     <li data-id='{{$dashboard->id}}' class="{{ (Request::is(config('crudbooster.ADMIN_PATH'))) ? 'active' : '' }}"><a
-                                href='{{CRUDBooster::adminPath()}}' class='{{($dashboard->color)?"text-".$dashboard->color:""}}'><i class='fa fa-dashboard'></i>
-                            <span>{{cbLang("text_dashboard")}}</span> </a></li>
+                        href='{{CRUDBooster::adminPath()}}' class='{{($dashboard->color)?"text-".$dashboard->color:""}}'>
+                        {{-- <i class='fa fa-dashboard'></i> --}}
+                        <img src="https://cdn-icons-png.flaticon.com/128/1828/1828673.png" alt="dash_icon" width="18">
+                        <span>{{cbLang("text_dashboard")}}</span> </a></li>
                 @endif
 
                 @foreach(CRUDBooster::sidebarMenu() as $menu)
                     <li data-id='{{$menu->id}}' class='{{(!empty($menu->children))?"treeview":""}} {{ (Request::is($menu->url_path."*"))?"active":""}}'>
                         <a href='{{ ($menu->is_broken)?"javascript:alert('".cbLang('controller_route_404')."')":$menu->url }}'
                            class='{{($menu->color)?"text-".$menu->color:""}}'>
-                            <i class='{{$menu->icon}} {{($menu->color)?"text-".$menu->color:""}}'></i> <span>{{$menu->name}}</span>
+                            @if ($menu->name == 'Pending Repair')
+                                <span>⚙️</span>
+                            @elseif ($menu->name == 'To Diagnose')
+                                <img src="https://cdn-icons-png.flaticon.com/128/675/675579.png" alt="dash_icon" width="18">
+                            @elseif ($menu->name == 'Transaction History')
+                                <img src="https://cdn-icons-png.flaticon.com/128/11411/11411453.png" width="18" alt="">
+                            @elseif ($menu->name == 'Submaster Module')
+                                <img src="https://cdn-icons-png.flaticon.com/128/10848/10848122.png" width="18" alt="">
+                            @elseif ($menu->name == 'Call Out')
+                                <img src="https://cdn-icons-png.flaticon.com/128/1256/1256652.png" width="18" alt="">
+                            @elseif ($menu->name == 'To Pay Diagnostic')
+                                <img src="https://cdn-icons-png.flaticon.com/128/8984/8984290.png" width="18" alt="">
+                            @elseif ($menu->name == 'Create Transactions')
+                                <img src="https://cdn-icons-png.flaticon.com/128/2921/2921226.png" width="18" alt="">
+                            @elseif ($menu->name == 'Inventory')
+                                <img src="https://cdn-icons-png.flaticon.com/128/10951/10951884.png" width="18" alt="">
+                            @else
+                                <i class='{{$menu->icon}} {{($menu->color)?"text-".$menu->color:""}}'></i> 
+                            @endif  
+                            <span>{{$menu->name}}</span>
 
                             {{-- module notif count  --}}
                             @if($menu->name == 'Pending Repair')
@@ -129,24 +150,10 @@
                                 </div>
                             @endif
 
-                            @if($menu->name == 'Pending Spare Parts')
-                                <div class="notification-container-cus" style="display: {{$pending_spare_parts == 0 ? 'none' : ''}}">
-                                    <div class="icon-cus">🔔</div>
-                                    <div class="notif-count-cus">{{$pending_spare_parts}}</div>
-                                </div>
-                            @endif
-
-                            @if($menu->name == 'Pending Good Unit')
-                                <div class="notification-container-cus" style="display: {{$pending_good_unit == 0 ? 'none' : ''}}">
-                                    <div class="icon-cus">🔔</div>
-                                    <div class="notif-count-cus">{{$pending_good_unit}}</div>
-                                </div>
-                            @endif
-
                             @if($menu->name == 'Call Out')
-                                <div class="notification-container-cus" style="display: {{$call_out_count == 0 ? 'none' : ''}}">
+                                <div class="notification-container-cus" style="display: {{$callout_count_sidebar == 0 ? 'none' : ''}}">
                                     <div class="icon-cus">🔔</div>
-                                    <div class="notif-count-cus">{{$call_out_count}}</div>
+                                    <div class="notif-count-cus">{{$callout_count_sidebar}}</div>
                                 </div>
                             @endif
 
@@ -158,7 +165,12 @@
                                     <li data-id='{{$child->id}}' class='{{(Request::is($child->url_path .= !Str::endsWith(Request::decodedPath(), $child->url_path) ? "/*" : ""))?"active":""}}'>
                                         <a href='{{ ($child->is_broken)?"javascript:alert('".cbLang('controller_route_404')."')":$child->url}}'
                                            class='{{($child->color)?"text-".$child->color:""}}'>
-                                            <i class='{{$child->icon}}'></i> <span>{{$child->name}}</span>
+                                            @if ($child->name == 'Stocks')
+                                                <img src="https://cdn-icons-png.flaticon.com/128/8890/8890077.png" width="18px" alt="">
+                                            @else
+                                                <i class='{{$child->icon}}'></i> 
+                                            @endif
+                                            <span>{{$child->name}}</span>
                                         </a>
                                     </li>
                                 @endforeach

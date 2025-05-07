@@ -267,15 +267,10 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 				$total_cost += intval($ac);
 			}
 
-			$parts_total_cost = $total_cost + $all_data['software_cost'];
-			$downpayment = ($parts_total_cost) * 0.5;
-			$finalpayment = $parts_total_cost - $downpayment;
+			$parts_total_cost = $total_cost;
 
 			DB::table('returns_header')->where('id', $all_data['header_id'])->update([
-				'downpayment_cost'			=> number_format($downpayment, 2, '.', ''),
-				'final_payment_cost'		=> number_format($finalpayment, 2, '.', ''),
 				'parts_total_cost'			=> number_format($parts_total_cost, 2, '.', ''),
-				'software_cost'				=> $all_data['software_cost'],
 				'updated_by' 				=> CRUDBooster::myId()
 			]);
 		}
@@ -381,6 +376,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 						'cost'				=> $cost[$i],
 						'updated_by'		=> CRUDBooster::myId()
 					]);
+					
 					// DB::table('returns_serial')->where('returns_header_id', $all_data['header_id'])->where('returns_body_item_id', $row_id[$i])->update([
 					// 	'serial_number'		=> $serial_no[$i],
 					// 	'updated_by'		=> CRUDBooster::myId()

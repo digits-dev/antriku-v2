@@ -46,6 +46,39 @@
             margin-top: 100px;
         }
     }
+
+    .datetime-card {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin: 7.5px 10px 0 0;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, rgba(236, 236, 236, 0.08), rgba(236, 236, 236, 0.414));
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      font-weight: 500;
+      font-size: 15px;
+      color: #f9f9f9;
+      max-width: fit-content;
+    }
+
+    .datetime-card i {
+      font-size: 15px;
+      color: white;
+    }
+
+    .datetime-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Optional hover effect */
+    .datetime-card:hover {
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+      transform: translateY(-1px);
+      transition: 0.3s ease;
+    }
 </style>
 
 <!-- Main Header -->
@@ -65,23 +98,27 @@
             <ul class="nav navbar-nav">
 
                 <li>
-                    <div>
-                        <i class="bi bi-clock-fill"></i>
-                        <span>
-                            04:46:29
-                        </span>
-
-                        <i class="bi bi-calendar-day-fill"></i>
-                        <span>
-                            10-11-2025
-                        </span>
+                    <div class="datetime-card">
+                        <div class="datetime-item">
+                          <i class="bi bi-clock-fill"></i>
+                          <span id="time">--:--:-- --</span>
+                        </div>
+                    
+                        <div class="datetime-item">
+                          <i class="bi bi-calendar-day-fill"></i>
+                          <span id="date">--/--/----</span>
+                        </div>
                     </div>
                 </li>
 
                 <li class="dropdown notifications-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" title='Notifications' aria-expanded="false" id="notification_bell">
-                        <i id='icon_notification' class="fa fa-bell-o"></i>
+                        <i id='icon_notification' class="fa fa-bell"></i>
                         <span id='notification_count' class="label label-danger" style="display:none">0</span>
+                        {{-- <div class="notification-container-cus">
+                            <div class="icon-cus">🔔</div>
+                            <div class="notif-count-cus">0</div>
+                        </div> --}}
                     </a>
                     <ul id='list_notifications' class="dropdown-menu">
                         <li class="header">{{cbLang("text_no_notification")}}</li>
@@ -178,4 +215,29 @@
             }, 500);
         });
     });
+
+    function updateDateTime() {
+      const now = new Date();
+
+      // Format time to 12-hour with AM/PM
+      let hours = now.getHours();
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12; // the hour '0' should be '12'
+      const time = `${hours.toString().padStart(2, '0')}:${minutes}:${seconds} ${ampm}`;
+
+      // Format date: DD-MM-YYYY
+      const day = now.getDate().toString().padStart(2, '0');
+      const month = (now.getMonth() + 1).toString().padStart(2, '0');
+      const year = now.getFullYear();
+      const date = `${day}-${month}-${year}`;
+
+      document.getElementById('time').textContent = time;
+      document.getElementById('date').textContent = date;
+    }
+
+    updateDateTime(); // Initial run
+    setInterval(updateDateTime, 1000);
 </script>
