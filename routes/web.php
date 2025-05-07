@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminProductItemMasterController;
+use App\Http\Controllers\AdminCustomDashboardController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
@@ -142,6 +143,15 @@ Route::group(['middleware' => ['web']], function () {
 
     // ITEM MASTER API
     // Route::get('/admin/apple_items_created', [AdminProductItemMasterController::class, 'getItemsCreatedAPI']);
+
+    Route::get('/admin/frontliner-dashboard', [AdminCustomDashboardController::class, 'index'])->name('frontliner.dashboard');
+    Route::get('/admin/technician-dashboard', [AdminCustomDashboardController::class, 'technicianDashboard'])->name('technician.dashboard');
+    Route::get('/admin/headtechnician-dashboard', [AdminCustomDashboardController::class, 'headTechnicianDashboard']);
+    Route::get('/admin/get-sales-data', [AdminCustomDashboardController::class, 'getSalesData'])->name('getSalesData');
+
+    Route::post('/admin/filter_customers_units', [AdminCustomDashboardController::class, 'filterCustomerUnit'])->name('filter_customers_units');
+    Route::post('/admin/filter_customers_info', [AdminCustomDashboardController::class, 'filterCustomerInfo'])->name('filter_customers_info');
+
 });
 
  

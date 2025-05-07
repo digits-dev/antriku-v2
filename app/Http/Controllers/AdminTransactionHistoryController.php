@@ -351,14 +351,27 @@
 	    public function hook_row_index($column_index,&$column_value) {	        
 			//Your code here
 			if ($column_index == 1) {
-				
-				$statuses = DB::table('transaction_status')
-								->pluck('status_name', 'id');
-	
+
+				$statuses = DB::table('transaction_status')->pluck('status_name', 'id');
+			
+				$cancelled = [13, 22, 38];
+				$success = [6]; 
+			
 				if (isset($statuses[$column_value])) {
-					$column_value = '<span class="label label-warning">'.$statuses[$column_value].'</span>';
+					if (in_array($column_value, $cancelled)) {
+						$labelClass = 'label-danger';
+					} elseif (in_array($column_value, $success)) {
+						$labelClass = 'label-success';
+					} else {
+						$labelClass = 'label-warning';
+					}
+			
+					$statusText = $statuses[$column_value];
+					$column_value = '<span class="label ' . $labelClass . '">' . $statusText . '</span>';
 				}
 			}
+			
+			
 
             if($column_index == 3){
 				$models = DB::table('model')->where('id',$column_value)->first();

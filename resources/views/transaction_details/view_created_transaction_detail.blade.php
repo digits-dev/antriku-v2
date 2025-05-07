@@ -260,7 +260,6 @@
                 form.reportValidity();
                 return false;
             }
-            alert(warranty_status === 'OUT OF WARRANTY' && finalInvoiceUploaded == null);
         }
             Swal.fire({
                 icon: 'question',
