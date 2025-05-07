@@ -99,6 +99,7 @@
             @include('transaction_details.uploade_airwaybill')
             @endif
             
+                        
             {{-- Quotation --}}
             @if ($transaction_details->repair_status == 10)
                 @include('transaction_details.quotation')
@@ -107,6 +108,9 @@
             @elseif($transaction_details->case_status === 'CARRY-IN')
                 @include('carry_in.quotation')
             @endif
+
+            @include('transaction_details.uploade_final_invoice')
+
 
             <section class="card-cust" style="border-radius: 0rem; padding: 1.2rem; border-top: 2px solid #e2e8f0">
               
