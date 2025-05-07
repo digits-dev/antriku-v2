@@ -608,9 +608,26 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 				DB::rollBack();
 			}
 		}
+		
 
 		return ($all_data);
 	}
+
+	public function saveFinalInvoice(Request $request)
+	{
+		if ($request->hasFile('final_invoice')) {
+			$file = $request->file('final_invoice');
+			$filename =    time() .  '_' . $request->header_id . '_' . $file->getClientOriginalName();
+			$path = $file->storeAs('public/final_invoice', $filename);
+
+			DB::table('returns_header')->where('id', $request->header_id)->update([
+				'final_invoice'   => $filename,
+			]);
+		}
+
+		return response()->json(['success' => true, 'message' => 'Final invoice saved successfully.']);
+	}
+
 
 	// ADD ROW IN QUOTATION
 	public function AddQuotation(Request $request)

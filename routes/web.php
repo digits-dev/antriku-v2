@@ -31,6 +31,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/admin/to_diagnose/deleteQuotation', 'AdminToDiagnoseController@DeleteQuotation')->name('delete-quotation');   // DELETE ROW FOR QUOTATION
 
     Route::post('/admin/to_diagnose/changeTransactionStatus','AdminToDiagnoseController@changeTransactionStatus')->name('change-status');  // CHANGE STATUS OF TRANSACTION
+    Route::post('/admin/to_diagnose/saveFinalInvoice','AdminToDiagnoseController@saveFinalInvoice')->name('upload_final_invoice');  // CHANGE STATUS OF TRANSACTION
     Route::post('/admin/to_diagnose/CheckGSX','AdminToDiagnoseController@CheckGSX')->name('check-gsx');    
     Route::post('/admin/to_diagnose/SearchSparePartNo','AdminToDiagnoseController@SearchSparePartNo')->name('search-sparepart');
     Route::post('/admin/to_diagnose/AcceptJob','AdminToDiagnoseController@AcceptJob');      

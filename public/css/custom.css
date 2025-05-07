@@ -3993,7 +3993,7 @@ input:checked + .toggle-slider:hover {
   display: flex;
   justify-content: center;
   align-items: flex-start; /* Align to top to allow image scroll */
-  height: 570px;
+  height: 500px;
   border: 1px solid #e5e5e5;
   border-radius: 5px;
   padding: 20px;
@@ -4002,6 +4002,7 @@ input:checked + .toggle-slider:hover {
 
 .uploaded-image {
   max-height: none;
+  max-width: 70%;
 }
 
 

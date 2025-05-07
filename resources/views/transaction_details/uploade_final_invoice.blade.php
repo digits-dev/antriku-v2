@@ -229,7 +229,7 @@
         </style>
 @endpush
 
-@if(request()->segment(3) == "edit" && in_array($transaction_details->repair_status, [13,19,22,28,38]))
+@if(request()->segment(3) == "edit" && in_array($transaction_details->repair_status, [13,19,22,28,38]) && is_null($transaction_details->final_invoice))
 <div class="row">
     <div class="col-md-12">
         <div class="row"> 
@@ -301,7 +301,7 @@
                         <div style="background: rgba(255, 255, 255, 0.911); padding: 2px 7px 2px 7px; border-radius: 20%; margin-right: 3px">
                             <i class="bi bi-tools"></i>
                         </div>
-                        Replacement Parts Fee
+                        Final Invoice
                     </div>
                 </div> 
             </div> 

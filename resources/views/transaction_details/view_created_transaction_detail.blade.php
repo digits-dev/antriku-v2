@@ -139,7 +139,7 @@
                         <button type="submit" id="void" onclick="return changeStatus(5)" class="btn btn-danger pull-right buttonSubmit"/><i class="fa fa-check-square-o" aria-hidden="true"></i> CANCELLED/CLOSE</button>
                     @endif 
 
-                    @if (in_array($transaction_details->repair_status, [13,19,22,28,38]))
+                    @if (request()->segment(3) == "edit" && in_array($transaction_details->repair_status, [13,19,22,28,38]))
                         <div>
                             <button type="button" onclick="print_technical_from_confirm()" class="btn btn-success pull-right" style="margin-left: 10px">
                                 <i class="fa fa-print" aria-hidden="true"></i> Printing Technical Form
@@ -244,16 +244,24 @@
      
     function print_technical_from_confirm() {
         let header_id = $('#header_id').val();
+        const finalInvoiceUploaded = @json($data['transaction_details']->final_invoice);
+
+        var formData = new FormData();
+        formData.append("header_id", header_id);
+        
+        if (finalInvoiceUploaded == null) {
+            formData.append("final_invoice", $("#final_invoice")[0].files[0]);
+        }
         let warranty_status = $('#warranty_status').val();
-
-        if(warranty_status == 'OUT OF WARRANTY'){
-            let form = document.getElementById("SubmitTransactionForm"); 
-
+        if (warranty_status === 'OUT OF WARRANTY' && finalInvoiceUploaded == null) {
+            let form = document.getElementById("SubmitTransactionForm");
+            
             if (!form.checkValidity()) {
-                form.reportValidity(); 
-                return false; 
+                form.reportValidity();
+                return false;
             }
-        } else {
+            alert(warranty_status === 'OUT OF WARRANTY' && finalInvoiceUploaded == null);
+        }
             Swal.fire({
                 icon: 'question',
                 title: "Confirmation!",
@@ -265,10 +273,18 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     
-                    window.location.href = window.location.origin + "/admin/to_close/PrintTechnicalReport/" + header_id;
-                }
+                    $.ajax({
+                    url: "{{ route('upload_final_invoice') }}",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (result) {
+                        window.location.href = window.location.origin + "/admin/to_close/PrintTechnicalReport/" + header_id;
+                        }
+                })
+            }
             });
-        }
     }
     </script>        
 @endpush
