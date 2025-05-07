@@ -8,7 +8,7 @@
     }
 </style>
 
-<main class="container-dash dashboard-dash">
+<main class="container-dash dashboard-dash" style="margin-top: 50px;">
   <div class="dashboard-title-section">
     <!-- Top section with breadcrumbs and actions -->
     <div class="dashboard-header-top">

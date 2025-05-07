@@ -118,6 +118,7 @@
                     <input type="hidden" value="{{$data['transaction_details']->header_id}}" name="header_id" id="header_id">
                    
                     <input type="hidden" name="mainpath" id="mainpath" value="{{CRUDBooster::mainpath()}}">
+                    <input type="hidden" name="current_status" id="current_status" value="{{$transaction_details->repair_status}}">
                     <input type="hidden" id="warranty_status" value="{{$transaction_details->warranty_status}}">
                     <input type="hidden" id="case_status" value="{{$transaction_details->case_status}}">
                     <input type="hidden" id="repair_status" value="{{ $transaction_details->repair_status }}">

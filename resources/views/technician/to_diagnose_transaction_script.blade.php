@@ -106,6 +106,7 @@
     {
         var mainpath = document.getElementById("mainpath").value;  
         var header_id = document.getElementById("header_id").value;
+        var current_status = document.getElementById("current_status").value;
         var warranty_status = document.getElementById("warranty_status").value;
         var case_status = document.getElementById("case_status").value;
         var gsx_ref = document.getElementById("gsx_ref").value;
@@ -326,6 +327,7 @@
         var formData = new FormData();
             formData.append("all_data", $("#SubmitTransactionForm").serialize());
             formData.append("header_id", header_id);
+            formData.append("current_status", current_status);
             formData.append("status_id", status_id);
             formData.append("warranty_status", warranty_status);
             formData.append("all_cost", all_cost);
