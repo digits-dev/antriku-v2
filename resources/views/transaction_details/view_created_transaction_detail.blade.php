@@ -135,6 +135,15 @@
                         <button type="submit" id="void" onclick="return changeStatus(5)" class="btn btn-danger pull-right buttonSubmit"/><i class="fa fa-check-square-o" aria-hidden="true"></i> CANCELLED/CLOSE</button>
                     @endif 
 
+                    @if (in_array($transaction_details->repair_status, [13,19,22,28,38]))
+                        <div>
+                            <button type="button" onclick="print_technical_from_confirm()" class="btn btn-success pull-right" style="margin-left: 10px">
+                                <i class="fa fa-print" aria-hidden="true"></i> Printing Technical Form
+                            </button>
+                            <input type="hidden" value="{{$transaction_details->repair_status}}" id="transaction_status">
+                        </div>
+                    @endif
+
             </div>
             </section>
             @if(request()->segment(3) == "edit") </form> @endif 
@@ -227,5 +236,24 @@
                 toggleWarrantyButton();
             });
         });
+
+     
+    function print_technical_from_confirm() {
+        let header_id = $('#header_id').val();
+
+        Swal.fire({
+            icon: 'question',
+            title: "Confirmation!",
+            text: "Are you sure you want to proceed printing Technical form?",
+            confirmButtonText: "Yes, Please",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = window.location.origin + "/admin/to_close/PrintTechnicalReport/" + header_id;
+            }
+        });
+    }
     </script>        
 @endpush
