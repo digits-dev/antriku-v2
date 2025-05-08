@@ -4,7 +4,7 @@
 
 @endpush
 
-@if(request()->segment(3) == "edit" && in_array($transaction_details->repair_status, [20, 21]))
+@if(request()->segment(3) == "edit" && in_array($transaction_details->repair_status, [21, 48]))
 <div class="row">
     <div class="col-md-12">
         <div class="row"> 
