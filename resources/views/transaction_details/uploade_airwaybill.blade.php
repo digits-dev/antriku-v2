@@ -121,9 +121,9 @@
     </div>
     @endif
 @endif
-<div id="myModal" class="modal">
+<div id="myModal" class="modal-view">
     <span class="close">&times;</span>
-    <img class="modal-content" id="img01">
+    <img class="modal-content-view" id="img01">
     <div id="caption"></div>
   </div>
 @push('bottom')
