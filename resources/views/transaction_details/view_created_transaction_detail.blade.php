@@ -119,15 +119,6 @@
                 @endif
             @endif
 
-            
-            @if (!is_null($transaction_details->airwaybill_upload))
-            @include('transaction_details.uploade_airwaybill')
-            @include('transaction_details.uploade_rpf')
-            @else
-            @include('transaction_details.uploade_rpf')
-            @include('transaction_details.uploade_airwaybill')
-            @endif
-            
                         
             {{-- Quotation --}}
             @if ($transaction_details->repair_status == 10)
@@ -137,6 +128,16 @@
             @elseif($transaction_details->case_status === 'CARRY-IN')
                 @include('carry_in.quotation')
             @endif
+
+                        
+            @if (!is_null($transaction_details->airwaybill_upload))
+            @include('transaction_details.uploade_airwaybill')
+            @include('transaction_details.uploade_rpf')
+            @else
+            @include('transaction_details.uploade_rpf')
+            @include('transaction_details.uploade_airwaybill')
+            @endif
+            
 
             @include('transaction_details.uploade_final_invoice')
 
@@ -171,9 +172,13 @@
 
                     @if (request()->segment(3) == "edit" && in_array($transaction_details->repair_status, [13,19,22,28,38]))
                         <div>
+                            @if ($transaction_details->print_technical_report == "YES")
+                            <button type="button" id="print_releasing_form" onclick="print_release_form()" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;> <i class="fa fa-print"></i> Print Releasing Form</button>
+                            @else
                             <button type="button" onclick="print_technical_from_confirm()" class="btn btn-success pull-right" style="margin-left: 10px">
                                 <i class="fa fa-print" aria-hidden="true"></i> Printing Technical Form
                             </button>
+                            @endif
                             <input type="hidden" value="{{$transaction_details->repair_status}}" id="transaction_status">
                         </div>
                     @endif
@@ -270,6 +275,12 @@
                 toggleWarrantyButton();
             });
         });
+
+        
+    function print_release_form(){
+        let header_id = $('#header_id').val();
+        window.location.href = window.location.origin+"/admin/to_close/PrintReleaseForm/"+header_id;
+    }
 
      
     function print_technical_from_confirm() {

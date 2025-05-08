@@ -254,8 +254,6 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		$all_data = array();
 		parse_str($request->all_data, $all_data);
 
-		// dd($all_data);exit;
-
 		$transaction_details = DB::table('returns_header')->leftJoin('model', 'returns_header.model', '=', 'model.id')
 			->select('returns_header.*', 'returns_header.id as header_id', 'returns_header.created_by as user_id', 'model.id as model_id', 'model_name', 'model_photo', 'model_status')
 			->where('returns_header.id', $all_data['header_id'])->get();
@@ -321,16 +319,29 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 					'updated_by' 				=> CRUDBooster::myId()
 				]);
 			}
+			
+			DB::table('defective_serial_number')->where('returns_header_id', $all_data['header_id'])->delete();
 
 			foreach ($all_data['kbb_name'] as $key => $kbb) {
+				$kbb = trim($kbb);
+				$serial = trim($all_data['serial_number'][$key]);
+			
+				if ($kbb === '' && $serial === '') {
+					continue;
+				}
+			
 				DB::table('defective_serial_number')->insert([
-					'returns_header_id' 		=> $all_data['header_id'],
+					'returns_header_id'        => $all_data['header_id'],
 					'defective_kbb_name'       => $kbb,
-					'defective_serial_number'  => $all_data['serial_number'][$key],
+					'defective_serial_number'  => $serial,
 				]);
 			}
-			// *********************************************************************************
+			
+
 		}
+		
+			// *********************************************************************************
+		
 
 		// ***************************************For Quotation*********************************
 		$row_id = explode(",", $all_data['row_id']);
@@ -488,12 +499,12 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 			}
 		}
 
-		// if ($request->status_id == 20) {
+		if ($request->status_id == 20) {
 
-		// 	DB::table('returns_header')->where('id', $request->header_id)->update([
-		// 		'warranty_status'   => $all_data['warranty_status'],
-		// 	]);
-		// }
+			DB::table('returns_header')->where('id', $request->header_id)->update([
+				'warranty_status'   => $all_data['warranty_status'],
+			]);
+		}
 
 		if (in_array($request->status_id, [23, 39, 40]) && !in_array($all_data['recent_treansaction_status'], [45, 43, 42])) {
 			if ($request->hasFile('rpf_invoice')) {

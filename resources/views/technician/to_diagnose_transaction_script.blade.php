@@ -416,7 +416,7 @@
                                     23: "FOR INPUT GSX KBB (MAIL IN)",
                                     24: "FOR MAIL IN KBB (MAIL IN)",
                                     25: "AWAITING FOR PICK UP (LOGISTICS)",
-                                    26: "AWAITING APPLE REPAIR",
+                                    26: "AWAITING APPLE REPAIR (OOW)",
                                     27: "FOR TECH ASSESSMENT",
                                     28: "CALLOUT: AWAITING CUSTOMER PICK UP (GOOD UNIT)",
                                     29: "For Spare part release (Carry In)",

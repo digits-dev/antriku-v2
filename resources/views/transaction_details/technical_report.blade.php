@@ -206,10 +206,34 @@
                                                     <th width="10%" class="text-center" style="padding: 1px !important;">Defective Serial Number</th>
                                                     <th width="2%" class="text-center" style="padding: 1px !important;"></th>
                                                 </tr>
+                                                @if ($defective_serial_numbers->isEmpty()) 
                                                 <tr>
-                                                    <td style="padding: 1px !important;"><input class="input-cus text-center" type="text" name="kbb_name[]"  placeholder="Enter Defective KBB Name"></td>
-                                                    <td style="padding: 1px !important;"><input class="input-cus text-center" type="text" name="serial_number[]" placeholder="Enter Defective Serial Number"></td>
+                                                    <td style="padding: 1px !important;">
+                                                        <input class="input-cus text-center" type="text" name="kbb_name[]"  placeholder="Enter Defective KBB Name">
+                                                    </td>
+                                                    <td style="padding: 1px !important;">
+                                                        <input class="input-cus text-center" type="text" name="serial_number[]" placeholder="Enter Defective Serial Number">
+                                                    </td>
                                                 </tr>
+                                                @else
+                                                    @foreach ($defective_serial_numbers as $serial)
+                                                    <tr>
+                                                        <td style="padding: 1px !important;">
+                                                            <input class="input-cus text-center" value="{{ $serial->defective_kbb_name }}" type="text" name="kbb_name[]"  placeholder="Enter Defective KBB Name">
+                                                        </td>
+                                                        <td style="padding: 1px !important;">
+                                                            <input class="input-cus text-center" value="{{ $serial->defective_serial_number }}" type="text" name="serial_number[]" placeholder="Enter Defective Serial Number">
+                                                        </td>
+                                                        <td class="text-center" style="padding: 1px !important;">
+                                                            @unless($loop->first)
+                                                            <button class="btn btn-danger btn-sm removeRow">
+                                                                <i class="fa fa-times"></i>
+                                                            </button>
+                                                            @endunless
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                @endif
                                             </tbody>
                                         </table>
                                     </div>

@@ -46,6 +46,7 @@
 					'icon'    => 'fa fa-user',
 					'url'     => 'javascript:handleSwal([id], '.json_encode("[reference_no]").',[branch],[technician_id])', 
 					'color'   => 'success',
+					'showIf'  => "[repair_status] != 1",
 				];
 			}
 
@@ -80,7 +81,7 @@
 
 
 		public function hook_query_index(&$query) {
-			$query->whereNotIn('repair_status', [1, 8, 11, 19, 28 ])->where('print_receive_form', 'YES')->orderBy('id', 'ASC'); 
+			$query->whereNotIn('repair_status', [6, 8, 11, 13, 19, 22, 28, 38 ])->where('print_receive_form', 'YES')->orderBy('id', 'DESC'); 
 	    }
  
 		public function hook_row_index($column_index, &$column_value) 
