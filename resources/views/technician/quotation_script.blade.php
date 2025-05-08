@@ -198,12 +198,13 @@
                         $('table .nr:last').before(showData); 
 
                         // display buttons logic 
-                        let caseStatus = $('#case_status').val();
+                        let caseStatus = $('input[name="case_status"]:checked').val()
                         let warrantyStatus = $('#warranty_status').val();
 
                         let all_item_qty = $('.getqtyValue').map(function () {
                             return $(this).val().trim().toLowerCase();
                         }).get();
+
 
                         const allUnavailable = all_item_qty.includes("unavailable");
                         const filteredQty = all_item_qty.filter(qty => qty !== "");
@@ -261,7 +262,7 @@
                 $('#rowID'+row_id).remove();
                 
                 // display buttons logic 
-                let caseStatus = $('#case_status').val();
+                let caseStatus = $('input[name="case_status"]:checked').val()
                 let warrantyStatus = $('#warranty_status').val();
 
                 let all_item_qty = $('.getqtyValue').map(function () {
@@ -328,12 +329,12 @@
                         $("#cost").val(result[0].cost);
                         
                         let transaction_status = $('#transaction_status').val();
-                        if([34, 43].includes(Number(transaction_status))){
+                        if([34, 42, 43].includes(Number(transaction_status))){
                             $("#new_spare_req").val('Additional-Required-Pending');
                         }
 
                         // display buttons logic 
-                        let caseStatus = $('#case_status').val();
+                        let caseStatus = $('input[name="case_status"]:checked').val()
                         let warrantyStatus = $('#warranty_status').val();
 
                         let all_item_qty = $('.getqtyValue').map(function () {

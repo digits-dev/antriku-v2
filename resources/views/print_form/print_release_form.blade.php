@@ -241,12 +241,11 @@
                                         <p>{{$qt->item_description}}</p>
                                     </td>
                                     
-                                    <?php $downpayment = ($qt->cost)*0.5; ?>
                                     <td class="table-bordered-display" style="border-width: 0 1px 1px 0 !important; padding:5px; text-align:center;">
                                         @if(CRUDBooster::getCurrentMethod() == 'PrintSameDayReleaseForm')
                                             <p>₱{{number_format($qt->cost, 2, '.', '')}}</p>
                                         @else
-                                            <p>₱{{number_format($downpayment, 2, '.', '')}}</p>
+                                            <p>₱{{number_format($qt->cost, 2, '.', '')}}</p>
                                         @endif      
                                     </td>
                                 </tr>

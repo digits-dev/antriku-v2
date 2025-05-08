@@ -1,29 +1,24 @@
-
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css"rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
 <script type="text/javascript">
-    
     $('textarea').keypress(function(event) {
         console.log($(this).attr('name'));
         if (event.which == 13 && $(this).attr('name') !== "comment") {
             event.preventDefault();
             var s = $(this).val();
-            $(this).val(s+"\n");
+            $(this).val(s + "\n");
         }
     });
-    
+
     // select plugins
-    $(document).ready(function(){
-        $(".limitedNumbChosen").chosen({
-        })
-        .bind("chosen:maxselected", function (){
-        })
-        $(".limitedNumbSelect2").select2({
-        })
+    $(document).ready(function() {
+        $(".limitedNumbChosen").chosen({})
+            .bind("chosen:maxselected", function() {})
+        $(".limitedNumbSelect2").select2({})
     });
 
     function preventBack() {
@@ -35,7 +30,7 @@
     };
 
     setTimeout("preventBack()", 0);
-    
+
     $(document).ready(function() {
         $("form").bind("keypress", function(e) {
             if (e.keyCode == 13) {
@@ -48,11 +43,11 @@
         var k = event ? event.which : window.event.keyCode;
         if (k == 32) return false;
     }
-        
+
     function in_array(search, array) {
         for (i = 0; i < array.length; i++) {
             if (array[i] == search) {
-            return true;
+                return true;
             }
         }
         return false;
@@ -62,27 +57,29 @@
         return new Set(arr).size !== arr.length
     }
 
-     // warranty expiration date picker
-    $( "#warranty_expiration_date" ).datepicker( {format: 'yyyy/mm/dd'} );     
+    // warranty expiration date picker
+    $("#warranty_expiration_date").datepicker({
+        format: 'yyyy/mm/dd'
+    });
 
-     // date ordered date picker
-    $( ".dateordered" ).datepicker( {format: 'yyyy-mm-dd'} );                  
+    // date ordered date picker
+    $(".dateordered").datepicker({
+        format: 'yyyy-mm-dd'
+    });
 
     // function for validating null or empty value
-    function isEmptyOrSpaces(str){
+    function isEmptyOrSpaces(str) {
         return str === null || str.match(/^ *$/) !== null;
     }
 
     // display of other problem detail input field
-    function OtherProblemDetail()
-    {
-        count_problem_details_other_array = [];                         
+    function OtherProblemDetail() {
+        count_problem_details_other_array = [];
         var ProblemDetailArray = $('#problem_details').val();
         count_problem_details_other_array.push(ProblemDetailArray);
         count_problem_details_other_array.forEach(function(opd) {
             for (var i = 0; i < opd.length; ++i) {
-                if(opd[i] === 'OTHERS')
-                {
+                if (opd[i] === 'OTHERS') {
                     addinputField = `
                         <div class="col-md-12">
                             <label class="control-label col-md-2" style="margin-top:7px;"><span class="requiredField">*</span>Other Problem Details:</label>
@@ -93,7 +90,7 @@
 
                     $("#show_other_problem").html(addinputField);
                     break;
-                }else{
+                } else {
                     addinputField = ` `;
                     $("#show_other_problem").html(addinputField);
                 }
@@ -102,9 +99,9 @@
     }
 
     // validation for submitting form
-    function changeStatus(status_id)
-    {
-        var mainpath = document.getElementById("mainpath").value;  
+    function changeStatus(status_id) {
+        $('#top-loader').show();
+        var mainpath = document.getElementById("mainpath").value;
         var header_id = document.getElementById("header_id").value;
         var current_status = document.getElementById("current_status").value;
         var warranty_status = document.getElementById("warranty_status").value;
@@ -122,75 +119,79 @@
         var row_num = $('.row_num').length;
         $("#number_of_rows").val(row_num);
 
-        var getidValue = $('.getidValue').map((_,el) => el.value).get()
+        var getidValue = $('.getidValue').map((_, el) => el.value).get()
         $("#rowidArray").val(getidValue);
 
-        var getgsxValue = $('.getgsxValue').map((_,el) => el.value).get()
+        var getgsxValue = $('.getgsxValue').map((_, el) => el.value).get()
         $("#gsxArray").val(getgsxValue);
- 
-        var getcsValue = $('.getcsValue').map((_,el) => el.value).get()
+
+        var getcsValue = $('.getcsValue').map((_, el) => el.value).get()
         $("#csArray").val(getcsValue);
 
-        var getscValue = $('.getscValue').map((_,el) => el.value).get()
+        var getscValue = $('.getscValue').map((_, el) => el.value).get()
         $("#scArray").val(getscValue);
-        
-        var getapValue = $('.getapValue').map((_,el) => el.value).get()
+
+        var getapValue = $('.getapValue').map((_, el) => el.value).get()
         $("#apArray").val(getapValue);
 
-        var getserialValue = $('.getserialValue').map((_,el) => el.value).get()
+        var getserialValue = $('.getserialValue').map((_, el) => el.value).get()
         $("#serialArray").val(getserialValue);
 
-        var getitemValue = $('.getitemValue').map((_,el) => el.value).get()
+        var getitemValue = $('.getitemValue').map((_, el) => el.value).get()
         $("#itemArray").val(getitemValue);
 
-        var getcostValue = $('.getcostValue').map((_,el) => el.value).get()
+        var getcostValue = $('.getcostValue').map((_, el) => el.value).get()
         $("#costArray").val(getcostValue);
         //*****************************************************************/
-        
+
         // For Cost Computation
         var all_cost = document.getElementById("costArray").value;
         var all_item_desc = document.getElementById("itemArray").value;
 
         //************************Validation for Array************************
-        let all_item_parts_type = $('.item_spare_additional_type').map(function () {
+        let all_item_parts_type = $('.item_spare_additional_type').map(function() {
             return $(this).val().trim().toLowerCase();
         }).get();
         const has_doa_jo = all_item_parts_type.includes("additional-standard-doa");
         const has_doa_jo_yes = all_item_parts_type.includes("additional-standard-doa-yes");
 
-        if(has_doa_jo == false && has_doa_jo_yes == false){
-            if(checkIfDuplicateExists(getscValue)){
-                setTimeout(function () {
-                    swal('Error!','The Spare Part you entered is already in the list.','error');
+        if (has_doa_jo == false && has_doa_jo_yes == false) {
+            if (checkIfDuplicateExists(getscValue)) {
+                setTimeout(function() {
+                    $('#top-loader').hide();
+                    swal('Error!', 'The Spare Part you entered is already in the list.', 'error');
                 }, 1000);
                 return false;
             }
         }
 
-        for(var i=0; i < getitemValue.length-1; ++i) {
-            if(isEmptyOrSpaces(getitemValue[i]) == true){
-                setTimeout(function () {
-                    swal('Info!','Item Description is required.');
+        for (var i = 0; i < getitemValue.length - 1; ++i) {
+            if (isEmptyOrSpaces(getitemValue[i]) == true) {
+                setTimeout(function() {
+                    $('#top-loader').hide();
+                    swal('Info!', 'Item Description is required.');
                 }, 1000);
                 return false;
             }
         }
 
-        for(var i=0; i < getcostValue.length-1; ++i) {
-            if(isEmptyOrSpaces(getcostValue[i]) == true){
-                setTimeout(function () {
-                    swal('Info!','Price is required.');
+        for (var i = 0; i < getcostValue.length - 1; ++i) {
+            if (isEmptyOrSpaces(getcostValue[i]) == true) {
+                setTimeout(function() {
+                    $('#top-loader').hide();
+                    swal('Info!', 'Price is required.');
                 }, 1000);
                 return false;
             }
         }
 
-        if(status_id == 31 || status_id == 41){
-            for(var i=0; i < getgsxValue.length-1; ++i) {
-                if(isEmptyOrSpaces(getgsxValue[i]) == true){
+        if (status_id == 31 || status_id == 41) {
+            for (var i = 0; i < getgsxValue.length - 1; ++i) {
+                if (isEmptyOrSpaces(getgsxValue[i]) == true) {
                     $('.getgsxValue').css('border', '1px solid red');
-                    setTimeout(function () {
-                        swal('Info!','GSX Reference is required.');
+                    setTimeout(function() {
+                        $('#top-loader').hide();
+                        swal('Info!', 'GSX Reference is required.');
                     }, 1000);
                     return false;
                 }
@@ -199,7 +200,7 @@
         }
 
         if (status_id == 35) {
-            let all_item_parts_type = $('.item_spare_additional_type').map(function () {
+            let all_item_parts_type = $('.item_spare_additional_type').map(function() {
                 return $(this).val().trim().toLowerCase();
             }).get();
 
@@ -209,20 +210,24 @@
             const has_new_spare_req = new_spare_req.includes("additional-required-pending");
 
             if (!has_additional_required && !has_new_spare_req) {
-                setTimeout(function () {
-                    swal('Info!', 'You enabled "Additional Required", please add new required spare parts to proceed. If not, please switch it off.');
+                setTimeout(function() {
+                    $('#top-loader').hide();
+                    swal('Info!',
+                        'You enabled "Additional Required", please add new required spare parts to proceed. If not, please switch it off.'
+                        );
                 }, 1000);
-                return false; 
+                return false;
             }
         }
 
         let transaction_status = $('#transaction_status').val();
-        if(status_id == 19 && transaction_status != 35){
-            for(var i=0; i < getserialValue.length-1; ++i) {
-                if(isEmptyOrSpaces(getserialValue[i]) == true){
+        if (status_id == 19 && transaction_status != 35) {
+            for (var i = 0; i < getserialValue.length - 1; ++i) {
+                if (isEmptyOrSpaces(getserialValue[i]) == true) {
                     $('.getserialValue').css('border', '1px solid red');
-                    setTimeout(function () {
-                        swal('Info!','KGB Serial Number is required.');
+                    setTimeout(function() {
+                        $('#top-loader').hide();
+                        swal('Info!', 'KGB Serial Number is required.');
                     }, 1000);
                     return false;
                 }
@@ -230,101 +235,112 @@
             }
         }
 
-        for(var i=0; i < getscValue.length-1; ++i) {
-            if(isEmptyOrSpaces(getscValue[i]) == false){
+        for (var i = 0; i < getscValue.length - 1; ++i) {
+            if (isEmptyOrSpaces(getscValue[i]) == false) {
+                $('#top-loader').show();
                 $.ajax({
-                    "async" : false,
+                    "async": false,
                     url: "{{ route('check-gsx') }}",
                     type: "POST",
                     data: {
                         'gsx': getscValue[i],
                         _token: '{!! csrf_token() !!}'
-                        },
-                }).success(function(result){
-                    
-                    if(result.length == 0){
-                        $(".getscValue:eq("+[i]+")").css( "border", "2px solid red" );
-                        stop = true; 
-                    }else{
-                        $(".getscValue:eq("+[i]+")").css( "border", "1px solid slategray" );
+                    },
+                }).success(function(result) {
+
+                    if (result.length == 0) {
+                        $(".getscValue:eq(" + [i] + ")").css("border", "2px solid red");
+                        $('#top-loader').hide();
+                        stop = true;
+                    } else {
+                        $(".getscValue:eq(" + [i] + ")").css("border", "1px solid slategray");
                     }
                 });
-            }else if(isEmptyOrSpaces(getscValue[i]) == true){
-                setTimeout(function () {
-                    swal('Info!','Spare Part is required.');
+            } else if (isEmptyOrSpaces(getscValue[i]) == true) {
+                setTimeout(function() {
+                    $('#top-loader').hide(); 
+                    swal('Info!', 'Spare Part is required.');
                 }, 1000);
                 return false;
             }
-      
-            if(stop && getscValue.length-1 == i+1) {
-                setTimeout(function () {
-                    swal('Info!','Your Spare Part is not existing.');
+
+            if (stop && getscValue.length - 1 == i + 1) {
+                setTimeout(function() {
+                    $('#top-loader').hide();
+                    swal('Info!', 'Your Spare Part is not existing.');
                 }, 1000);
                 return false;
             }
         }
         //****************************************************************************** */
 
-        if(isEmptyOrSpaces(gsx_ref) == false || isEmptyOrSpaces(cs_code) == false || isEmptyOrSpaces(service_code) == false || isEmptyOrSpaces(serial_no) == false || isEmptyOrSpaces(item_desc) == false || isEmptyOrSpaces(cost) == false)
-        {
-            if(isEmptyOrSpaces(service_code) == false){
+        if (isEmptyOrSpaces(gsx_ref) == false || isEmptyOrSpaces(cs_code) == false || isEmptyOrSpaces(service_code) ==
+            false || isEmptyOrSpaces(serial_no) == false || isEmptyOrSpaces(item_desc) == false || isEmptyOrSpaces(
+            cost) == false) {
+            if (isEmptyOrSpaces(service_code) == false) {
                 $.ajax({
-                    "async" : false,
+                    "async": false,
                     url: "{{ route('check-gsx') }}",
                     type: "POST",
                     data: {
                         'gsx': service_code,
                         _token: '{!! csrf_token() !!}'
-                        },
-                }).success(function(result){
-                    if(result.length == 0){
-                        $("#service_code").css( "border", "2px solid red" );
+                    },
+                }).success(function(result) {
+                    if (result.length == 0) {
+                        $("#service_code").css("border", "2px solid red");
+                        $('#top-loader').hide();
                         stop = true;
-                    }else{
-                        $("#service_code").css( "border", "1px solid slategray" );
+                    } else {
+                        $("#service_code").css("border", "1px solid slategray");
                     }
                 });
-            }else{
-                $("#service_code").css( "border", "1px solid slategray" );
+            } else {
+                $("#service_code").css("border", "1px solid slategray");
             }
-            
-            if(isEmptyOrSpaces(service_code) == true)
-            {
+
+            if (isEmptyOrSpaces(service_code) == true) {
                 proceed = false;
-                setTimeout(function () {
-                    swal('Info!','Spare Part is required.');
+                setTimeout(function() {
+                    $('#top-loader').hide();
+                    swal('Info!', 'Spare Part is required.');
                 }, 1000);
                 return false;
-            }else if(stop){
+            } else if (stop) {
                 proceed = false;
-                setTimeout(function () {
-                    swal('Info!','Your Spare Part is not existing.');
+                setTimeout(function() {
+                    $('#top-loader').hide();
+                    swal('Info!', 'Your Spare Part is not existing.');
                 }, 1000);
                 return false;
-            }else if(isEmptyOrSpaces(item_desc) == true){
+            } else if (isEmptyOrSpaces(item_desc) == true) {
                 proceed = false;
-                setTimeout(function () {
-                    swal('Info!','Item Description is required.');
+                setTimeout(function() {
+                    $('#top-loader').hide();
+                    swal('Info!', 'Item Description is required.');
                 }, 1000);
                 return false;
-            }else if(isEmptyOrSpaces(cost) == true){
+            } else if (isEmptyOrSpaces(cost) == true) {
                 proceed = false;
-                setTimeout(function () {
-                    swal('Info!','Price is required.');
+                setTimeout(function() {
+                    $('#top-loader').hide();
+                    swal('Info!', 'Price is required.');
                 }, 1000);
                 return false;
-            }else{
+            } else {
                 proceed = true;
             }
-        }else{
+        } else {
             proceed = true;
         }
         if (proceed) {
-        if (status_id == 'save') {
-            $(".buttonSubmit").removeAttr("disabled");
-        } 
 
-        var formData = new FormData();
+            $('#top-loader').hide();
+            if (status_id == 'save') {
+                $(".buttonSubmit").removeAttr("disabled");
+            }
+
+            var formData = new FormData();
             formData.append("all_data", $("#SubmitTransactionForm").serialize());
             formData.append("header_id", header_id);
             formData.append("current_status", current_status);
@@ -340,102 +356,105 @@
                     formData.append("waybill", waybillInput.files[0]);
                 }
             }
-            
+
             let transaction_status = $('#transaction_status').val();
             if ([23, 39, 40].includes(status_id) && ![45, 43, 42].includes(Number(transaction_status))) {
-                formData.append("rpf_invoice", $("#rpf_invoice")[0].files[0]); 
+                formData.append("rpf_invoice", $("#rpf_invoice")[0].files[0]);
             }
 
 
 
-        Swal.fire({
-            icon: case_status == 'MAIL-IN' && status_id == 20 ? 'info' : 'question',
-            title: case_status == 'MAIL-IN' && status_id == 20
-                ? "This will change the Warranty Status to Out of Warranty"
-                : "Are you sure?",
-            text: "Do you want to proceed?",
-            showCancelButton: true,
-            confirmButtonColor: "#00b8d9",
-            confirmButtonText: "Yes, proceed!",
-            cancelButtonText: "Cancel",
-            allowOutsideClick: false
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $(".buttonSubmit").attr("disabled", "disabled");
+            Swal.fire({
+                icon: case_status == 'MAIL-IN' && status_id == 20 ? 'info' : 'question',
+                title: case_status == 'MAIL-IN' && status_id == 20 ?
+                    "This will change the Warranty Status to Out of Warranty" :
+                    "Are you sure?",
+                text: "Do you want to proceed?",
+                showCancelButton: true,
+                confirmButtonColor: "#00b8d9",
+                confirmButtonText: "Yes, proceed!",
+                cancelButtonText: "Cancel",
+                allowOutsideClick: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#top-loader').show();
+                    $(".buttonSubmit").attr("disabled", "disabled");
 
-                $.ajax({
-                    url: "{{ route('change-status') }}",
-                    type: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (result) {
-                        if (status_id == 'save') {
-                            $(".buttonSubmit").removeAttr("disabled");
+                    $.ajax({
+                        url: "{{ route('change-status') }}",
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(result) {
+                            $('#top-loader').hide();
+                            if (status_id == 'save') {
+                                $(".buttonSubmit").removeAttr("disabled");
 
-                            Swal.fire({
-                                title: "Success!",
-                                text: "Transaction Details are saved.",
-                                icon: "success"
-                            }).then(() => {
-                                location.reload();
-                            });
-
-                        } else {
-                            const statusMessages = {
-                                8: "STATUS: TO PAY DIAGNOSTIC",
-                                12: "AWAITING CUSTOMER APPROVAL (MAIL-IN)",
-                                14: "FOR INPUT GSX KBB (MAIL IN)",
-                                13: "CALLOUT: FOR PICK UP BY CUSTOMER (CANCELLED – MAIL IN)",
-                                15: "FOR MAIL IN KBB (MAIL IN)",
-                                16: "AWAITING FOR PICK UP (LOGISTICS)",
-                                17: "AWAITING APPLE REPAIR",
-                                18: "FOR TECH ASSESSMENT",
-                                19: "CALLOUT: AWAITING CUSTOMER PICK UP (GOOD UNIT)",
-                                20: "CALLOUT: FOR CUSTOMER PAYMENT (PARTS)",
-                                21: "AWAITING CUSTOMER APPROVAL (MAIL-IN)",
-                                22: "CALLOUT: FOR PICK UP BY CUSTOMER (CANCELLED – MAIL IN)",
-                                23: "FOR INPUT GSX KBB (MAIL IN)",
-                                24: "FOR MAIL IN KBB (MAIL IN)",
-                                25: "AWAITING FOR PICK UP (LOGISTICS)",
-                                26: "AWAITING APPLE REPAIR",
-                                27: "FOR TECH ASSESSMENT",
-                                28: "CALLOUT: AWAITING CUSTOMER PICK UP (GOOD UNIT)",
-                                29: "For Spare part release (Carry In)",
-                                30: "FOR ORDER SPARE PART (CARRY IN)",
-                                31: "SPARE PART RELEASED",
-                                33: "CALLOUT: ORDERING SPARE PARTS",
-                                34: "ON GOING REPAIR",
-                                35: "CALLOUT: ADDITIONAL SPARE PARTS (CARRY IN)",
-                                38: "CALLOUT: FOR PICK UP BY CUSTOMER (CANCELLED – CARRY IN)",
-                                39: "FOR SPARE PART RELEASE (CARRY IN)",
-                                40: "FOR ORDER SPARE PART (CARRY IN)",
-                                41: "SPARE PART RELEASED",
-                                42: "ON GOING REPAIR",
-                                43: "CALLOUT: ADDITIONAL SPARE PARTS (CARRY IN)",
-                                45: "CALLOUT: ORDERING SPARE PARTS",
-                                47: "AWAITING APPLE REPAIR (IW)",
-                                48: "CALLOUT: AWAITING CUSTOMER APPROVAL",
-                            };
-
-                            if (statusMessages[status_id]) {
                                 Swal.fire({
-                                    title: "Info!",
-                                    text: statusMessages[status_id],
-                                    icon: "info",
-                                    confirmButtonText: "OK"
+                                    title: "Success!",
+                                    text: "Transaction Details are saved.",
+                                    icon: "success"
                                 }).then(() => {
-                                    window.location.href = "{{ CRUDBooster::mainpath() }}";
+                                    location.reload();
                                 });
+
+                            } else {
+                                const statusMessages = {
+                                    8: "STATUS: TO PAY DIAGNOSTIC",
+                                    12: "AWAITING CUSTOMER APPROVAL (MAIL-IN)",
+                                    14: "FOR INPUT GSX KBB (MAIL IN)",
+                                    13: "CALLOUT: FOR PICK UP BY CUSTOMER (CANCELLED – MAIL IN)",
+                                    15: "FOR MAIL IN KBB (MAIL IN)",
+                                    16: "AWAITING FOR PICK UP (LOGISTICS)",
+                                    17: "AWAITING APPLE REPAIR",
+                                    18: "FOR TECH ASSESSMENT",
+                                    19: "CALLOUT: AWAITING CUSTOMER PICK UP (GOOD UNIT)",
+                                    20: "CALLOUT: FOR CUSTOMER PAYMENT (PARTS)",
+                                    21: "AWAITING CUSTOMER APPROVAL (MAIL-IN)",
+                                    22: "CALLOUT: FOR PICK UP BY CUSTOMER (CANCELLED – MAIL IN)",
+                                    23: "FOR INPUT GSX KBB (MAIL IN)",
+                                    24: "FOR MAIL IN KBB (MAIL IN)",
+                                    25: "AWAITING FOR PICK UP (LOGISTICS)",
+                                    26: "AWAITING APPLE REPAIR",
+                                    27: "FOR TECH ASSESSMENT",
+                                    28: "CALLOUT: AWAITING CUSTOMER PICK UP (GOOD UNIT)",
+                                    29: "For Spare part release (Carry In)",
+                                    30: "FOR ORDER SPARE PART (CARRY IN)",
+                                    31: "SPARE PART RELEASED",
+                                    33: "CALLOUT: ORDERING SPARE PARTS",
+                                    34: "ON GOING REPAIR",
+                                    35: "CALLOUT: ADDITIONAL SPARE PARTS (CARRY IN)",
+                                    38: "CALLOUT: FOR PICK UP BY CUSTOMER (CANCELLED – CARRY IN)",
+                                    39: "FOR SPARE PART RELEASE (CARRY IN)",
+                                    40: "FOR ORDER SPARE PART (CARRY IN)",
+                                    41: "SPARE PART RELEASED",
+                                    42: "ON GOING REPAIR",
+                                    43: "CALLOUT: ADDITIONAL SPARE PARTS (CARRY IN)",
+                                    45: "CALLOUT: ORDERING SPARE PARTS",
+                                    47: "AWAITING APPLE REPAIR (IW)",
+                                    48: "CALLOUT: AWAITING CUSTOMER APPROVAL",
+                                };
+
+                                if (statusMessages[status_id]) {
+                                    Swal.fire({
+                                        title: "Info!",
+                                        text: statusMessages[status_id],
+                                        icon: "info",
+                                        confirmButtonText: "OK"
+                                    }).then(() => {
+                                        window.location.href =
+                                            "{{ CRUDBooster::mainpath() }}";
+                                    });
+                                }
                             }
                         }
-                    }
-                });
-            }
-        });
+                    });
+                }
+            });
 
-        return false;
-    }
+            return false;
+        }
 
     }
 
@@ -474,9 +493,9 @@
             confirmButtonColor: "#5CB85C",
             showCancelButton: true,
             cancelButtonText: "No",
-            allowOutsideClick: false, 
+            allowOutsideClick: false,
             didOpen: () => {
-                Swal.showLoading(); 
+                Swal.showLoading();
             }
         }).then((result) => {
             if (result.isConfirmed) {
@@ -486,21 +505,20 @@
     });
 
     // prevent multiple submit of form
-    $('form').submit(function(){
-        $(this).find(':submit').attr('disabled','disabled');
+    $('form').submit(function() {
+        $(this).find(':submit').attr('disabled', 'disabled');
     });
 
     // warranty status name
-    function WarrantyStatusChange(warranty)
-	{
-		if(warranty == 1){
-			$("#warranty_status").val("IN WARRANTY");
-		}else if(warranty == 2){
-			$("#warranty_status").val("OUT OF WARRANTY");
-		}else if(warranty == 3){
-			$("#warranty_status").val("SPECIAL");
-		}
-	}
+    function WarrantyStatusChange(warranty) {
+        if (warranty == 1) {
+            $("#warranty_status").val("IN WARRANTY");
+        } else if (warranty == 2) {
+            $("#warranty_status").val("OUT OF WARRANTY");
+        } else if (warranty == 3) {
+            $("#warranty_status").val("SPECIAL");
+        }
+    }
 
     function callOut(status_id) {
         let header_id = $('#header_id').val();
@@ -513,7 +531,7 @@
             confirmButtonColor: "#008000",
             confirmButtonText: "Yes!",
             cancelButtonText: "No, cancel!",
-            allowOutsideClick: false 
+            allowOutsideClick: false
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
@@ -522,7 +540,7 @@
                     data: {
                         returns_header_id: header_id,
                         status_id: status_id,
-                        _token: $('meta[name="csrf-token"]').attr('content') 
+                        _token: $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
                         Swal.fire({
@@ -530,7 +548,7 @@
                             text: "Call out has been recorded.",
                             icon: "success"
                         }).then(() => {
-                            location.reload(); 
+                            location.reload();
                         });
                     },
                     error: function(xhr) {
@@ -544,11 +562,11 @@
     }
 
     function validateBeforeChangeStatus(status_id) {
-        let form = document.getElementById("SubmitTransactionForm"); 
+        let form = document.getElementById("SubmitTransactionForm");
 
         if (!form.checkValidity()) {
-            form.reportValidity(); 
-            return false; 
+            form.reportValidity();
+            return false;
         }
         return changeStatus(status_id);
     }

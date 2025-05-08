@@ -29,6 +29,35 @@
 @endpush
 
 @section('content')
+
+<div id="top-loader" style="display: none">
+    <div class="top-loader">
+        <div class="modal-cus">
+        <div class="loader-container">
+            <div class="loader-left">
+            <div class="loader">
+                <div class="spinner"></div>
+                <div class="pulse"></div>
+            </div>
+            </div>
+            
+            <div class="loader-right">
+            <div class="loading-text">LOADING YOUR REQUEST, PLEASE WAIT</div>
+            
+            <div class="dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
     <div class="panel panel-default" style="margin: 0; padding:0">
         <div class="panel-body">
             <div class="row cust-ch" style="margin-bottom: 0%">

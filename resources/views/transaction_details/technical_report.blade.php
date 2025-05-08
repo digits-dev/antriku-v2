@@ -189,7 +189,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="col-md-12 ">
-                            <button onclick="addDefectiveRow()" id="add_defective_row" style="margin-top:5px" class="btn btn-warning pull-right"><i class="fa fa-plus" aria-hidden="true"></i> Add Defective</button>
+                            <button type="button" onclick="addDefectiveRow()" id="add_defective_row" style="margin-top:5px" class="btn btn-warning pull-right"><i class="fa fa-plus" aria-hidden="true"></i> Add Defective</button>
                         </div>
                     </div>
                 </div>

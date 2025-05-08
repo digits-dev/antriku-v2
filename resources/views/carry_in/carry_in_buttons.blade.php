@@ -130,13 +130,29 @@
 
     @if ($transaction_details->repair_status == 45)
         <input type="hidden" value="{{$transaction_details->repair_status}}" id="transaction_status">
-        <button type="button" id="call_out" onclick="callOut(45)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 10px;" {{CRUDBooster::myPrivilegeId() == 9 ? 'disabled' : ''  }}>
+        <button type="button" id="call_out" onclick="callOut(45)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 10px; display: {{CRUDBooster::myPrivilegeId() == 9 ? 'none' : ''  }}">
             <i class="fa fa-phone"></i> CALL OUT ({{ $CallOutCount }})
         </button>
 
         <button type="submit" id="save" onclick="return changeStatus(39)" class="btn btn-success pull-right for_spare_part_release_unav_oow" style="display: none">
             <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, For Spare Release
         </button>
+
+        @if (CRUDBooster::myPrivilegeId() == 9)
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const elements = document.querySelectorAll('.getqtyValue');
+                    const all_item_qty = Array.from(elements).map(el => el.value.trim().toLowerCase());
+
+                    const allUnAvailable = all_item_qty.includes("unavailable");
+                    if (allUnAvailable) {
+                        // window.location.reload();
+                    } else {
+                        document.querySelector('.for_spare_part_release_unav_oow')?.click();
+                    }
+                });
+            </script>
+        @endif
     @endif
 
     @if ($transaction_details->repair_status == 39)
@@ -160,7 +176,7 @@
             <button type="submit" id="save" onclick="return changeStatus(39)" class="btn btn-success pull-right buttonSubmit oow_cin_doa_av" style="display: none">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, DOA OOW
             </button>
-            <button type="submit" id="save" onclick="return changeStatus(30)" class="btn btn-danger pull-right buttonSubmit oow_cin_doa_unav" style="display: none">
+            <button type="submit" id="save" onclick="return changeStatus(40)" class="btn btn-danger pull-right buttonSubmit oow_cin_doa_unav" style="display: none">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, DOA OOW
             </button>
             <button type="submit" id="save" onclick="return changeStatus(43)" class="btn btn-danger pull-right buttonSubmit oow_cin_additional_spare_part" style="display: none">

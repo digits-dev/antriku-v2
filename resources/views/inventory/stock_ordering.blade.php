@@ -276,7 +276,7 @@
         text-align: center;
         color: var(--secondary);
     }
-    </style>
+</style>
 @endpush
 
 @section('content')
@@ -340,8 +340,23 @@
 
                 <div class="col-md-4">
                     <h5 class="text-uppercase"><b>Order Summary</b></h5>
-                    <div style="height: 410px; overflow:auto">
-
+                    <div class="card-stocks">
+                        <div class="card-body-stocks">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h5>
+                                        Desktop
+                                        <br>
+                                        <small>QTY: 2 - P50.00 each</small>
+                                    </h5>
+                                </div>
+                                <div class="col-md-4">
+                                    <h5>
+                                        P100.00
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -388,7 +403,7 @@
                             <div class="item-name">${item.spare_parts}</div>
                             <div class="item-description">${item.item_description || ''}</div>
                             <div class="item-details">
-                                <span class="item-stock">${item.qty || 'N/A'} in stock</span>
+                                <span class="item-stock">${item.qty || '0 / N/A'} in stock</span>
                                 <span class="item-cost">₱${item.cost || '0.00'}</span>
                             </div>
                         </div>
@@ -414,10 +429,33 @@
             let name = $(this).data('name');
             let desc = $(this).data('desc');
             let cost = $(this).data('cost') || "0";
-            
+
+            // Check if item is already in the table
+            let alreadyExists = false;
+            $('#order-items-body tr').each(function () {
+                let existingName = $(this).find('h3').text().trim();
+                if (existingName === name) {
+                    alreadyExists = true;
+                    return false; // break loop
+                }
+            });
+
+            if (alreadyExists) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Reminders',
+                    html: `Item already added to the table, Duplicate item <br> is not allowed.`,
+                    showCancelButton: false,
+                    confirmButtonText: 'Okay, Got it',
+                });
+                $('#search-results').removeClass('active');
+                $('#product-search').val('');
+                return;
+            }
+
             let rawCost = parseFloat(cost.replace(/,/g, '')) || 0;
             let formattedCost = rawCost.toLocaleString('en-PH', { minimumFractionDigits: 2 });
-            
+
             let newRow = `
                 <tr>
                     <td>
@@ -435,10 +473,10 @@
                     <td><button class="remove-btn">×</button></td>
                 </tr>
             `;
-            
+
             $('#order-items-body').append(newRow);
-            $('#search-results').removeClass('active'); // hide dropdown
-            $('#product-search').val(''); // clear input
+            $('#search-results').removeClass('active');
+            $('#product-search').val('');
         });
         
         // Add keyboard navigation

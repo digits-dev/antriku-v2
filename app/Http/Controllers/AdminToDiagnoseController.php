@@ -469,9 +469,9 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 			}
 		}
 
-		if ($request->status_id == 19) {
+		if (in_array($request->status_id, [19, 28])) {
 			$header_data = DB::table('returns_header')->where('id', $request->header_id)->first();
-			if ($header_data->warranty_status == 'IN WARRANTY' && $header_data->case_status == 'CARRY-IN') {
+			if ($header_data->case_status == 'CARRY-IN') {
 				$get_jo_body_item = DB::table('returns_body_item')
 					->where('returns_header_id', $request->header_id)
 					->where('item_spare_additional_type', '=', 'Additional-Required-Pending')
@@ -507,7 +507,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 			}
 		}
 
-		if (in_array($request->status_id, [29,30,39]) && !in_array($all_data['recent_treansaction_status'], [33])) {
+		if (in_array($request->status_id, [29,30,39,40]) && !in_array($all_data['recent_treansaction_status'], [33, 45])) {
 
 			if(in_array($all_data['recent_treansaction_status'], [34, 35, 42, 43])){
 				$get_jo = DB::table('returns_body_item')
