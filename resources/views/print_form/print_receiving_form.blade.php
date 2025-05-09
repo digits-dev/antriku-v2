@@ -205,12 +205,6 @@
                         <td width="40%">
                             <p>{{ $data['transaction_details']->purchace_invoice_number }}</p>
                         </td>
-                        <td width="20%" style="vertical-align: top;">
-                            <label class="control-label col-md-12"><strong>Device Serial Number:</strong></label>
-                        </td>
-                        <td width="40%">
-                            <p>{{ $data['transaction_details']->device_serial_number }}</p>
-                        </td>
                     </tr>
                     <tr>
                         <td width="20%" style="vertical-align: top;">

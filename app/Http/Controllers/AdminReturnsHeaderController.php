@@ -243,7 +243,6 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 			'unit_type'					=> $data['unit_type'],
 			'store_purchase'			=> $data['store_purchase'],
 			'purchace_invoice_number'	=> $data['purchase_invoice_number'],
-			'device_serial_number'		=> $data['device_serial_no'],
 			'purchase_date'   			=> date('Y-m-d', strtotime($data['purchase_date'])),
 			'warranty_expiration_date' 	=> date('Y-m-d', strtotime($data['warranty_expiration_date'])),
 			'warranty_status' 			=> $data['warranty_status'],
@@ -543,6 +542,13 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 				'repair_status' 			=> 6,
 				'print_release_form' 	 	=> "YES",
 				'updated_by'	     		=> CRUDBooster::myId()
+			]);
+
+			DB::table('job_order_logs')->insert([
+				'returns_header_id' 		=> $header_id,
+				'status_id'            		=> 6,
+				'transacted_by'            	=>  CRUDBooster::myId(),
+				'transacted_at'            	=>  now()
 			]);
 		}
 		return ($data);

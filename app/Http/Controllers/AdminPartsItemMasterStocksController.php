@@ -38,20 +38,27 @@ class AdminPartsItemMasterStocksController extends \crocodicstudio\crudbooster\c
 		$this->col[] = ["label" => "Cost", "name" => "cost"];
 		$this->col[] = ["label" => "GSX Item Status", "name" => "gsx_item_status"];
 		# END COLUMNS DO NOT REMOVE THIS LINE  
+
+		if (CRUDBooster::isCreate() && in_array(CRUDBooster::myPrivilegeId(), [8])) {
+			$currentUrl = url()->current();
+			$orderingUrl = CRUDBooster::mainpath('stock_ordering');
+			$addStockUrl = CRUDBooster::mainpath('stock_in_manual');
 		
-		if (CRUDBooster::isCreate()) {
-			if (in_array(CRUDBooster::myPrivilegeId(), [8])) {
-				$orderingUrl = CRUDBooster::mainpath('stock_ordering');
-				$currentUrl = url()->current();
+			// Only show buttons if we are NOT on either page
+			if ($currentUrl != $orderingUrl && $currentUrl != $addStockUrl) {
+				$this->index_button[] = [
+					"label" => "Order Stocks",
+					"icon" => "fa fa-cart-plus",
+					"url" => $orderingUrl,
+					"color" => "warning"
+				];
 		
-				if ($currentUrl != $orderingUrl) {
-					$this->index_button[] = [
-						"label" => "Order Stocks",
-						"icon" => "fa fa-cart-plus",
-						"url" => $orderingUrl,
-						"color" => "warning"
-					];
-				}
+				$this->index_button[] = [
+					"label" => "Add Stocks",
+					"icon" => "fa fa-plus",
+					"url" => $addStockUrl,
+					"color" => "warning"
+				];
 			}
 		}
 		
@@ -60,7 +67,6 @@ class AdminPartsItemMasterStocksController extends \crocodicstudio\crudbooster\c
 	public function hook_query_index(&$query)
 	{
 		$query->where('gsx_item_status', '=', 'ACTIVE');
-
 	}
 
 	public function hook_row_index($column_index, &$column_value)
@@ -68,7 +74,15 @@ class AdminPartsItemMasterStocksController extends \crocodicstudio\crudbooster\c
 		//Your code here
 	}
 
-	public function stockOrder(){
+	public function stockOrder()
+	{
+		$data['inventory_data'] = DB::table('parts_item_master')->where('gsx_item_status', '=', 'ACTIVE')->get();
+
+		return $this->view('inventory.stock_ordering', $data);
+	}
+
+	public function stockInManual()
+	{
 		$data['inventory_data'] = DB::table('parts_item_master')->where('gsx_item_status', '=', 'ACTIVE')->get();
 
 		return $this->view('inventory.stock_ordering', $data);

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use crocodicstudio\crudbooster\helpers\CRUDBooster;
 use Illuminate\Http\Request;
-use CRUDBooster;
 use Illuminate\Support\Facades\DB;
 
 class AdminCustomDashboardController extends \crocodicstudio\crudbooster\controllers\CBController
@@ -28,6 +28,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         }
 
 		$data['country'] = DB::table('refcountry')->get();    
+
         $data['handle_overall_total'] = DB::table('returns_header')
             ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.created_by')
             ->leftJoin('cms_privileges', 'cms_privileges.id', '=', 'cms_users.id_cms_privileges')
@@ -35,20 +36,6 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->where('cms_users.status', '=', 'ACTIVE')
             ->count();
             
-        $data['handle_for_all_employee'] = $handle_per_employee = DB::table('returns_header')
-            ->select(
-                'cms_users.id as user_id',
-                'cms_users.name as created_by_user',
-                'cms_privileges.name as privilege_name',
-                DB::raw('COUNT(*) as total_creations')
-            )
-            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.created_by')
-            ->leftJoin('cms_privileges', 'cms_privileges.id', '=', 'cms_users.id_cms_privileges')
-            ->where('cms_users.id_cms_privileges', 3)
-            ->where('cms_users.status', '=', 'ACTIVE')
-            ->groupBy('cms_users.id', 'cms_users.name', 'cms_privileges.name')
-            ->orderBy('total_creations', 'DESC')
-            ->get();
 
         $data['handle_per_employee'] = $handle_per_employee = DB::table('returns_header')
             ->select(
@@ -77,20 +64,29 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->whereNotNull('city')
             ->whereNotNull('barangay')
             ->count();
+
+        $data['fl_pending_call_out_dash_count_all'] = DB::table('returns_header')
+            ->whereIn('repair_status', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])
+            ->count();
         
         $data['time_motion'] = DB::table('returns_header')
             ->select(
                 'returns_header.*',
+                'createdby.name as creator',
+                'leadtech.name as lead_tech',
+                'tech.name as technician',
                 'transaction_status.status_name',
-                DB::raw('MIN(call_out_recorder.call_out_at) as first_timestamp'),
+                DB::raw('MAX(CASE WHEN job_order_logs.status_id = 6 THEN job_order_logs.transacted_at ELSE NULL END) AS end_timestamp')
             )
+            ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
             ->leftJoin('transaction_status', 'transaction_status.id', '=', 'returns_header.repair_status')
-            ->leftJoin('call_out_recorder', 'call_out_recorder.returns_header_id', '=', 'returns_header.id')
-            ->whereIn('repair_status', [21, 6])
+            ->leftJoin('cms_users as createdby', 'createdby.id', '=', 'returns_header.created_by')
+            ->leftJoin('cms_users as leadtech', 'leadtech.id', '=', 'returns_header.lead_technician_id')
+            ->leftJoin('cms_users as tech', 'tech.id', '=', 'returns_header.technician_id')
             ->where('branch', CRUDBooster::me()->branch_id)
             ->groupBy('returns_header.id', 'transaction_status.status_name')
             ->orderBy('returns_header.id', 'DESC')
-            ->paginate(10);
+            ->paginate(10);    
 
         if ($request->ajax()) {
             return response()->json([
@@ -100,6 +96,20 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         }
 
         return view('frontliner.admin_dashboard_custom', compact('salesData'), $data);
+    }
+
+    function getTimeline(Request $request){
+
+        $get_timeline_data = DB::table('job_order_logs')
+            ->select('job_order_logs.*','transaction_status.status_name', 'cms_users.name')
+            ->leftJoin('transaction_status', 'transaction_status.id', '=', 'job_order_logs.status_id')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'job_order_logs.transacted_by')
+            ->where('returns_header_id', $request->id)
+            ->get();
+        
+        if($get_timeline_data){
+            return response()->json(['success' => true, 'data' => $get_timeline_data]);
+        }
     }
 
     public function getSalesData(Request $request)

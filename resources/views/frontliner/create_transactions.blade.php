@@ -343,13 +343,9 @@
                             </div>
                             <div class="form-group-cus">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <label for="Purchase / Invoice Number" class="label-cus">Purchase / Invoice Number: <small class="text-danger">(If applicable)</small></label>
                                         <input type="text" name="purchase_invoice_number" id="purchase_invoice_number" class="input-cus" placeholder="Type Purchase / Invoice Number">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="Device Serial Number" class="label-cus"><span class="requiredField">*</span>Device Serial Number:</label>
-                                        <input type="text" name="device_serial_no" id="device_serial_no" class="input-cus" placeholder="Type device serial number" required>
                                     </div>
                                 </div>
                             </div>

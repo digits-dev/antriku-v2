@@ -296,7 +296,7 @@
             <div class="row">
 
                 <div class="col-md-8">
-                    <h5 class="text-uppercase"><b>Order Items</b></h5>
+                    <h5 class="text-uppercase"><b>📃 Order Items</b></h5>
                     <div>
                         <div class="card-stocks">
                             <div class="card-body-stocks">
@@ -339,23 +339,22 @@
                 </div>
 
                 <div class="col-md-4">
-                    <h5 class="text-uppercase"><b>Order Summary</b></h5>
+                    <h5 class="text-uppercase"><b>📃 Order Summary</b></h5>
                     <div class="card-stocks">
                         <div class="card-body-stocks">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <h5>
-                                        Desktop
-                                        <br>
-                                        <small>QTY: 2 - P50.00 each</small>
-                                    </h5>
-                                </div>
-                                <div class="col-md-4">
-                                    <h5>
-                                        P100.00
-                                    </h5>
-                                </div>
+                            <div class="row" style="height: 250px; overflow:auto">
+                                {{-- dynamicaly data appear here  --}}
                             </div>
+                            <hr>
+                            <div class="row">
+                                {{-- dynamicaly data appear here  --}}
+                            </div>
+
+                            <br>
+                            <br>
+                            <button class="btn btn-success" style="width: 100%">
+                                PLACE ORDER 🖨️
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -477,6 +476,7 @@
             $('#order-items-body').append(newRow);
             $('#search-results').removeClass('active');
             $('#product-search').val('');
+            updateOrderSummary();
         });
         
         // Add keyboard navigation
@@ -524,6 +524,7 @@
             if ($('#order-items-body tr').length <= 1) {
                 $('#nofilter').show();
             }
+            updateOrderSummary();
         });
         
         // Update total cost on quantity/price change
@@ -540,7 +541,72 @@
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             })}`);
+            updateOrderSummary();
         });
     });
+
+    function updateOrderSummary() {
+    let summaryContainer = $('.col-md-4 .card-body-stocks');
+    let summaryList = '';
+    let totalCost = 0;
+
+    // Go through each item row
+    $('#order-items-body tr').each(function () {
+        if ($(this).attr('id') === 'nofilter') return; // skip empty state row
+
+        let name = $(this).find('h3').text().trim();
+        let qty = parseFloat($(this).find('.quantity-input').val()) || 0;
+        let rawPriceStr = $(this).find('.price-input').val().replace(/,/g, '');
+        let price = parseFloat(rawPriceStr) || 0;
+        let itemTotal = qty * price;
+
+        totalCost += itemTotal;
+
+        summaryList += `
+            <div class="row summary-item" style="margin-bottom: 10px;">
+                <div class="col-md-6">
+                    <h5 style="margin: 0;">
+                        ${name}
+                        <br>
+                        <small>QTY: ${qty} - ₱${price.toLocaleString('en-PH', { minimumFractionDigits: 2 })} each</small>
+                    </h5>
+                </div>
+                <div class="col-md-6 text-right">
+                    <h5 style="margin: 0;">
+                        ₱${itemTotal.toLocaleString('en-PH', { minimumFractionDigits: 2 })}
+                    </h5>
+                </div>
+            </div>
+            <hr>
+        `;
+    });
+
+    if (summaryList === '') {
+        summaryList = `<p>No items in order summary.</p>`;
+    }
+
+    // Build summary HTML
+    let summaryHTML = `
+        <div class="summary-list" style="height: 250px; overflow:auto">
+            ${summaryList}
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-6">
+                <b>Total Cost</b>
+            </div>
+            <div class="col-md-6 text-right">
+                <b>₱${totalCost.toLocaleString('en-PH', { minimumFractionDigits: 2 })}</b>
+            </div>
+        </div>
+        <br><br>
+        <button class="btn btn-success" style="width: 100%">
+            PLACE ORDER 🖨️
+        </button>
+    `;
+
+    summaryContainer.html(summaryHTML);
+}
+
 </script>
 @endpush

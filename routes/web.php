@@ -140,9 +140,13 @@ Route::group(['middleware' => ['web']], function () {
 
     //Inventory
     Route::get('/admin/parts_item_master_stocks/stock_ordering','AdminPartsItemMasterStocksController@stockOrder');
+    Route::get('/admin/parts_item_master_stocks/stock_in_manual','AdminPartsItemMasterStocksController@stockInManual');
 
     // ITEM MASTER API
     // Route::get('/admin/apple_items_created', [AdminProductItemMasterController::class, 'getItemsCreatedAPI']);
+
+    // Timeline
+    Route::post('/admin/get_timeline', [AdminCustomDashboardController::class, 'getTimeline'])->name('get_timeline');
 
     Route::get('/admin/frontliner-dashboard', [AdminCustomDashboardController::class, 'index'])->name('frontliner.dashboard');
     Route::get('/admin/technician-dashboard', [AdminCustomDashboardController::class, 'technicianDashboard'])->name('technician.dashboard');
