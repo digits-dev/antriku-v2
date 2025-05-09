@@ -148,6 +148,9 @@ Route::group(['middleware' => ['web']], function () {
     // Timeline
     Route::post('/admin/get_timeline', [AdminCustomDashboardController::class, 'getTimeline'])->name('get_timeline');
 
+    // Aging Callout
+    Route::post('/admin/get_aging_callout', [AdminCustomDashboardController::class, 'getAgingCallout'])->name('get_aging_callout');
+
     Route::get('/admin/frontliner-dashboard', [AdminCustomDashboardController::class, 'index'])->name('frontliner.dashboard');
     Route::get('/admin/technician-dashboard', [AdminCustomDashboardController::class, 'technicianDashboard'])->name('technician.dashboard');
     Route::get('/admin/headtechnician-dashboard', [AdminCustomDashboardController::class, 'headTechnicianDashboard']);

@@ -36,8 +36,17 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->where('cms_users.status', '=', 'ACTIVE')
             ->count();
             
+        $data['fl_abandoned_units_dash_count'] = DB::table('returns_header')
+            ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
+            ->whereIn('job_order_logs.status_id', [19, 28])->where('returns_header.branch', CRUDBooster::me()->branch_id)
+            ->where('job_order_logs.transacted_at', '<=', Carbon::now()->subDays(60))
+            ->count();
 
-        $data['handle_per_employee'] = $handle_per_employee = DB::table('returns_header')
+        $data['callout_list'] = DB::table('transaction_status')
+            ->whereIn('id', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])
+            ->where('status', '=', 'ACTIVE')->get();
+
+        $data['handle_per_employee'] = DB::table('returns_header')
             ->select(
                 'cms_users.id as user_id',
                 'cms_users.name as created_by_user',
@@ -53,11 +62,11 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->orderBy('total_creations', 'DESC')
             ->get();
         
-        $data['customers_units'] = $handle_per_employee = DB::table('returns_header')
+        $data['customers_units'] = DB::table('returns_header')
             ->where('branch', CRUDBooster::me()->branch_id)
             ->count();
 
-        $data['customers_info'] = $handle_per_employee = DB::table('returns_header')
+        $data['customers_info'] = DB::table('returns_header')
             ->where('branch', CRUDBooster::me()->branch_id)
             ->whereNotNull('country')
             ->whereNotNull('province')
@@ -66,8 +75,8 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->count();
 
         $data['fl_pending_call_out_dash_count_all'] = DB::table('returns_header')
-            ->whereIn('repair_status', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])
-            ->count();
+                ->whereIn('repair_status', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])
+                ->count();
         
         $data['time_motion'] = DB::table('returns_header')
             ->select(
@@ -110,6 +119,27 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         if($get_timeline_data){
             return response()->json(['success' => true, 'data' => $get_timeline_data]);
         }
+    }
+
+    function getAgingCallout(Request $request){
+
+        $data['fl_aging_call_out_dash_count_0_14'] = DB::table('returns_header')
+            ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
+            ->whereIn('returns_header.repair_status', [$request->call_out_id])->where('returns_header.branch', CRUDBooster::me()->branch_id)
+            ->whereBetween('job_order_logs.transacted_at', [Carbon::now()->subDays(14), Carbon::now()])
+            ->count();
+        $data['fl_aging_call_out_dash_count_15_30'] = DB::table('returns_header')
+            ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
+            ->whereIn('returns_header.repair_status', [$request->call_out_id])->where('returns_header.branch', CRUDBooster::me()->branch_id)
+            ->whereBetween('job_order_logs.transacted_at', [Carbon::now()->subDays(30), Carbon::now()->subDays(15)])
+            ->count();
+        $data['fl_aging_call_out_dash_count_30_plus'] = DB::table('returns_header')
+            ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
+            ->whereIn('returns_header.repair_status', [$request->call_out_id])->where('returns_header.branch', CRUDBooster::me()->branch_id)
+            ->where('job_order_logs.transacted_at', '<=', Carbon::now()->subDays(30))
+            ->count();
+
+        return response()->json(['success' => true, 'data' => $data]);
     }
 
     public function getSalesData(Request $request)

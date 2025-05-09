@@ -75,7 +75,7 @@
     <div class="tab-dash active" data-tab="overview">Overview</div>
     <div class="tab-dash" data-tab="time_and_motion">Time-in-Motion</div>
     <div class="tab-dash" data-tab="customers_unit_filter">Customer's/Unit Filters</div>
-    <div class="tab-dash" data-tab="customer_info_filter">Customer's Information Filter</div>
+    {{-- <div class="tab-dash" data-tab="customer_info_filter">Customer's Information Filter</div> --}}
   </div>
   
   <div id="overview" class="tab-content-dash active">
@@ -216,87 +216,22 @@
             <div class="card-stats-dash">
               <div class="stat-dash">
                 <center>
-                <div class="stat-value-dash">{{$fl_aging_call_out_dash_count_all}}</div>
-                <div class="stat-label-dash">Total Aging</div>
+                <div class="stat-value-dash">{{$callout_count_sidebar}}</div>
+                <div class="stat-label-dash">Total Callouts</div>
                 </center>
               </div>
             </div>
           </div>
           <div class="card-body-dash">
             <select id="aging_callout_type" class="input-cus">
-              <option value="FOR CALL-OUT (GOOD UNIT)" selected>FOR CALL-OUT (GOOD UNIT)</option>
-              <option value="FOR CALL-OUT MAIL-IN">FOR CALL-OUT MAIL-IN</option>
+              <option selected disabled>Select Callout Status here...</option>
+              @foreach ($callout_list as $item)
+                  <option value="{{$item->id}}">{{$item->status_name}}</option>
+              @endforeach
             </select>
-            {{-- for call out mail-in --}}
-            <div id="fcomi" style="display: none">
-              <div class="status-list-dash">
-                <div class="status-item-dash">
-                  <div class="status-info-dash">
-                    <div>
-                      <div class="status-name-dash">30+ Days</div>
-                      <div class="status-details-dash">Critical attention needed</div>
-                    </div>
-                  </div>
-                  <div class="status-value-dash">{{$fl_aging_call_out_dash_count_30_plus}}</div>
-                </div>
-            
-                @php
-                    // Prevent division by zero error
-                    $progressPercentage = $fl_aging_call_out_dash_count_all > 0 
-                    ? ($fl_aging_call_out_dash_count_30_plus / $fl_aging_call_out_dash_count_all) * 100 
-                    : 0;
-                @endphp
-    
-                <div class="progress-container-dash">
-                  <div class="progress-bar-dash progress-critical-dash" style="width: {{ $progressPercentage }}%;"></div>
-                </div>
-              </div>
-    
-              <div class="status-list-dash">
-                <div class="status-item-dash">
-                  <div class="status-info-dash">
-                    <div>
-                      <div class="status-name-dash">15-30 Days</div>
-                      <div class="status-details-dash">Escalation required</div>
-                    </div>
-                  </div>
-                  <div class="status-value-dash">{{$fl_aging_call_out_dash_count_15_30}}</div>
-                </div>
-                @php
-                    // Prevent division by zero error
-                    $progressPercentage2 = $fl_aging_call_out_dash_count_all > 0 
-                        ? ($fl_aging_call_out_dash_count_15_30 / $fl_aging_call_out_dash_count_all) * 100 
-                        : 0;
-                @endphp
-                <div class="progress-container-dash">
-                  <div class="progress-bar-dash progress-warning-dash" style="width: {{ $progressPercentage2 }}%;"></div>
-                </div>
-              </div>
-    
-              <div class="status-list-dash">
-                <div class="status-item-dash">
-                  <div class="status-info-dash">
-                    <div>
-                      <div class="status-name-dash">0-14 Days</div>
-                      <div class="status-details-dash">Needs follow-up</div>
-                    </div>
-                  </div>
-                  <div class="status-value-dash">{{$fl_aging_call_out_dash_count_0_14}}</div>
-                </div>
-                @php
-                    // Prevent division by zero error
-                    $progressPercentage3 = $fl_aging_call_out_dash_count_all > 0 
-                        ? ($fl_aging_call_out_dash_count_0_14 / $fl_aging_call_out_dash_count_all) * 100 
-                        : 0;
-                @endphp
-                <div class="progress-container-dash">
-                  <div class="progress-bar-dash progress-normal-dash" style="width: {{$progressPercentage3}}%;"></div>
-                </div>
-              </div>
-            </div>
 
             {{-- For Call out good unit --}}
-            <div id="fcogu">
+            <div id="aging_callout_content">
               <div class="status-list-dash">
                 <div class="status-item-dash">
                   <div class="status-info-dash">
@@ -305,7 +240,7 @@
                       <div class="status-details-dash">Critical attention needed</div>
                     </div>
                   </div>
-                  <div class="status-value-dash">{{$fl_gu_aging_call_out_dash_count_30_plus}}</div>
+                  <div class="status-value-dash" id="count_30_plus">{{$fl_gu_aging_call_out_dash_count_30_plus}}</div>
                 </div>
             
                 @php
@@ -328,7 +263,7 @@
                       <div class="status-details-dash">Escalation required</div>
                     </div>
                   </div>
-                  <div class="status-value-dash">{{$fl_gu_aging_call_out_dash_count_15_30}}</div>
+                  <div class="status-value-dash" id="count_15_30">{{$fl_gu_aging_call_out_dash_count_15_30}}</div>
                 </div>
                 @php
                     // Prevent division by zero error
@@ -349,7 +284,7 @@
                       <div class="status-details-dash">Needs follow-up</div>
                     </div>
                   </div>
-                  <div class="status-value-dash">{{$fl_gu_aging_call_out_dash_count_0_14}}</div>
+                  <div class="status-value-dash" id="count_0_14">{{$fl_gu_aging_call_out_dash_count_0_14}}</div>
                 </div>
                 @php
                     // Prevent division by zero error
@@ -362,39 +297,10 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-    {{-- <div class="dashboard-grid-dash">
-      <!-- Sales Overview Card -->
-      <div class="card-dash">
-        <div class="card-header-dash">
-          <h2 class="card-title-dash">
-            <div class="card-icon-dash icon-sales">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="1" x2="12" y2="23"></line>
-                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-              </svg>
-            </div>
-            Total Sales
-          </h2>
-          <div class="card-actions-dash">
-            <select id="timeFilter" class="filter-select">
-                <option value="weekly" selected>Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="ytd">YTD</option>
-            </select>
-            <select id="yearFilter" class="filter-select">
-              <option value="2025" selected>2025</option>
-            </select>
           </div>
         </div>
-        <div class="card-body-dash">
-            <canvas id="salesChart"></canvas>
-        </div><br>
       </div>
-    </div> --}}
   </div>
   
   <div id="customers_unit_filter" class="tab-content-dash">
@@ -713,112 +619,46 @@
   $(document).ready(function() {
       $('.js-example-basic-single').select2();
   });
-    $(document).ready(function () {
-      let ctx = $("#salesChart")[0].getContext("2d");
-      let salesChart = new Chart(ctx, {
-          type: "line",
-          data: {
-              labels: [],
-              datasets: [{
-                  label: "Total Sales Graph",
-                  data: [],
-                  borderColor: "#14b8a6",
-                  backgroundColor: "#14b8a543",
-                  borderWidth: 2,
-                  pointBackgroundColor: "#14b8a6",
-                  pointRadius: 5,
-                  fill: true
-              }]
-          },
-          options: {
-              responsive: false,
-              maintainAspectRatio: false,
-              scales: {
-                  y: {
-                      beginAtZero: true,
-                      ticks: {
-                          callback: function (value) {
-                              return "₱" + value.toLocaleString();
-                          }
-                      }
-                  }
-              }
-          }
-      });
 
-      function fetchSalesData(year, range) {
-          let requestData = {};
+  $(document).ready(function() {
+    $('#aging_callout_type').on('change', function(){
+        let call_out_id = $(this).val();
 
-          if (range !== "ytd") {
-              requestData.year = year; 
-          }
+        $.ajax({
+            url: "{{ route('get_aging_callout') }}",
+            type: "POST",
+            data: { 
+              call_out_id: call_out_id,
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
 
-          $.ajax({
-              url: "{{ route('getSalesData') }}", 
-              type: "GET",
-              data: requestData,
-              success: function (response) {
-                  salesChart.data.labels = response[range].labels;
-                  salesChart.data.datasets[0].data = response[range].data;
-                  salesChart.update();
-              }
-          });
-      }
+              // Update counts
+              $('#count_30_plus').text(response.data.fl_aging_call_out_dash_count_30_plus);
+              $('#count_15_30').text(response.data.fl_aging_call_out_dash_count_15_30);
+              $('#count_0_14').text(response.data.fl_aging_call_out_dash_count_0_14);
 
-      // Initial load (default year and weekly)
-      let selectedYear = $("#yearFilter").val();
-      let selectedRange = $("#timeFilter").val();
-      fetchSalesData(selectedYear, selectedRange);
+              // Calculate total
+              const total = response.data.fl_aging_call_out_dash_count_30_plus + response.data.fl_aging_call_out_dash_count_15_30 + response.data.fl_aging_call_out_dash_count_0_14;
 
-      // Event listener for time filter
-      $("#timeFilter").on("change", function () {
-          selectedRange = $(this).val();
-          fetchSalesData(selectedYear, selectedRange);
+              // Calculate percentages
+              const percent30Plus = total > 0 ? (response.data.fl_aging_call_out_dash_count_30_plus / total) * 100 : 0;
+              const percent15_30 = total > 0 ? (response.data.fl_aging_call_out_dash_count_15_30 / total) * 100 : 0;
+              const percent0_14 = total > 0 ? (response.data.fl_aging_call_out_dash_count_0_14 / total) * 100 : 0;
 
-          if (selectedRange === 'ytd') {
-                $('#yearFilter').hide();
-            } else {
-                $('#yearFilter').show();
+              // Update progress bars
+              $('.progress-bar-dash.progress-critical-dash').css('width', percent30Plus + '%');
+              $('.progress-bar-dash.progress-warning-dash').css('width', percent15_30 + '%');
+              $('.progress-bar-dash.progress-normal-dash').css('width', percent0_14 + '%');
+              
             }
-      });
-
-      // Event listener for year filter (only affects weekly & monthly)
-      $("#yearFilter").on("change", function () {
-          if (selectedRange !== "ytd") {  
-              selectedYear = $(this).val();
-              fetchSalesData(selectedYear, selectedRange);
-          }
-      });
-  });
-
-  $('#aging_callout_type').on('change', function () {
-    let callout_type = $('#aging_callout_type').val();
-    if(callout_type === 'FOR CALL-OUT MAIL-IN'){
-      $('#fcogu').fadeOut();
-      $('#fcomi').fadeIn();
-    }else{
-      $('#fcogu').fadeIn();
-      $('#fcomi').fadeOut();
-    }
-  });
-
-  $(document).ready(function () {
-      let startYear = 2021;
-      let currentYear = new Date().getFullYear();
-      let yearFilter = $('#yearFilter');
-
-      // Clear existing options
-      yearFilter.empty();
-
-      // Generate options from startYear to currentYear
-      for (let year = startYear; year <= currentYear; year++) {
-          yearFilter.append(`<option value="${year}">${year}</option>`);
-      }
-
-      // Set the latest year as selected
-      yearFilter.val(currentYear);
+        });
+    });
   });
 </script>
+
 <script>
 function fetchData(page = 1) {
     let date_range_from = $('#date-range-from').val();

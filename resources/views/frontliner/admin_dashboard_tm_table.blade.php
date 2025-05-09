@@ -291,67 +291,55 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        setupModalListeners()
+        document.addEventListener("click", function (e) {
+            const modal = document.getElementById("transaction-modal");
 
-        document.querySelectorAll(".transaction-details").forEach(link => {
-            link.addEventListener("click", (e) => {
-                e.preventDefault()
+            if (!modal) return;
 
-                const modal = document.getElementById("transaction-modal")
-                modal.classList.add("active")
+            // Handle "View Details" click (open modal)
+            if (e.target.closest(".transaction-details")) {
+                e.preventDefault();
+                const link = e.target.closest(".transaction-details");
 
-                // Fill modal basic details
-                document.getElementById("modal-transaction-id").textContent = link.dataset
-                    .reference
-                document.getElementById("modal-customer").textContent = link.dataset.customer
-                document.getElementById("modal-amount").textContent = link.dataset.amount
-                document.getElementById("modal-status").textContent = link.dataset.status
-                document.getElementById("modal-started").textContent = link.dataset.started
-                document.getElementById("modal-ended").textContent = link.dataset.ended
+                modal.classList.add("active");
 
-                // Clear previous list
-                $('#transaction-timeline').empty()
+                document.getElementById("modal-transaction-id").textContent = link.dataset.reference;
+                document.getElementById("modal-customer").textContent = link.dataset.customer;
+                document.getElementById("modal-amount").textContent = link.dataset.amount;
+                document.getElementById("modal-status").textContent = link.dataset.status;
+                document.getElementById("modal-started").textContent = link.dataset.started;
+                document.getElementById("modal-ended").textContent = link.dataset.ended;
 
-                // Send AJAX request
+                $('#transaction-timeline').empty();
+
                 $.ajax({
                     url: '{{ route('get_timeline') }}',
                     type: 'POST',
-                    data: {
-                        id: link.dataset.id,
-                    },
+                    data: { id: link.dataset.id },
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
                         if (response.success == true) {
-                            
                             const manualSteps = [
                                 { status_name: 'JOB ORDER CREATION DATE', name: link.dataset.creator, transacted_at: link.dataset.started },
                                 { status_name: 'TECHNICIAN ASSIGNED DATE', name: link.dataset.lead, transacted_at: link.dataset.assinged },
                                 { status_name: 'TECHNICIAN ACCEPTED DATE', name: link.dataset.tech, transacted_at: link.dataset.accepted }
                             ];
 
-                            // Combine manual steps + response data
                             const combinedSteps = [...manualSteps, ...response.data];
-
-                            // (Optional) Sort combinedSteps by transacted_at timestamp, in case they are out of order
                             combinedSteps.sort((a, b) => new Date(a.transacted_at) - new Date(b.transacted_at));
 
-                            // Process combined timeline with duration computation
                             combinedSteps.forEach((item, index) => {
                                 let durationText = '';
-
                                 if (index > 0) {
                                     const currentTime = new Date(item.transacted_at);
                                     const previousTime = new Date(combinedSteps[index - 1].transacted_at);
-
                                     const diffMs = currentTime - previousTime;
-
                                     const diffSeconds = Math.floor(diffMs / 1000);
                                     const hours = Math.floor(diffSeconds / 3600);
                                     const minutes = Math.floor((diffSeconds % 3600) / 60);
                                     const seconds = diffSeconds % 60;
-
                                     durationText = `${hours} hr/s, ${minutes} min/s, ${seconds} sec/s`;
                                 } else {
                                     durationText = 'Start';
@@ -372,36 +360,22 @@
                         } else {
                             $('#transaction-timeline').append(
                                 '<div class="timeline-step-motion"><div class="content-motion"><p>No additional details found.</p></div></div>'
-                                );
+                            );
                         }
                     },
                     error: function(xhr, status, error) {
                         console.error(error);
                         $('#transaction-timeline').append(
                             '<div class="timeline-step-motion"><div class="content-motion"><p>Error fetching details.</p></div></div>'
-                            );
+                        );
                     }
                 });
-            });
+            }
+
+            // Handle modal close (button or background click)
+            if (e.target.matches("#modal-close") || e.target === modal) {
+                modal.classList.remove("active");
+            }
         });
     });
-
-    function setupModalListeners() {
-        const modal = document.getElementById("transaction-modal")
-        const closeBtn = document.getElementById("modal-close")
-
-        if (closeBtn) {
-            closeBtn.addEventListener("click", () => {
-                modal.classList.remove("active")
-            })
-        }
-
-        if (modal) {
-            modal.addEventListener("click", (e) => {
-                if (e.target === modal) {
-                    modal.classList.remove("active")
-                }
-            })
-        }
-    }
 </script>
