@@ -287,7 +287,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         return response()->json($filter_results);
     }    
 
-    public function technicianDashboard()
+    public function technicianDashboard(Request $request)
     {
         if (CRUDBooster::myPrivilegeId() != self::Technician) {
             return view('403_error_view.invalid_route');
@@ -311,13 +311,37 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         $data['totalIW'] = DB::table('returns_header')->where('warranty_status', 'IN WARRANTY')->where('branch', CRUDBooster::me()->branch_id)->count();
         $data['totalOOW'] = DB::table('returns_header')->where('warranty_status', 'OUT OF WARRANTY')->where('branch', CRUDBooster::me()->branch_id)->count();
     
-    
+        $data['time_motion'] = DB::table('returns_header')
+        ->select(
+            'returns_header.*',
+            'createdby.name as creator',
+            'leadtech.name as lead_tech',
+            'tech.name as technician',
+            'transaction_status.status_name',
+            DB::raw('MAX(CASE WHEN job_order_logs.status_id = 6 THEN job_order_logs.transacted_at ELSE NULL END) AS end_timestamp')
+        )
+        ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
+        ->leftJoin('transaction_status', 'transaction_status.id', '=', 'returns_header.repair_status')
+        ->leftJoin('cms_users as createdby', 'createdby.id', '=', 'returns_header.created_by')
+        ->leftJoin('cms_users as leadtech', 'leadtech.id', '=', 'returns_header.lead_technician_id')
+        ->leftJoin('cms_users as tech', 'tech.id', '=', 'returns_header.technician_id')
+        ->where('branch', CRUDBooster::me()->branch_id)
+        ->groupBy('returns_header.id', 'transaction_status.status_name')
+        ->orderBy('returns_header.id', 'DESC')
+        ->paginate(10);  
+
+        if ($request->ajax()) {
+        return response()->json([
+            'table' => view('frontliner.admin_dashboard_tm_table', ['time_motion' => $data['time_motion']])->render(),
+            'pagination' => view('frontliner.admin_dashboard_tm_pagination', ['time_motion' => $data['time_motion']])->render(),
+        ]);
+    }
             
 
         return view('technician.admin_dashboard_custom', $data);
     }
 
-    public function headTechnicianDashboard()
+    public function headTechnicianDashboard(Request $request)
     {
         if (CRUDBooster::myPrivilegeId() != self::LeadTechnician) {
             return view('403_error_view.invalid_route');
@@ -344,7 +368,31 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         $data['totalIW'] = DB::table('returns_header')->where('warranty_status', 'IN WARRANTY')->count();
         $data['totalOOW'] = DB::table('returns_header')->where('warranty_status', 'OUT OF WARRANTY')->count();
     
-            
+        $data['time_motion'] = DB::table('returns_header')
+        ->select(
+            'returns_header.*',
+            'createdby.name as creator',
+            'leadtech.name as lead_tech',
+            'tech.name as technician',
+            'transaction_status.status_name',
+            DB::raw('MAX(CASE WHEN job_order_logs.status_id = 6 THEN job_order_logs.transacted_at ELSE NULL END) AS end_timestamp')
+        )
+        ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
+        ->leftJoin('transaction_status', 'transaction_status.id', '=', 'returns_header.repair_status')
+        ->leftJoin('cms_users as createdby', 'createdby.id', '=', 'returns_header.created_by')
+        ->leftJoin('cms_users as leadtech', 'leadtech.id', '=', 'returns_header.lead_technician_id')
+        ->leftJoin('cms_users as tech', 'tech.id', '=', 'returns_header.technician_id')
+        ->groupBy('returns_header.id', 'transaction_status.status_name')
+        ->orderBy('returns_header.id', 'DESC')
+        ->paginate(10);    
+
+
+        if ($request->ajax()) {
+        return response()->json([
+            'table' => view('frontliner.admin_dashboard_tm_table', ['time_motion' => $data['time_motion']])->render(),
+            'pagination' => view('frontliner.admin_dashboard_tm_pagination', ['time_motion' => $data['time_motion']])->render(),
+        ]);
+        }
 
         return view('headtechnician.admin_dashboard_custom', $data);
     }

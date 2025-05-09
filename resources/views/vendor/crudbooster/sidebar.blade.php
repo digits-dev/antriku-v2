@@ -171,6 +171,20 @@
                                                 <i class='{{$child->icon}}'></i> 
                                             @endif
                                             <span>{{$child->name}}</span>
+
+                                            @if($child->name == 'Receiving')
+                                            <div class="notification-container-cus" style="display: {{$receiving == 0 ? 'none' : ''}}">
+                                                <div class="icon-cus">🔔</div>
+                                                <div class="notif-count-cus">{{$receiving}}</div>
+                                            </div>
+                                             @endif
+                                            @if($child->name == 'Releasing')
+                                            <div class="notification-container-cus" style="display: {{$releasing == 0 ? 'none' : ''}}">
+                                                <div class="icon-cus">🔔</div>
+                                                <div class="notif-count-cus">{{$releasing}}</div>
+                                            </div>
+                                             @endif
+                                            
                                         </a>
                                     </li>
                                 @endforeach

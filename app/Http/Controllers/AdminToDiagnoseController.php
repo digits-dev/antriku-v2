@@ -452,7 +452,6 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 				'repair_status' 			=> $request->status_id,
 				'updated_by'            	=> CRUDBooster::myId()
 			]);
-
 			DB::table('job_order_logs')->insert([
 			'returns_header_id' 		=> $request->header_id,
 			'status_id'            		=> $request->current_status,

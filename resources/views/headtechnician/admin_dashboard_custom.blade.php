@@ -56,6 +56,7 @@
     <div class="tabs-dash" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
     <div class="tab-dash active" data-tab="overview">Overview</div>
     <div class="tab-dash" data-tab="model_section">Model</div>
+    <div class="tab-dash" data-tab="time_in_motion_section">Time in Motion</div>
     {{-- <div class="tab-dash" data-tab="model_section">Customer's/Unit Filters</div>
     <div class="tab-dash" data-tab="customer_info_filter">Customer's Information Filter</div> --}}
   </div>
@@ -295,6 +296,83 @@
         </div>
       </div>
     </div>
+    <div id="time_in_motion_section" class="tab-content-dash">
+      <div class="transactions-container">
+        <div class="transactions-header" style="margin-top: 0%">
+            <h2 class="card-title-dash">
+              <div class="card-icon-dash icon-unit">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" style="color: white" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="time-icon">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </div>
+              Time-in-motion
+            </h2>
+            <div class="search-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" class="search-input" placeholder="Search transactions...">
+            </div>
+        </div>
+        <div style="overflow:auto" id="time_motion_data">
+          @include('frontliner.admin_dashboard_tm_table')
+        </div>
+          <div class="card-footer-dash">
+            <span class="card-footer-text-dash" id="showing_data_time_motion">
+                Showing {{ $time_motion->count() }} of {{ $time_motion->total() }}
+            </span>
+            
+            <div class="pagination-cust" id="pagination_time_motion" style="margin: 0">
+                <!-- Previous Button -->
+                <button class="pagination-btn-cust pagination-link" 
+                    data-url="{{ $time_motion->previousPageUrl() }}" 
+                    {{ $time_motion->onFirstPage() ? 'disabled' : '' }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>    
+                </button>
+            
+                <!-- Page Numbers (Limited to 5) -->
+                @php
+                    $totalPages = $time_motion->lastPage();
+                    $currentPage = $time_motion->currentPage();
+                    $startPage = max(1, $currentPage - 2);
+                    $endPage = min($totalPages, $startPage + 4);
+                    $startPage = max(1, $endPage - 4);
+                @endphp
+            
+                @if ($startPage > 1)
+                    <button class="pagination-btn-cust pagination-link" data-url="{{ $time_motion->url(1) }}">1</button>
+                    @if ($startPage > 2)
+                        <span>...</span>
+                    @endif
+                @endif
+            
+                @for ($i = $startPage; $i <= $endPage; $i++)
+                    <button class="pagination-btn-cust pagination-link {{ $i == $currentPage ? 'active' : '' }}" 
+                        data-url="{{ $time_motion->url($i) }}">
+                        {{ $i }}
+                    </button>
+                @endfor
+            
+                @if ($endPage < $totalPages)
+                    @if ($endPage < $totalPages - 1)
+                        <span>...</span>
+                    @endif
+                    <button class="pagination-btn-cust pagination-link" data-url="{{ $time_motion->url($totalPages) }}">{{ $totalPages }}</button>
+                @endif
+            
+                <!-- Next Button -->
+                <button class="pagination-btn-cust pagination-link" 
+                    data-url="{{ $time_motion->nextPageUrl() }}" 
+                    {{ $time_motion->currentPage() == $time_motion->lastPage() ? 'disabled' : '' }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>  
+                </button>
+            </div>
+          </div>
+      </div> 
+    </div>
   </main>
 
   <!-- DataTable Scripts -->
@@ -332,6 +410,33 @@
         });
       });
     });
+    $(document).ready(function() {
+      $('.pagination-link').on('click', function(e) {
+          e.preventDefault();
+          
+          let url = $(this).data('url');
+          if (!url) return;
+
+          $.ajax({
+              url: url,
+              type: 'GET',
+              beforeSend: function() {
+                  $('#time_motion_data').html(`
+                    <div style="display: flex; justify-content: center">
+                      <img width="100" src="https://cdn-icons-gif.flaticon.com/10282/10282620.gif"/>
+                    </div>
+                    <center><p style="text-align:center">Loading data, please wait...</p></center>`);
+              },
+              success: function(data) {
+                  $('#time_motion_data').html($(data.table));
+                  $('#pagination_time_motion').html($(data.pagination));
+              },
+              error: function() {
+                  alert('Error loading data.');
+              }
+          });
+      });
+  });
 </script>
 
 @endsection

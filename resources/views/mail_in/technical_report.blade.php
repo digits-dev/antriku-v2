@@ -124,21 +124,39 @@
         
                 @if ($transaction_details->repair_status == 17)
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12">       
                         <div class="col-md-3" style="margin-top:7px;">
-                            <label><span class="requiredField">*</span>Warranty Status:</label>
-                        </div>
-                        <div class="col-md-3" style="margin-top:7px;">
-                            <label class="radio-inline control-label text-success">
-                                <input type="radio" name="warranty_status" value="IN WARRANTY" onchange="return WarrantyStatusChange(1)" required {{ $transaction_details->warranty_status == 'IN WARRANTY' ? 'checked' : ''}}><strong>IN WARRANTY</strong>
-                            </label>
-                            <br>
-                        </div>
-                        <div class="col-md-3" style="margin-top:7px;">
-                            <label class="radio-inline control-label text-danger"><input type="radio" name="warranty_status" value="OUT OF WARRANTY" onchange="return WarrantyStatusChange(2)" required {{ $transaction_details->warranty_status == 'OUT OF WARRANTY' ? 'checked' : ''}}><strong>OUT OF WARRANTY</strong></label>
-                            <br>
+                            <div class="info-label-cust">Warranty Status:</div>
                         </div>
                     </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="warranty-option-cus">
+                            <div class="radio-container-cus">
+                                <input type="radio" name="warranty_status" value="IN WARRANTY" onchange="return WarrantyStatusChange(1)" required {{ $transaction_details->warranty_status == 'IN WARRANTY' ? 'checked' : ''}}>
+                            <span class="radio-custom"></span>
+                            </div>
+                            <div class="option-content-cus">
+                            <div class="option-title-cus">In Warranty</div>
+                            <div class="option-description-cus">Product is covered under manufacturer warranty</div>
+                            </div>
+                        </label>
+                        
+                    </div>
+                    <div class="col-md-6">
+                        <label class="warranty-option-cus">
+                            <div class="radio-container-cus">
+                                <input type="radio" name="warranty_status" value="OUT OF WARRANTY" onchange="return WarrantyStatusChange(2)" required {{ $transaction_details->warranty_status == 'OUT OF WARRANTY' ? 'checked' : ''}}>
+                            <span class="radio-custom"></span>
+                            </div>
+                            <div class="option-content-cus">
+                            <div class="option-title-cus">Out of Warranty</div>
+                            <div class="option-description-cus">Product warranty has expired</div>
+                            </div>
+                        </label>
+                    </div>
+                     
                 </div> 
                 @else
                 <div class="info-label-cust">Warranty Status</div>
