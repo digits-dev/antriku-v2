@@ -181,7 +181,7 @@
                                         <td style="padding: 1px !important;"><input class="input-cus text-center getitemValue getitemValue2" type="text" value="" id="item_desc" placeholder="Enter Item Description"></td>
                                         <td style="padding: 1px !important;"><input class="input-cus text-center getqtyValue getqtyValue2" type="text" value="" id="qty" placeholder="Search Item" readonly style="background: lightgrey"></td>
                                         <td style="padding: 1px !important; display:none"><input class="input-cus text-center getitemparstidValue getitemparstidValue2" type="hidden" value="" id="item_parts_id" placeholder="Search Item" readonly style="background: lightgrey"></td>
-                                        <td style="padding: 1px !important;"><input class="input-cus text-center getcostValue getcostValue2" type="number" value="" onblur="AutoFormatCost('cost')" id="cost" min="0" max="9999" step="any"  placeholder="Enter Price"></td> 
+                                        <td style="padding: 1px !important;"><input class="input-cus text-center getcostValue getcostValue2" type="number" value="" onblur="AutoFormatCost('cost')" id="cost" min="0" step="any"  placeholder="Enter Price"></td> 
                                         <td style="padding: 5px !important;" class="text-center"> 
                                             <i class="bi bi-eraser-fill" onclick="erase_wrong_filter()" style="font-size: 24px; color: rgb(235, 63, 92)"></i> 
                                             @if (in_array($transaction_details->repair_status, [34, 42]))
@@ -284,7 +284,7 @@
                                         <th width="10%" class="text-center table-bordered-display" style="padding: 5px !important;">Spare Part#</th>
                                         <th width="10%" class="text-center table-bordered-display" style="padding: 5px !important;">GSX Reference</th>
                                         <th width="10%" class="text-center table-bordered-display" style="padding: 5px !important;">CS Code</th>
-                                        <th width="10%" class="text-center table-bordered-display" style="padding: 5px !important;">Apple Part#</th>
+                                        <th width="10%" class="text-center table-bordered-display" style="padding: 5px !important;">KGB Serial#</th>
                                         <th width="10%" class="text-center table-bordered-display" style="padding: 5px !important;">Item Description</th>
                                         <th width="10%" class="text-center table-bordered-display" style="padding: 5px !important;">Qty</th>
                                         <th width="10%" class="text-center table-bordered-display" style="padding: 5px !important; display:none">Item Parts ID</th>
