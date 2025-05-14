@@ -587,7 +587,7 @@
     const newRow = `
         <tr>
             <td style="padding: 1px !important;">
-                <input class="input-cus text-center" type="text" name="kbb_name[]" placeholder="Enter Defective KBB Name">
+                <input class="input-cus text-center" type="text" name="kbb_name[]" placeholder="Enter Defective KBB Part ID">
             </td>
             <td style="padding: 1px !important;">
                 <input class="input-cus text-center" type="text" name="serial_number[]" placeholder="Enter Defective Serial Number">

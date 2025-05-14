@@ -130,14 +130,20 @@
             @endif
 
                         
-            @if (!is_null($transaction_details->airwaybill_upload))
-            @include('transaction_details.uploade_airwaybill')
-            @include('transaction_details.uploade_rpf')
-            @else
-            @include('transaction_details.uploade_rpf')
-            @include('transaction_details.uploade_airwaybill')
+       @if (!is_null($transaction_details->airwaybill_upload))
+                {{-- Airwaybill is hidden on Technician --}}
+            @if (!in_array(CRUDBooster::myPrivilegeId(), [4,8]))
+                @include('transaction_details.uploade_airwaybill')
             @endif
-            
+            @include('transaction_details.uploade_rpf')
+        @else
+            @include('transaction_details.uploade_rpf')
+                {{-- Airwaybill is hidden on Technician --}}
+            @if (!in_array(CRUDBooster::myPrivilegeId(), [4,8]))
+                @include('transaction_details.uploade_airwaybill')
+            @endif
+        @endif
+
 
             @include('transaction_details.uploade_final_invoice')
 

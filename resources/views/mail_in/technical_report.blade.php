@@ -220,7 +220,7 @@
                                     <table class="table table-bordered">
                                         <tbody>
                                             <tr class="tbl_header_color" style="padding: 1px !important;">
-                                                <th width="10%" class="text-center table-bordered-display" style="padding: 5px !important;">Defective KBB Name</th>
+                                                <th width="10%" class="text-center table-bordered-display" style="padding: 5px !important;">Defective KBB Part ID</th>
                                                 <th width="10%" class="text-center table-bordered-display" style="padding: 5px !important;">Defective Serial Number</th>
                                             </tr>
                                             @foreach($defective_serial_numbers as $serial)

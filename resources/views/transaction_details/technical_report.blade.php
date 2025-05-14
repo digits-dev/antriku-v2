@@ -202,14 +202,14 @@
                                         <table class="table table-bordered" id="dynamic_field_defective">
                                             <tbody>
                                                 <tr class="tbl_header_color" style="padding: 1px !important;">
-                                                    <th width="10%" class="text-center" style="padding: 1px !important;">Defective KBB Name</th>
+                                                    <th width="10%" class="text-center" style="padding: 1px !important;">Defective KBB Part ID</th>
                                                     <th width="10%" class="text-center" style="padding: 1px !important;">Defective Serial Number</th>
                                                     <th width="2%" class="text-center" style="padding: 1px !important;"></th>
                                                 </tr>
                                                 @if ($defective_serial_numbers->isEmpty()) 
                                                 <tr>
                                                     <td style="padding: 1px !important;">
-                                                        <input class="input-cus text-center" type="text" name="kbb_name[]"  placeholder="Enter Defective KBB Name">
+                                                        <input class="input-cus text-center" type="text" name="kbb_name[]"  placeholder="Enter Defective KBB Part ID">
                                                     </td>
                                                     <td style="padding: 1px !important;">
                                                         <input class="input-cus text-center" type="text" name="serial_number[]" placeholder="Enter Defective Serial Number">
@@ -219,7 +219,7 @@
                                                     @foreach ($defective_serial_numbers as $serial)
                                                     <tr>
                                                         <td style="padding: 1px !important;">
-                                                            <input class="input-cus text-center" value="{{ $serial->defective_kbb_name }}" type="text" name="kbb_name[]"  placeholder="Enter Defective KBB Name">
+                                                            <input class="input-cus text-center" value="{{ $serial->defective_kbb_name }}" type="text" name="kbb_name[]"  placeholder="Enter Defective KBB Part ID">
                                                         </td>
                                                         <td style="padding: 1px !important;">
                                                             <input class="input-cus text-center" value="{{ $serial->defective_serial_number }}" type="text" name="serial_number[]" placeholder="Enter Defective Serial Number">

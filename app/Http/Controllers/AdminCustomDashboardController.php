@@ -21,6 +21,13 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
     private const Technician = 4;
     private const LeadTechnician = 8;
 
+    private const OnGoingRepair = 34;
+    private const OnGoingRepairOOW = 42;
+
+    private const AwaitingAppleRepair = 17;
+    private const AwaitingAppleRepairOOW = 26;
+    private const AwaitingAppleRepairIW = 47;
+
     public function index(Request $request)
     {
         if (CRUDBooster::myPrivilegeId() != self::Frontliner) {
@@ -295,15 +302,16 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
 
         $data = [];
         $data['branchName'] = DB::table('branch')->where('id', CRUDBooster::me()->branch_id)->value('branch_name');;
-        $data['totalOngoingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingRepair, self::ReplacementPartsPaid, self::SparePartsReceived, self::ForPartsOrdering])->where('branch', CRUDBooster::me()->branch_id)->count();
-        $data['myOngoingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingRepair, self::ReplacementPartsPaid, self::SparePartsReceived, self::ForPartsOrdering])->where('technician_id', CRUDBooster::myId())->count();
-        $data['totalPendingCustomerPayment'] = DB::table('returns_header')->where('repair_status', self::PendingCustomerPayment)->where('technician_id', CRUDBooster::myId())->count();
-        $data['totalRepairPerModel'] = DB::table('returns_header')
-            ->join('model', 'returns_header.model', '=', 'model.id')
-            ->select('model.model_name', DB::raw('COUNT(*) as total_repairs'))
-            ->groupBy('model.model_name')
-            ->orderByDesc('total_repairs')
-            ->paginate(10);
+        $data['myOngoingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OnGoingRepair, self::OnGoingRepairOOW])->where('technician_id', CRUDBooster::myId())->count();
+        $data['totalAwaitingRepair'] = DB::table('returns_header')->whereIn('repair_status', [self::AwaitingAppleRepair ,self::AwaitingAppleRepairOOW, self::AwaitingAppleRepairIW])->where('technician_id', CRUDBooster::myId())->count();
+        
+         $data['totalRepairPerModel'] = DB::table('returns_header')
+        ->join('model', 'returns_header.model', '=', 'model.id')
+        ->select('model.model_name', DB::raw('COUNT(*) as total_repairs'))
+        ->where('returns_header.technician_id', CRUDBooster::myId())
+        ->groupBy('model.model_name')
+        ->orderByDesc('total_repairs')
+        ->get(); 
 
         $data['totalCarryIn'] = DB::table('returns_header')->where('case_status', 'CARRY-IN')->where('branch', CRUDBooster::me()->branch_id)->count();
         $data['totalMailIn'] = DB::table('returns_header')->where('case_status', 'MAIL-IN')->where('branch', CRUDBooster::me()->branch_id)->count();
@@ -325,7 +333,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         ->leftJoin('cms_users as createdby', 'createdby.id', '=', 'returns_header.created_by')
         ->leftJoin('cms_users as leadtech', 'leadtech.id', '=', 'returns_header.lead_technician_id')
         ->leftJoin('cms_users as tech', 'tech.id', '=', 'returns_header.technician_id')
-        ->where('branch', CRUDBooster::me()->branch_id)
+        ->where('returns_header.technician_id', CRUDBooster::myId())
         ->groupBy('returns_header.id', 'transaction_status.status_name')
         ->orderBy('returns_header.id', 'DESC')
         ->paginate(10);  
@@ -350,17 +358,23 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         $data = [];
         $data['greenhills'] = DB::table('branch')->where('id', 1)->value('branch_name');;
         $data['bonifacio'] = DB::table('branch')->where('id', 2)->value('branch_name');;
-        $data['greenhillsTotalRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingRepair, self::ReplacementPartsPaid, self::SparePartsReceived, self::ForPartsOrdering])->where('branch', 1)->count();
-        $data['bonifacioTotalRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingRepair, self::ReplacementPartsPaid, self::SparePartsReceived, self::ForPartsOrdering])->where('branch', 2)->count();
-        $data['totalOngoingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingRepair, self::ReplacementPartsPaid, self::SparePartsReceived, self::ForPartsOrdering])->count();
-        // $data['myOngoingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingRepair, self::ReplacementPartsPaid, self::SparePartsReceived, self::ForPartsOrdering])->where('technician_id', CRUDBooster::myId())->count();
-        $data['totalPendingCustomerPayment'] = DB::table('returns_header')->where('repair_status', self::PendingCustomerPayment)->where('technician_id', CRUDBooster::myId())->count();
+
+        $data['greenhillsTotalRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OnGoingRepair, self::OnGoingRepairOOW])->where('branch', 1)->count();
+        $data['bonifacioTotalRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OnGoingRepair, self::OnGoingRepairOOW])->where('branch', 2)->count();
+
+        $data['greenhillsAwaitingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::AwaitingAppleRepair ,self::AwaitingAppleRepairOOW, self::AwaitingAppleRepairIW])->where('branch', 1)->count();
+        $data['bonifacioAwaitingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::AwaitingAppleRepair ,self::AwaitingAppleRepairOOW, self::AwaitingAppleRepairIW])->where('branch', 2)->count();
+
+        $data['myOngoingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OnGoingRepair, self::OnGoingRepairOOW])->where('technician_id', CRUDBooster::myId())->count();
+        $data['myAwaitingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::AwaitingAppleRepair ,self::AwaitingAppleRepairOOW, self::AwaitingAppleRepairIW])->where('technician_id', CRUDBooster::myId())->count();
+        
         $data['totalRepairPerModel'] = DB::table('returns_header')
-            ->join('model', 'returns_header.model', '=', 'model.id')
-            ->select('model.model_name', DB::raw('COUNT(*) as total_repairs'))
-            ->groupBy('model.model_name')
-            ->orderByDesc('total_repairs')
-            ->paginate(10);
+        ->join('model', 'returns_header.model', '=', 'model.id')
+        ->select('model.model_name', DB::raw('COUNT(*) as total_repairs'))
+        ->groupBy('model.model_name')
+        ->orderByDesc('total_repairs')
+        ->get(); 
+
 
         $data['totalCarryIn'] = DB::table('returns_header')->where('case_status', 'CARRY-IN')->count();
         $data['totalMailIn'] = DB::table('returns_header')->where('case_status', 'MAIL-IN')->count();

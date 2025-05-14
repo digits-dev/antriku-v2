@@ -13,7 +13,7 @@
                 </div> 
             </div>  
             <br>
-            @if(in_array($transaction_details->repair_status, [10, 14]))
+            @if(in_array(CRUDBooster::myPrivilegeId(), [4,8]))
                 <div class="row">
                     <div class="col-md-12">
                         <div class="col-md-12 ">
@@ -49,46 +49,25 @@
                                             @foreach($data['quotation'] as $qt)
                                                 <tr class="nr row_num" id="rowID{{$qt->id}}">
                                                     <input type="hidden"class="getidValue" value="{{$qt->id}}">
-                                                    <td style="padding: 1px !important;"><input class="input-cus text-center getscValue" type="text" id="service_code_{{$qt->id}}" oninput="gsx_data('{{$qt->id}}')" value="{{ $qt->service_code }}" placeholder="Enter Spare Part Number" readonly {{ CRUDBooster::myPrivilegeId() == 3 || !in_array($transaction_details->repair_status, [10, 14, 47]) ? 'readonly' : ''}}></td>
+                                                    <td style="padding: 1px !important;"><input class="input-cus text-center getscValue" type="text" id="service_code_{{$qt->id}}" oninput="gsx_data('{{$qt->id}}')" value="{{ $qt->service_code }}" placeholder="Enter Spare Part Number" readonly {{ in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? '' : 'readonly'}}></td>
                                                     <td style="padding: 1px !important;">
-                                                        @if(CRUDBooster::getModulePath() == "to_pay_parts" && CRUDBooster::myPrivilegeId() == 1)
-                                                            <input class="input-cus text-center getgsxValue" type="text" id="gsx_code_{{$qt->id}}"  value="{{ $qt->gsx_ref }}" placeholder="Enter GSX Reference">
-                                                        @elseif(CRUDBooster::getModulePath() == "to_pay_parts" && CRUDBooster::myPrivilegeId() == 4)
-                                                            <input class="input-cus text-center getgsxValue" type="text" id="gsx_code_{{$qt->id}}"  value="{{ $qt->gsx_ref }}" placeholder="Enter GSX Reference">
-                                                        @else
-                                                            <input class="input-cus text-center getgsxValue" type="text" id="gsx_code_{{$qt->id}}"  value="{{ $qt->gsx_ref }}" placeholder="Enter GSX Reference" {{ CRUDBooster::myPrivilegeId() == 3 || !in_array($transaction_details->repair_status, [10, 14, 23, 47]) ? 'readonly' : ''}}>
-                                                        @endif
+                                                    
+                                                            <input class="input-cus text-center getgsxValue" type="text" id="gsx_code_{{$qt->id}}"  value="{{ $qt->gsx_ref }}" placeholder="Enter GSX Reference" {{ in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? '' : 'readonly'}}>
                                                     </td>
-                                                    <td style="padding: 1px !important;"><input class="input-cus text-center getcsValue" type="text" id="cs_code_{{$qt->id}}" value="{{ $qt->cs_code }}" placeholder="Enter CS Code" {{ CRUDBooster::myPrivilegeId() == 3 || !in_array($transaction_details->repair_status, [10, 14, 47]) ? 'readonly' : ''}}></td>
+                                                    <td style="padding: 1px !important;"><input class="input-cus text-center getcsValue" type="text" id="cs_code_{{$qt->id}}" value="{{ $qt->cs_code }}" placeholder="Enter CS Code" {{ in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? '' : 'readonly'}}></td>
                                                     <td style="padding: 1px !important;">
-                                                        
                                                        
-                                                        
-                                                        @if(CRUDBooster::getModulePath() == "to_close" && CRUDBooster::myPrivilegeId() == 1)
-                                                            <input class="input-cus text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter Apple Parts Number">
-                                                        @elseif(CRUDBooster::getModulePath() == "to_close" && CRUDBooster::myPrivilegeId() == 2)
-                                                            <input class="input-cus text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter Apple Parts Number">
-                                                        @else
-                                                            <!--<input class="input-cus text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter Apple Parts Number" {{ CRUDBooster::myPrivilegeId() == 3 || !in_array($transaction_details->repair_status, [10, 14, 47]) ? 'readonly' : ''}}>-->
-                                                             @if(CRUDBooster::getModulePath() == "repair_in_process" && CRUDBooster::myPrivilegeId() == 1)
-                                                                <input class="input-cus text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter Apple Parts Number">
-                                                            @elseif(CRUDBooster::getModulePath() == "repair_in_process" && CRUDBooster::myPrivilegeId() == 2)
-                                                                <input class="input-cus text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter Apple Parts Number">
-                                                            @else
-                                                                <input class="input-cus text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter Apple Parts Number" {{ CRUDBooster::myPrivilegeId() == 3 || !in_array($transaction_details->repair_status, [10, 14, 47]) ? 'readonly' : ''}}>
-                                                            @endif
-                                                        @endif
+                                                                <input class="input-cus text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter Apple Parts Number" {{ in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? '' : 'readonly'}}>
                                                         
                                                     </td>
-                                                    <!--<td style="padding: 1px !important;"><input class="input-cus text-center getdcValue" type="text" id="digits_code_{{$qt->id}}" value="{{ $qt->digits_code }}" placeholder="Enter Item Code" readonly {{ CRUDBooster::myPrivilegeId() == 3 || !in_array($transaction_details->repair_status, [10, 14, 47]) ? 'readonly' : ''}}></td>-->
-                                                    <td style="padding: 1px !important;"><input class="input-cus text-center getitemValue" type="text" id="item_desc_{{$qt->id}}" value="{{ $qt->item_description }}" placeholder="Enter Item Description" readonly {{ CRUDBooster::myPrivilegeId() == 3 || !in_array($transaction_details->repair_status, [10, 14, 47]) ? 'readonly' : ''}}></td>
-                                                    <td style="padding: 1px !important;"><input class="input-cus text-center getcostValue" type="number" onblur="AutoFormatCost('{{$qt->id}}')" id="price_{{$qt->id}}" value="{{ $qt->cost }}" min="0" max="9999" step="any" placeholder="Enter Price" {{ !in_array($transaction_details->repair_status, [10, 14, 20, 47]) ? 'readonly' : ''}}></td> 
-                                                    @if(in_array($transaction_details->repair_status, [10, 14])) <td style="padding: 5px !important;" class="text-center"><a onclick="RemoveRow('{{$qt->id}}')"><i class="fa fa-close fa-2x remove" style="color:red"></i></a></td> @endif
+                                                    <td style="padding: 1px !important;"><input class="input-cus text-center getitemValue" type="text" id="item_desc_{{$qt->id}}" value="{{ $qt->item_description }}" placeholder="Enter Item Description" readonly></td>
+                                                    <td style="padding: 1px !important;"><input class="input-cus text-center getcostValue" type="number" onblur="AutoFormatCost('{{$qt->id}}')" id="price_{{$qt->id}}" value="{{ $qt->cost }}" min="0" max="9999" step="any" placeholder="Enter Price" {{ in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? '' : 'readonly'}}></td> 
+                                                    @if(in_array(CRUDBooster::myPrivilegeId(), [4,8])) <td style="padding: 5px !important;" class="text-center"><a onclick="RemoveRow('{{$qt->id}}')"><i class="fa fa-close fa-2x remove" style="color:red"></i></a></td> @endif
                                                 </tr>
                                             @endforeach
                                         @endif
                                     </tr>
-                                    <tr class="nr row_num" {{ CRUDBooster::myPrivilegeId() == 3 || !in_array($transaction_details->repair_status, [10, 14]) ? 'hidden' : ''}}>
+                                    <tr class="nr row_num" {{ in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? '' : 'hidden' }}>
                                         <input type="hidden"class="getidValue" value="">
                                         <td style="padding: 1px !important;position: relative;">
                                             <input class="input-cus text-center getscValue"  type="text" value="" id="service_code" oninput="gsx_data('service_code')" placeholder="Enter Spare Part Number">

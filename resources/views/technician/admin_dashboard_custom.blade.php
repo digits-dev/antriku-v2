@@ -48,7 +48,7 @@
        Technician's Dashboard
       </h1>
       <p class="dashboard-subtitle">
-        Overview of Ongoing Repair Cases, Pending Customer's Payment, Total Count of In Warranty and Out of Warranty, Total Count of Carry-In and Mail-in and, Total Repair per Model.
+        Overview of Ongoing Repair Cases, Awaiting Repair Cases, Total Count of In Warranty and Out of Warranty, Total Count of Carry-In and Mail-in and, Total Repair per Model.
       </p>
     </div>
   </div>
@@ -56,34 +56,12 @@
     <div class="tabs-dash" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
       <div class="tab-dash active" data-tab="overview">Overview</div>
       <div class="tab-dash" data-tab="model_section">Model</div>
-      {{-- <div class="tab-dash" data-tab="model_section">Customer's/Unit Filters</div>
-      <div class="tab-dash" data-tab="customer_info_filter">Customer's Information Filter</div> --}}
+      <div class="tab-dash" data-tab="time_in_motion_section">Time in Motion</div>  
+
     </div>
     <div id="overview" class="tab-content-dash active">
       <div class="dashboard-grid-dash" style="margin-top: 10px;  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)) !important;">
-        {{-- <div class="card-dash">
-          <div class="card-header-dash">
-            <h2 class="card-title-dash">
-              <div class="card-icon-dash icon-abandoned-dash">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-              </div>
-              {{ $branchName }}
-            </h2>
-          </div>
-          <div class="card-body-dash">
-            <div class="card-stats-dash">
-              <div class="stat-dash">
-                <div class="stat-value-dash">{{ $totalOngoingRepair }}</div>
-                <div class="stat-label-dash">Total Ongoing Repair Cases</div>
-              
-              </div>
-            </div>
-          </div>
-      
-        </div> --}}
+  
 
             {{-- Ongoing Repair Cases --}}
           <div class="card-dash">
@@ -120,14 +98,14 @@
                     <line x1="12" y1="16" x2="12.01" y2="16"></line>
                   </svg>
                 </div>
-                Pending Customer's Payment
+                Awaiting Repair Cases
               </h2>
             </div>
             <div class="card-body-dash">
               <div class="card-stats-dash">
                 <div class="stat-dash">
-                  <div class="stat-value-dash">{{$totalPendingCustomerPayment}}</div>
-                  <div class="stat-label-dash">Total Pending Customer's Payment</div>
+                  <div class="stat-value-dash">{{$totalAwaitingRepair}}</div>
+                  <div class="stat-label-dash">Total Awaiting Repair Cases</div>
                 </div>
               </div>
             </div>
@@ -236,37 +214,103 @@
        <div class="card-dash">
           
            <div class="card-body-dash">
-               <table id="modelTable" class="display" style="width:100%">
-                   <thead>
-                     <tr>
-                       <th>Model Name</th>
-                       <th>Total Repairs</th>
-                   </tr>
-                   </thead>
-                   <tbody>
-                     <tbody>
-                       @if($totalRepairPerModel->isEmpty())
-                         <tr>
-                             <td colspan="2" class="text-center">No repair data found.</td>
-                         </tr>
-                     @else
-                         @foreach($totalRepairPerModel as $data)
-                             <tr>
-                                 <td>{{ $data->model_name }}</td>
-                                 <td>{{ $data->total_repairs }}</td>
-                             </tr>
-                         @endforeach
-                     @endif
-                   </tbody>
-                   </tbody>
-               </table>
-               <div class="pagination-container">
-                 {{ $totalRepairPerModel->links() }}  
-               </div>
+              <table id="modelTable" class="display" style="width:100%">
+                <thead>
+                  <tr>
+                    <th>Model Name</th>
+                    <th>Total Repairs</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach($totalRepairPerModel as $data)
+                    <tr>
+                      <td>{{ $data->model_name }}</td>
+                      <td>{{ $data->total_repairs }}</td>
+                    </tr>
+                  @endforeach
+                </tbody>
+              </table>
            </div>
        </div>
      </div>
    </div>
+      <div id="time_in_motion_section" class="tab-content-dash">
+      <div class="transactions-container">
+        <div class="transactions-header" style="margin-top: 0%">
+            <h2 class="card-title-dash">
+              <div class="card-icon-dash icon-unit">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" style="color: white" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="time-icon">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </div>
+              Time-in-motion
+            </h2>
+            <div class="search-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" class="search-input" placeholder="Search transactions...">
+            </div>
+        </div>
+        <div style="overflow:auto" id="time_motion_data">
+          @include('frontliner.admin_dashboard_tm_table')
+        </div>
+          <div class="card-footer-dash">
+            <span class="card-footer-text-dash" id="showing_data_time_motion">
+                Showing {{ $time_motion->count() }} of {{ $time_motion->total() }}
+            </span>
+            
+            <div class="pagination-cust" id="pagination_time_motion" style="margin: 0">
+                <!-- Previous Button -->
+                <button class="pagination-btn-cust pagination-link" 
+                    data-url="{{ $time_motion->previousPageUrl() }}" 
+                    {{ $time_motion->onFirstPage() ? 'disabled' : '' }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>    
+                </button>
+            
+                <!-- Page Numbers (Limited to 5) -->
+                @php
+                    $totalPages = $time_motion->lastPage();
+                    $currentPage = $time_motion->currentPage();
+                    $startPage = max(1, $currentPage - 2);
+                    $endPage = min($totalPages, $startPage + 4);
+                    $startPage = max(1, $endPage - 4);
+                @endphp
+            
+                @if ($startPage > 1)
+                    <button class="pagination-btn-cust pagination-link" data-url="{{ $time_motion->url(1) }}">1</button>
+                    @if ($startPage > 2)
+                        <span>...</span>
+                    @endif
+                @endif
+            
+                @for ($i = $startPage; $i <= $endPage; $i++)
+                    <button class="pagination-btn-cust pagination-link {{ $i == $currentPage ? 'active' : '' }}" 
+                        data-url="{{ $time_motion->url($i) }}">
+                        {{ $i }}
+                    </button>
+                @endfor
+            
+                @if ($endPage < $totalPages)
+                    @if ($endPage < $totalPages - 1)
+                        <span>...</span>
+                    @endif
+                    <button class="pagination-btn-cust pagination-link" data-url="{{ $time_motion->url($totalPages) }}">{{ $totalPages }}</button>
+                @endif
+            
+                <!-- Next Button -->
+                <button class="pagination-btn-cust pagination-link" 
+                    data-url="{{ $time_motion->nextPageUrl() }}" 
+                    {{ $time_motion->currentPage() == $time_motion->lastPage() ? 'disabled' : '' }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>  
+                </button>
+            </div>
+          </div>
+      </div> 
+    </div>
   </main>
 
   <!-- DataTable Scripts -->
@@ -275,10 +319,10 @@
 <script>
     $(document).ready(function() {
         $('#modelTable').DataTable({
-          "paging": false,
-          "ordering": false,
-          'searching': false,
-          "info": false
+         paging: true,        // Enable pagination
+          searching: true,     
+          ordering: false,
+          info: false 
         });
     });
     document.addEventListener('DOMContentLoaded', function() {
@@ -300,6 +344,35 @@
         });
       });
     });
+    
+      // time & motion pagination 
+  $(document).ready(function() {
+      $('.pagination-link').on('click', function(e) {
+          e.preventDefault();
+          
+          let url = $(this).data('url');
+          if (!url) return;
+
+          $.ajax({
+              url: url,
+              type: 'GET',
+              beforeSend: function() {
+                  $('#time_motion_data').html(`
+                    <div style="display: flex; justify-content: center">
+                      <img width="100" src="https://cdn-icons-gif.flaticon.com/10282/10282620.gif"/>
+                    </div>
+                    <center><p style="text-align:center">Loading data, please wait...</p></center>`);
+              },
+              success: function(data) {
+                  $('#time_motion_data').html($(data.table));
+                  $('#pagination_time_motion').html($(data.pagination));
+              },
+              error: function() {
+                  alert('Error loading data.');
+              }
+          });
+      });
+  });
 </script>
 
 @endsection

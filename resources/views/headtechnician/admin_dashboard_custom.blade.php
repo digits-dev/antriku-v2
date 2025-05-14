@@ -63,6 +63,55 @@
 
   <div id="overview" class="tab-content-dash active">
     <div class="dashboard-grid-dash" style="margin-top: 10px;  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)) !important;">
+    <div class="card-dash">
+        <div class="card-header-dash">
+          <h2 class="card-title-dash">
+            <div class="card-icon-dash icon-pending-dash">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            Ongoing Repair Cases
+          </h2>
+        </div>
+        <div class="card-body-dash">
+          <div class="card-stats-dash">
+            <div class="stat-dash">
+              <div class="stat-value-dash">{{$myOngoingRepair}}</div>
+              <div class="stat-label-dash">My Total Ongoing Repair Cases</div>
+           
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-dash">
+        <div class="card-header-dash">
+          <h2 class="card-title-dash">
+            <div class="card-icon-dash icon-pending-dash">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            Awaiting Repair Cases
+          </h2>
+        
+        </div>
+        <div class="card-body-dash">
+          <div class="card-stats-dash">
+            <div class="stat-dash">
+              <div class="stat-value-dash">{{$myAwaitingRepair}}</div>
+              <div class="stat-label-dash">My Awaiting Repair Cases</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="dashboard-grid-dash" style="margin-top: 10px;  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)) !important;">
       <div class="card-dash">
         <div class="card-header-dash">
           <h2 class="card-title-dash">
@@ -76,12 +125,17 @@
           </h2>
        
         </div>
-        <div class="card-body-dash">
+       <div class="card-body-dash">
           <div class="card-stats-dash">
-            <div class="stat-dash">
-              <div class="stat-value-dash">{{ $greenhillsTotalRepair }}</div>
-              <div class="stat-label-dash">Total Ongoing Repair Cases</div>
-            
+            <div class="stat-dash" style="display:flex; gap: 20px; justify-content:space-between">
+              <div style="flex: 1;">
+                <div class="stat-value-dash">{{ $greenhillsTotalRepair }}</div>
+                <div class="stat-label-dash">Total Ongoing Repair Cases</div>
+              </div>
+              <div style="flex: 1; border-left: 1px solid #ccc; padding-left: 20px;">
+                  <div class="stat-value-dash">{{ $greenhillsAwaitingRepair }}</div>
+                <div class="stat-label-dash">Total Awaiting Repair Cases</div>
+              </div>
             </div>
           </div>
         </div>
@@ -103,65 +157,21 @@
         </div>
         <div class="card-body-dash">
           <div class="card-stats-dash">
-            <div class="stat-dash">
-              <div class="stat-value-dash">{{ $bonifacioTotalRepair }}</div>
-              <div class="stat-label-dash">Total Ongoing Repair Cases</div>
-            
-            </div>
-          </div>
-        </div>
-        
-    
-      </div>
-      <div class="card-dash">
-        <div class="card-header-dash">
-          <h2 class="card-title-dash">
-            <div class="card-icon-dash icon-pending-dash">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-              </svg>
-            </div>
-            Ongoing Repair Cases
-          </h2>
-        </div>
-        <div class="card-body-dash">
-          <div class="card-stats-dash">
-            <div class="stat-dash">
-              <div class="stat-value-dash">{{$totalOngoingRepair}}</div>
-              <div class="stat-label-dash">Total Ongoing Repair Cases</div>
-           
-            </div>
-          </div>
-        </div>
- 
-      </div>
-      <div class="card-dash">
-        <div class="card-header-dash">
-          <h2 class="card-title-dash">
-            <div class="card-icon-dash icon-pending-dash">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-              </svg>
-            </div>
-            Pending Customer's Payment
-          </h2>
-        
-        </div>
-        <div class="card-body-dash">
-          <div class="card-stats-dash">
-            <div class="stat-dash">
-              <div class="stat-value-dash">{{$totalPendingCustomerPayment}}</div>
-              <div class="stat-label-dash">Total Pending Customer's Payment</div>
+            <div class="stat-dash" style="display:flex; gap: 20px; justify-content:space-between">
+              <div style="flex: 1;">
+                <div class="stat-value-dash">{{ $bonifacioTotalRepair }}</div>
+                <div class="stat-label-dash">Total Ongoing Repair Cases</div>
+              </div>
+              <div style="flex: 1; border-left: 1px solid #ccc; padding-left: 20px;">
+                  <div class="stat-value-dash">{{ $bonifacioAwaitingRepair }}</div>
+                <div class="stat-label-dash">Total Awaiting Repair Cases</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  
+ 
     <div class="dashboard-grid-dash" style="margin-top: 10px;  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)) !important;">
       {{-- In-warranty --}}
         <div class="card-dash">
@@ -263,35 +273,23 @@
        <h2 style="font-weight: bold">Total Repair Per Model</h2>
        <div class="dashboard-grid-dash">
         <div class="card-dash">
-           
             <div class="card-body-dash">
-                <table id="modelTable" class="display" style="width:100%">
-                    <thead>
-                      <tr>
-                        <th>Model Name</th>
-                        <th>Total Repairs</th>
+              <table id="modelTable" class="display" style="width:100%">
+                <thead>
+                  <tr>
+                    <th>Model Name</th>
+                    <th>Total Repairs</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach($totalRepairPerModel as $data)
+                    <tr>
+                      <td>{{ $data->model_name }}</td>
+                      <td>{{ $data->total_repairs }}</td>
                     </tr>
-                    </thead>
-                    <tbody>
-                      <tbody>
-                        @if($totalRepairPerModel->isEmpty())
-                          <tr>
-                              <td colspan="2" class="text-center">No repair data found.</td>
-                          </tr>
-                      @else
-                          @foreach($totalRepairPerModel as $data)
-                              <tr>
-                                  <td>{{ $data->model_name }}</td>
-                                  <td>{{ $data->total_repairs }}</td>
-                              </tr>
-                          @endforeach
-                      @endif
-                    </tbody>
-                    </tbody>
-                </table>
-                <div class="pagination-container">
-                  {{ $totalRepairPerModel->links() }}  
-                </div>
+                  @endforeach
+                </tbody>
+              </table>
             </div>
         </div>
       </div>
@@ -381,10 +379,10 @@
 <script>
     $(document).ready(function() {
         $('#modelTable').DataTable({
-          "paging": false,
-          "ordering": false,
-          'searching': false,
-          "info": false
+          paging: true,        // Enable pagination
+          searching: true,     
+          ordering: false,
+          info: false 
         });
     });
     window.onload = function() {
