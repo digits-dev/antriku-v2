@@ -189,9 +189,9 @@
                             </td>
                         </tr>
                         <tr style="font-size: 13px;">
-                            <td width="20%" style="padding:5px;" class="text-center table-bordered-display">
+                            {{-- <td width="20%" style="padding:5px;" class="text-center table-bordered-display">
                                 <label class="control-label col-md-12"><strong>Device Issue Description</strong></label>
-                            </td>
+                            </td> --}}
                             <td width="20%" style="padding:5px;" class="text-center table-bordered-display">
                                 <label class="control-label col-md-12"><strong>Findings</strong></label>
                             </td>
@@ -200,9 +200,9 @@
                             </td>
                         </tr>
                         <tr style="font-size: 13px;">
-                            <td width="20%" style="padding:5px;" class="text-center table-bordered-display">
+                            {{-- <td width="20%" style="padding:5px;" class="text-center table-bordered-display">
                                 <p class="control-label col-md-12">{{ $data['transaction_details']->device_issue_description }}</p>
-                            </td>
+                            </td> --}}
                             <td width="20%" style="padding:5px;" class="text-center table-bordered-display">
                                 <p class="control-label col-md-12">{{$data['transaction_details']->findings}}</p>
                             </td>

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use crocodicstudio\crudbooster\helpers\CRUDBooster;
 
-class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBController
+class AdminCarryInController extends \crocodicstudio\crudbooster\controllers\CBController
 {
 
 	public function cbInit()
@@ -51,9 +51,9 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 	public function hook_query_index(&$query)
 	{
 		if (CRUDBooster::myPrivilegeId() == 3) {
-			$query->whereIn('repair_status', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])->where('branch', CRUDBooster::me()->branch_id);
+			$query->whereIn('repair_status', [33,35,43,45,48])->where('branch', CRUDBooster::me()->branch_id);
 		} else {
-			$query->whereIn('repair_status', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48]);
+			$query->whereIn('repair_status', [33,35,43,45,48]);
 		}
 	}
 
@@ -178,55 +178,6 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 
 		$this->cbView('transaction_details.view_created_transaction_detail', $data);
 	}
-
-	public function callOut(Request $request)
-	{
-		$callOut = DB::table('call_out_recorder')->insert([
-			'status_id' => $request->status_id,
-			'returns_header_id' => $request->returns_header_id,
-			'call_out_by' => CRUDBooster::myId(),
-			'call_out_at' => now(),
-		]);
-		if ($callOut) {
-			return response()->json(['message' => 'Call out recorded successfully'], 200);
-		} else {
-			return response()->json(['message' => 'Failed to record call out'], 500);
-		}
-	}
-
-	public function refund($id)
-	{
-		$header = DB::table('returns_header')->where('id', $id)->first();
-		$items = DB::table('returns_body_item')->where('returns_header_id', $id)->get();
-
-		return response()->json([
-			'diagnostic_cost' => $header->diagnostic_cost,
-			'items' => $items
-		]);
-	}
-
-		public function updateRefund(Request $request)
-		{
-			// Update diagnostic_cost by subtracting the refunded value
-			DB::table('returns_header')
-				->where('id', $request->header_id)
-				->decrement('diagnostic_cost', $request->diagnostic_cost);
-
-			// Subtract refunded cost from each item's cost
-			foreach ($request->items as $item) {
-				$original = DB::table('returns_body_item')
-					->where('id', $item['id'])
-					->value('cost');
-
-				$newCost = $original - $item['cost'];
-
-				DB::table('returns_body_item')
-					->where('id', $item['id'])
-					->update(['cost' => $newCost]);
-			}
-
-			return response()->json(['status' => 'success']);
-		}
 
 
 }

@@ -128,7 +128,8 @@ function acceptJob(id) {
             .then(data => {
                 if (data.success) {
                     Swal.fire('Accepted!', 'You have accepted the job.', 'success').then(() => {
-                        location.reload();
+                        window.location.href = window.location.origin+"/admin/to_diagnose/edit/"+id;
+                        
                     });
                 } else {
                     Swal.fire("Error", "Something went wrong.", "error");

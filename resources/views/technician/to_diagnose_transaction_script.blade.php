@@ -570,4 +570,170 @@
         }
         return changeStatus(status_id);
     }
+
+function refund(headerId) {
+    Swal.fire({
+        title: 'Loading...',
+        didOpen: () => {
+            Swal.showLoading();
+
+            $.ajax({
+                url: `/admin/callout/refund/${headerId}`,
+                type: 'GET',
+             success: function(response) {
+                   const diagnostic_cost = response.diagnostic_cost;
+                    const items = response.items;
+
+                    if (!Array.isArray(items)) {
+                        Swal.fire("Error", "Invalid items format", "error");
+                        return;
+                    }
+
+                    let table = `
+                        <table style="width:100%;margin-bottom:10px; text-align:left;" border="1" cellpadding="5">
+                            <thead>
+                                <tr>
+                                    <th style="width: 70%;" class='text-center'>Fees</th>
+                                     <th style="width: 15%;" class='text-center'>Cost</th>
+                                     <th style="width: 15%;" class='text-center'>Refund Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class='text-center'>Diagnostic Fee</td>
+                                    <td class='text-center'>${diagnostic_cost}</td>
+                                <td>
+                                    <input class='input-cus text-center' type="number" step="0.01" id="diagnostic_cost_input"
+                                        data-original="${diagnostic_cost}">
+                                </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                       <table style="width:100%; text-align:left;" border="1" cellpadding="5">
+                        <thead>
+                            <tr>
+                                <th style="width: 70%;"class='text-center'>Item Description</th>
+                                <th style="width: 15%;" class='text-center'>Cost</th>
+                                <th style="width: 15%;" class='text-center'>Refund Amount</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div style="max-height:200px; overflow-y:auto; border:1px solid #ccc;">
+                        <table style="width:100%; text-align:left;" border="1" cellpadding="5">
+                            <tbody>`;
+
+                    items.forEach((item, index) => {
+                        table += `
+                            <tr>
+                                <td style="width: 70%;" class='text-center'>${item.item_description}</td>
+                                 <td style="width: 15%;" class='text-center'>${item.cost}
+                                </td>
+                              <td style="width: 15%">
+                                    <input class='input-cus text-center' type="number" step="0.01" name="cost_${index}" 
+                                        data-id="${item.id}"
+                                        data-description="${item.item_description}"
+                                        data-original="${item.cost}" >
+                                </td>
+                            </tr>`;
+                        });
+
+             table += `</tbody></table></div>`;
+
+                    Swal.fire({
+                        title: "Refund Items",
+                        html: table,
+                        icon: "info",
+                        showCancelButton: true,
+                        confirmButtonText: "Proceed with Refund",
+                        cancelButtonText: "Cancel",
+                        confirmButtonColor: "#d33",
+                         customClass: 'swal-container2',
+                        preConfirm: () => {
+
+                            const diagInput = document.getElementById("diagnostic_cost_input");
+
+                            if (!diagInput.value.trim()) {
+                                Swal.showValidationMessage("Diagnostic refund amount is required.");
+                                return false;
+                            }
+
+                            const diagValue = parseFloat(diagInput.value);
+                            const diagOriginal = parseFloat(diagInput.dataset.original);
+
+                            if (diagValue > diagOriginal) {
+                                Swal.showValidationMessage(`Diagnostic fee cannot exceed ${diagOriginal}`);
+                                return false;
+                            }
+
+                            const rows = document.querySelectorAll("input[name^='cost_']");
+                            let updatedItems = [];
+
+                            for (const input of rows) {
+                                const enteredCost = parseFloat(input.value);
+                                const originalCost = parseFloat(input.dataset.original);
+
+                                if (enteredCost > originalCost) {
+                                    Swal.showValidationMessage(`Refund Amount for "${input.dataset.description}" cannot exceed ${originalCost}`);
+                                    return false; // prevent submission
+                                }
+
+                                if (input.value.trim() === "") {
+                                    Swal.showValidationMessage(`Refund Amount for "${input.dataset.description}" is required`);
+                                    return false;
+                                }
+
+
+                                updatedItems.push({
+                                    id: input.dataset.id,
+                                    item_description: input.dataset.description,
+                                    cost: enteredCost
+                                });
+                            }
+
+                            return {
+                                diagnostic_cost: diagValue,
+                                items: updatedItems
+                            };
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const payload = result.value;
+
+                            // Example AJAX POST to update
+                            $.ajax({
+                                url: '/admin/callout/update-refund',
+                                type: 'POST',
+                                contentType: 'application/json',
+                               data: JSON.stringify({
+                                    header_id: headerId,
+                                    diagnostic_cost: payload.diagnostic_cost,
+                                    items: payload.items
+                                }),
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                success: function(res) {
+                                Swal.fire("Success", "Refund updated successfully.", "success").then(() => {
+                                    window.location.href = window.location.origin + "/admin/to_close/PrintTechnicalReport/" + headerId;
+                                });
+                                },
+                                error: function() {
+                                    Swal.fire("Error", "Failed to update refund items.", "error");
+                                }
+                            });
+                        }
+                    });
+                },
+                error: function(xhr) {
+                    Swal.fire("Error", "Failed to load refund items.", "error");
+                }
+            });
+        }
+    });
+}
+
+
+</script>
 </script>

@@ -163,6 +163,11 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/admin/filter_customers_units', [AdminCustomDashboardController::class, 'filterCustomerUnit'])->name('filter_customers_units');
     Route::post('/admin/filter_customers_info', [AdminCustomDashboardController::class, 'filterCustomerInfo'])->name('filter_customers_info');
 
+    // Refund
+    Route::get('/admin/callout/refund/{id}', 'AdminCallOutController@refund');
+    Route::post('/admin/callout/update-refund', 'AdminCallOutController@updateRefund');
+
+
 });
 
  

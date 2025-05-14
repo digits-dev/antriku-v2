@@ -51,7 +51,7 @@
                                                 <tr class="nr row_num" id="rowID{{$qt->id}}">
                                                     <input type="hidden"class="getidValue" value="{{$qt->id}}">
                                                     <td style="padding: 1px !important;">
-                                                        <input class="input-cus text-center getscValue" type="text" id="service_code_{{$qt->id}}" oninput="gsx_data('{{$qt->id}}')" value="{{ $qt->service_code }}" placeholder="Enter Spare Part Number" readonly {{ in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? '' : 'readonly'}} style="background: lightgrey">
+                                                        <input class="input-cus text-center getscValue" type="text" id="service_code_{{$qt->id}}" oninput="gsx_data('{{$qt->id}}')" value="{{ $qt->service_code }}" placeholder="Enter Spare Part Number" {{ in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? '' : 'readonly'}}>
                                                     </td>
                                                     <td style="padding: 1px !important;">
                                                         <input class="input-cus text-center getgsxValue" type="text" id="gsx_code_{{$qt->id}}"  value="{{ $qt->gsx_ref }}" placeholder="Enter GSX Reference" {{ in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? '' : 'readonly'}}>
@@ -63,11 +63,11 @@
                                                         <input class="input-cus text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter KGB Serial Number" {{ in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? '' : 'readonly'}}>   
                                                     </td>
                                                     <td style="padding: 1px !important;">
-                                                        <input class="input-cus text-center getitemValue" type="text" id="item_desc_{{$qt->id}}" value="{{ $qt->item_description }}" placeholder="Enter Item Description" readonly style="background: lightgrey">
+                                                        <input class="input-cus text-center getitemValue" type="text" id="item_desc_{{$qt->id}}" value="{{ $qt->item_description }}" placeholder="Enter Item Description" readonly>
                                                     </td>
                                                     <td style="padding: 3px !important;">
                                                         <input class="input-cus text-center getqtyValue" type="text" id="qty_{{$qt->id}}" value="{{$qt->qty_status}}" readonly 
-                                                               style="font-weight:500; background: lightgrey; color:{{ $qt->qty_status == 'Available-DOA' ? '#443627' : ($qt->qty_status == 'Available' ? '#16a34a' : '#ef4444') }}">
+                                                               style="font-weight:500; color:{{ $qt->qty_status == 'Available-DOA' ? '#443627' : ($qt->qty_status == 'Available' ? '#16a34a' : '#ef4444') }}">
                                                     </td>
                                                     <td style="padding: 1px !important; display:none">
                                                         <input class="input-cus text-center getitemparstidValue" type="hidden" id="item_parts_id_{{$qt->id}}" value="{{$qt->item_parts_id}}" readonly>

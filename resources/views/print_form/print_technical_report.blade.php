@@ -205,12 +205,12 @@
                             </td>
                         </tr>
                         <tr style="font-size:13px;">
-                            <td width="15%" class="table-bordered-display" style="border-width: 1px 1px 1px 1px !important;padding:3px;">
+                            {{-- <td width="15%" class="table-bordered-display" style="border-width: 1px 1px 1px 1px !important;padding:3px;">
                                 <label class="control-label col-md-12"><strong>Device Issue Description:</strong></label>
                             </td>
                             <td width="40%" colspan="2" class="table-bordered-display" style="border-width: 1px 1px 1px 0 !important;padding:3px;">
                                 <p>{{ $data['transaction_details']->device_issue_description }}</p>
-                            </td>
+                            </td> --}}
                         </tr>
                         <tr style="font-size:13px;">
                             <td width="15%" class="table-bordered-display" style="border-width: 0 1px 1px 1px !important;padding:3px;">

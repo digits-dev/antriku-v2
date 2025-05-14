@@ -282,8 +282,6 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 				'other_remarks'		        => $all_data['other_remarks'],
 				'case_status'				=> $all_data['case_status'],
 				'warranty_status' 			=> $all_data['warranty_status'],
-				'defective_serial_number'	=> $all_data['defective_serial_number'],
-				'device_issue_description' 	=> $all_data['device_issue_description'],
 				'findings' 					=> $all_data['findings'],
 				'resolution' 				=> $all_data['resolution'],
 				'other_diagnostic'			=> $all_data['other_diagnostic'],
@@ -338,6 +336,20 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 			}
 			
 
+		}
+
+		if (in_array(CRUDBooster::myPrivilegeId(), [4, 8])) {
+
+			$ProblemDetails = implode(",", $all_data['problem_details']);
+			DB::table('returns_header')->where('id', $all_data['header_id'])->update([
+				'problem_details'			=> $ProblemDetails,
+				'problem_details_other'		=> $all_data['problem_details_other'],
+				'other_remarks'		        => $all_data['other_remarks'],
+				'findings' 					=> $all_data['findings'],
+				'resolution' 				=> $all_data['resolution'],
+				'updated_by'            	=> CRUDBooster::myId()
+			]);
+	
 		}
 		
 			// *********************************************************************************
@@ -498,7 +510,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 			}
 		}
 
-		if ($request->status_id == 20) {
+		if ($request->status_id == 21) {
 
 			DB::table('returns_header')->where('id', $request->header_id)->update([
 				'warranty_status'   => $all_data['warranty_status'],

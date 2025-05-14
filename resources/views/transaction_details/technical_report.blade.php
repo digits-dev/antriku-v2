@@ -164,14 +164,14 @@
                 @endif
                 <div class="col-md-12">
                     <div class="row">    
-                        <div class="col-md-6" style="margin-top: 5px;">
+                        <div class="col-md-12" style="margin-top: 5px;">
                             <label class="label-cus">Other Remarks:</label>
                             <textarea placeholder="Type your other remarks here" name="other_remarks" rows="2" class="input-cus" {{ $transaction_details->repair_status != 10 ? 'readonly' : '' }}>{{ $transaction_details->other_remarks }}</textarea>
                         </div>
-                        <div class="col-md-6" style="margin-top: 10px;">
+                        {{-- <div class="col-md-6" style="margin-top: 10px;">
                             <label class="label-cus"><span class="requiredField">*</span>Device Issue Description:</label>
                             <textarea placeholder="Type your device issue description here" name="device_issue_description" rows="2" class="input-cus" required {{ $transaction_details->repair_status != 10 ? 'readonly' : '' }}>{{ $transaction_details->device_issue_description }}</textarea>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -290,10 +290,10 @@
                 <div class="info-label-cust">Other Remarks</div>
                 <div class="info-value-cust">{{ $transaction_details->other_remarks ?? 'N/A' }}</div>
             </div>
-            <div class="info-item-cust">
+            {{-- <div class="info-item-cust">
                 <div class="info-label-cust">Device Issue Description</div>
                 <div class="info-value-cust">{{ $transaction_details->device_issue_description ?? 'N/A' }}</div>
-            </div>
+            </div> --}}
         </div>
         
         <div class="info-grid-cust">

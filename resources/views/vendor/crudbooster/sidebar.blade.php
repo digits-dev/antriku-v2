@@ -178,7 +178,7 @@
                                                 <div class="notif-count-cus">{{$receiving}}</div>
                                             </div>
                                              @endif
-                                            @if($child->name == 'Releasing')
+                                            @if($child->name == 'Releasing' &&  $child->path == 'spare_parts_releasing')
                                             <div class="notification-container-cus" style="display: {{$releasing == 0 ? 'none' : ''}}">
                                                 <div class="icon-cus">🔔</div>
                                                 <div class="notif-count-cus">{{$releasing}}</div>

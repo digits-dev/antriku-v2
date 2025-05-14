@@ -98,14 +98,10 @@
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
             </button>
         @elseif ($transaction_details->repair_status == 17)
-            <button type="submit" id="save" onclick="return changeStatus(20)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
-                <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
-            </button>
-        @elseif ($transaction_details->repair_status == 20)
             <button type="submit" id="save" onclick="return changeStatus(21)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
             </button>
-        @elseif ($transaction_details->repair_status == 23)
+        @elseif($transaction_details->repair_status == 23)
             @if (is_null($transaction_details->airwaybill_upload))
                 <button type="submit" id="save" onclick="return changeStatus(24)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
                     <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed

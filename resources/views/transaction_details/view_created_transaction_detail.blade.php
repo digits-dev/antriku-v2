@@ -108,8 +108,8 @@
                 @include('carry_in.technical_report')
             @endif
 
-            {{-- Diagnostic Results (only if privilege != 9) Spare Custodian --}}
-            @if (CRUDBooster::myPrivilegeId() != 9)
+            {{-- Diagnostic Results hide on Frontliner and Spare Custodian --}}
+            @if (!in_array(CRUDBooster::myPrivilegeId(), [3,9]))
                 @if ($transaction_details->repair_status == 10)
                     @include('transaction_details.diagnostic_results')
                 @elseif($transaction_details->case_status === 'MAIL-IN')
@@ -183,6 +183,9 @@
                             @else
                             <button type="button" onclick="print_technical_from_confirm()" class="btn btn-success pull-right" style="margin-left: 10px">
                                 <i class="fa fa-print" aria-hidden="true"></i> Printing Technical Form
+                            </button>
+                            <button type="button" onclick="refund({{ $transaction_details->id }})" class="btn btn-danger pull-right" style="margin-left: 10px">
+                                <i class="fa fa-print" aria-hidden="true"></i> Refund
                             </button>
                             @endif
                             <input type="hidden" value="{{$transaction_details->repair_status}}" id="transaction_status">
