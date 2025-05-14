@@ -141,6 +141,10 @@ Route::group(['middleware' => ['web']], function () {
     //Inventory
     Route::get('/admin/parts_item_master_stocks/stock_ordering','AdminPartsItemMasterStocksController@stockOrder');
     Route::get('/admin/parts_item_master_stocks/stock_in_manual','AdminPartsItemMasterStocksController@stockInManual');
+    Route::get('/admin/parts_item_master_stocks/dispose_stocks','AdminPartsItemMasterStocksController@disposeStocks');
+    Route::post('/admin/parts_item_master_stocks/store-parts-manual','AdminPartsItemMasterStocksController@storePartsManual')->name('store-parts-manual');
+    Route::post('/admin/parts_item_master_stocks/dispose-stocks','AdminPartsItemMasterStocksController@saveDisposeStocks')->name('dispose-stocks');
+    Route::post('/admin/parts_item_master_stocks/stock-order','AdminPartsItemMasterStocksController@saveStockOrder')->name('stock-order');
 
     // ITEM MASTER API
     // Route::get('/admin/apple_items_created', [AdminProductItemMasterController::class, 'getItemsCreatedAPI']);

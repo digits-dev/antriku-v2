@@ -554,6 +554,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 						'return_header_id'     => $request->header_id,
 						'reserved_qty'         => 1,
 						'created_by'           => CRUDBooster::myId(),
+						'created_at'           => now(),
 					]);
 		
 					DB::table('returns_body_item')->where('id', $item->id)->update([
@@ -570,6 +571,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 						'return_header_id'     => $request->header_id,
 						'reserved_qty'         => 1,
 						'created_by'           => CRUDBooster::myId(),
+						'created_at'           => now(),
 					]);
 		
 					DB::table('returns_body_item')->where('id', $item->id)->update([
@@ -586,6 +588,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 						'return_header_id'     => $request->header_id,
 						'reserved_qty'         => 1,
 						'created_by'           => CRUDBooster::myId(),
+						'created_at'           => now(),
 					]);
 				}
 			}

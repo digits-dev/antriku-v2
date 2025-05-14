@@ -122,7 +122,7 @@
                             @elseif ($menu->name == 'Create Transactions')
                                 <img src="https://cdn-icons-png.flaticon.com/128/2921/2921226.png" width="18" alt="">
                             @elseif ($menu->name == 'Inventory')
-                                <img src="https://cdn-icons-png.flaticon.com/128/10951/10951884.png" width="18" alt="">
+                                <img src="https://cdn-icons-png.flaticon.com/128/10951/10951872.png" width="18" alt="">
                             @else
                                 <i class='{{$menu->icon}} {{($menu->color)?"text-".$menu->color:""}}'></i> 
                             @endif  
@@ -165,8 +165,8 @@
                                     <li data-id='{{$child->id}}' class='{{(Request::is($child->url_path .= !Str::endsWith(Request::decodedPath(), $child->url_path) ? "/*" : ""))?"active":""}}'>
                                         <a href='{{ ($child->is_broken)?"javascript:alert('".cbLang('controller_route_404')."')":$child->url}}'
                                            class='{{($child->color)?"text-".$child->color:""}}'>
-                                            @if ($child->name == 'Stocks')
-                                                <img src="https://cdn-icons-png.flaticon.com/128/8890/8890077.png" width="18px" alt="">
+                                            @if (in_array($child->name, ['Stocks', 'Stock Reservations', 'Stock-In', 'Stock Dispose', 'Stock Receiving']))
+                                                <img src="https://cdn-icons-png.flaticon.com/128/10951/10951869.png" width="18px" alt="">
                                             @else
                                                 <i class='{{$child->icon}}'></i> 
                                             @endif

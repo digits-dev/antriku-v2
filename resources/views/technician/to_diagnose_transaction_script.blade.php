@@ -220,20 +220,20 @@
             }
         }
 
-        let transaction_status = $('#transaction_status').val();
-        if (status_id == 19 && transaction_status != 35) {
-            for (var i = 0; i < getserialValue.length - 1; ++i) {
-                if (isEmptyOrSpaces(getserialValue[i]) == true) {
-                    $('.getserialValue').css('border', '1px solid red');
-                    setTimeout(function() {
-                        $('#top-loader').hide();
-                        swal('Info!', 'KGB Serial Number is required.');
-                    }, 1000);
-                    return false;
-                }
-                $('.getserialValue').css('border', '');
-            }
-        }
+        // let transaction_status = $('#transaction_status').val();
+        // if (status_id == 19 && transaction_status != 35) {
+        //     for (var i = 0; i < getserialValue.length - 1; ++i) {
+        //         if (isEmptyOrSpaces(getserialValue[i]) == true) {
+        //             $('.getserialValue').css('border', '1px solid red');
+        //             setTimeout(function() {
+        //                 $('#top-loader').hide();
+        //                 swal('Info!', 'KGB Serial Number is required.');
+        //             }, 1000);
+        //             return false;
+        //         }
+        //         $('.getserialValue').css('border', '');
+        //     }
+        // }
 
         for (var i = 0; i < getscValue.length - 1; ++i) {
             if (isEmptyOrSpaces(getscValue[i]) == false) {
