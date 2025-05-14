@@ -266,7 +266,7 @@
                                         </div>
                                     </label>
                                     
-                                    <label class="warranty-option-cus">
+                                    <label class="warranty-option-cus hidden">
                                         <div class="radio-container-cus">
                                         <input type="radio" name="warranty_status" value="SPECIAL">
                                         <span class="radio-custom"></span>
@@ -281,13 +281,15 @@
                             <div class="form-group-cus">
                                 <label class="label-cus"><span class="requiredField">*</span>Store of Purchase</label>
                                 <select name="store_purchase" autocomplete="off" class="js-example-basic-single input-cus" id="store_purcahse" required>
-                                    <option value="" selected>Select Store here..</option>
+                                    <option value="" selected disabled>Select Store here..</option>
+                                    <option value="others">OTHERS</option>
                                     @foreach ($stores as $per_store)
                                         <option value="{{$per_store->store_name}}">
                                             {{$per_store->store_name}}
                                         </option>
                                     @endforeach 
                                 </select>
+                                <input type="text" class="input-cus" name="other_store_purchase" id="other_store_purchase" placeholder="Enter other store purchase here..." style="display: none; margin-top: 10px;">
                             </div>
                             <div class="form-group-cus">
                                 <label class="label-cus"><span class="requiredField">*</span>{{ trans('labels.form-label.purchase_date') }}</label>
@@ -296,6 +298,10 @@
                             <div class="form-group-cus">
                                 <label class="label-cus"><span class="requiredField">*</span>{{ trans('labels.form-label.warranty_expiration_date') }}</label>
                                 <input type="input" name="warranty_expiration_date" placeholder="" id="warranty_expiration_date" class="input-cus" autocomplete="off" required/>                        
+                            </div>
+                            <div class="form-group-cus">
+                                <label for="other_inclusion" class="label-cus">Accessories Included Remarks:</label>
+                                <textarea class="input-cus" name="accessories_included_remarks" id="other_inclusion" rows="3" placeholder="Type accessories included remarks here..."></textarea>
                             </div>
                         </div>
                         <div class="form-column-cus">
@@ -353,13 +359,6 @@
                                 <label class="label-cus"><span class="requiredField">*</span>VMI Remarks:</label>
                                 <textarea placeholder="Type your VMI remarks here..." name="summary_of_concern" rows="3" class="textarea-cus" style="padding-bottom: 15px" required></textarea>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="form-column-cus">
-                        <div class="form-group-cus">
-                            <label for="other_inclusion" class="label-cus">Accessories Included Remarks:</label>
-                            <textarea class="input-cus" name="accessories_included_remarks" id="other_inclusion" rows="3" placeholder="Type accessories included remarks here..."></textarea>
                         </div>
                     </div>
 
@@ -963,7 +962,14 @@
                 $('.createJOBtn').hide();
             }
         });
+    });
 
+    $('#store_purcahse').on('change', function(){
+        if($(this).val() == 'others'){
+            $('#other_store_purchase').show();
+        } else{
+            $('#other_store_purchase').hide();
+        }
     });
 </script>
 

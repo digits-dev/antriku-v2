@@ -34,7 +34,7 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 
 		# START COLUMNS DO NOT REMOVE THIS LINE
 		$this->col = [];
-		$this->col[] = ["label" => "Status", "name" => "repair_status"];
+		$this->col[] = ["label" => "Status", "name" => "repair_status", 'join' => 'transaction_status,status_name'];
 		$this->col[] = ["label" => "Reference No", "name" => "reference_no"];
 		$this->col[] = ["label" => "Model Group", "name" => "model"];
 		$this->col[] = ["label" => "Warranty Status", "name" => "warranty_status"];
@@ -80,32 +80,8 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 
 	public function hook_row_index($column_index, &$column_value)
 	{
-		$for_order_spare_part_carry_in = DB::table('transaction_status')->where('id', '30')->first();
-		$spare_part_release = DB::table('transaction_status')->where('id', '31')->first();
-		$ongoing_repair = DB::table('transaction_status')->where('id', '34')->first();
-		$for_order_spare_part_carry_in_oow = DB::table('transaction_status')->where('id', '40')->first();
-		$spare_part_release_oow = DB::table('transaction_status')->where('id', '41')->first();
-		$ongoing_repair_oow = DB::table('transaction_status')->where('id', '42')->first();
-
 		if ($column_index == 1) {
-			if ($column_value == $for_order_spare_part_carry_in->id) {
-				$column_value = '<span class="label label-warning">' . $for_order_spare_part_carry_in->status_name . '</span>';
-			}
-			if ($column_value == $spare_part_release->id) {
-				$column_value = '<span class="label label-warning">' . $spare_part_release->status_name . '</span>';
-			}
-			if ($column_value == $ongoing_repair->id) {
-				$column_value = '<span class="label label-warning">' . $ongoing_repair->status_name . '</span>';
-			}
-			if ($column_value == $for_order_spare_part_carry_in_oow->id) {
-				$column_value = '<span class="label label-warning">' . $for_order_spare_part_carry_in_oow->status_name . '</span>';
-			}
-			if ($column_value == $spare_part_release_oow->id) {
-				$column_value = '<span class="label label-warning">' . $spare_part_release_oow->status_name . '</span>';
-			}
-			if ($column_value == $ongoing_repair_oow->id) {
-				$column_value = '<span class="label label-warning">' . $ongoing_repair_oow->status_name . '</span>';
-			}
+			$column_value = '<span class="label label-warning">' . $column_value . '</span>';
 		}
 
 		if ($column_index == 3) {
@@ -211,7 +187,12 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 
 	public function filterDoaSparePart(Request $request)
 	{
-		$get_spare_part = DB::table('parts_item_master')->where('id', $request->spare_parts_id)->first();
+		$get_spare_part = DB::table('parts_item_master')
+			->select('parts_item_master.*', 'returns_body_item.gsx_ref as hbi_gsx_ref', 'returns_body_item.cs_code as hbi_cs_code', 'returns_body_item.apple_parts as hbi_apple_parts', 'returns_body_item.cost as price_cost')
+			->leftJoin('returns_body_item', 'returns_body_item.item_parts_id', '=', 'parts_item_master.id')
+			->where('returns_body_item.qty_status', '=', 'Available')
+			->where('returns_body_item.returns_header_id', $request->header_id)
+			->where('parts_item_master.id', $request->spare_parts_id)->first();
 
 		if (!empty($get_spare_part)) {
 			return response()->json(['success' => true, 'message' => 'Successfully filtered.', 'response_data' => $get_spare_part]);
@@ -229,6 +210,7 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 			'doa_item_qty' => 'required|numeric',
 			'doa_item_id' => 'required|integer',
 			'doa_item_price' => 'required|numeric',
+			'doa_problem_desc' => 'required|string',
 		]);
 
 		DB::beginTransaction();
@@ -240,6 +222,7 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 				->where('item_parts_id', $request->doa_item_id)
 				->update([
 					'qty_status' => 'Available-DOA',
+					'doa_problem_desc' => $request->doa_problem_desc,
 					'updated_by' => CRUDBooster::myId(),
 					'updated_at' => now(),
 				]);

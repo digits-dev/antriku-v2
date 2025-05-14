@@ -13,9 +13,9 @@
                 </div> 
             </div>  
             <br>
-            @if(in_array($transaction_details->repair_status, [10, 34, 35, 42]))
-                <div class="row">
-                    <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-8">
+                    @if(in_array($transaction_details->repair_status, [10, 34, 35, 42]))
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="toggle-row" style="margin-left: 20px">
@@ -45,15 +45,15 @@
                                 </div>
                             @endif
                         </div>
-                    </div>
-                    <div class="col-md-4" id="add_parts_btn" style="display: {{ in_array($transaction_details->repair_status, [34, 35, 42]) ? 'none' : '' }}">
+                    @endif
+                </div>
+                    <div class="col-md-4" id="add_parts_btn" style="display: {{ !in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? 'none' : '' }}">
                         <div class="col-md-12">
                             <button onclick="AddQuotation()" id="addQuotes" style="margin-top:5px" class="btn btn-warning pull-right"><i class="fa fa-plus" aria-hidden="true"></i> Add Parts</button>
                             <input type="hidden" value="{{$transaction_details->repair_status}}" id="transaction_status" name="recent_treansaction_status">
                         </div>
                     </div>
                 </div>
-            @endif
         </div>
     </div>          
 
@@ -97,51 +97,59 @@
                                             <input type="hidden" value="{{$qt->item_spare_additional_type}}" class="item_spare_additional_type">
                                                 <tr class="nr row_num" id="rowID{{$qt->id}}"
                                                     style="background: 
-                                                        {{ in_array($qt->item_spare_additional_type, [
-                                                            'Additional-Standard-DOA', 
-                                                            'Additional-Standard-DOA-Yes',
+                                                        {{ in_array($qt->qty_status, [
+                                                            'Available-DOA',
                                                         ]) ? '#443627' : 
                                                         ( !in_array($qt->item_spare_additional_type, [
                                                             'Additional-Standard', 
-                                                            'Additional-Standard-UNAV-Received'
+                                                            'Additional-Standard-UNAV-Received',
+                                                            'Additional-Standard-DOA',
+                                                            'Additional-Standard-DOA-Yes'
                                                         ]) ? '#FFC785' : '') }}"
                                                     >
                                                     <input type="hidden"class="getidValue" value="{{$qt->id}}">
                                                     <td style="padding: 3px !important;">
-                                                        <input class="input-cus text-center getscValue" type="text" id="service_code_{{$qt->id}}" oninput="gsx_data('{{$qt->id}}')" value="{{ $qt->service_code }}" placeholder="Enter Spare Part Number" readonly {{ !in_array($transaction_details->repair_status, [10]) ? 'readonly' : ''}} style="background: lightgrey">
+                                                        <input class="input-cus text-center getscValue" type="text" id="service_code_{{$qt->id}}" oninput="gsx_data('{{$qt->id}}')" value="{{ $qt->service_code }}" placeholder="Enter Spare Part Number" readonly {{ !in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? 'readonly' : ''}} style="background: lightgrey">
                                                     </td>
                                                     <td style="padding: 3px !important;">
-                                                        <input class="input-cus text-center getgsxValue" type="text" id="gsx_code_{{$qt->id}}"  value="{{ $qt->gsx_ref }}" placeholder="Enter GSX Reference" {{ !in_array($transaction_details->repair_status, [10, 29, 39]) ? 'readonly' : ''}} style="background: {{ !in_array($transaction_details->repair_status, [10, 29, 39]) ? 'lightgrey' : ''}}">
+                                                        <input class="input-cus text-center getgsxValue" type="text" id="gsx_code_{{$qt->id}}"  value="{{ $qt->gsx_ref }}" placeholder="Enter GSX Reference" {{ in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? '' : 'readonly'}} style="background: {{ !in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? 'lightgrey' : ''}}">
                                                     </td>
                                                     <td style="padding: 3px !important;">
-                                                        <input class="input-cus text-center getcsValue" type="text" id="cs_code_{{$qt->id}}" value="{{ $qt->cs_code }}" placeholder="Enter CS Code" {{ !in_array($transaction_details->repair_status, [10, 29, 39]) ? 'readonly' : ''}} style="background: {{ !in_array($transaction_details->repair_status, [10, 29, 39]) ? 'lightgrey' : ''}}">
+                                                        <input class="input-cus text-center getcsValue" type="text" id="cs_code_{{$qt->id}}" value="{{ $qt->cs_code }}" placeholder="Enter CS Code" {{ in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? '' : 'readonly'}} style="background: {{ !in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? 'lightgrey' : ''}}">
                                                     </td>
                                                     <td style="padding: 3px !important;">                        
-                                                        <input class="input-cus text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter KGB Serial Number" {{ !in_array($transaction_details->repair_status, [10, 34, 42]) ? 'readonly' : ''}} style="background: {{ !in_array($transaction_details->repair_status, [10, 34, 42]) ? 'lightgrey' : ''}}">
+                                                        <input class="input-cus text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter KGB Serial Number" {{ !in_array($transaction_details->repair_status, [29, 39]) && !in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? 'readonly' : ''}} style="background: {{ !in_array($transaction_details->repair_status, [29, 39]) && !in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? 'lightgrey' : ''}}">
                                                     </td>
                                                     <td style="padding: 3px !important;">
-                                                        <input class="input-cus text-center getitemValue" type="text" id="item_desc_{{$qt->id}}" value="{{ $qt->item_description }}" placeholder="Enter Item Description" readonly {{ !in_array($transaction_details->repair_status, [10]) ? 'readonly' : ''}} style="background: lightgrey">
+                                                        <input class="input-cus text-center getitemValue" type="text" id="item_desc_{{$qt->id}}" value="{{ $qt->item_description }}" placeholder="Enter Item Description" readonly {{ !in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? 'readonly' : ''}} style="background: lightgrey">
                                                     </td>
-                                                    <td style="padding: 3px !important;">
+                                                    <td style="padding: 3px !important; display:flex; justify-content:center; align-items:center">
                                                         <input class="input-cus text-center getqtyValue" type="text" id="qty_{{$qt->id}}" value="{{$qt->qty_status}}" readonly 
                                                                style="font-weight:500; background: lightgrey; color:{{ $qt->qty_status == 'Available-DOA' ? '#443627' : ($qt->qty_status == 'Available' ? '#16a34a' : '#ef4444') }}">
+                                                               @if ($qt->qty_status == 'Available-DOA')
+                                                                   <div class="tooltip-wrapper">
+                                                                        <div class="problem-icon">
+                                                                            <i class="bi bi-info"></i>
+                                                                        </div>
+                                                                        <div class="tooltip tooltip-top tooltip-dark">
+                                                                            <h3 class="tooltip-title">DOA, Problem Descriptions</h3>
+                                                                            <p>{{$qt->doa_problem_desc}}</p>
+                                                                        </div>
+                                                                    </div>
+                                                               @endif
                                                     </td>
                                                     <td style="padding: 1px !important; display:none">
                                                         <input class="input-cus text-center getitemparstidValue" type="hidden" id="item_parts_id_{{$qt->id}}" value="{{$qt->item_parts_id}}" readonly>
                                                     </td>
-                                                    <td style="padding: 3px !important;"><input class="input-cus text-center getcostValue" type="number" onblur="AutoFormatCost('{{$qt->id}}')" id="price_{{$qt->id}}" value="{{ $qt->cost }}" min="0" max="9999" step="any" placeholder="Enter Price" {{ !in_array($transaction_details->repair_status, [10]) ? 'readonly' : ''}} style="background: {{ !in_array($transaction_details->repair_status, [10]) ? 'lightgrey' : ''}}"></td> 
-                                                    @if(in_array($transaction_details->repair_status, [10, 34, 42])) 
-                                                        <td style="padding: 5px !important;" class="text-center {{ 
-                                                            in_array($qt->item_spare_additional_type, [
-                                                                'Additional-Standard', 
-                                                                'Additional-Standard-DOA-Yes', 
-                                                                'Additional-Required-Yes',
-                                                                'Additional-Required-No',
-                                                                'Additional-Standard-UNAV-Received'
-                                                            ]) ? 'hidden' : '' }}">
-                                                            <a onclick="RemoveRow('{{$qt->id}}')"><i class="fa fa-close fa-2x remove" style="color:red"></i></a>
-                                                        </td>
-                                                    @elseif(in_array($transaction_details->repair_status, [33, 45]) && CRUDBooster::myPrivilegeId() == 9 && $qt->qty_status == 'Unavailable') 
+                                                    <td style="padding: 3px !important;">
+                                                        <input class="input-cus text-center getcostValue" type="number" onblur="AutoFormatCost('{{$qt->id}}')" id="price_{{$qt->id}}" value="{{ $qt->cost }}" min="0" step="any" placeholder="Enter Price" {{ !in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? 'readonly' : ''}} style="background: {{ !in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? 'lightgrey' : ''}}">
+                                                    </td> 
+                                                    <td style="padding: 5px !important;" class="text-center {{ 
+                                                        in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? '' : 'hidden' }}">
+                                                        <a onclick="RemoveRow('{{$qt->id}}')"><i class="fa fa-close fa-2x remove" style="color:red"></i></a>
+                                                    </td>
+
+                                                    @if(in_array($transaction_details->repair_status, [33, 45]) && CRUDBooster::myPrivilegeId() == 9 && $qt->qty_status == 'Unavailable') 
                                                         <td style="padding: 5px !important;" class="text-center">
                                                             <button type="button" class="btn btn-success spare_receiving_btn" onclick="receive_parts({{$qt->item_parts_id}})">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-labelledby="receiveIconTitle" style="vertical-align: -0.125em; margin-right: 1px;">
@@ -167,7 +175,7 @@
                                             @endforeach
                                         @endif
                                     </tr>
-                                    <tr class="nr row_num" {{ !in_array($transaction_details->repair_status, [10, 34]) ? 'hidden' : ''}} style="display:none" id="spare_parts_filter">
+                                    <tr class="nr row_num" {{ in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? '' : 'hidden' }} style="display:none" id="spare_parts_filter">
                                         <input type="hidden"class="getidValue" value="">
                                         <td style="padding: 1px !important;position: relative;">
                                             <input class="input-cus text-center getscValue getscValue2"  type="text" value="" id="service_code" oninput="gsx_data('service_code')" placeholder="Enter Spare Part Number">
@@ -236,13 +244,13 @@
                                                 <input type="hidden" id="spare_part_code">
                                             </td>
                                             <td style="padding: 1px !important;" width="10%">
-                                                <input class="input-cus text-center" type="text" placeholder="Enter GSX Reference" readonly style="background: lightgrey">
+                                                <input class="input-cus text-center" type="text" id="doa_item_gsx" placeholder="Enter GSX Reference">
                                             </td>
                                             <td style="padding: 1px !important;" width="10%">
-                                                <input class="input-cus text-center" type="text" placeholder="Enter CS Code" readonly style="background: lightgrey">
+                                                <input class="input-cus text-center" type="text" id="doa_item_cs" placeholder="Enter CS Code">
                                             </td>
                                             <td style="padding: 1px !important;" width="10%">
-                                                <input class="input-cus text-center" type="text" placeholder="Enter KGB Serial Number" readonly style="background: lightgrey">
+                                                <input class="input-cus text-center" type="text" id="doa_item_kgb" placeholder="Enter KGB Serial Number">
                                             </td>
                                             <td style="padding: 1px !important;" width="20%">
                                                 <input class="input-cus text-center" type="text" id="doa_item_desc" placeholder="Enter Item Description">
@@ -254,7 +262,7 @@
                                                 <input class="input-cus text-center" id="doa_item_id" type="hidden" placeholder="Search Item" readonly style="background: lightgrey">
                                             </td>
                                             <td style="padding: 1px !important;" width="9%">
-                                                <input class="input-cus text-center" id="doa_item_price" type="number" min="0" max="9999" step="any"  placeholder="Enter Price">
+                                                <input class="input-cus text-center" id="doa_item_price" type="number" min="0" step="any"  placeholder="Enter Price">
                                             </td> 
                                             <td style="padding: 5px !important;" class="text-center" width="1%"> 
                                                 <i class="fa fa-times" id="erase_wrong_filter_doa" onclick="erase_wrong_filter_doa()" style="display:none; font-size: 24px; color: rgb(235, 63, 92)"></i> 
@@ -262,6 +270,14 @@
                                         </tr>
                                     </tbody>
                                 </table>
+
+                                <div class="row">
+                                    <br>
+                                    <div class="col-md-12" id="doa_problem_desc_part">
+                                        <label for="doa_desc" class="label-cus">DOA, Problem Description</label>
+                                        <textarea class="input-cus" id="doa_problem_desc" placeholder="Enter DOA, problem description here..."></textarea>
+                                    </div>
+                                </div>
                             @endif
                         </div>
                     </div>

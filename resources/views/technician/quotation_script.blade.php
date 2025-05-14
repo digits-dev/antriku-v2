@@ -183,7 +183,7 @@
                         showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getitemValue" type="text" id="item_desc_'+ result.quotation.id +'" value="'+ result.quotation.item_description +'" placeholder="Enter Item Description" readonly/></td>';
                         showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getqtyValue" type="text" id="qty'+ result.quotation.id +'" value="'+ result.quotation.qty_status +'" placeholder="Search Item" readonly style="background: lightgrey; color: '+ (result.quotation.qty_status == "Available" ? "#16a34a" : "#ef4444") +'" /></td>';
                         showData += '<td style="padding: 3px !important; display:none"><input class="input-cus text-center getitemparstidValue" type="hidden" id="item_parts_id'+ result.quotation.id +'" value="'+ result.quotation.item_parts_id +'" placeholder="Search Item" readonly style="background: lightgrey;" /></td>';
-                        showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getcostValue" type="number" onblur="AutoFormatCost('+ result.quotation.id +')" id="price_'+ result.quotation.id +'" value="'+ result.quotation.cost +'" min="0" max="9999" step="any" placeholder="Enter Price"></td>';
+                        showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getcostValue" type="number" onblur="AutoFormatCost('+ result.quotation.id +')" id="price_'+ result.quotation.id +'" value="'+ result.quotation.cost +'" min="0" step="any" placeholder="Enter Price"></td>';
                         showData += '<td style="padding: 5px !important;" class="text-center"><a onclick="RemoveRow('+ result.quotation.id +')"><i class="fa fa-close fa-2x remove" style="color:red"></i></a></td>';
                         showData += '</tr>';
 
@@ -281,22 +281,10 @@
                     $('#inwarranty_carryin_btns').show();
                     $('.iw_cin_available_btn').show();
                     $('.iw_cin_unavailable_btn').hide();
-                // } else if (allUnavailable && caseStatus === 'CARRY-IN' && warrantyStatus === 'OUT OF WARRANTY') {
-                //     $('#outofwarranty_carryin_btns').show();
-                //     $('.oow_cin_unavailable_btn').show();
-                //     $('.oow_cin_available_btn').hide();
-                // } else if (allAvailable && caseStatus === 'CARRY-IN' && warrantyStatus === 'OUT OF WARRANTY') {
-                //     $('#outofwarranty_carryin_btns').show();
-                //     $('.oow_cin_available_btn').show();
-                //     $('.oow_cin_unavailable_btn').hide();
                 } else {
                     $('#inwarranty_carryin_btns').hide();
                     $('.iw_cin_unavailable_btn').hide();
                     $('.iw_cin_available_btn').hide();
-
-                    // $('#outofwarranty_carryin_btns').hide();
-                    // $('.oow_cin_available_btn').hide();
-                    // $('.oow_cin_unavailable_btn').hide();
                 }
                 // end of buttons display logic
 
@@ -626,6 +614,7 @@
             } else if (doaToggle.checked) {
                 $('.hidden_doa_jo').val('yes');
                 $('#doa_item_filters').show();
+                $('#doa_problem_desc_part').show();
                 $('#add_doa_item_part').show();
                 $('.iw_cin_no_additional_spare_part').hide();
                 $('.oow_cin_additional_spare_part').hide();
@@ -634,6 +623,7 @@
             } else {
                 $('.hidden_doa_jo').val('no');
                 $('#doa_item_filters').hide();
+                $('#doa_problem_desc_part').hide();
                 $('#add_parts_btn').hide();
                 $('#add_doa_item_part').hide();
                 $('#spare_parts_filter').hide();
@@ -758,12 +748,14 @@
 
     function filter_doa_item(){
         let spare_parts_code = $('#spare_parts_code').val();
+        let header_id = $('#header_id').val();
         
         if(spare_parts_code !== 'default'){
             $.ajax({
                 url: "{{ route('filter_doa_spare_part') }}",
                 type: "POST",
                 data: {
+                    'header_id' : header_id,
                     'spare_parts_id' : spare_parts_code,
                     _token: '{!! csrf_token() !!}',
                 },
@@ -787,6 +779,10 @@
                         $('#doa_item_desc').val(response.response_data.item_description);
                         $('#doa_item_qty').val(response.response_data.qty);
                         $('#doa_item_id').val(response.response_data.id);
+                        $('#doa_item_price').val(response.response_data.price_cost)
+                        $('#doa_item_gsx').val(response.response_data.hbi_gsx_ref)
+                        $('#doa_item_cs').val(response.response_data.hbi_cs_code)
+                        $('#doa_item_kgb').val(response.response_data.hbi_apple_parts)
                         $('#erase_wrong_filter_doa').show();
 
                     } else if (response.success == false) {
@@ -817,6 +813,10 @@
             $('#doa_item_desc').val('');
             $('#doa_item_qty').val('');
             $('#doa_item_id').val('');
+            $('#doa_item_price').val('')
+            $('#doa_item_gsx').val('')
+            $('#doa_item_cs').val('')
+            $('#doa_item_kgb').val('')
             $('#erase_wrong_filter_doa').hide();
         }
     }
@@ -826,7 +826,8 @@
             isEmptyValidator('#spare_parts_code', 'Spare Part Code') ||
             isEmptyValidator('#doa_item_desc', 'Item Description') ||
             isEmptyValidator('#doa_item_qty', 'Quantity') ||
-            isEmptyValidator('#doa_item_price', 'Price')
+            isEmptyValidator('#doa_item_price', 'Price') ||
+            isEmptyValidator('#doa_problem_desc', 'Problem Description')
         ) {
             return;
         }
@@ -837,6 +838,7 @@
         let doa_item_qty = $('#doa_item_qty').val();
         let doa_item_id = $('#doa_item_id').val();
         let doa_item_price = $('#doa_item_price').val();
+        let doa_problem_desc = $('#doa_problem_desc').val();
 
         $.ajax({
             url: "{{ route('save_add_doa_parts') }}",
@@ -848,6 +850,7 @@
                 'doa_item_qty' : doa_item_qty,
                 'doa_item_id' : doa_item_id,
                 'doa_item_price' : doa_item_price,
+                'doa_problem_desc' : doa_problem_desc,
                 _token: '{!! csrf_token() !!}',
             },
             headers: {

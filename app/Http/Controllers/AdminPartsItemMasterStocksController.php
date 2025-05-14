@@ -189,31 +189,12 @@ class AdminPartsItemMasterStocksController extends \crocodicstudio\crudbooster\c
 				$partId = $part['id'];
 				$disposeQty = $part['qty'];
 
-				$currentQty = DB::table('parts_item_master')
-					->where('id', $partId)
-					->value('qty');
-
-				if ($currentQty === null) {
-					throw new \Exception("Part ID {$partId} not found.");
-				}
-
-				if ($disposeQty > $currentQty) {
-					throw new \Exception("Insufficient quantity for part ID {$partId}.");
-				}
-
-				// Update inventory
-				DB::table('parts_item_master')
-					->where('id', $partId)
-					->update([
-						'qty' => $currentQty - $disposeQty,
-						'updated_at' => now(),
-					]);
-
 				// Insert line
 				DB::table('stock_disposal_lines')->insert([
 					'stock_disposal_header_id' => $headerId,
 					'parts_item_master_id' => $partId,
 					'qty' => $disposeQty,
+					'disposal_status' => 'Pending',
 					'created_by' => CRUDBooster::myId(),
 					'created_at' => now(),
 				]);

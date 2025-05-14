@@ -165,7 +165,7 @@
                                     <li data-id='{{$child->id}}' class='{{(Request::is($child->url_path .= !Str::endsWith(Request::decodedPath(), $child->url_path) ? "/*" : ""))?"active":""}}'>
                                         <a href='{{ ($child->is_broken)?"javascript:alert('".cbLang('controller_route_404')."')":$child->url}}'
                                            class='{{($child->color)?"text-".$child->color:""}}'>
-                                            @if (in_array($child->name, ['Stocks', 'Stock Reservations', 'Stock-In', 'Stock Dispose', 'Stock Receiving']))
+                                            @if (in_array($child->name, ['Stocks', 'Stock Reservations', 'Stock-In', 'Stock Dispose', 'Stock Receiving', 'Stock Disposal Request']))
                                                 <img src="https://cdn-icons-png.flaticon.com/128/10951/10951869.png" width="18px" alt="">
                                             @else
                                                 <i class='{{$child->icon}}'></i> 
