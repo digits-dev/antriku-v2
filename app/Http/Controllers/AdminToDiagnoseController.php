@@ -39,7 +39,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 
 		# START COLUMNS DO NOT REMOVE THIS LINE
 		$this->col = [];
-		$this->col[] = ["label" => "Status", "name" => "repair_status"];
+		$this->col[] = ["label" => "Status", "name" => "repair_status", 'join' => 'transaction_status,status_name'];
 		$this->col[] = ["label" => "Reference No", "name" => "reference_no"];
 		$this->col[] = ["label" => "Model Group", "name" => "model"];
 		$this->col[] = ["label" => "Warranty Status", "name" => "warranty_status"];
@@ -194,36 +194,9 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 
 	public function hook_row_index($column_index, &$column_value)
 	{
-		//Your code here
-		$to_diagnose = DB::table('transaction_status')->where('id', '1')->first();
-		$ongoing_diagnosis = DB::table('transaction_status')->where('id', '10')->first();
-		$for_input_gsx_kbb = DB::table('transaction_status')->where('id', '14')->first();
-		$awaiting_apple_repair = DB::table('transaction_status')->where('id', '17')->first();
-		$for_tech_assessment = DB::table('transaction_status')->where('id', '18')->first();
-		$for_customers_payment_parts = DB::table('transaction_status')->where('id', '20')->first();
-		$for_input_gsx_kbb_oow = DB::table('transaction_status')->where('id', '23')->first();
-		$for_tech_assessment_oow = DB::table('transaction_status')->where('id', '27')->first();
-
-
-
 		if ($column_index == 1) {
-			if ($column_value == $to_diagnose->id) {
-				$column_value = '<span class="label label-warning">' . $to_diagnose->status_name . '</span>';
-			} elseif ($column_value == $for_input_gsx_kbb->id) {
-				$column_value = '<span class="label label-warning">' . $for_input_gsx_kbb->status_name . '</span>';
-			} elseif ($column_value == $ongoing_diagnosis->id) {
-				$column_value = '<span class="label label-warning">' . $ongoing_diagnosis->status_name . '</span>';
-			} elseif ($column_value == $awaiting_apple_repair->id) {
-				$column_value = '<span class="label label-warning">' . $awaiting_apple_repair->status_name . '</span>';
-			} elseif ($column_value == $for_tech_assessment->id) {
-				$column_value = '<span class="label label-warning">' . $for_tech_assessment->status_name . '</span>';
-			} elseif ($column_value == $for_customers_payment_parts->id) {
-				$column_value = '<span class="label label-warning">' . $for_customers_payment_parts->status_name . '</span>';
-			} elseif ($column_value == $for_input_gsx_kbb_oow->id) {
-				$column_value = '<span class="label label-warning">' . $for_input_gsx_kbb_oow->status_name . '</span>';
-			} elseif ($column_value == $for_tech_assessment_oow->id) {
-				$column_value = '<span class="label label-warning">' . $for_tech_assessment_oow->status_name . '</span>';
-			} 
+
+			$column_value = '<span class="label label-warning">' . $column_value . '</span>';
 		}
 
 		if ($column_index == 3) {
@@ -771,6 +744,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 					->where('id', $item_to_update->id)
 					->update([
 						'qty_status' => 'Available',
+						'doa_problem_desc' => null,
 						'updated_by' => CRUDBooster::myId(),
 						'updated_at' => now(),
 					]);

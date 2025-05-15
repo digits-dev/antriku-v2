@@ -152,6 +152,10 @@ Route::group(['middleware' => ['web']], function () {
     // Timeline
     Route::post('/admin/get_timeline', [AdminCustomDashboardController::class, 'getTimeline'])->name('get_timeline');
 
+    Route::get('/admin/manager-dashboard', [AdminCustomDashboardController::class, 'managerDashboard'])->name('manager.dashboard');
+    Route::post('/admin/get-filtered-callouts-count', [AdminCustomDashboardController::class, 'getFilteredCalloutCount'])->name('get.filtered.callouts.count');
+
+
     // Aging Callout
     Route::post('/admin/get_aging_callout', [AdminCustomDashboardController::class, 'getAgingCallout'])->name('get_aging_callout');
 

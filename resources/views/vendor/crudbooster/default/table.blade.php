@@ -24,8 +24,7 @@
 
                 swal({
                         title: "{{cbLang("confirmation_title")}}",
-                        text: "{{cbLang("alert_bulk_action_button")}} " + title + " 
-			",
+                        text: "{{cbLang("alert_bulk_action_button")}} " + title + " ",
                         type: "warning",
                         showCancelButton: true,
                         confirmButtonColor: "#008D4C",
@@ -99,16 +98,13 @@
 
                 if ($colname == 'GSX') {
                     echo "
-                            <form method='get' action='".CRUDBooster::mainpath()."' style='margin:0;'>
-                                <input type='hidden' name='search_gsx' class='form-control input-sm'
-                                    placeholder='Search GSX' 
-                                    value='".request('search_gsx')."' style='width:100%;'/>
-                            </form>
-                        ";
-                }
+                        <form method='get' action='".CRUDBooster::mainpath()."' style='margin:0;'>
+                            <input type='hidden' name='search_gsx' class='form-control input-sm'
+                                placeholder='Search GSX' 
+                                value='".request('search_gsx')."' style='width:100%;'/>
+                        </form>
+                    ";
 
-                echo "<th width='$width' $style>";
-                if ($colname == 'GSX') {
                     echo "<form method='get' action='".CRUDBooster::mainpath()."' style='margin:0;padding:0;'>";
 
                     // Preserve existing GET parameters except search_gsx
@@ -119,20 +115,14 @@
                     }
 
                     echo"
-                        <div class='row' style='display:flex; align-items:center; justify-content:center'>
-                            <div class='col-md-2 text-primary'>
-                                $colname
-                            </div>
-                            <div class='col-md-10'>
-                                <i><input type='text' name='search_gsx' class='input-cus'
-                                    placeholder='Search GSX here...' 
-                                    value='".request('search_gsx')."' style='width:200px; font-size: 105%'/>
-                                </i>
-                            </div>
-                        </div>
+                        <i><input type='text' name='search_gsx' class='input-cus'
+                            placeholder='Search GSX here...' 
+                            value='".request('search_gsx')."' style='width:300px; font-size: 100%; margin: 10px;'/>
+                        </i>
                         </form>";
-                } else {
+                }
 
+                echo "<th width='$width' $style>";
                     if (isset($sort_column[$field])) {
                         switch ($sort_column[$field]['sorting']) {
                             case 'asc':
@@ -152,7 +142,6 @@
                         $url = CRUDBooster::urlFilterColumn($field, 'sorting', 'asc');
                         echo "<a href='$url' title='Click to sort ascending'>$colname &nbsp; <i class='fa fa-sort'></i></a>";
                     }
-                }
 
                 echo "</th>";
             }

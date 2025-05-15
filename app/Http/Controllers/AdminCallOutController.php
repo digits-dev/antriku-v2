@@ -35,7 +35,7 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 
 		# START COLUMNS DO NOT REMOVE THIS LINE
 		$this->col = [];
-		$this->col[] = ["label" => "Status", "name" => "repair_status"];
+		$this->col[] = ["label" => "Status", "name" => "repair_status", 'join' => 'transaction_status,status_name'];
 		$this->col[] = ["label" => "Reference No", "name" => "reference_no"];
 		$this->col[] = ["label" => "Model Group", "name" => "model"];
 		$this->col[] = ["label" => "Warranty Status", "name" => "warranty_status"];
@@ -60,37 +60,35 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 	 
 		public function hook_row_index($column_index, &$column_value) {
 			if ($column_index == 1) {
-		
-				$statuses = DB::table('transaction_status')->pluck('status_name', 'id');
-		
-				$cancelled = [13, 22, 38];
-		
-				if (isset($statuses[$column_value])) {
-					$labelClass = in_array($column_value, $cancelled) ? 'label-danger' : 'label-info';
-					$statusText = $statuses[$column_value];
-					$column_value = '<span class="label ' . $labelClass . '">' . $statusText . '</span>';
+
+				$cancelled = [
+					'CALLOUT: FOR PICK UP BY CUSTOMER (CANCELLED – MAIL IN)',
+					'CALLOUT: FOR PICK UP BY CUSTOMER (CANCELLED – CARRY IN)'
+				];
+
+				$labelClass = in_array($column_value, $cancelled) ? 'label-danger' : 'label-info';
+				$column_value = '<span class="label ' . $labelClass . '">' . $column_value . '</span>';
+			}
+
+			if ($column_index == 3) {
+				$models = DB::table('model')->where('id', $column_value)->first();
+				if ($models) {
+					$model_group = DB::table('model_group')->where('id', $models->model_group)->first();
+					$column_value = '<span class="label label-info">' . $model_group->model_group_name . '</span>';
 				}
-				
 			}
-		if ($column_index == 3) {
-			$models = DB::table('model')->where('id', $column_value)->first();
-			if ($models) {
-				$model_group = DB::table('model_group')->where('id', $models->model_group)->first();
-				$column_value = '<span class="label label-info">' . $model_group->model_group_name . '</span>';
-			}
-		}
 
-		if($column_index == 4){
-			if($column_value == 'IN WARRANTY'){
-				$column_value = '<span style="color: #00B74A"><strong>'.$column_value.'</strong></span>';
-			}elseif($column_value == 'OUT OF WARRANTY'){
-				$column_value = '<span style="color: #F93154"><strong>'.$column_value.'</strong></span>';
+			if($column_index == 4){
+				if($column_value == 'IN WARRANTY'){
+					$column_value = '<span style="color: #00B74A"><strong>'.$column_value.'</strong></span>';
+				}elseif($column_value == 'OUT OF WARRANTY'){
+					$column_value = '<span style="color: #F93154"><strong>'.$column_value.'</strong></span>';
+				}
 			}
-		}
 
-		if($column_index == 5){
-			$column_value = '<span style="color: #1266F1"><strong>'.$column_value.'</strong></span>';
-		}
+			if($column_index == 5){
+				$column_value = '<span style="color: #1266F1"><strong>'.$column_value.'</strong></span>';
+			}
 		
 
 	}

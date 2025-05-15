@@ -33,20 +33,25 @@ class AdminSparePartsReleasingController extends \crocodicstudio\crudbooster\con
 
 		# START COLUMNS DO NOT REMOVE THIS LINE
 		$this->col = [];
-		$this->col[] = ["label" => "Repair Status", "name" => "repair_status"];
+		$this->col[] = ["label" => "Status", "name" => "repair_status", 'join' => 'transaction_status,status_name'];
 		$this->col[] = ["label" => "Reference No", "name" => "reference_no"];
 		$this->col[] = ["label" => "Model Group", "name" => "model"];
+		$this->col[] = ["label" => "Warranty Status", "name" => "warranty_status"];
+		$this->col[] = ["label" => "Case Status", "name" => "case_status"];
+		$this->col[] = ["label" => "Technician Assigned", "name" => "technician_id", 'join' => 'cms_users,name'];
+		$this->col[] = ["label" => "Date Received", "name" => "technician_accepted_at"];
+		$this->col[] = ["label" => "Branch", "name" => "branch", 'join' => 'branch,branch_name'];
 		# END COLUMNS DO NOT REMOVE THIS LINE
 	}
 
 	public function hook_query_index(&$query)
 	{
 		if (CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 9) {
-			$query->whereIn('repair_status', [29,39])->where('print_receive_form', 'YES')->orderBy('id', 'ASC');
+			$query->whereIn('repair_status', [29, 39])->where('print_receive_form', 'YES')->orderBy('id', 'ASC');
 		} else if (in_array(CRUDBooster::myPrivilegeId(), [9])) {
-			$query->whereIn('repair_status', [29,39])->where('print_receive_form', 'YES')->where('technician_id', CRUDBooster::myId())->orderBy('id', 'ASC');
+			$query->whereIn('repair_status', [29, 39])->where('print_receive_form', 'YES')->where('technician_id', CRUDBooster::myId())->orderBy('id', 'ASC');
 		} else {
-			$query->whereIn('repair_status', [29,39])->where('branch', CRUDBooster::me()->branch_id);
+			$query->whereIn('repair_status', [29, 39])->where('branch', CRUDBooster::me()->branch_id);
 			if (!empty(Session::get('toggle')) && Session::get('toggle') == "ON") {
 				$query->where('updated_by', CRUDBooster::me()->id)->orderBy('id', 'ASC');
 			} else {
@@ -58,16 +63,8 @@ class AdminSparePartsReleasingController extends \crocodicstudio\crudbooster\con
 
 	public function hook_row_index($column_index, &$column_value)
 	{
-		$for_spare_parts_release_carry_in = DB::table('transaction_status')->where('id', '29')->first();
-		$for_spare_parts_release_carry_in_oow = DB::table('transaction_status')->where('id', '39')->first();
-
 		if ($column_index == 1) {
-			if ($column_value == $for_spare_parts_release_carry_in->id) {
-				$column_value = '<span class="label label-warning">' . $for_spare_parts_release_carry_in->status_name . '</span>';
-			}
-			if ($column_value == $for_spare_parts_release_carry_in_oow->id) {
-				$column_value = '<span class="label label-warning">' . $for_spare_parts_release_carry_in_oow->status_name . '</span>';
-			}
+			$column_value = '<span class="label label-warning">' . $column_value . '</span>';
 		}
 
 		if ($column_index == 3) {
@@ -76,6 +73,18 @@ class AdminSparePartsReleasingController extends \crocodicstudio\crudbooster\con
 				$model_group = DB::table('model_group')->where('id', $models->model_group)->first();
 				$column_value = '<span class="label label-info">' . $model_group->model_group_name . '</span>';
 			}
+		}
+
+		if ($column_index == 4) {
+			if ($column_value == 'IN WARRANTY') {
+				$column_value = '<span style="color: #00B74A"><strong>' . $column_value . '</strong></span>';
+			} elseif ($column_value == 'OUT OF WARRANTY') {
+				$column_value = '<span style="color: #F93154"><strong>' . $column_value . '</strong></span>';
+			}
+		}
+
+		if ($column_index == 5) {
+			$column_value = '<span style="color: #1266F1"><strong>' . $column_value . '</strong></span>';
 		}
 	}
 

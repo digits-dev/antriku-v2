@@ -74,22 +74,6 @@
         <button type="submit" id="save" onclick="return changeStatus(29)" class="btn btn-success pull-right for_spare_part_release_unav" style="display: none">
             <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, For Spare Release
         </button>
-
-        @if (CRUDBooster::myPrivilegeId() == 9)
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    const elements = document.querySelectorAll('.getqtyValue');
-                    const all_item_qty = Array.from(elements).map(el => el.value.trim().toLowerCase());
-
-                    const allUnAvailable = all_item_qty.includes("unavailable");
-                    if (allUnAvailable) {
-                        // window.location.reload();
-                    } else {
-                        document.querySelector('.for_spare_part_release_unav')?.click();
-                    }
-                });
-            </script>
-        @endif
     @endif
 </div>
 
@@ -113,12 +97,12 @@
         <input type="hidden" value="{{$transaction_details->repair_status}}" id="transaction_status">
         <div id="outofwarranty_carryin_btns" style="display: none">
             {{-- available iventory button  --}}
-            <button type="submit" id="save" onclick="return changeStatus(39)" class="btn btn-success pull-right buttonSubmit oow_cin_available_btn" style="margin-left: 20px; display:none;">
+            <button type="submit" id="save" onclick="return validateBeforeChangeStatus(39)" class="btn btn-success pull-right buttonSubmit oow_cin_available_btn" style="margin-left: 20px; display:none;">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, OOW Yes
             </button>
             
             {{-- unavailable inventory button  --}}
-            <button type="submit" id="save" onclick="return changeStatus(40)" class="btn btn-danger pull-right buttonSubmit oow_cin_unavailable_btn" style="margin-left: 20px; display:none;">
+            <button type="submit" id="save" onclick="return validateBeforeChangeStatus(40)" class="btn btn-danger pull-right buttonSubmit oow_cin_unavailable_btn" style="margin-left: 20px; display:none;">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, OOW Yes
             </button>
 
@@ -126,6 +110,10 @@
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, OOW No
             </button>
         </div>
+
+        <button type="button" id="call_out" onclick="callOut(48)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 10px; display: {{CRUDBooster::myPrivilegeId() == 9 ? 'none' : ''  }}">
+            <i class="fa fa-phone"></i> CALL OUT ({{ $CallOutCount }})
+        </button>
     @endif
 
     @if ($transaction_details->repair_status == 45)
@@ -137,22 +125,6 @@
         <button type="submit" id="save" onclick="return changeStatus(39)" class="btn btn-success pull-right for_spare_part_release_unav_oow" style="display: none">
             <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, For Spare Release
         </button>
-
-        @if (CRUDBooster::myPrivilegeId() == 9)
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    const elements = document.querySelectorAll('.getqtyValue');
-                    const all_item_qty = Array.from(elements).map(el => el.value.trim().toLowerCase());
-
-                    const allUnAvailable = all_item_qty.includes("unavailable");
-                    if (allUnAvailable) {
-                        // window.location.reload();
-                    } else {
-                        document.querySelector('.for_spare_part_release_unav_oow')?.click();
-                    }
-                });
-            </script>
-        @endif
     @endif
 
     @if ($transaction_details->repair_status == 39)
