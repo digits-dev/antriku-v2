@@ -185,19 +185,19 @@
             }
         }
 
-        // if (status_id == 31 || status_id == 41) {
-        //     for (var i = 0; i < getgsxValue.length - 1; ++i) {
-        //         if (isEmptyOrSpaces(getgsxValue[i]) == true) {
-        //             $('.getgsxValue').css('border', '1px solid red');
-        //             setTimeout(function() {
-        //                 $('#top-loader').hide();
-        //                 swal('Info!', 'GSX Reference is required.');
-        //             }, 1000);
-        //             return false;
-        //         }
-        //         $('.getgsxValue').css('border', '');
-        //     }
-        // }
+        if (status_id == 31 || status_id == 41) {
+            for (var i = 0; i < getgsxValue.length - 1; ++i) {
+                if (isEmptyOrSpaces(getgsxValue[i]) == true) {
+                    $('.getgsxValue').css('border', '1px solid red');
+                    setTimeout(function() {
+                        $('#top-loader').hide();
+                        swal('Info!', 'GSX Reference is required.');
+                    }, 1000);
+                    return false;
+                }
+                $('.getgsxValue').css('border', '');
+            }
+        }
 
         if (status_id == 35) {
             let all_item_parts_type = $('.item_spare_additional_type').map(function() {
