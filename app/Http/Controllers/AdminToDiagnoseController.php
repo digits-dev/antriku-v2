@@ -517,7 +517,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 			]);
 		}
 
-		if (in_array($request->status_id, [23, 39, 40]) && !in_array($all_data['recent_treansaction_status'], [45, 43, 42])) {
+		if (in_array($request->status_id, [22, 23, 39, 40]) && !in_array($all_data['recent_treansaction_status'], [45, 43, 42])) {
 			if ($request->hasFile('rpf_invoice')) {
 				$file = $request->file('rpf_invoice');
 				$filename =    time() .  '_' . $request->header_id . '_' . $file->getClientOriginalName() ;

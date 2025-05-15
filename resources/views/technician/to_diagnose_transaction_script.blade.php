@@ -358,7 +358,7 @@
             }
 
             let transaction_status = $('#transaction_status').val();
-            if ([23, 39, 40].includes(status_id) && ![45, 43, 42].includes(Number(transaction_status))) {
+            if ([22,23, 39, 40].includes(status_id) && ![45, 43, 42].includes(Number(transaction_status))) {
                 formData.append("rpf_invoice", $("#rpf_invoice")[0].files[0]);
             }
 
