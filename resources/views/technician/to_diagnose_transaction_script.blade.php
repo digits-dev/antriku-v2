@@ -443,12 +443,12 @@
                                         icon: "info",
                                         confirmButtonText: "OK"
                                     }).then(() => {
-                                        // if(status_id == 34){
-                                        //     window.location.href = '/admin/pending_repair/edit/' + header_id;
-                                        // } else {
+                                        if(status_id == 34){
+                                            window.location.href = '/admin/pending_repair/edit/' + header_id;
+                                        } else {
                                             window.location.href =
                                                 "{{ CRUDBooster::mainpath() }}";
-                                        // }
+                                        }
                                     });
                                 }
                             }
