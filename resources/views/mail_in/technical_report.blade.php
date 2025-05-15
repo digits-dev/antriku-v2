@@ -9,7 +9,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            @if(in_array(CRUDBooster::myPrivilegeId(), [4,8]) && CRUDBooster::getModulePath() == "to_diagnose" && request()->segment(3) == "edit")
+            @if(in_array(CRUDBooster::myPrivilegeId(), [4,8]) &&  request()->segment(3) == "edit")
             <div class="card-body-cust" style="padding-bottom: 0px !important;">
                 <div class="info-grid-cust">
                   <div class="info-item-cust">
