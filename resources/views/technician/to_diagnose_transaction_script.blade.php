@@ -605,10 +605,10 @@ function refund(headerId) {
                             <tbody>
                                 <tr>
                                     <td class='text-center'>Diagnostic Fee</td>
-                                    <td class='text-center'>${diagnostic_cost}</td>
+                                    <td class='text-center'>${diagnostic_cost ?? 0}</td>
                                 <td>
                                     <input class='input-cus text-center' type="number" step="0.01" id="diagnostic_cost_input"
-                                        data-original="${diagnostic_cost}">
+                                        data-original="${diagnostic_cost ?? 0 }">
                                 </td>
 
                                 </tr>

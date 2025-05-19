@@ -150,6 +150,13 @@
                                 </div>
                             @endif
 
+                            @if($menu->name == 'Spare Parts Module')
+                                <div class="notification-container-cus" style="display: {{$spare_parts_parent_module == 0 ? 'none' : ''}}">
+                                    <div class="icon-cus">🔔</div>
+                                    <div class="notif-count-cus">{{$spare_parts_parent_module}}</div>
+                                </div>
+                            @endif
+
                             @if($menu->name == 'Call Out')
                                 <div class="notification-container-cus" style="display: {{$callout_count_sidebar == 0 ? 'none' : ''}}">
                                     <div class="icon-cus">🔔</div>
@@ -178,12 +185,33 @@
                                                 <div class="notif-count-cus">{{$receiving}}</div>
                                             </div>
                                              @endif
-                                            @if($child->name == 'Releasing' &&  $child->path == 'spare_parts_releasing')
+                                            @if($child->name == 'Releasing' &&  $child->path == 'AdminSparePartsReleasingControllerGetIndex')
                                             <div class="notification-container-cus" style="display: {{$releasing == 0 ? 'none' : ''}}">
                                                 <div class="icon-cus">🔔</div>
                                                 <div class="notif-count-cus">{{$releasing}}</div>
                                             </div>
                                              @endif
+                                            
+                                            @if($child->name == 'Mail In')
+                                            <div class="notification-container-cus" style="display: {{$mail_in == 0 ? 'none' : ''}}">
+                                                <div class="icon-cus">🔔</div>
+                                                <div class="notif-count-cus">{{$mail_in}}</div>
+                                            </div>
+                                             @endif
+
+                                            @if($child->name == 'Carry In')
+                                            <div class="notification-container-cus" style="display: {{$carry_in == 0 ? 'none' : ''}}">
+                                                <div class="icon-cus">🔔</div>
+                                                <div class="notif-count-cus">{{$carry_in}}</div>
+                                            </div>
+                                             @endif
+
+                                               @if($child->name == 'Releasing' &&  $child->path == 'AdminCallOutReleasingControllerGetIndex')
+                                            <div class="notification-container-cus" style="display: {{$call_out_releasing == 0 ? 'none' : ''}}">
+                                                <div class="icon-cus">🔔</div>
+                                                <div class="notif-count-cus">{{$call_out_releasing}}</div>
+                                            </div>
+                                            @endif
                                             
                                         </a>
                                     </li>

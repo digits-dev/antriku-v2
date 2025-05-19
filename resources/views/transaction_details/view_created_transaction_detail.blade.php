@@ -178,16 +178,24 @@
 
                     @if (request()->segment(3) == "edit" && in_array($transaction_details->repair_status, [13,19,22,28,38]))
                         <div>
+                   
                             @if ($transaction_details->print_technical_report == "YES")
                             <button type="button" id="print_releasing_form" onclick="print_release_form()" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;> <i class="fa fa-print"></i> Print Releasing Form</button>
                             @else
                             <button type="button" onclick="print_technical_from_confirm()" class="btn btn-success pull-right" style="margin-left: 10px">
                                 <i class="fa fa-print" aria-hidden="true"></i> Printing Technical Form
                             </button>
-                            <button type="button" onclick="refund({{ $transaction_details->id }})" class="btn btn-danger pull-right" style="margin-left: 10px">
-                                <i class="fa fa-print" aria-hidden="true"></i> Refund
-                            </button>
+                                @if ($transaction_details->warranty_status === 'OUT OF WARRANTY')
+                                    <button type="button" onclick="refund({{ $transaction_details->id }})" class="btn btn-danger pull-right" style="margin-left: 10px">
+                                    <i class="fa fa-print" aria-hidden="true"></i> Refund
+                                </button>
+                                @endif
                             @endif
+                             <button type="button" id="call_out" onclick="callOut({{ $transaction_details->repair_status }})"
+                                class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+                                <i class="fa fa-phone"></i> CALL OUT ({{ $CallOutCount }})
+                            </button>
+                      
                             <input type="hidden" value="{{$transaction_details->repair_status}}" id="transaction_status">
                         </div>
                     @endif

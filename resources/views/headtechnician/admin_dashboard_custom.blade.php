@@ -63,6 +63,29 @@
 
   <div id="overview" class="tab-content-dash active">
     <div class="dashboard-grid-dash" style="margin-top: 10px;  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)) !important;">
+      <div class="card-dash">
+        <div class="card-header-dash">
+          <h2 class="card-title-dash">
+            <div class="card-icon-dash icon-pending-dash">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            Ongoing Diagnosis
+          </h2>
+        </div>
+        <div class="card-body-dash">
+          <div class="card-stats-dash">
+            <div class="stat-dash">
+              <div class="stat-value-dash">{{$myOngoingDiagnosis}}</div>
+              <div class="stat-label-dash">My Ongoing Diagnosis</div>
+          
+            </div>
+          </div>
+        </div>
+      </div>
     <div class="card-dash">
         <div class="card-header-dash">
           <h2 class="card-title-dash">
@@ -73,7 +96,7 @@
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
               </svg>
             </div>
-            Ongoing Repair Cases
+            Ongoing Repair Cases (Carry In)
           </h2>
         </div>
         <div class="card-body-dash">
@@ -96,7 +119,7 @@
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
               </svg>
             </div>
-            Awaiting Repair Cases
+            Awaiting Repair Cases (Mail In)
           </h2>
         
         </div>
@@ -129,12 +152,16 @@
           <div class="card-stats-dash">
             <div class="stat-dash" style="display:flex; gap: 20px; justify-content:space-between">
               <div style="flex: 1;">
+                  <div class="stat-value-dash">{{ $greenhillsOngoingDiagnosis }}</div>
+                <div class="stat-label-dash">Total Ongoing Diagnosis</div>
+              </div>
+              <div style="flex: 1; border-left: 1px solid #ccc; padding-left: 20px;">
                 <div class="stat-value-dash">{{ $greenhillsTotalRepair }}</div>
-                <div class="stat-label-dash">Total Ongoing Repair Cases</div>
+                <div class="stat-label-dash">Total Ongoing Repair Cases (Carry In)</div>
               </div>
               <div style="flex: 1; border-left: 1px solid #ccc; padding-left: 20px;">
                   <div class="stat-value-dash">{{ $greenhillsAwaitingRepair }}</div>
-                <div class="stat-label-dash">Total Awaiting Repair Cases</div>
+                <div class="stat-label-dash">Total Awaiting Repair Cases (Mail In)</div>
               </div>
             </div>
           </div>
@@ -159,12 +186,17 @@
           <div class="card-stats-dash">
             <div class="stat-dash" style="display:flex; gap: 20px; justify-content:space-between">
               <div style="flex: 1;">
+                  <div class="stat-value-dash">{{ $bonifacioOngoingDiagnosis }}</div>
+                <div class="stat-label-dash">Total Ongoing Diagnosis</div>
+              </div>
+          
+              <div style="flex: 1; border-left: 1px solid #ccc; padding-left: 20px;">
                 <div class="stat-value-dash">{{ $bonifacioTotalRepair }}</div>
-                <div class="stat-label-dash">Total Ongoing Repair Cases</div>
+                <div class="stat-label-dash">Total Ongoing Repair Cases (Carry In)</div>
               </div>
               <div style="flex: 1; border-left: 1px solid #ccc; padding-left: 20px;">
                   <div class="stat-value-dash">{{ $bonifacioAwaitingRepair }}</div>
-                <div class="stat-label-dash">Total Awaiting Repair Cases</div>
+                <div class="stat-label-dash">Total Awaiting Repair Cases (Mail In)</div>
               </div>
             </div>
           </div>

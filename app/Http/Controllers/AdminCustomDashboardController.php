@@ -24,6 +24,8 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
     private const OnGoingRepair = 34;
     private const OnGoingRepairOOW = 42;
 
+    private const ToDiagnose = 1;
+    private const OngoingDiagnosis = 10;
     private const AwaitingAppleRepair = 17;
     private const AwaitingAppleRepairOOW = 26;
     private const AwaitingAppleRepairIW = 47;
@@ -246,6 +248,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
 
         $data = [];
         $data['branchName'] = DB::table('branch')->where('id', CRUDBooster::me()->branch_id)->value('branch_name');;
+        $data['myOngoingDiagnosis'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingDiagnosis])->where('technician_id', CRUDBooster::myId())->count();
         $data['myOngoingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OnGoingRepair, self::OnGoingRepairOOW])->where('technician_id', CRUDBooster::myId())->count();
         $data['totalAwaitingRepair'] = DB::table('returns_header')->whereIn('repair_status', [self::AwaitingAppleRepair, self::AwaitingAppleRepairOOW, self::AwaitingAppleRepairIW])->where('technician_id', CRUDBooster::myId())->count();
 
@@ -303,6 +306,9 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         $data['greenhills'] = DB::table('branch')->where('id', 1)->value('branch_name');;
         $data['bonifacio'] = DB::table('branch')->where('id', 2)->value('branch_name');;
 
+        $data['greenhillsOngoingDiagnosis'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingDiagnosis])->where('branch', 1)->count();
+        $data['bonifacioOngoingDiagnosis'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingDiagnosis])->where('branch', 2)->count();
+        
         $data['greenhillsTotalRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OnGoingRepair, self::OnGoingRepairOOW])->where('branch', 1)->count();
         $data['bonifacioTotalRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OnGoingRepair, self::OnGoingRepairOOW])->where('branch', 2)->count();
 
@@ -311,6 +317,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
 
         $data['myOngoingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OnGoingRepair, self::OnGoingRepairOOW])->where('technician_id', CRUDBooster::myId())->count();
         $data['myAwaitingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::AwaitingAppleRepair, self::AwaitingAppleRepairOOW, self::AwaitingAppleRepairIW])->where('technician_id', CRUDBooster::myId())->count();
+        $data['myOngoingDiagnosis'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingDiagnosis])->where('technician_id', CRUDBooster::myId())->count();
 
         $data['totalRepairPerModel'] = DB::table('returns_header')
             ->join('model', 'returns_header.model', '=', 'model.id')
