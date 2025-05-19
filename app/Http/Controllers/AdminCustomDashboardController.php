@@ -355,7 +355,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         return view('headtechnician.admin_dashboard_custom', $data);
     }
 
-    public function managerDashboard()
+    public function managerDashboard(Request $request)
     {
         $data['branch'] = DB::table('branch')->where('branch_status', '=', 'ACTIVE')->get();
         $data['all_call_out_status'] = DB::table('transaction_status')
@@ -363,10 +363,18 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->where('status', '=', 'ACTIVE')->get();
 
         $data['fl_pending_call_out_dash_count_all'] = DB::table('returns_header')
-            ->select('branch', DB::raw('COUNT(*) as total'))
+            ->addSelect('returns_header.*')
+            ->addSelect('transaction_status.status_name')
+            ->leftJoin('transaction_status', 'transaction_status.id', '=', 'returns_header.repair_status')
             ->whereIn('repair_status', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])
+            ->get()
             ->groupBy('branch')
-            ->pluck('total', 'branch');
+            ->map(function ($items) {
+                return [
+                    'total' => $items->count(),
+                    'data' => $items,
+                ];
+            });
 
         $data['fl_abandoned_units_dash_count_all'] = DB::table('returns_header')
             ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
@@ -385,11 +393,11 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->groupBy('returns_header.branch')
             ->pluck('total', 'returns_header.branch');
 
-
         $data['handle_per_employee'] = DB::table('returns_header')
             ->select(
                 'cms_users.id as user_id',
                 'cms_users.name as created_by_user',
+                'cms_users.photo as user_profile',
                 'cms_privileges.name as privilege_name',
                 'returns_header.branch',
                 DB::raw('COUNT(*) as total_creations')
@@ -468,11 +476,13 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
     public function getSalesData(Request $request)
     {
         $year = $request->input('year', date('Y'));
+        $branchId = $request->input('branch_id');
 
         // Apply year filter for Weekly and Monthly
         $weeklySales = DB::table('returns_header')
             ->whereNotIn('repair_status', [self::OnGoingRepair, self::CancelledClosed])
             ->whereYear('created_at', $year)
+            ->where('branch', $branchId)
             ->select(
                 DB::raw('YEARWEEK(created_at, 1) as year_week'),
                 DB::raw('WEEK(created_at) as week'),
@@ -486,6 +496,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         $monthlySales = DB::table('returns_header')
             ->whereNotIn('repair_status', [self::OnGoingRepair, self::CancelledClosed])
             ->whereYear('created_at', $year)
+            ->where('branch', $branchId)
             ->select(
                 DB::raw('MONTH(created_at) as month_number'),
                 DB::raw('MONTHNAME(created_at) as month'),
@@ -499,6 +510,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
 
         $ytdSales = DB::table('returns_header')
             ->whereNotIn('repair_status', [self::OnGoingRepair, self::CancelledClosed])
+            ->where('branch', $branchId)
             ->select(
                 DB::raw('YEAR(created_at) as year'),
                 DB::raw('SUM(parts_total_cost + diagnostic_cost) as total')

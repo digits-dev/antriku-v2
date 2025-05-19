@@ -940,34 +940,8 @@ $('#apply_customer_info_filter').on('click', function () {
     `);
   });
 
-  // time & motion pagination 
-  $(document).ready(function() {
-      $('.pagination-link').on('click', function(e) {
-          e.preventDefault();
-          
-          let url = $(this).data('url');
-          if (!url) return;
-
-          $.ajax({
-              url: url,
-              type: 'GET',
-              beforeSend: function() {
-                  $('#time_motion_data').html(`
-                    <div style="display: flex; justify-content: center">
-                      <img width="100" src="https://cdn-icons-gif.flaticon.com/10282/10282620.gif"/>
-                    </div>
-                    <center><p style="text-align:center">Loading data, please wait...</p></center>`);
-              },
-              success: function(data) {
-                  $('#time_motion_data').html($(data.table));
-                  $('#pagination_time_motion').html($(data.pagination));
-              },
-              error: function() {
-                  alert('Error loading data.');
-              }
-          });
-      });
-  });
+  
+  
 </script>
 
 <script>

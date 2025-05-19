@@ -104,7 +104,7 @@
     --dash-gray-700: #374151;
     --dash-gray-800: #1f2937;
     --dash-gray-900: #111827;
-    --dash-radius: 7px;
+    --dash-radius: 16px;
     --dash-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --dash-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
@@ -3140,7 +3140,13 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
   .transactions-container {
     background-color: var(--card-bg);
     padding: 15px;
-    box-shadow: 0 4px 20px var(--dash-shadow);
+    border-radius: var(--dash-radius);
+    box-shadow: var(--dash-shadow);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.transactions-container:hover {
+  box-shadow: var(--dash-shadow-lg);
 }
 
 .transactions-header {
