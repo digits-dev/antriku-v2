@@ -44,16 +44,10 @@ class NotificationCount
             ->count();
         View::share('ongoing_repair_count', $ongoing_repair_count);
 
-        $pending_mail_in_shipment = DB::table('returns_header')->whereIn('repair_status', [15, 16, 24, 25])->count();
+        $pending_mail_in_shipment = DB::table('returns_header')->whereIn('repair_status', [15, 16, 24, 25])->where('branch', CRUDBooster::me()->branch_id)->count();
         View::share('pending_mail_in_shipment', $pending_mail_in_shipment);
 
-        $spare_parts_parent_module = DB::table('returns_header')->whereIn('repair_status', [26 ,33 ,45 ,47, 29, 39])->count();
-        View::share('spare_parts_parent_module', $spare_parts_parent_module);
-
-        $pending_mail_in_shipment = DB::table('returns_header')->whereIn('repair_status', [15, 16, 24, 25])->count();
-        View::share('pending_mail_in_shipment', $pending_mail_in_shipment);
-
-        $spare_parts_parent_module = DB::table('returns_header')->whereIn('repair_status', [26 ,33 ,45 ,47, 29, 39])->count();
+        $spare_parts_parent_module = DB::table('returns_header')->whereIn('repair_status', [26 ,33 ,45 ,47, 29, 39])->where('branch', CRUDBooster::me()->branch_id)->count();
         View::share('spare_parts_parent_module', $spare_parts_parent_module);
 
         $receiving = DB::table('returns_header')

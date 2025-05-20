@@ -45,7 +45,7 @@ class AdminPendingMailInShipmentController extends \crocodicstudio\crudbooster\c
 
 	public function hook_query_index(&$query)
 	{
-		$query->whereIn('repair_status', [15, 16, 24, 25]);
+		$query->whereIn('repair_status', [15, 16, 24, 25])->where('branch', CRUDBooster::me()->branch_id);
 	}
 
 	/*

@@ -24,7 +24,7 @@
                     <label class="label-cus" style="margin-bottom: 6px;">
                         <span class="required">*</span> Diagnostic Fee:
                     </label>
-                    <input type="text" id="diagnostic_cost" name="diagnostic_cost" placeholder="Enter Diagnostic Fee"
+                    <input type="number" id="diagnostic_cost" name="diagnostic_cost" placeholder="Enter Diagnostic Fee"
                             class="input-cus" autocomplete="off" required />
                 </div>
                 <div style="margin-bottom: 10px;">
