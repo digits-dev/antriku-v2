@@ -179,12 +179,50 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 
 	public function callOut(Request $request)
 	{
+
+		$returns_header = DB::table('returns_header')->where('id', $request->returns_header_id)->first();
+		$branch = DB::table('branch')->where('id', CRUDBooster::me()->branch_id)->value('branch_name');
+		$call_out = DB::table('call_out_recorder')->where('returns_header_id', $request->returns_header_id)->where('status_id', $request->status_id)->first();
+		
+		$data = [];
+		$data['reference_no'] = $returns_header->reference_no;
+		$data['frontliner'] = CRUDBooster::me()->name;
+		$data['branch'] = $branch;
+		$data['amount'] = $returns_header->parts_total_cost + $returns_header->diagnostic_cost;
+		$email = $returns_header->email;
+		
+		if (in_array($request->status_id, [12,21])) {
+		$template = $call_out ? 'waiting_for_approval_update' : 'waiting_for_approval';
+
+			CRUDBooster::sendEmail([
+				'to' => $email,
+				'data' => $data,
+				'template' => $template,
+				'attachments' => []
+			]);
+		}else if ($request->status_id == 47) {
+		$template = $call_out ? 'mail_in_awaiting_parts_update' : 'mail_in_awaiting_parts';
+
+			CRUDBooster::sendEmail([
+				'to' => $email,
+				'data' => $data,
+				'template' => $template,
+				'attachments' => []
+			]);
+		}
+		 else {
+			CRUDBooster::sendEmail(['to'=>$email,'data'=>$data, 'template'=>'under_monitoring','attachments'=>[]]);
+		}
+		
 		$callOut = DB::table('call_out_recorder')->insert([
 			'status_id' => $request->status_id,
 			'returns_header_id' => $request->returns_header_id,
 			'call_out_by' => CRUDBooster::myId(),
 			'call_out_at' => now(),
 		]);
+
+
+		
 		if ($callOut) {
 			return response()->json(['message' => 'Call out recorded successfully'], 200);
 		} else {

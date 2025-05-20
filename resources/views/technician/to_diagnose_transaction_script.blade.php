@@ -535,7 +535,7 @@
             confirmButtonColor: "#008000",
             confirmButtonText: "Yes!",
             cancelButtonText: "No, cancel!",
-            allowOutsideClick: false
+            allowOutsideClick: false,
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
@@ -545,6 +545,16 @@
                         returns_header_id: header_id,
                         status_id: status_id,
                         _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                      beforeSend: function () {
+                    Swal.fire({
+                        icon: "info",
+                        title: "Sending Email To Customer",
+                        text: "Please wait...",
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => Swal.showLoading()
+                    });
                     },
                     success: function(response) {
                         Swal.fire({
@@ -576,6 +586,16 @@
     }
 
 function refund(headerId) {
+     const finalInvoiceUploaded = @json($data['transaction_details']->final_invoice);
+      let warranty_status = $('#warranty_status').val();
+        if (warranty_status === 'OUT OF WARRANTY' && finalInvoiceUploaded == null) {
+            let form = document.getElementById("SubmitTransactionForm");
+            
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return false;
+            }
+        }
     Swal.fire({
         title: 'Loading...',
         didOpen: () => {
@@ -627,21 +647,28 @@ function refund(headerId) {
                     <div style="max-height:200px; overflow-y:auto; border:1px solid #ccc;">
                         <table style="width:100%; text-align:left;" border="1" cellpadding="5">
                             <tbody>`;
-
+                    
+                 // Check if items array is empty
+                if (items.length === 0) {
+                    table += `
+                        <tr>
+                            <td colspan="3" class="text-center">No listed item</td>
+                        </tr>`;
+                } else {
                     items.forEach((item, index) => {
                         table += `
                             <tr>
                                 <td style="width: 70%;" class='text-center'>${item.item_description}</td>
-                                 <td style="width: 15%;" class='text-center'>${item.cost}
-                                </td>
-                              <td style="width: 15%">
+                                <td style="width: 15%;" class='text-center'>${item.cost}</td>
+                                <td style="width: 15%;">
                                     <input class='input-cus text-center' type="number" step="0.01" name="cost_${index}" 
                                         data-id="${item.id}"
                                         data-description="${item.item_description}"
-                                        data-original="${item.cost}" >
+                                        data-original="${item.cost}" required>
                                 </td>
                             </tr>`;
-                        });
+                    });
+                }
 
              table += `</tbody></table></div>`;
 
@@ -720,7 +747,8 @@ function refund(headerId) {
                                 },
                                 success: function(res) {
                                 Swal.fire("Success", "Refund updated successfully.", "success").then(() => {
-                                    window.location.href = window.location.origin + "/admin/to_close/PrintTechnicalReport/" + headerId;
+                                    // window.location.href = window.location.origin + "/admin/to_close/PrintTechnicalReport/" + headerId;
+                                     print_technical_from_confirm()
                                 });
                                 },
                                 error: function() {

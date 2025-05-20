@@ -75,7 +75,7 @@
                                                     <td style="padding: 1px !important;">
                                                         <input class="input-cus text-center getcostValue" type="number" onblur="AutoFormatCost('{{$qt->id}}')" id="price_{{$qt->id}}" value="{{ $qt->cost }}" min="0" step="any" placeholder="Enter Price" {{ in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? '' : 'readonly'}}>
                                                     </td> 
-                                                    @if(in_array(CRUDBooster::myPrivilegeId(), [4,8])) 
+                                                    @if(in_array(CRUDBooster::myPrivilegeId(), [4,8]) || (CRUDBooster::myPrivilegeId() == 3 && in_array($transaction_details->repair_status,[13, 22, 38])))
                                                         <td style="padding: 5px !important;" class="text-center">
                                                             <a onclick="RemoveRow('{{$qt->id}}')">
                                                                 <i class="fa fa-close fa-2x remove" style="color:red"></i>
