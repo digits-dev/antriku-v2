@@ -64,6 +64,9 @@ class AdminTransactionHistoryController extends \crocodicstudio\crudbooster\cont
 		if (CRUDBooster::myPrivilegeId() == 4) {
 			$this->index_button[] = ["title" => "Assigned To You", "label" => "Show Your Works", "icon" => "fa fa-list", "url" => CRUDBooster::mainpath('AssignedTechnician')];
 		}
+		
+		$this->addaction = array();
+		$this->addaction[] = ['title'=>'View','url'=>CRUDBooster::mainpath('getDetailView/[id]'),'icon'=>'fa fa-eye'];
 
 		$admin_path = CRUDBooster::adminPath();
 		$this->script_js = "

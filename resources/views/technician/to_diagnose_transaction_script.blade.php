@@ -360,10 +360,10 @@
                 title: case_status == 'MAIL-IN' && status_id == 20 ?
                     "This will change the Warranty Status to Out of Warranty" :
                     "Are you sure?",
-                text: "Do you want to proceed?",
+                text: [13, 22, 38].includes(status_id) ? "Do you want to cancel?" : "Do you want to proceed?",
                 showCancelButton: true,
                 confirmButtonColor: "#00b8d9",
-                confirmButtonText: "Yes, proceed!",
+                confirmButtonText: [13, 22, 38].includes(status_id) ? "Yes, cancel!" :"Yes, proceed!",
                 cancelButtonText: "Cancel",
                 allowOutsideClick: false
             }).then((result) => {
