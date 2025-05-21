@@ -36,7 +36,7 @@
 
             <div class="tab-dash active" data-tab="tab-jaymar-bi">
                 <img src="https://cdn-icons-png.flaticon.com/128/1698/1698561.png" alt="" width="20px">
-                Dashboard Ni Jaymar
+                Dashboard
             </div>
 
             @foreach ($branch as $index => $per_branch)
@@ -64,7 +64,7 @@
                 <div style="margin-left: 15px">
                     <h5>
                         <i class="bi bi-box-fill"></i>
-                        Dashboard ni Jaymar
+                        Dashboard 
                     </h5>
                 </div>
                 <div class="card-body-dash">
