@@ -488,6 +488,7 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 
 		$data['Quotation'] = DB::table('returns_body_item')
 			->leftJoin('returns_serial', 'returns_body_item.id', '=', 'returns_serial.returns_body_item_id')
+			->where('returns_body_item.cost', '!=', '0.00')
 			->where('returns_body_item.returns_header_id', $data['transaction_details']->header_id)->get();
 
 		$data['Model'] = DB::table('model')->orderBy('model_name', 'ASC')->get();
