@@ -434,7 +434,6 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
 
         // Apply year filter for Weekly and Monthly
         $weeklySales = DB::table('returns_header')
-            ->whereNotIn('repair_status', [self::OnGoingRepair, self::CancelledClosed])
             ->whereYear('created_at', $year)
             ->where('branch', $branchId)
             ->select(
@@ -448,7 +447,6 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->get();
 
         $monthlySales = DB::table('returns_header')
-            ->whereNotIn('repair_status', [self::OnGoingRepair, self::CancelledClosed])
             ->whereYear('created_at', $year)
             ->where('branch', $branchId)
             ->select(
@@ -463,7 +461,6 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->get();
 
         $ytdSales = DB::table('returns_header')
-            ->whereNotIn('repair_status', [self::OnGoingRepair, self::CancelledClosed])
             ->where('branch', $branchId)
             ->select(
                 DB::raw('YEAR(created_at) as year'),
