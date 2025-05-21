@@ -290,24 +290,27 @@
                               </div>
                             </div>         
                         </div>
-                         <div class="col-md-6">
+                         <div class="col-md-12">
+                          <br>
                           <div class="card-dash">
                             <h4 class="label-cus text-uppercase" style="margin: 20px 20px 0 20px">
                               <i class="bi bi-clock-history"></i>
                               <b>Aging Distribution</b>
                             </h4>
-                            <div class="card-body-dash">
+                            <div class="card-body-dash" style="height: 350px">
                               <canvas id="agingDistributionChart" height="300"></canvas>
                             </div>
                           </div>
                         </div>
-                        <div class="col-md-6">
+                        
+                        <div class="col-md-12">
+                          <br>
                           <div class="card-dash">
                             <h4 class="label-cus text-uppercase" style="margin: 20px 20px 0 20px">
                               <i class="bi bi-clock-history"></i>
                               <b>Aging Callout By Type</b>
                             </h4>
-                            <div class="card-body-dash">
+                            <div class="card-body-dash" style="height: 350px">
                               <canvas id="agingByTypeChart" height="300"></canvas>
                             </div>
                           </div>
@@ -1011,7 +1014,7 @@
       data: {
         labels: ['0-7 days', '8-14 days', '15-30 days', '30+ days'],
         datasets: [{
-          label: 'Number of Callouts',
+          label: 'TOTAL',
           data: [normalCount, mediumCount, highCount, criticalCount],
           backgroundColor: [
             colors.normal,
@@ -1205,31 +1208,13 @@
       let shortName = name;
       
       // Remove "CALLOUT: " prefix if it exists
-      if (shortName.startsWith("CALLOUT: ")) {
-        shortName = shortName.substring(9);
-      }
-      
-      // Extract the main action (before the parenthesis)
-      if (shortName.includes("(")) {
-        const mainAction = shortName.split("(")[0].trim();
-        const qualifier = shortName.match(/$$([^)]+)$$/);
-        
-        // Create a shortened version with the main action and a short qualifier
-        if (qualifier && qualifier[1]) {
-          const shortQualifier = qualifier[1]
-            .split(" ")
-            .map(word => word.charAt(0))
-            .join("");
-          
-          shortName = `${mainAction} (${shortQualifier})`;
-        } else {
-          shortName = mainAction;
-        }
-      }
+      // if (shortName.startsWith("CALLOUT: ")) {
+      //   shortName = shortName.substring(9);
+      // }
       
       // If still too long, truncate
       if (shortName.length > 15) {
-        shortName = shortName.substring(0, 12) + "...";
+        // shortName = shortName.substring(0, 100) + "...";
       }
       
       shortLabels.push(shortName);
