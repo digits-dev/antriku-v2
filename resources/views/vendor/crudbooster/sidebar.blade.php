@@ -69,7 +69,7 @@
 </style>
 
 <!-- Left side column. contains the sidebar -->
-<aside class="main-sidebar">
+<aside class="main-sidebar" style="background: linear-gradient(to right, black, #374151);">
 
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
@@ -91,7 +91,7 @@
 
             <!-- Sidebar Menu -->
             <ul class="sidebar-menu">
-                <li class="header text-uppercase">{{cbLang("menu_navigation")}}</li>
+                <li class="header text-uppercase" style="background: linear-gradient(to right, black, #374151);">{{cbLang("menu_navigation")}}</li>
                 <!-- Optionally, you can add icons to the links -->
 
                 <?php $dashboard = CRUDBooster::sidebarDashboard();?>

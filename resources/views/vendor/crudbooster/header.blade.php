@@ -82,13 +82,13 @@
 </style>
 
 <!-- Main Header -->
-<header class="main-header" style="position: fixed; width: 100%">
+<header class="main-header" style="position: fixed; width: 100%; background: linear-gradient(to bottom, #111827, #374151) !important;">
 
     <!-- Logo -->
-    <a href="{{url(config('crudbooster.ADMIN_PATH'))}}" title='{{Session::get('appname')}}' class="logo">{{CRUDBooster::getSetting('appname')}}</a>
+    <a href="{{url(config('crudbooster.ADMIN_PATH'))}}" title='{{Session::get('appname')}}' class="logo" style="background: linear-gradient(to bottom, #111827, #374151);">{{CRUDBooster::getSetting('appname')}}</a>
 
     <!-- Header Navbar -->
-    <nav class="navbar navbar-static-top" role="navigation">
+    <nav class="navbar navbar-static-top" role="navigation" style="background: linear-gradient(to bottom, #111827, #374151);">
         <!-- Sidebar toggle button-->
         <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
             <span class="sr-only">Toggle navigation</span>
