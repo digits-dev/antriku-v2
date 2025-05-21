@@ -1108,7 +1108,7 @@
     });
     
     // Process each callout and categorize by type and age
-    {!! json_encode($data['aging_callouts']) !!}.forEach(callout => {
+    {!! json_encode($aging_callouts) !!}.forEach(callout => {
       // Get the callout type name from the transaction_status table
       const calloutTypeName = calloutTypes[calloutTypes.findIndex(type => 
         type.id === callout.repair_status
