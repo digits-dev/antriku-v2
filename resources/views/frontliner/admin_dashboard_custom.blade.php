@@ -114,7 +114,7 @@
                                             <th style="font-size: 10px" class="text-uppercase">
                                               Warranty Type
                                             </th>
-                                            <th style="font-size: 10px" class="text-uppercase">
+                                            <th style="font-size: 10px" class="text-uppercase hidden">
                                               Case Type
                                             </th>
                                             <th style="font-size: 10px" class="text-uppercase">
@@ -134,7 +134,7 @@
                                             <tr>
                                               <td style="font-size: 12px">{{$item->reference_no}}</td>
                                               <td style="font-size: 12px">{{$item->warranty_status}}</td>
-                                              <td style="font-size: 12px">{{$item->case_status}}</td>
+                                              <td class="hidden" style="font-size: 12px">{{$item->case_status}}</td>
                                               <td style="font-size: 12px">{{$item->model_name}}</td>
                                               <td style="font-size: 12px">{{$item->last_name . ',' .$item->first_name}}</td>
                                               <td class="hidden" style="font-size: 12px">{{$item->status_name}}</td>
