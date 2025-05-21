@@ -120,8 +120,8 @@
         <div class="card-body-cust">
             <table class="diagnostic-table-cust">
                 <?php 
-                    $test_type = explode(',', $data['diagnostic_test'][0]->test_type);
-                    $test_result = explode(',', $data['diagnostic_test'][0]->test_result);
+                    $test_type = explode(',', $diagnostic_test[0]->test_type);
+                    $test_result = explode(',', $diagnostic_test[0]->test_result);
                     $counter = 0; 
                 ?>
                 <thead>
