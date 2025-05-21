@@ -88,7 +88,7 @@
     <a href="{{url(config('crudbooster.ADMIN_PATH'))}}" title='{{Session::get('appname')}}' class="logo" style="background: linear-gradient(to bottom, #111827, #374151);">
         <center>
             <i class="bi bi-box-fill"></i>
-            <small style="font-size: 17px; font-family:cursive">
+            <small style="font-size: 17px;">
                 {{CRUDBooster::getSetting('appname')}}
             </small>
         </center>
