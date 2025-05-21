@@ -52,12 +52,12 @@ class AdminPartsItemMasterStocksController extends \crocodicstudio\crudbooster\c
 			// Only show buttons if we are NOT on either of these pages
 			if ($currentUrl != $orderingUrl && $currentUrl != $addStockUrl && $currentUrl != $disposeStockUrl) {
 
-				$this->index_button[] = [
-					"label" => "Order Stocks",
-					"icon" => "fa fa-cart-plus",
-					"url" => $orderingUrl,
-					"color" => "warning"
-				];
+				// $this->index_button[] = [
+				// 	"label" => "Order Stocks",
+				// 	"icon" => "fa fa-cart-plus",
+				// 	"url" => $orderingUrl,
+				// 	"color" => "warning"
+				// ];
 
 				$this->index_button[] = [
 					"label" => "Add Stocks",
