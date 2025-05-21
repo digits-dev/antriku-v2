@@ -290,27 +290,27 @@
                               </div>
                             </div>         
                         </div>
-                         <div class="col-md-12">
+                         <div class="col-md-4">
                           <br>
                           <div class="card-dash">
                             <h4 class="label-cus text-uppercase" style="margin: 20px 20px 0 20px">
                               <i class="bi bi-clock-history"></i>
                               <b>Aging Distribution</b>
                             </h4>
-                            <div class="card-body-dash" style="height: 350px">
+                            <div class="card-body-dash" style="height: 425px">
                               <canvas id="agingDistributionChart" height="300"></canvas>
                             </div>
                           </div>
                         </div>
                         
-                        <div class="col-md-12">
+                        <div class="col-md-8">
                           <br>
                           <div class="card-dash">
                             <h4 class="label-cus text-uppercase" style="margin: 20px 20px 0 20px">
                               <i class="bi bi-clock-history"></i>
                               <b>Aging Callout By Type</b>
                             </h4>
-                            <div class="card-body-dash" style="height: 350px">
+                            <div class="card-body-dash"s0tyle="height: 500px">
                               <canvas id="agingByTypeChart" height="300"></canvas>
                             </div>
                           </div>
