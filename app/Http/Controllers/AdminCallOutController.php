@@ -210,9 +210,9 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 				'attachments' => []
 			]);
 		}
-		 else {
-			CRUDBooster::sendEmail(['to'=>$email,'data'=>$data, 'template'=>'under_monitoring','attachments'=>[]]);
-		}
+		//  else {
+		// 	CRUDBooster::sendEmail(['to'=>$email,'data'=>$data, 'template'=>'under_monitoring','attachments'=>[]]);
+		// }
 		
 		$callOut = DB::table('call_out_recorder')->insert([
 			'status_id' => $request->status_id,
