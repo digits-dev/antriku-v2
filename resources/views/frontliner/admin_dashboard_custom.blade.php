@@ -290,23 +290,24 @@
                               </div>
                             </div>         
                         </div>
-
                          <div class="col-md-6">
                           <div class="card-dash">
-                            <div class="card-dash-header">
-                              <h5 class="card-title">Aging Distribution</h5>
-                            </div>
-                            <div class="card-body">
+                            <h4 class="label-cus text-uppercase" style="margin: 20px 20px 0 20px">
+                              <i class="bi bi-clock-history"></i>
+                              <b>Aging Distribution</b>
+                            </h4>
+                            <div class="card-body-dash">
                               <canvas id="agingDistributionChart" height="300"></canvas>
                             </div>
                           </div>
                         </div>
                         <div class="col-md-6">
                           <div class="card-dash">
-                            <div class="card-dash-header">
-                              <h5 class="card-title">Aging by Callout Type</h5>
-                            </div>
-                            <div class="card-body">
+                            <h4 class="label-cus text-uppercase" style="margin: 20px 20px 0 20px">
+                              <i class="bi bi-clock-history"></i>
+                              <b>Aging Callout By Type</b>
+                            </h4>
+                            <div class="card-body-dash">
                               <canvas id="agingByTypeChart" height="300"></canvas>
                             </div>
                           </div>
@@ -988,178 +989,261 @@
 
 <script>
   $(document).ready(function() {
-  // Get the data from PHP variables
-  const normalCount = {{ $normalCount }};
-  const mediumCount = {{ $mediumCount }};
-  const highCount = {{ $highCount }};
-  const criticalCount = {{ $criticalCount }};
-  
-  // Colors for the charts
-  const colors = {
-    normal: 'rgba(75, 192, 192, 0.7)',    // Green for 0-7 days
-    medium: 'rgba(255, 205, 86, 0.7)',    // Yellow for 8-14 days
-    high: 'rgba(255, 159, 64, 0.7)',      // Orange for 15-30 days
-    critical: 'rgba(255, 99, 132, 0.7)'   // Red for 30+ days
-  };
-  
-  // Create Aging Distribution Chart
-  const agingDistributionCtx = document.getElementById('agingDistributionChart').getContext('2d');
-  new Chart(agingDistributionCtx, {
-    type: 'bar',
-    data: {
-      labels: ['0-7 days', '8-14 days', '15-30 days', '30+ days'],
-      datasets: [{
-        label: 'Number of Callouts',
-        data: [normalCount, mediumCount, highCount, criticalCount],
-        backgroundColor: [
-          colors.normal,
-          colors.medium,
-          colors.high,
-          colors.critical
-        ],
-        borderColor: [
-          colors.normal.replace('0.7', '1'),
-          colors.medium.replace('0.7', '1'),
-          colors.high.replace('0.7', '1'),
-          colors.critical.replace('0.7', '1')
-        ],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        y: {
-          beginAtZero: true,
-          grid: {
-            drawBorder: false
-          },
-          ticks: {
-            precision: 0
-          }
-        },
-        x: {
-          grid: {
-            display: false
-          }
-        }
+    // Get the data from PHP variables
+    const normalCount = {{ $normalCount }};
+    const mediumCount = {{ $mediumCount }};
+    const highCount = {{ $highCount }};
+    const criticalCount = {{ $criticalCount }};
+    
+    // Get callout types from PHP
+    const calloutTypes = {!! json_encode($callout_type->pluck('status_name')->toArray()) !!};
+    
+    // Modern color palette
+    const colors = {
+      normal: 'rgba(56, 178, 172, 0.8)',    // Teal for 0-7 days
+      medium: 'rgba(246, 173, 85, 0.8)',    // Amber for 8-14 days
+      high: 'rgba(245, 101, 101, 0.8)',     // Red for 15-30 days
+      critical: 'rgba(159, 122, 234, 0.8)'  // Purple for 30+ days
+    };
+    
+    // Create Aging Distribution Chart
+    const agingDistributionCtx = document.getElementById('agingDistributionChart').getContext('2d');
+    new Chart(agingDistributionCtx, {
+      type: 'bar',
+      data: {
+        labels: ['0-7 days', '8-14 days', '15-30 days', '30+ days'],
+        datasets: [{
+          label: 'Number of Callouts',
+          data: [normalCount, mediumCount, highCount, criticalCount],
+          backgroundColor: [
+            colors.normal,
+            colors.medium,
+            colors.high,
+            colors.critical
+          ],
+          borderColor: [
+            colors.normal.replace('0.8', '1'),
+            colors.medium.replace('0.8', '1'),
+            colors.high.replace('0.8', '1'),
+            colors.critical.replace('0.8', '1')
+          ],
+          borderWidth: 1,
+          borderRadius: 6
+        }]
       },
-      plugins: {
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              return context.dataset.label + ': ' + context.raw;
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              drawBorder: false,
+              color: 'rgba(200, 200, 200, 0.15)'
+            },
+            ticks: {
+              precision: 0,
+              font: {
+                size: 11
+              }
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            },
+            ticks: {
+              font: {
+                size: 11
+              }
             }
           }
         },
-        datalabels: {
-          anchor: 'center',
-          align: 'center',
-          color: '#fff',
-          font: {
-            weight: 'bold'
+        plugins: {
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            padding: 10,
+            cornerRadius: 6,
+            callbacks: {
+              label: function(context) {
+                return context.dataset.label + ': ' + context.raw;
+              }
+            }
           },
-          formatter: function(value) {
-            if (value > 0) return value;
-            return '';
-          }
-        }
-      }
-    },
-    plugins: [ChartDataLabels]
-  });
-  
-  // For the second chart, we need to simulate data by callout type
-  // In a real implementation, you would get this from your controller
-  // This is just an example based on the image
-  
-  // Create Aging by Callout Type Chart
-  const agingByTypeCtx = document.getElementById('agingByTypeChart').getContext('2d');
-  
-  // Sample data - replace with actual data from your controller
-  const calloutTypes = ['Hardware', 'Network', 'Software', 'Electrical'];
-  
-  // Create a stacked bar chart
-  new Chart(agingByTypeCtx, {
-    type: 'bar',
-    data: {
-      labels: calloutTypes,
-      datasets: [
-        {
-          label: '0-7 days',
-          data: [2, 1, 2, 1], // Replace with actual data
-          backgroundColor: colors.normal,
-          stack: 'Stack 0'
-        },
-        {
-          label: '8-14 days',
-          data: [1, 1, 1, 1], // Replace with actual data
-          backgroundColor: colors.medium,
-          stack: 'Stack 0'
-        },
-        {
-          label: '15-30 days',
-          data: [1, 1, 1, 1], // Replace with actual data
-          backgroundColor: colors.high,
-          stack: 'Stack 0'
-        },
-        {
-          label: '30+ days',
-          data: [3, 2, 3, 2], // Replace with actual data
-          backgroundColor: colors.critical,
-          stack: 'Stack 0'
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: {
-          grid: {
+          legend: {
             display: false
-          }
-        },
-        y: {
-          beginAtZero: true,
-          stacked: true,
-          grid: {
-            drawBorder: false
           },
-          ticks: {
-            precision: 0
+          datalabels: {
+            anchor: 'center',
+            align: 'center',
+            color: '#fff',
+            font: {
+              weight: 'bold',
+              size: 12
+            },
+            formatter: function(value) {
+              if (value > 0) return value;
+              return '';
+            },
+            textShadow: '0px 0px 2px rgba(0, 0, 0, 0.3)'
           }
         }
       },
-      plugins: {
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              return context.dataset.label + ': ' + context.raw;
+      plugins: [ChartDataLabels]
+    });
+    
+    // Process data for aging by callout type
+    // Initialize arrays to store counts for each callout type and age category
+    const calloutTypeData = {};
+    const ageCategories = ['normal', 'medium', 'high', 'critical'];
+    
+    // Initialize data structure
+    calloutTypes.forEach(type => {
+      calloutTypeData[type] = {
+        normal: 0,
+        medium: 0,
+        high: 0,
+        critical: 0
+      };
+    });
+    
+    // Process each callout and categorize by type and age
+    {!! json_encode($data['aging_callouts']) !!}.forEach(callout => {
+      // Get the callout type name from the transaction_status table
+      const calloutTypeName = calloutTypes[calloutTypes.findIndex(type => 
+        type.id === callout.repair_status
+      )] || 'Unknown';
+      
+      // Categorize based on age
+      if (callout.age_days <= 7) {
+        calloutTypeData[calloutTypeName].normal++;
+      } else if (callout.age_days <= 14) {
+        calloutTypeData[calloutTypeName].medium++;
+      } else if (callout.age_days <= 30) {
+        calloutTypeData[calloutTypeName].high++;
+      } else {
+        calloutTypeData[calloutTypeName].critical++;
+      }
+    });
+    
+    // Prepare datasets for the chart
+    const datasets = [
+      {
+        label: '0-7 days',
+        data: calloutTypes.map(type => calloutTypeData[type].normal),
+        backgroundColor: colors.normal,
+        stack: 'Stack 0',
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: colors.normal.replace('0.8', '1')
+      },
+      {
+        label: '8-14 days',
+        data: calloutTypes.map(type => calloutTypeData[type].medium),
+        backgroundColor: colors.medium,
+        stack: 'Stack 0',
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: colors.medium.replace('0.8', '1')
+      },
+      {
+        label: '15-30 days',
+        data: calloutTypes.map(type => calloutTypeData[type].high),
+        backgroundColor: colors.high,
+        stack: 'Stack 0',
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: colors.high.replace('0.8', '1')
+      },
+      {
+        label: '30+ days',
+        data: calloutTypes.map(type => calloutTypeData[type].critical),
+        backgroundColor: colors.critical,
+        stack: 'Stack 0',
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: colors.critical.replace('0.8', '1')
+      }
+    ];
+    
+    // Create Aging by Callout Type Chart
+    const agingByTypeCtx = document.getElementById('agingByTypeChart').getContext('2d');
+    
+    new Chart(agingByTypeCtx, {
+      type: 'bar',
+      data: {
+        labels: calloutTypes,
+        datasets: datasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            grid: {
+              display: false
+            },
+            ticks: {
+              font: {
+                size: 11
+              }
+            }
+          },
+          y: {
+            beginAtZero: true,
+            stacked: true,
+            grid: {
+              drawBorder: false,
+              color: 'rgba(200, 200, 200, 0.15)'
+            },
+            ticks: {
+              precision: 0,
+              font: {
+                size: 11
+              }
             }
           }
         },
-        legend: {
-          position: 'top',
-        },
-        datalabels: {
-          anchor: 'center',
-          align: 'center',
-          color: '#fff',
-          font: {
-            weight: 'bold'
+        plugins: {
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            padding: 10,
+            cornerRadius: 6,
+            callbacks: {
+              label: function(context) {
+                return context.dataset.label + ': ' + context.raw;
+              }
+            }
           },
-          formatter: function(value) {
-            if (value > 0) return value;
-            return '';
+          legend: {
+            position: 'top',
+            labels: {
+              usePointStyle: true,
+              padding: 15,
+              font: {
+                size: 11
+              }
+            }
+          },
+          datalabels: {
+            anchor: 'center',
+            align: 'center',
+            color: '#fff',
+            font: {
+              weight: 'bold',
+              size: 11
+            },
+            formatter: function(value) {
+              if (value > 0) return value;
+              return '';
+            },
+            textShadow: '0px 0px 2px rgba(0, 0, 0, 0.3)'
           }
         }
-      }
-    },
-    plugins: [ChartDataLabels]
+      },
+      plugins: [ChartDataLabels]
+    });
   });
-});
 </script>
 
 {{-- tab  --}}

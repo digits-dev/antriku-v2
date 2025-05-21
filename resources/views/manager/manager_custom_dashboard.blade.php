@@ -71,13 +71,13 @@
                     <div class="row">
                         <div class="col-md-12">
                             <br>
-                            <iframe
-                                title="NO"
-                                style="width: 100%; height: 800px"
-                                src='https://app.powerbi.com/view?r=eyJrIjoiNzVhMTNmNTQtYjg4MS00YTQ1LTk4ZTctYmFjYjg5N2E5ODA2IiwidCI6ImVhNjUwNjA1LTVlOGQtNGRkNC1iNzhmLTAyZTNlZDVmZWQ5OCIsImMiOjEwfQ%3D%3D'
-                                frameBorder="0"
-                                allowFullScreen="true">
-                            </iframe>
+                                <iframe
+                                    title="NO"
+                                    style="width: 100%; height: 800px"
+                                    src='{{$PBI}}'
+                                    frameBorder="0"
+                                    allowFullScreen="true">
+                                </iframe>
                         </div>
                     </div>
                 </div>

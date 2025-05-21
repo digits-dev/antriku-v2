@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use crocodicstudio\crudbooster\helpers\CRUDBooster;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
 
 class AdminCustomDashboardController extends \crocodicstudio\crudbooster\controllers\CBController
 {
@@ -34,7 +35,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->where('job_order_logs.transacted_at', '<=', Carbon::now()->subDays(90))
             ->count();
 
-        $data['callout_list'] = DB::table('transaction_status')
+        $data['callout_type'] = DB::table('transaction_status')
             ->whereIn('id', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])
             ->where('status', '=', 'ACTIVE')->get();
 
@@ -306,6 +307,11 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
 
     public function managerDashboard(Request $request)
     {
+        $PBI = "https://app.powerbi.com/view?r=eyJrIjoiNzVhMTNmNTQtYjg4MS00YTQ1LTk4ZTctYmFjYjg5N2E5ODA2IiwidCI6ImVhNjUwNjA1LTVlOGQtNGRkNC1iNzhmLTAyZTNlZDVmZWQ5OCIsImMiOjEwfQ%3D%3D";
+        // $encrypted = Crypt::encryptString($PBI);
+        // $decrypted = Crypt::decryptString($encrypted);
+        $data['PBI'] = $PBI;
+        
         $data['branch'] = DB::table('branch')->where('branch_status', '=', 'ACTIVE')->get();
         $data['all_call_out_status'] = DB::table('transaction_status')
             ->whereIn('id', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])
