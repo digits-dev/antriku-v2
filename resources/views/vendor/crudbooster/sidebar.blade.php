@@ -129,6 +129,13 @@
                             <span>{{$menu->name}}</span>
 
                             {{-- module notif count  --}}
+                            @if($menu->name == 'To Assign')
+                                <div class="notification-container-cus" style="display: {{$to_assign == 0 ? 'none' : ''}}">
+                                    <div class="icon-cus">🔔</div>
+                                    <div class="notif-count-cus">{{$to_assign}}</div>
+                                </div>
+                            @endif
+
                             @if($menu->name == 'Pending Repair')
                                 <div class="notification-container-cus" style="display: {{$ongoing_repair_count == 0 ? 'none' : ''}}">
                                     <div class="icon-cus">🔔</div>
