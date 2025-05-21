@@ -12,7 +12,7 @@
                 <div class="info-value-cust">{{ date('F j, Y', strtotime($transaction_details->purchase_date)) }}</div>
             </div>
 
-            @if(request()->segment(3) == "edit" && CRUDBooster::getModulePath() == "to_diagnose" && $transaction_details->repair_status == 9 && CRUDBooster::myPrivilegeId() != 2)
+            @if(request()->segment(3) == "edit" && CRUDBooster::getModulePath() == "to_diagnose" && $transaction_details->repair_status == 10 && CRUDBooster::myPrivilegeId() != 2)
                 <div class="info-item-cust">
                     <div class="info-label-cust"><span class="requiredField">*</span>{{ trans('labels.form-label.warranty_expiration_date') }}</div>
                     <div class="info-value-cust">
