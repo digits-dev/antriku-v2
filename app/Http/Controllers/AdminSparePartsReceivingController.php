@@ -202,27 +202,37 @@ class AdminSparePartsReceivingController extends \crocodicstudio\crudbooster\con
 		$spare_parts_id = $request->spare_parts_id;
 		$header_id = $request->header_id;
 
+		$get_order_branch = DB::table('returns_header')->where('id', $header_id)->first();
+		if (!$get_order_branch) {
+			return response()->json(['success' => false, 'message' => 'Header not found.'], 404);
+		}
+
 		$get_item_if_exist = DB::table('returns_body_item')
 			->where('returns_header_id', $header_id)
 			->where('item_parts_id', $spare_parts_id)
-			->where('qty_status', '!=', 'Available-DOA')
+			->where('qty_status', '!=', 'DOA')
 			->orderBy('id', 'DESC')
 			->first();
+
+		if (!$get_item_if_exist) {
+			return response()->json(['success' => false, 'message' => 'Spare part record not found.'], 404);
+		}
 
 		DB::beginTransaction();
 
 		try {
-			DB::table('parts_item_master')->where('id', $get_item_if_exist->item_parts_id)
+			DB::table('branch_item_stocks')
+				->where('parts_item_master_id', $get_item_if_exist->item_parts_id)
+				->where('branch_id', $get_order_branch->branch)
 				->update([
-					'qty' => DB::raw('qty + 1'),
+					'stock_qty' => DB::raw('COALESCE(stock_qty, 0) + 1'),
 					'updated_by' => CRUDBooster::myId(),
 					'updated_at' => now(),
 				]);
 
-
 			DB::table('returns_body_item')->where('id', $get_item_if_exist->id)
 				->update([
-					'qty' => DB::raw('qty + 1'),
+					'qty' => DB::raw('COALESCE(qty, 0) + 1'),
 					'qty_status' => 'Available',
 					'item_spare_additional_type' => $get_item_if_exist->item_spare_additional_type == 'Additional-Standard-DOA'
 						? 'Additional-Standard-DOA-Yes'
@@ -234,6 +244,7 @@ class AdminSparePartsReceivingController extends \crocodicstudio\crudbooster\con
 				]);
 
 			DB::table('inventory_reservations')->insert([
+				'branch_id' => $get_order_branch->branch,
 				'parts_item_master_id' => $spare_parts_id,
 				'return_header_id' => $header_id,
 				'reserved_qty' => 1,
@@ -243,10 +254,11 @@ class AdminSparePartsReceivingController extends \crocodicstudio\crudbooster\con
 			]);
 
 			DB::commit();
+
 			return response()->json(['success' => true, 'message' => 'Spare part received successfully.']);
 		} catch (\Exception $e) {
 			DB::rollBack();
-			Log::error('Error receiving spare part: ' . $e->getMessage());
+			Log::error('Error receiving spare part', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
 			return response()->json(['success' => false, 'message' => 'Failed to receive spare part.'], 500);
 		}
 	}

@@ -4,12 +4,12 @@
         <input type="hidden" value="{{$transaction_details->repair_status}}" id="transaction_status">
         <div id="inwarranty_carryin_btns" style="display: none">
             {{-- available iventory button  --}}
-            <button type="submit" id="save" onclick="return changeStatus(29)" class="btn btn-success pull-right buttonSubmit iw_cin_available_btn" style="margin-left: 20px; display:none;">
+            <button type="submit" id="save" onclick="return validateBeforeChangeStatus(29)" class="btn btn-success pull-right buttonSubmit iw_cin_available_btn" style="margin-left: 20px; display:none;">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
             </button>
             
             {{-- unavailable inventory button  --}}
-            <button type="submit" id="save" onclick="return changeStatus(30)" class="btn btn-danger pull-right buttonSubmit iw_cin_unavailable_btn" style="margin-left: 20px; display:none;">
+            <button type="submit" id="save" onclick="return validateBeforeChangeStatus(30)" class="btn btn-danger pull-right buttonSubmit iw_cin_unavailable_btn" style="margin-left: 20px; display:none;">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed 
             </button>
         </div>
@@ -43,7 +43,7 @@
             <button type="submit" id="save" onclick="return changeStatus(30)" class="btn btn-danger pull-right buttonSubmit iw_cin_doa_unav" style="display: none">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, DOA
             </button>
-            <button type="submit" id="save" onclick="return changeStatus(35)" class="btn btn-danger pull-right buttonSubmit iw_cin_additional_spare_part" style="display: none">
+            <button type="submit" id="save" onclick="return validateBeforeChangeStatus(35)" class="btn btn-danger pull-right buttonSubmit iw_cin_additional_spare_part" style="display: none">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, Additional Spare Part
             </button>
             <input type="hidden" value="{{$transaction_details->repair_status}}" id="transaction_status">
@@ -54,6 +54,9 @@
     @endif
     @if ($transaction_details->repair_status == 35)
         <div>
+            <button type="button" id="call_out" onclick="callOut(35)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 10px; display:{{CRUDBooster::myPrivilegeId() == 9 ? 'none' : ''  }}">
+                <i class="fa fa-phone"></i> CALL OUT ({{ $CallOutCount }})
+            </button>
             <button type="submit" id="save" onclick="return changeStatus(29)" class="btn btn-success pull-right proceed_yes_av" style="margin-left: 10px">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, Yes
             </button>
@@ -80,7 +83,7 @@
 <div id="carryin-out-warranty" style="display: {{ $transaction_details->warranty_status === 'OUT OF WARRANTY' ? 'block' : 'none' }};">
     @if ($transaction_details->repair_status == 10)
         <input type="hidden" value="{{$transaction_details->repair_status}}" id="transaction_status">
-        <button type="submit" id="save" onclick="return changeStatus(48)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;">
+        <button type="submit" id="save" onclick="return validateBeforeChangeStatus(48)" class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;">
             <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
         </button>
     @endif
@@ -163,6 +166,9 @@
 
     @if ($transaction_details->repair_status == 43)
         <div>
+            <button type="button" id="call_out" onclick="callOut(43)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 10px; display:{{CRUDBooster::myPrivilegeId() == 9 ? 'none' : ''  }}">
+                <i class="fa fa-phone"></i> CALL OUT ({{ $CallOutCount }})
+            </button>
             <input type="hidden" value="{{$transaction_details->repair_status}}" id="transaction_status">
             <button type="submit" id="save" onclick="return changeStatus(39)" class="btn btn-success pull-right proceed_yes_av" style="margin-left: 10px">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, Yes

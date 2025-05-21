@@ -67,7 +67,7 @@
                                                     </td>
                                                     <td style="padding: 3px !important;">
                                                         <input class="input-cus text-center getqtyValue" type="text" id="qty_{{$qt->id}}" value="{{$qt->qty_status}}" readonly 
-                                                               style="font-weight:500; color:{{ $qt->qty_status == 'Available-DOA' ? '#443627' : ($qt->qty_status == 'Available' ? '#16a34a' : '#ef4444') }}">
+                                                               style="font-weight:500; color:{{ $qt->qty_status == 'DOA' ? '#443627' : ($qt->qty_status == 'Available' ? '#16a34a' : '#ef4444') }}">
                                                     </td>
                                                     <td style="padding: 1px !important; display:none">
                                                         <input class="input-cus text-center getitemparstidValue" type="hidden" id="item_parts_id_{{$qt->id}}" value="{{$qt->item_parts_id}}" readonly>
@@ -97,7 +97,7 @@
                                         <td style="padding: 1px !important;"><input class="input-cus text-center getgsxValue getgsxValue2" type="text" value="" id="gsx_ref"  placeholder="Enter GSX Reference"></td>
                                         <td style="padding: 1px !important;"><input class="input-cus text-center getcsValue getcsValue2" type="text" value="" id="cs_code" placeholder="Enter CS Code"></td>
                                         <td style="padding: 1px !important;"><input class="input-cus text-center getserialValue getserialValue2" type="text" value="" id="serial_no" placeholder="Enter KGB Serial Number"></td>
-                                        <td style="padding: 1px !important;"><input class="input-cus text-center getitemValue getitemValue2" type="text" value="" id="item_desc" placeholder="Enter Item Description"></td>
+                                        <td style="padding: 1px !important;"><input class="input-cus text-center getitemValue getitemValue2" type="text" value="" id="item_desc" placeholder="Enter Item Description" readonly></td>
                                         <td style="padding: 1px !important;"><input class="input-cus text-center getqtyValue getqtyValue2" type="text" value="" id="qty" placeholder="Search Item" readonly style="background: lightgrey"></td>
                                         <td style="padding: 1px !important; display:none"><input class="input-cus text-center getitemparstidValue getitemparstidValue2" type="hidden" value="" id="item_parts_id" placeholder="Search Item" readonly style="background: lightgrey"></td>
                                         <td style="padding: 1px !important;"><input class="input-cus text-center getcostValue getcostValue2" type="number" value="" onblur="AutoFormatCost('cost')" id="cost" min="0" step="any"  placeholder="Enter Price"></td> 

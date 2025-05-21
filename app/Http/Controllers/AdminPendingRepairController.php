@@ -187,9 +187,16 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 
 	public function filterDoaSparePart(Request $request)
 	{
+		$getJO = DB::table('returns_header')->where('id', $request->header_id)->first();
+
 		$get_spare_part = DB::table('parts_item_master')
-			->select('parts_item_master.*', 'returns_body_item.gsx_ref as hbi_gsx_ref', 'returns_body_item.cs_code as hbi_cs_code', 'returns_body_item.apple_parts as hbi_apple_parts', 'returns_body_item.cost as price_cost')
+			->select('parts_item_master.*', 'returns_body_item.gsx_ref as hbi_gsx_ref', 'bis.stock_qty',
+					'returns_body_item.cs_code as hbi_cs_code', 'returns_body_item.apple_parts as hbi_apple_parts', 
+					'returns_body_item.cost as price_cost', 'returns_serial.serial_number as hbi_serial_number')
+			->leftJoin('branch_item_stocks as bis', 'bis.parts_item_master_id', '=', 'parts_item_master.id')
 			->leftJoin('returns_body_item', 'returns_body_item.item_parts_id', '=', 'parts_item_master.id')
+			->leftJoin('returns_serial', 'returns_serial.returns_body_item_id', '=', 'returns_body_item.id')
+			->where('bis.branch_id', $getJO->branch)
 			->where('returns_body_item.qty_status', '=', 'Available')
 			->where('returns_body_item.returns_header_id', $request->header_id)
 			->where('parts_item_master.id', $request->spare_parts_id)->first();
@@ -206,7 +213,9 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 		$request->validate([
 			'header_id' => 'required|integer',
 			'spare_part_code' => 'required|string',
-			'doa_item_desc' => 'required|string',
+			'doa_item_gsx' => 'required',
+			'doa_item_cs' => 'required',
+			'doa_item_kgb' => 'required',
 			'doa_item_qty' => 'required|numeric',
 			'doa_item_id' => 'required|integer',
 			'doa_item_price' => 'required|numeric',
@@ -221,22 +230,34 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 				->where('returns_header_id', $request->header_id)
 				->where('item_parts_id', $request->doa_item_id)
 				->update([
-					'qty_status' => 'Available-DOA',
+					'qty_status' => 'DOA',
+					'cost' => '0.00',
 					'doa_problem_desc' => $request->doa_problem_desc,
 					'updated_by' => CRUDBooster::myId(),
 					'updated_at' => now(),
 				]);
 
 			// Insert new DOA spare part
-			DB::table('returns_body_item')->insert([
+			$inserted_id = DB::table('returns_body_item')->insertGetId([
 				'returns_header_id' => $request->header_id,
 				'item_description' => $request->doa_item_desc,
 				'service_code' => $request->spare_part_code,
+				'gsx_ref' => $request->doa_item_gsx,
+				'cs_code' => $request->doa_item_cs,
 				'qty' => $request->doa_item_qty,
 				'qty_status' => $request->doa_item_qty > 0 ? 'Available' : 'Unavailable',
 				'item_parts_id' => $request->doa_item_id,
 				'item_spare_additional_type' => 'Additional-Standard-DOA',
 				'cost' => $request->doa_item_price,
+				'created_by' => CRUDBooster::myId(),
+				'created_at' => now(),
+			]);
+
+			// Insert Serial Number
+			DB::table('returns_serial')->insert([
+				'returns_header_id' => $request->header_id,
+				'returns_body_item_id' => $inserted_id,
+				'serial_number' => $request->doa_item_kgb,
 				'created_by' => CRUDBooster::myId(),
 				'created_at' => now(),
 			]);

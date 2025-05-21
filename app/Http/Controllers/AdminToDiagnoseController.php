@@ -358,7 +358,13 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		for ($i = 0; $i <= $all_data['number_of_rows']; $i++) {
 			if (!empty($service_code[$i]) || !empty($gsx_ref[$i]) || !empty($cs_code[$i]) || !empty($serial_no[$i]) || !empty($item_desc[$i]) || !empty($cost[$i])) {
 				$bodyItem = DB::table('returns_body_item')->where('returns_header_id', $all_data['header_id'])->where('service_code', $service_code[$i])->first();
-				$parts_item_description = DB::table('parts_item_master')->where('spare_parts', trim($service_code[$i]))->get();
+				$returnsHeader = DB::table('returns_header')->where('id', $all_data['header_id'])->first();
+				$parts_item_description = DB::table('parts_item_master')
+					->select('parts_item_master.*', 'bis.stock_qty')
+					->leftJoin('branch_item_stocks as bis', 'bis.parts_item_master_id', '=', 'parts_item_master.id')
+					->where('bis.branch_id', $returnsHeader->branch)
+					->where('spare_parts', trim($service_code[$i]))
+					->get();
 				$item_spare_additional_type = (!empty($all_data['new_spare_req']) && $all_data['new_spare_req'] == 'Additional-Required-Pending') ? 'Additional-Required-Pending' : 'Additional-Standard';
 
 				if (!empty($bodyItem->id) && !empty($service_code[$i])) {
@@ -372,11 +378,6 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 						'cost'				=> $cost[$i],
 						'updated_by'		=> CRUDBooster::myId()
 					]);
-					
-					// DB::table('returns_serial')->where('returns_header_id', $all_data['header_id'])->where('returns_body_item_id', $row_id[$i])->update([
-					// 	'serial_number'		=> $serial_no[$i],
-					// 	'updated_by'		=> CRUDBooster::myId()
-					// ]);
 
 					$existing = DB::table('returns_serial')
 						->where('returns_header_id', $all_data['header_id'])
@@ -410,8 +411,8 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 						'gsx_ref'			=> $gsx_ref[$i],
 						'cs_code'			=> $cs_code[$i],
 						'item_description'	=> $parts_item_description[0]->item_description,
-						'qty'				=> $parts_item_description[0]->qty,
-						'qty_status'		=> $parts_item_description[0]->qty > 0 ? 'Available' : 'Unavailable',
+						'qty'				=> $parts_item_description[0]->stock_qty,
+						'qty_status'		=> $parts_item_description[0]->stock_qty > 0 ? 'Available' : 'Unavailable',
 						'item_parts_id'		=> $parts_item_description[0]->id,
 						'item_spare_additional_type' => $item_spare_additional_type,
 						'cost'				=> $cost[$i],
@@ -504,6 +505,8 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 
 		if (in_array($request->status_id, [29,30,39,40]) && !in_array($all_data['recent_treansaction_status'], [33, 45])) {
 
+			$get_order_branch = DB::table('returns_header')->where('id', $request->header_id)->first();
+
 			if(in_array($all_data['recent_treansaction_status'], [34, 35, 42, 43])){
 				$get_jo = DB::table('returns_body_item')
 					->where('returns_header_id', $request->header_id)
@@ -535,6 +538,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 				// Reserve "Additional-Required-Pending" only
 				foreach ($additionalPending as $item) {
 					DB::table('inventory_reservations')->insert([
+						'branch_id' 		   => $get_order_branch->branch,
 						'parts_item_master_id' => $item->item_parts_id,
 						'return_header_id'     => $request->header_id,
 						'reserved_qty'         => 1,
@@ -552,6 +556,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 				// Corrected loop: reserve "Additional-Standard-DOA"
 				foreach ($additionalStandardDOA as $item) {
 					DB::table('inventory_reservations')->insert([
+						'branch_id' 		   => $get_order_branch->branch,
 						'parts_item_master_id' => $item->item_parts_id,
 						'return_header_id'     => $request->header_id,
 						'reserved_qty'         => 1,
@@ -569,6 +574,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 				// Reserve all the available qty with "Additional-Standard"
 				foreach ($additionalStandard as $item) {
 					DB::table('inventory_reservations')->insert([
+						'branch_id' 		   => $get_order_branch->branch,
 						'parts_item_master_id' => $item->item_parts_id,
 						'return_header_id'     => $request->header_id,
 						'reserved_qty'         => 1,
@@ -580,25 +586,30 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		}			
 
 		if (in_array($request->status_id, [31,41])) {
-			DB::beginTransaction();
 
+			
+			DB::beginTransaction();
+			
 			try {
+				$get_order_branch = DB::table('returns_header')->where('id', $request->header_id)->first();
 				$get_reservation_per_jo = DB::table('inventory_reservations')
 					->where('return_header_id', $request->header_id)
 					->where('status', '=', 'Pending')
 					->get();
 
 				foreach ($get_reservation_per_jo as $item) {
-					DB::table('parts_item_master')
-						->where('id', $item->parts_item_master_id)
+					DB::table('branch_item_stocks')
+						->where('parts_item_master_id', $item->parts_item_master_id)
+						->where('branch_id', $get_order_branch->branch)
 						->update([
-							'qty' => DB::raw('qty - ' . $item->reserved_qty),
+							'stock_qty' => DB::raw('stock_qty - ' . $item->reserved_qty),
 							'updated_by' => CRUDBooster::myId(),
 							'updated_at' => now(),
 						]);
 
 					DB::table('inventory_reservations')
 						->where('id', $item->id)
+						->where('branch_id', $get_order_branch->branch)
 						->update([
 							'status' => 'Confirmed / Deducted',
 							'updated_at' => now(),
@@ -684,7 +695,8 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		if($request->doa_jo == 'yes') {
 			DB::table('returns_body_item')->where('returns_header_id', $request->id)
 			->where('item_parts_id', $item_parts_id)->update([
-				'qty_status' => 'Available-DOA',
+				'qty_status' => 'DOA',
+				'cost'		 => '0.00',
 				'updated_by' => CRUDBooster::myId(),
 				'updated_at' => now(),
 			]);
@@ -765,30 +777,43 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 	// checking if gsx is existing
 	public function CheckGSX(Request $request)
 	{
+		$getJO = DB::table('returns_header')->where('id', $request->header_id)->first();
+
 		$data = DB::table('parts_item_master as pim')
+			->select('pim.*', 'bis.stock_qty')
+			->leftJoin('branch_item_stocks as bis', 'bis.parts_item_master_id', '=', 'pim.id')
+			->where('bis.branch_id', $getJO->branch)
+			->where('bis.status', '=', 'ACTIVE')
 			->where('pim.spare_parts', $request->gsx)
 			->get()
-			->map(function ($item) {
+			->map(function ($item) use ($getJO) {
 				// Get total "Pending" reservation qty
 				$pendingReservedQty = DB::table('inventory_reservations')
+					->where('branch_id', $getJO->branch)
 					->where('parts_item_master_id', $item->id)
 					->where('status', 'Pending')
 					->sum('reserved_qty');
 
 				// Subtract pending reserved qty from current qty
-				$item->qty = max(0, $item->qty - $pendingReservedQty);
+				$item->stock_qty = max(0, $item->stock_qty - $pendingReservedQty);
 
 				return $item;
 			});
 
 		return $data;
-
 	}
 
 	// checking if search spare part number
 	public function SearchSparePartNo(Request $request)
 	{
-		$data = DB::table('parts_item_master')->where('spare_parts', 'like', '%' . $request->spare_part . '%')->get();
+		$get_jo = DB::table('returns_header')->where('id', $request->header_id)->first();
+
+		$data = DB::table('parts_item_master as pim')
+			->leftJoin('branch_item_stocks as bis', 'bis.parts_item_master_id', '=', 'pim.id')
+			->where('pim.spare_parts', 'like', '%' . $request->spare_part . '%')
+			->where('bis.branch_id', $get_jo->branch)
+			->where('bis.status', '=', 'ACTIVE')
+			->get();
 		return ($data);
 	}
 

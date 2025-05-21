@@ -145,6 +145,10 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/admin/parts_item_master_stocks/store-parts-manual','AdminPartsItemMasterStocksController@storePartsManual')->name('store-parts-manual');
     Route::post('/admin/parts_item_master_stocks/dispose-stocks','AdminPartsItemMasterStocksController@saveDisposeStocks')->name('dispose-stocks');
     Route::post('/admin/parts_item_master_stocks/stock-order','AdminPartsItemMasterStocksController@saveStockOrder')->name('stock-order');
+    
+    Route::post('/admin/stock_disposal_request/reject-disposal','AdminStockDisposalRequestController@rejectDisposalRequest')->name('reject-disposal');
+    Route::post('/admin/stock_disposal_request/approve-disposal','AdminStockDisposalRequestController@approveDisposalRequest')->name('approve-disposal');
+
 
     // ITEM MASTER API
     // Route::get('/admin/apple_items_created', [AdminProductItemMasterController::class, 'getItemsCreatedAPI']);
@@ -155,17 +159,11 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/admin/manager-dashboard', [AdminCustomDashboardController::class, 'managerDashboard'])->name('manager.dashboard');
     Route::post('/admin/get-filtered-callouts-count', [AdminCustomDashboardController::class, 'getFilteredCalloutCount'])->name('get.filtered.callouts.count');
 
-
-    // Aging Callout
-    Route::post('/admin/get_aging_callout', [AdminCustomDashboardController::class, 'getAgingCallout'])->name('get_aging_callout');
-
     Route::get('/admin/frontliner-dashboard', [AdminCustomDashboardController::class, 'index'])->name('frontliner.dashboard');
     Route::get('/admin/technician-dashboard', [AdminCustomDashboardController::class, 'technicianDashboard'])->name('technician.dashboard');
     Route::get('/admin/headtechnician-dashboard', [AdminCustomDashboardController::class, 'headTechnicianDashboard']);
     Route::get('/admin/get-sales-data', [AdminCustomDashboardController::class, 'getSalesData'])->name('getSalesData');
-
     Route::post('/admin/filter_customers_units', [AdminCustomDashboardController::class, 'filterCustomerUnit'])->name('filter_customers_units');
-    Route::post('/admin/filter_customers_info', [AdminCustomDashboardController::class, 'filterCustomerInfo'])->name('filter_customers_info');
 
     // Refund
     Route::get('/admin/callout/refund/{id}', 'AdminCallOutController@refund');

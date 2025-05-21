@@ -102,11 +102,13 @@
         if(isEmptyOrSpaces(gsx_ref) == false || isEmptyOrSpaces(cs_code) == false || isEmptyOrSpaces(service_code) == false || isEmptyOrSpaces(serial_no) == false || isEmptyOrSpaces(item_desc) == false || isEmptyOrSpaces(qty) == false || isEmptyOrSpaces(item_parts_id) || isEmptyOrSpaces(cost) == false)
         {
             if(isEmptyOrSpaces(service_code) == false){
+                let header_id = $('#header_id').val();
                 $.ajax({
                     "async" : false,
                     url: "{{ route('check-gsx') }}",
                     type: "POST",
                     data: {
+                        'header_id': header_id,
                         'gsx': service_code,
                         _token: '{!! csrf_token() !!}'
                         },
@@ -127,6 +129,8 @@
             }else if(stop)
             {
                 swal('Info!','Your Spare Part is not existing.');
+            }else if(isEmptyOrSpaces(gsx_ref) == true){
+                swal('Info!','GSX is required.');
             }else if(isEmptyOrSpaces(item_desc) == true)
             {
                 swal('Info!','Item Description is required.');
@@ -177,7 +181,7 @@
                         showData += '<tr class="nr row_num" id="rowID'+ result.quotation.id +'" style="background:' + bgColor + ';"><input type="hidden" class="getidValue" name="header_id" value="'+ result.quotation.id +'">';
                         showData += '<input type="hidden" name="header_id" value="">'; 
                         showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getscValue" type="text" id="service_code_'+ result.quotation.id +'" value="'+ result.quotation.service_code +'" placeholder="Enter Service Code" readonly/></td>';
-                        showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getgsxValue" type="text" id="gsx_code_'+ result.quotation.id +'" oninput="gsx_data('+ result.quotation.id +')" value="'+ result.quotation.gsx_ref +'" placeholder="Enter GSX Reference"/></td>';
+                        showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getgsxValue" type="text" id="gsx_code_'+ result.quotation.id +'" oninput="gsx_data('+ result.quotation.id +')" value="'+ result.quotation.gsx_ref +'" placeholder="Enter GSX Reference" required/></td>';
                         showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getcsValue" type="text" id="cs_code_'+ result.quotation.id +'" value="'+ result.quotation.cs_code +'" placeholder="Enter CS Code"/></td>';
                         showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getserialValue" type="text" value="'+ result.quotation.serial_no +'" placeholder="Enter Apple Parts Number"/></td>';
                         showData += '<td style="padding: 3px !important;"><input class="input-cus text-center getitemValue" type="text" id="item_desc_'+ result.quotation.id +'" value="'+ result.quotation.item_description +'" placeholder="Enter Item Description" readonly/></td>';
@@ -300,11 +304,14 @@
     function gsx_data(row_id){
         if(row_id == 'service_code'){
             var service_code = document.getElementById(row_id).value;
+            let header_id = $('#header_id').val();
+
             $.ajax
             ({ 
                 url: "{{ route('check-gsx') }}",
                 type: "POST",
                 data: {
+                    'header_id': header_id,
                     'gsx': service_code,
                     _token: '{!! csrf_token() !!}'
                     },
@@ -312,7 +319,8 @@
                 { 
                     if(result.length > 0){
                         $("#item_desc").val(result[0].item_description);
-                        $("#qty").val(result[0].qty).css('color', (result[0].qty > 0 ? '#16a34a' : '#ef4444'));
+                        $("#gsx_ref").attr('required', true);
+                        $("#qty").val(result[0].stock_qty).css('color', (result[0].stock_qty > 0 ? '#16a34a' : '#ef4444'));
                         $("#item_parts_id").val(result[0].id);
                         $("#cost").val(result[0].cost);
                         
@@ -333,30 +341,18 @@
                         const filteredQty = all_item_qty.filter(qty => qty !== "");
                         const allAvailable = filteredQty.length > 0 && filteredQty.every(qty => qty === "available");
 
-                        if (allUnavailable || result[0].qty < 1 && caseStatus === 'CARRY-IN' && warrantyStatus === 'IN WARRANTY') {
+                        if (allUnavailable || result[0].stock_qty < 1 && caseStatus === 'CARRY-IN' && warrantyStatus === 'IN WARRANTY') {
                             $('#inwarranty_carryin_btns').show();
                             $('.iw_cin_unavailable_btn').show();
                             $('.iw_cin_available_btn').hide();
-                        } else if (allAvailable || result[0].qty > 0 && caseStatus === 'CARRY-IN' && warrantyStatus === 'IN WARRANTY') {
+                        } else if (allAvailable || result[0].stock_qty > 0 && caseStatus === 'CARRY-IN' && warrantyStatus === 'IN WARRANTY') {
                             $('#inwarranty_carryin_btns').show();
                             $('.iw_cin_available_btn').show();
                             $('.iw_cin_unavailable_btn').hide();
-                        // } else if (allUnavailable || result[0].qty < 1 && caseStatus === 'CARRY-IN' && warrantyStatus === 'OUT OF WARRANTY') {
-                        //     $('#outofwarranty_carryin_btns').show();
-                        //     $('.oow_cin_unavailable_btn').show();
-                        //     $('.oow_cin_available_btn').hide();
-                        // } else if (allAvailable || result[0].qty > 0 && caseStatus === 'CARRY-IN' && warrantyStatus === 'OUT OF WARRANTY') {
-                        //     $('#outofwarranty_carryin_btns').show();
-                        //     $('.oow_cin_available_btn').show();
-                        //     $('.oow_cin_unavailable_btn').hide();
                         } else {
                             $('#inwarranty_carryin_btns').hide();
                             $('.iw_cin_unavailable_btn').hide();
                             $('.iw_cin_available_btn').hide();
-
-                            // $('#outofwarranty_carryin_btns').hide();
-                            // $('.oow_cin_available_btn').hide();
-                            // $('.oow_cin_unavailable_btn').hide();
                         }
                         // end of buttons display logic
 
@@ -381,7 +377,7 @@
                 { 
                     if(result.length > 0){
                         $("#item_desc_"+row_id).val(result[0].item_description);
-                        $("#qty_"+row_id).val(result[0].qty).css('color', 'green');
+                        $("#qty_"+row_id).val(result[0].stock_qty).css('color', 'green');
                         $("#item_parts_id").val(result[0].id);
                         $("#price_"+row_id).val(result[0].cost);
 
@@ -413,6 +409,8 @@
                     }else{
                         $(".sparepartlist").css('display', 'none');
                     }
+
+                    let header_id = $('#header_id').val();
                    
                     $.ajax
                     ({ 
@@ -420,6 +418,7 @@
                         type: "POST",
                         data: {
                             'spare_part': request.term,
+                            'header_id' : header_id,
                             _token: '{!! csrf_token() !!}'
                             },
                         success: function(result)
@@ -560,6 +559,8 @@
         $('.getqtyValue2').val('');
         $('.getitemparstidValue2').val('');
         $('.getcostValue2').val('');
+        $("#gsx_ref").attr('required', false);
+
     }
 
     function addDefectiveRow() {
@@ -777,12 +778,12 @@
                         Swal.close();
                         $('#spare_part_code').val(response.response_data.spare_parts);
                         $('#doa_item_desc').val(response.response_data.item_description);
-                        $('#doa_item_qty').val(response.response_data.qty);
+                        $('#doa_item_qty').val(response.response_data.stock_qty);
                         $('#doa_item_id').val(response.response_data.id);
                         $('#doa_item_price').val(response.response_data.price_cost)
                         $('#doa_item_gsx').val(response.response_data.hbi_gsx_ref)
                         $('#doa_item_cs').val(response.response_data.hbi_cs_code)
-                        $('#doa_item_kgb').val(response.response_data.hbi_apple_parts)
+                        $('#doa_item_kgb').val(response.response_data.hbi_serial_number)
                         $('#erase_wrong_filter_doa').show();
 
                     } else if (response.success == false) {
@@ -824,6 +825,9 @@
     $('#add_doa_parts').on('click', function () {
         if (
             isEmptyValidator('#spare_parts_code', 'Spare Part Code') ||
+            isEmptyValidator('#doa_item_gsx', 'GSX') ||
+            isEmptyValidator('#doa_item_cs', 'CS Code') ||
+            isEmptyValidator('#doa_item_kgb', 'KGB Serial Number') ||
             isEmptyValidator('#doa_item_desc', 'Item Description') ||
             isEmptyValidator('#doa_item_qty', 'Quantity') ||
             isEmptyValidator('#doa_item_price', 'Price') ||
@@ -834,6 +838,9 @@
 
         let header_id = $('#header_id').val();
         let spare_part_code = $('#spare_part_code').val();
+        let doa_item_gsx = $('#doa_item_gsx').val();
+        let doa_item_cs = $('#doa_item_cs').val();
+        let doa_item_kgb = $('#doa_item_kgb').val();
         let doa_item_desc = $('#doa_item_desc').val();
         let doa_item_qty = $('#doa_item_qty').val();
         let doa_item_id = $('#doa_item_id').val();
@@ -846,6 +853,9 @@
             data: {
                 'header_id' : header_id,
                 'spare_part_code' : spare_part_code,
+                'doa_item_gsx' : doa_item_gsx,
+                'doa_item_cs' : doa_item_cs,
+                'doa_item_kgb' : doa_item_kgb,
                 'doa_item_desc' : doa_item_desc,
                 'doa_item_qty' : doa_item_qty,
                 'doa_item_id' : doa_item_id,

@@ -144,7 +144,7 @@
                             @endif
 
                             @if($menu->name == 'Pending Mail-In Shipment')
-                                <div class="notification-container-cus" style="display: {{$pending_mail_in_shipment == 0 ? 'none' : ''}}">
+                                <div class="notification-container-cus" style="padding-left: 0 !important; display: {{$pending_mail_in_shipment == 0 ? 'none' : ''}}">
                                     <div class="icon-cus">🔔</div>
                                     <div class="notif-count-cus">{{$pending_mail_in_shipment}}</div>
                                 </div>

@@ -98,7 +98,7 @@
                                                 <tr class="nr row_num" id="rowID{{$qt->id}}"
                                                     style="background: 
                                                         {{ in_array($qt->qty_status, [
-                                                            'Available-DOA',
+                                                            'DOA',
                                                         ]) ? '#443627' : 
                                                         ( !in_array($qt->item_spare_additional_type, [
                                                             'Additional-Standard', 
@@ -118,15 +118,15 @@
                                                         <input class="input-cus text-center getcsValue" type="text" id="cs_code_{{$qt->id}}" value="{{ $qt->cs_code }}" placeholder="Enter CS Code" {{ in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? '' : 'readonly'}} style="background: {{ !in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? 'lightgrey' : ''}}">
                                                     </td>
                                                     <td style="padding: 3px !important;">                        
-                                                        <input class="input-cus text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter KGB Serial Number" {{ !in_array($transaction_details->repair_status, [29, 39]) && !in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? 'readonly' : ''}} style="background: {{ !in_array($transaction_details->repair_status, [29, 39]) && !in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? 'lightgrey' : ''}}">
+                                                        <input class="input-cus text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter KGB Serial Number" {{ !in_array(CRUDBooster::myPrivilegeId(), [4,8,9]) ? 'readonly' : ''}} style="background: {{ !in_array(CRUDBooster::myPrivilegeId(), [4,8,9]) ? 'lightgrey' : ''}}">
                                                     </td>
                                                     <td style="padding: 3px !important;">
                                                         <input class="input-cus text-center getitemValue" type="text" id="item_desc_{{$qt->id}}" value="{{ $qt->item_description }}" placeholder="Enter Item Description" readonly {{ !in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? 'readonly' : ''}} style="background: lightgrey">
                                                     </td>
                                                     <td style="padding: 3px !important; display:flex; justify-content:center; align-items:center">
                                                         <input class="input-cus text-center getqtyValue" type="text" id="qty_{{$qt->id}}" value="{{$qt->qty_status}}" readonly 
-                                                               style="font-weight:500; background: lightgrey; color:{{ $qt->qty_status == 'Available-DOA' ? '#443627' : ($qt->qty_status == 'Available' ? '#16a34a' : '#ef4444') }}">
-                                                               @if ($qt->qty_status == 'Available-DOA')
+                                                               style="font-weight:500; background: lightgrey; color:{{ $qt->qty_status == 'DOA' ? '#443627' : ($qt->qty_status == 'Available' ? '#16a34a' : '#ef4444') }}">
+                                                               @if ($qt->qty_status == 'DOA')
                                                                    <div class="tooltip-wrapper">
                                                                         <div class="problem-icon">
                                                                             <i class="bi bi-info"></i>
@@ -186,7 +186,7 @@
                                         <td style="padding: 1px !important;"><input class="input-cus text-center getgsxValue getgsxValue2" type="text" value="" id="gsx_ref"  placeholder="Enter GSX Reference"></td>
                                         <td style="padding: 1px !important;"><input class="input-cus text-center getcsValue getcsValue2" type="text" value="" id="cs_code" placeholder="Enter CS Code"></td>
                                         <td style="padding: 1px !important;"><input class="input-cus text-center getserialValue getserialValue2" type="text" value="" id="serial_no" placeholder="Enter KGB Serial Number"></td>
-                                        <td style="padding: 1px !important;"><input class="input-cus text-center getitemValue getitemValue2" type="text" value="" id="item_desc" placeholder="Enter Item Description"></td>
+                                        <td style="padding: 1px !important;"><input class="input-cus text-center getitemValue getitemValue2" type="text" value="" id="item_desc" placeholder="Enter Item Description" readonly></td>
                                         <td style="padding: 1px !important;"><input class="input-cus text-center getqtyValue getqtyValue2" type="text" value="" id="qty" placeholder="Search Item" readonly style="background: lightgrey"></td>
                                         <td style="padding: 1px !important; display:none"><input class="input-cus text-center getitemparstidValue getitemparstidValue2" type="hidden" value="" id="item_parts_id" placeholder="Search Item" readonly style="background: lightgrey"></td>
                                         <td style="padding: 1px !important;"><input class="input-cus text-center getcostValue getcostValue2" type="number" value="" onblur="AutoFormatCost('cost')" id="cost" min="0" step="any"  placeholder="Enter Price"></td> 
@@ -236,7 +236,7 @@
                                                 <select name="spare_parts_code" autocomplete="off" class="js-example-basic-single input-cus" id="spare_parts_code" onchange="filter_doa_item()"> 
                                                     <option selected value="default">Filter here...</option>
                                                     @foreach($data['quotation'] as $per_qt_filter)
-                                                        @if ($per_qt_filter->item_spare_additional_type != 'Additional-Standard-DOA' && ($per_qt_filter->qty_status != 'Available-DOA'))
+                                                        @if ($per_qt_filter->item_spare_additional_type != 'Additional-Standard-DOA' && ($per_qt_filter->qty_status != 'DOA'))
                                                             <option value="{{$per_qt_filter->item_parts_id}}">{{$per_qt_filter->service_code}}</option>
                                                         @endif
                                                     @endforeach

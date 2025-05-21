@@ -293,7 +293,7 @@
                             </div>
                             <div class="form-group-cus">
                                 <label class="label-cus"><span class="requiredField">*</span>{{ trans('labels.form-label.purchase_date') }}</label>
-                                <input type="input" name="purchase_date" placeholder="" id="purchase_date" class="input-cus" autocomplete="off" required/>
+                                <input type="text" name="purchase_date" placeholder="" id="purchase_date" class="input-cus" autocomplete="off" required/>
                             </div>
                             <div class="form-group-cus">
                                 <label class="label-cus"><span class="requiredField">*</span>{{ trans('labels.form-label.warranty_expiration_date') }}</label>
@@ -972,6 +972,15 @@
         }
     });
 </script>
+
+{{-- <script>
+    $('#purchase_date').datepicker({
+        endDate: "0d",
+        format: 'mm/dd/yyyy',
+        autoclose: true
+    });
+</script> --}}
+
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>

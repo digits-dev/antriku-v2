@@ -425,6 +425,8 @@ function SelectedModel() {
             if (window.activeCanvas) {
                 const base64Image = window.activeCanvas.toDataURL("image/png");
                 document.getElementById("marked_image_base64").value = base64Image;
+                jQuery("#Photo").html(`<img src="${base64Image}" style="border: 1px solid slategray; width: 100%;" />`);
+
             }
           },
           willClose: () => {

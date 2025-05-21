@@ -27,144 +27,66 @@
         .swal2-popup {
             border-radius: 10px !important;
         }
-
-        :root {
-            --m-dash-blue-primary: #3b82f6;
-            --m-dash-blue-light: #dbeafe;
-            --m-dash-purple-primary: #8b5cf6;
-            --m-dash-purple-light: #ede9fe;
-            --m-dash-orange-primary: #f59e0b;
-            --m-dash-orange-light: #fef3c7;
-            --m-dash-red-primary: #ef4444;
-            --m-dash-red-light: #fee2e2;
-            --m-dash-green: #10b981;
-            --m-dash-red: #f43f5e;
-            --m-dash-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --m-dash-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --m-dash-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        
-        .m-dash-card {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: var(--m-dash-shadow-sm);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-        
-        .m-dash-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--m-dash-shadow);
-        }
-        
-        .m-dash-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            position: relative;
-        }
-        
-        .m-dash-card-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #4b5563;
-        }
-        
-        .m-dash-card-value {
-            font-size: 36px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            letter-spacing: -0.025em;
-        }
-        
-        .m-dash-card-change {
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            font-weight: 500;
-        }
-        
-        /* Card specific styles */
-        .m-dash-new-users {
-            background: linear-gradient(135deg, white 0%, var(--m-dash-blue-light) 100%);
-        }
-        
-        .m-dash-new-users .m-dash-card-value {
-            color: var(--m-dash-blue-primary);
-        }
-        
-        .m-dash-total-users {
-            background: linear-gradient(135deg, white 0%, var(--m-dash-purple-light) 100%);
-        }
-        
-        .m-dash-total-users .m-dash-card-value {
-            color: var(--m-dash-purple-primary);
-        }
-        
-        .m-dash-transactions {
-            background: linear-gradient(135deg, white 0%, var(--m-dash-orange-light) 100%);
-        }
-        
-        .m-dash-transactions .m-dash-card-value {
-            color: var(--m-dash-orange-primary);
-        }
-        
-        .m-dash-non-users {
-            background: linear-gradient(135deg, white 0%, var(--m-dash-red-light) 100%);
-        }
-        
-        .m-dash-non-users .m-dash-card-value {
-            color: var(--m-dash-red-primary);
-        }
-        
-        .m-dash-positive {
-            color: var(--m-dash-green);
-        }
-        
-        .m-dash-negative {
-            color: var(--m-dash-red);
-        }
-        
-        /* Animation for the cards */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .m-dash-card {
-            animation: fadeIn 0.5s ease forwards;
-        }
-        
-        .m-dash-card:nth-child(1) { animation-delay: 0.1s; }
-        .m-dash-card:nth-child(2) { animation-delay: 0.2s; }
-        .m-dash-card:nth-child(3) { animation-delay: 0.3s; }
-        .m-dash-card:nth-child(4) { animation-delay: 0.4s; }
     </style>
 @endpush
 @section('content')
     <main class="container-dash dashboard-dash cust-ch">
 
         <div class="tabs-dash m-dash-new-users text-uppercase" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+
+            <div class="tab-dash active" data-tab="tab-jaymar-bi">
+                <img src="https://cdn-icons-png.flaticon.com/128/1698/1698561.png" alt="" width="20px">
+                Dashboard Ni Jaymar
+            </div>
+
             @foreach ($branch as $index => $per_branch)
-                <div class="tab-dash {{ $index === 0 ? 'active' : '' }}" data-tab="tab-{{ $per_branch->id }}">
+                {{-- <div class="tab-dash {{ $index === 0 ? 'active' : '' }}" data-tab="tab-{{ $per_branch->id }}"> --}}
+                <div class="tab-dash" data-tab="tab-{{ $per_branch->id }}">
                     <img src="https://cdn-icons-png.flaticon.com/128/1698/1698561.png" alt="" width="20px">
                     {{ $per_branch->branch_name }}
                 </div>
             @endforeach
+
+        </div>
+
+        <div id="tab-jaymar-bi" class="tab-content-dash active">
+            <div class="card-dash" style="border-top-left-radius:0%; border-top-right-radius:0%">
+                <div class="card-header-dash" style="padding: 0px 10px 0px 10px;">
+                    <h2 class="card-title-dash text-uppercase" style="color: white;">
+                        <img src="https://cdn-icons-png.flaticon.com/128/1828/1828673.png" alt="dash_icon" width="18">
+                        <small style="font-size: 14px;">Dashboard Overview</small>
+                    </h2>
+
+                    <div>
+                        <small class="text-uppercase" style="color: lightgrey">Home <i class="bi bi-chevron-right" style="font-size: 10px;"></i> Dashboard</small>
+                    </div>
+                </div>
+                <div style="margin-left: 15px">
+                    <h5>
+                        <i class="bi bi-box-fill"></i>
+                        Dashboard ni Jaymar
+                    </h5>
+                </div>
+                <div class="card-body-dash">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <br>
+                            <iframe
+                                title="NO"
+                                style="width: 100%; height: 800px"
+                                src='https://app.powerbi.com/view?r=eyJrIjoiNzVhMTNmNTQtYjg4MS00YTQ1LTk4ZTctYmFjYjg5N2E5ODA2IiwidCI6ImVhNjUwNjA1LTVlOGQtNGRkNC1iNzhmLTAyZTNlZDVmZWQ5OCIsImMiOjEwfQ%3D%3D'
+                                frameBorder="0"
+                                allowFullScreen="true">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         @foreach ($branch as $index => $per_branch)
-            <div id="tab-{{ $per_branch->id }}" class="tab-content-dash {{ $index === 0 ? 'active' : '' }}">
+            {{-- <div id="tab-{{ $per_branch->id }}" class="tab-content-dash {{ $index === 0 ? 'active' : '' }}"> --}}
+            <div id="tab-{{ $per_branch->id }}" class="tab-content-dash">
                 <div class="card-dash" style="border-top-left-radius:0%; border-top-right-radius:0%">
                     <div class="card-header-dash" style="padding: 0px 10px 0px 10px;">
                         <h2 class="card-title-dash text-uppercase" style="color: white;">
@@ -379,9 +301,10 @@
                                     </div>
                                 </div>
                             </div>
+                            
                         </div>
                         
-                    </div>
+                    </div>  
 
 
                     {{-- <div style="margin-left: 15px">
@@ -627,11 +550,10 @@
 
                         </div>
                     </div> --}}
-
+                    
                 </div>
             </div>
         @endforeach
-
     </main>
 @endsection
 @push('bottom')

@@ -9,22 +9,12 @@ use Illuminate\Support\Facades\DB;
 
 class AdminCustomDashboardController extends \crocodicstudio\crudbooster\controllers\CBController
 {
-    private const Cancelled = 3;
     private const CancelledClosed = 5;
-    private const OngoingRepair = 13;
-    private const ShippedMailIn = 16;
-    private const SparePartsReceived = 15;
-    private const ReplacementPartsPaid = 18;
-    private const PendingCustomerPayment = 17;
-    private const ForPartsOrdering = 19;
     private const Frontliner = 3;
     private const Technician = 4;
     private const LeadTechnician = 8;
-
     private const OnGoingRepair = 34;
     private const OnGoingRepairOOW = 42;
-
-    private const ToDiagnose = 1;
     private const OngoingDiagnosis = 10;
     private const AwaitingAppleRepair = 17;
     private const AwaitingAppleRepairOOW = 26;
@@ -38,13 +28,6 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
 
         $data['country'] = DB::table('refcountry')->get();
 
-        $data['handle_overall_total'] = DB::table('returns_header')
-            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.created_by')
-            ->leftJoin('cms_privileges', 'cms_privileges.id', '=', 'cms_users.id_cms_privileges')
-            ->where('cms_users.id_cms_privileges', 3)
-            ->where('cms_users.status', '=', 'ACTIVE')
-            ->count();
-
         $data['fl_abandoned_units_dash_count'] = DB::table('returns_header')
             ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
             ->whereIn('job_order_logs.status_id', [19, 28])->where('returns_header.branch', CRUDBooster::me()->branch_id)
@@ -55,36 +38,68 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->whereIn('id', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])
             ->where('status', '=', 'ACTIVE')->get();
 
-        $data['handle_per_employee'] = DB::table('returns_header')
-            ->select(
-                'cms_users.id as user_id',
-                'cms_users.name as created_by_user',
-                'cms_privileges.name as privilege_name',
-                DB::raw('COUNT(*) as total_creations')
+        $data['aging_callouts'] = DB::table('returns_header')
+            ->select('returns_header.*', 'latest_logs.transacted_at')
+            ->leftJoinSub(
+                DB::table('job_order_logs')
+                    ->select('returns_header_id', DB::raw('MAX(transacted_at) as transacted_at'))
+                    ->groupBy('returns_header_id'),
+                'latest_logs',
+                function($join) {
+                    $join->on('returns_header.id', '=', 'latest_logs.returns_header_id');
+                }
             )
-            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.created_by')
-            ->leftJoin('cms_privileges', 'cms_privileges.id', '=', 'cms_users.id_cms_privileges')
-            ->where('cms_users.id_cms_privileges', 3)
-            ->where('cms_users.status', '=', 'ACTIVE')
-            ->where('cms_users.id', '=', CRUDBooster::myId())
-            ->groupBy('cms_users.id', 'cms_users.name', 'cms_privileges.name')
-            ->orderBy('total_creations', 'DESC')
+            ->whereIn('repair_status', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])
+            ->get();
+
+        $today = Carbon::now();
+        $normalCount = 0;
+        $mediumCount = 0;
+        $highCount = 0;
+        $criticalCount = 0;
+
+        foreach ($data['aging_callouts'] as $callout) {
+            $lastUpdated = $callout->transacted_at 
+                ? Carbon::parse($callout->transacted_at) 
+                : Carbon::parse($callout->created_at);
+            
+            // Calculate age in days
+            $ageDays = $lastUpdated->diffInDays($today);
+            
+            // Categorize based on age
+            if ($ageDays <= 7) {
+                $normalCount++;
+            } elseif ($ageDays <= 14) {
+                $mediumCount++;
+            } elseif ($ageDays <= 30) {
+                $highCount++;
+            } else {
+                $criticalCount++;
+            }
+            $callout->age_days = $ageDays;
+        }
+
+        // Add counts to the data array
+        $data['normalCount'] = $normalCount;
+        $data['mediumCount'] = $mediumCount;
+        $data['highCount'] = $highCount;
+        $data['criticalCount'] = $criticalCount;
+
+        $data['my_cases'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'transaction_status.status_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status', 'transaction_status.id', '=', 'returns_header.repair_status')
+            ->where('returns_header.created_by', '=', CRUDBooster::myId())
+            ->orderBy('returns_header.id', 'DESC')
             ->get();
 
         $data['customers_units'] = DB::table('returns_header')
             ->where('branch', CRUDBooster::me()->branch_id)
             ->count();
 
-        $data['customers_info'] = DB::table('returns_header')
-            ->where('branch', CRUDBooster::me()->branch_id)
-            ->whereNotNull('country')
-            ->whereNotNull('province')
-            ->whereNotNull('city')
-            ->whereNotNull('barangay')
-            ->count();
-
         $data['fl_pending_call_out_dash_count_all'] = DB::table('returns_header')
             ->whereIn('repair_status', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])
+            ->where('created_by', CRUDBooster::myId())
             ->count();
 
         $data['time_motion'] = DB::table('returns_header')
@@ -131,32 +146,8 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         }
     }
 
-    function getAgingCallout(Request $request)
-    {
-
-        $data['fl_aging_call_out_dash_count_0_14'] = DB::table('returns_header')
-            ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
-            ->whereIn('returns_header.repair_status', [$request->call_out_id])->where('returns_header.branch', CRUDBooster::me()->branch_id)
-            ->whereBetween('job_order_logs.transacted_at', [Carbon::now()->subDays(14), Carbon::now()])
-            ->count();
-        $data['fl_aging_call_out_dash_count_15_30'] = DB::table('returns_header')
-            ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
-            ->whereIn('returns_header.repair_status', [$request->call_out_id])->where('returns_header.branch', CRUDBooster::me()->branch_id)
-            ->whereBetween('job_order_logs.transacted_at', [Carbon::now()->subDays(30), Carbon::now()->subDays(15)])
-            ->count();
-        $data['fl_aging_call_out_dash_count_30_plus'] = DB::table('returns_header')
-            ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
-            ->whereIn('returns_header.repair_status', [$request->call_out_id])->where('returns_header.branch', CRUDBooster::me()->branch_id)
-            ->where('job_order_logs.transacted_at', '<=', Carbon::now()->subDays(30))
-            ->count();
-
-        return response()->json(['success' => true, 'data' => $data]);
-    }
-
     public function filterCustomerUnit(Request $request)
     {
-        $date_from = $request->input('date_range_from');
-        $date_to = $request->input('date_range_to');
         $perPage = 10;
 
         $query = DB::table('returns_header')
@@ -184,55 +175,6 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
                     ->orWhere('contact_no', 'LIKE', "%$search%")
                     ->orWhere('status_name', 'LIKE', "%$search%");
             });
-        }
-
-        // if (!empty($date_from) && !empty($date_to)) {
-        //     $query->whereBetween(DB::raw("DATE(returns_header.created_at)"), [$date_from, $date_to]);
-        // } elseif (!empty($date_from)) {
-        //     $query->whereDate('returns_header.created_at', '>=', $date_from);
-        // } elseif (!empty($date_to)) {
-        //     $query->whereDate('returns_header.created_at', '<=', $date_to);
-        // }
-
-        $filter_results = $query->paginate($perPage);
-
-        return response()->json($filter_results);
-    }
-
-    public function filterCustomerInfo(Request $request)
-    {
-        $country = $request->input('country');
-        $province = $request->input('province');
-        $city = $request->input('city');
-        $brgy = $request->input('brgy');
-        $perPage = 10;
-
-        $query = DB::table('returns_header')
-            ->where('branch', CRUDBooster::me()->branch_id)
-            ->whereNotNull('country')
-            ->whereNotNull('province')
-            ->whereNotNull('city')
-            ->whereNotNull('barangay')
-            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
-            ->leftJoin('transaction_status', 'transaction_status.id', '=', 'returns_header.repair_status')
-            ->select(
-                'returns_header.*',
-                'model.model_name',
-                'transaction_status.status_name'
-            );
-
-        // Apply filters
-        if ($country) {
-            $query->where('returns_header.country', $country);
-        }
-        if ($province) {
-            $query->where('returns_header.province', $province);
-        }
-        if ($city) {
-            $query->where('returns_header.city', $city);
-        }
-        if ($brgy) {
-            $query->where('returns_header.barangay', $brgy);
         }
 
         $filter_results = $query->paginate($perPage);

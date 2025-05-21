@@ -22,7 +22,7 @@
                         <div class="col-md-12" style="margin-top:7px;">
                             <label class="label-cus"><span class="requiredField">*</span>Warranty Status:</label>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label class="warranty-option-cus">
                                 <div class="radio-container-cus">
                                 <input type="radio" name="warranty_status" value="IN WARRANTY" value="IN WARRANTY" onchange="return WarrantyStatusChange(1)" required {{ $transaction_details->warranty_status == 'IN WARRANTY' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}>
@@ -42,7 +42,7 @@
                                 </div>
                             </label>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label class="warranty-option-cus">
                                 <div class="radio-container-cus">
                                 <input type="radio" name="warranty_status" value="OUT OF WARRANTY" onchange="return WarrantyStatusChange(2)" required {{ $transaction_details->warranty_status == 'OUT OF WARRANTY' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}>
@@ -63,7 +63,7 @@
                                 </div>
                             </label>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 hidden">
                             <label class="warranty-option-cus">
                                 <div class="radio-container-cus">
                                 <input type="radio" name="warranty_status" value="SPECIAL" onchange="return WarrantyStatusChange(3)" required {{ $transaction_details->warranty_status == 'SPECIAL' ? 'checked' : ''}} {{ $transaction_details->repair_status != 10 ? 'disabled' : ''}}>
@@ -261,8 +261,8 @@
                         <div class="status-badge-cust danger" style="margin-top: 0rem">{{ $transaction_details->warranty_status }}</div>
                     @elseif($transaction_details->warranty_status == "IN WARRANTY")
                         <div class="status-badge-cust success" style="margin-top: 0rem">{{ $transaction_details->warranty_status }}</div>
-                    @elseif($transaction_details->warranty_status == "SPECIAL")
-                        <div class="status-badge-cust warning" style="margin-top: 0rem">{{ $transaction_details->warranty_status }}</div>
+                    {{-- @elseif($transaction_details->warranty_status == "SPECIAL") --}}
+                        {{-- <div class="status-badge-cust warning" style="margin-top: 0rem">{{ $transaction_details->warranty_status }}</div> --}}
                     @endif
                 </div>
             </div>

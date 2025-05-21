@@ -28,19 +28,22 @@ class AdminPartsItemMasterStocksController extends \crocodicstudio\crudbooster\c
 		$this->button_filter = true;
 		$this->button_import = false;
 		$this->button_export = false;
-		$this->table = "parts_item_master";
+		$this->table = "branch_item_stocks";
 		# END CONFIGURATION DO NOT REMOVE THIS LINE
 
 		# START COLUMNS DO NOT REMOVE THIS LINE
 		$this->col = [];
-		$this->col[] = ["label" => "Spare Parts", "name" => "spare_parts"];
-		$this->col[] = ["label" => "Item Description", "name" => "item_description"];
-		$this->col[] = ["label" => "Qty", "name" => "qty"];
-		$this->col[] = ["label" => "Cost", "name" => "cost"];
-		$this->col[] = ["label" => "GSX Item Status", "name" => "gsx_item_status"];
+		if(!in_array(CRUDBooster::myPrivilegeId(), [9])){
+			$this->col[] = ["label" => "Branch", "name" => "branch_id", "join" => "branch,branch_name"];
+		}
+		$this->col[] = ["label" => "Spare Parts", "name" => "parts_item_master_id", "join" => "parts_item_master,spare_parts"];
+		$this->col[] = ["label" => "Item Description", "name" => "parts_item_master_id", "join" => "parts_item_master,item_description"];
+		$this->col[] = ["label" => "Stock Qty", "name" => "stock_qty"];
+		$this->col[] = ["label" => "Cost", "name" => "parts_item_master_id", "join" => "parts_item_master,cost"];
+		$this->col[] = ["label" => "Stock Status", "name" => "status"];
 		# END COLUMNS DO NOT REMOVE THIS LINE  
 
-		if (CRUDBooster::isCreate() && in_array(CRUDBooster::myPrivilegeId(), [8])) {
+		if (CRUDBooster::isCreate() && in_array(CRUDBooster::myPrivilegeId(), [9])) {
 			$currentUrl = url()->current();
 			$orderingUrl = CRUDBooster::mainpath('stock_ordering');
 			$addStockUrl = CRUDBooster::mainpath('stock_in_manual');
@@ -75,7 +78,12 @@ class AdminPartsItemMasterStocksController extends \crocodicstudio\crudbooster\c
 
 	public function hook_query_index(&$query)
 	{
-		$query->where('gsx_item_status', '=', 'ACTIVE');
+		if(in_array(CRUDBooster::myPrivilegeId(), [9])){
+			$query->where('branch_id', CRUDBooster::me()->branch_id)
+				  ->where('status', '=', 'ACTIVE');
+		} else {
+			$query->where('status', '=', 'ACTIVE');
+		}
 	}
 
 	public function hook_row_index($column_index, &$column_value) {}
@@ -110,18 +118,6 @@ class AdminPartsItemMasterStocksController extends \crocodicstudio\crudbooster\c
 
 			try {
 				foreach ($parts as $part) {
-					$currentQty = DB::table('parts_item_master')
-						->where('id', $part['id'])
-						->value('qty');
-
-					$newQty = $currentQty + $part['qty'];
-					DB::table('parts_item_master')
-						->where('id', $part['id'])
-						->update([
-							'qty' => $newQty,
-							'updated_at' => now(),
-						]);
-
 					$latestId = DB::table('inventory_stock_in')->max('id');
 					$nextId = $latestId ? $latestId + 1 : 1;
 
@@ -137,6 +133,30 @@ class AdminPartsItemMasterStocksController extends \crocodicstudio\crudbooster\c
 						'created_by' => CRUDBooster::myId(),
 						'created_at' => now(),
 					]);
+
+					$existing = DB::table('branch_item_stocks')
+						->where('branch_id', CRUDBooster::me()->branch_id)
+						->where('parts_item_master_id', $part['id'])
+						->first();
+
+					if ($existing) {
+						DB::table('branch_item_stocks')
+							->where('id', $existing->id)
+							->update([
+								'stock_qty' => $existing->stock_qty + $part['qty'],
+								'updated_at' => now(),
+								'updated_by' => CRUDBooster::myId(),
+							]);
+					} else {
+						DB::table('branch_item_stocks')->insert([
+							'branch_id' => CRUDBooster::me()->branch_id,
+							'parts_item_master_id' => $part['id'],
+							'stock_qty' => $part['qty'],
+							'status' => 'ACTIVE',
+							'created_by' => CRUDBooster::myId(),
+							'created_at' => now(),
+						]);
+					}
 				}
 
 				DB::commit();
@@ -178,6 +198,7 @@ class AdminPartsItemMasterStocksController extends \crocodicstudio\crudbooster\c
 			// Insert header
 			$headerId = DB::table('stock_disposal_header')->insertGetId([
 				'reference_number' => $stock_in_reference_no,
+				'branch_id' => CRUDBooster::me()->branch_id,
 				'disposal_memo' => $disposal_memo,
 				'total_qty' => $totalQty,
 				'created_by' => CRUDBooster::myId(),

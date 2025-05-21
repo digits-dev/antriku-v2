@@ -1,8 +1,8 @@
 <div class="pagination-cust" id="pagination_time_motion" style="margin: 0">
     @if ($time_motion->onFirstPage())
-        <button class="pagination-btn-cust" disabled>
+        <button type="button" class="pagination-btn-cust" disabled>
     @else
-        <button class="pagination-btn-cust pagination-link" data-url="{{ $time_motion->previousPageUrl() }}">
+        <button type="button" class="pagination-btn-cust pagination-link" data-url="{{ $time_motion->previousPageUrl() }}">
     @endif
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="15 18 9 12 15 6"></polyline>
@@ -18,14 +18,14 @@
     @endphp
 
     @if ($startPage > 1)
-        <button class="pagination-btn-cust pagination-link" data-url="{{ $time_motion->url(1) }}">1</button>
+        <button type="button" class="pagination-btn-cust pagination-link" data-url="{{ $time_motion->url(1) }}">1</button>
         @if ($startPage > 2)
             <span>...</span>
         @endif
     @endif
 
     @for ($i = $startPage; $i <= $endPage; $i++)
-        <button class="pagination-btn-cust pagination-link {{ $i == $currentPage ? 'active' : '' }}" 
+        <button type="button" class="pagination-btn-cust pagination-link {{ $i == $currentPage ? 'active' : '' }}" 
             data-url="{{ $time_motion->url($i) }}">
             {{ $i }}
         </button>
@@ -35,13 +35,13 @@
         @if ($endPage < $totalPages - 1)
             <span>...</span>
         @endif
-        <button class="pagination-btn-cust pagination-link" data-url="{{ $time_motion->url($totalPages) }}">{{ $totalPages }}</button>
+        <button type="button" class="pagination-btn-cust pagination-link" data-url="{{ $time_motion->url($totalPages) }}">{{ $totalPages }}</button>
     @endif
 
     @if ($time_motion->currentPage() == $time_motion->lastPage())
-        <button class="pagination-btn-cust" disabled>
+        <button type="button" class="pagination-btn-cust" disabled>
     @else
-        <button class="pagination-btn-cust pagination-link" data-url="{{ $time_motion->nextPageUrl() }}">
+        <button type="button" class="pagination-btn-cust pagination-link" data-url="{{ $time_motion->nextPageUrl() }}">
     @endif
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="9 18 15 12 9 6"></polyline>

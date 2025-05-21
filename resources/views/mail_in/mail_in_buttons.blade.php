@@ -22,7 +22,7 @@
             <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
         </button>
         @elseif ($transaction_details->repair_status == 16)
-        <button type="submit" id="save" onclick="return changeStatus(17)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+        <button type="submit" id="save" onclick="return validateBeforeChangeStatus(17)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
             <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
         </button>
         @elseif ($transaction_details->repair_status == 18)

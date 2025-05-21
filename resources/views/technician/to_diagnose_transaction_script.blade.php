@@ -185,20 +185,6 @@
             }
         }
 
-        // if (status_id == 31 || status_id == 41) {
-        //     for (var i = 0; i < getgsxValue.length - 1; ++i) {
-        //         if (isEmptyOrSpaces(getgsxValue[i]) == true) {
-        //             $('.getgsxValue').css('border', '1px solid red');
-        //             setTimeout(function() {
-        //                 $('#top-loader').hide();
-        //                 swal('Info!', 'GSX Reference is required.');
-        //             }, 1000);
-        //             return false;
-        //         }
-        //         $('.getgsxValue').css('border', '');
-        //     }
-        // }
-
         if (status_id == 35) {
             let all_item_parts_type = $('.item_spare_additional_type').map(function() {
                 return $(this).val().trim().toLowerCase();
@@ -237,12 +223,14 @@
 
         for (var i = 0; i < getscValue.length - 1; ++i) {
             if (isEmptyOrSpaces(getscValue[i]) == false) {
+                let header_id = $('#header_id').val();
                 $('#top-loader').show();
                 $.ajax({
                     "async": false,
                     url: "{{ route('check-gsx') }}",
                     type: "POST",
                     data: {
+                        'header_id': header_id,
                         'gsx': getscValue[i],
                         _token: '{!! csrf_token() !!}'
                     },
@@ -278,11 +266,14 @@
             false || isEmptyOrSpaces(serial_no) == false || isEmptyOrSpaces(item_desc) == false || isEmptyOrSpaces(
             cost) == false) {
             if (isEmptyOrSpaces(service_code) == false) {
+                let header_id = $('#header_id').val();
+
                 $.ajax({
                     "async": false,
                     url: "{{ route('check-gsx') }}",
                     type: "POST",
                     data: {
+                        'header_id': header_id,
                         'gsx': service_code,
                         _token: '{!! csrf_token() !!}'
                     },
@@ -443,7 +434,7 @@
                                         icon: "info",
                                         confirmButtonText: "OK"
                                     }).then(() => {
-                                        if(status_id == 34){
+                                        if([34, 42].includes(status_id)){
                                             window.location.href = '/admin/pending_repair/edit/' + header_id;
                                         } else {
                                             window.location.href =
