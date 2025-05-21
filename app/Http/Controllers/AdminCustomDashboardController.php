@@ -440,7 +440,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
                 DB::raw('YEARWEEK(created_at, 1) as year_week'),
                 DB::raw('WEEK(created_at) as week'),
                 DB::raw('YEAR(created_at) as year'),
-                DB::raw('SUM(parts_total_cost + diagnostic_cost) as total')
+                DB::raw('SUM(COALESCE(`parts_total_cost`, 0) + COALESCE(`diagnostic_cost`, 0)) as total')
             )
             ->groupBy('year_week', 'week', 'year')
             ->orderBy('year_week', 'asc')
@@ -453,7 +453,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
                 DB::raw('MONTH(created_at) as month_number'),
                 DB::raw('MONTHNAME(created_at) as month'),
                 DB::raw('YEAR(created_at) as year'),
-                DB::raw('SUM(parts_total_cost + diagnostic_cost) as total')
+                DB::raw('SUM(COALESCE(`parts_total_cost`, 0) + COALESCE(`diagnostic_cost`, 0)) as total')
             )
             ->groupBy('year', 'month_number', 'month')
             ->orderBy('year', 'asc')
@@ -464,7 +464,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->where('branch', $branchId)
             ->select(
                 DB::raw('YEAR(created_at) as year'),
-                DB::raw('SUM(parts_total_cost + diagnostic_cost) as total')
+                DB::raw('SUM(COALESCE(`parts_total_cost`, 0) + COALESCE(`diagnostic_cost`, 0)) as total')
             )
             ->groupBy('year')
             ->orderBy('year', 'asc')
