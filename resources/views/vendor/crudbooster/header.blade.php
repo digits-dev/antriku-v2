@@ -85,7 +85,12 @@
 <header class="main-header" style="position: fixed; width: 100%; background: linear-gradient(to bottom, #111827, #374151) !important;">
 
     <!-- Logo -->
-    <a href="{{url(config('crudbooster.ADMIN_PATH'))}}" title='{{Session::get('appname')}}' class="logo" style="background: linear-gradient(to bottom, #111827, #374151);">{{CRUDBooster::getSetting('appname')}}</a>
+    <a href="{{url(config('crudbooster.ADMIN_PATH'))}}" title='{{Session::get('appname')}}' class="logo" style="background: linear-gradient(to bottom, #111827, #374151);">
+        <i class="bi bi-box-fill"></i>
+        <small>
+            {{CRUDBooster::getSetting('appname')}}
+        </small>
+    </a>
 
     <!-- Header Navbar -->
     <nav class="navbar navbar-static-top" role="navigation" style="background: linear-gradient(to bottom, #111827, #374151);">
@@ -154,7 +159,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <!-- The user image in the menu -->
-                        <li class="user-header">
+                        <li class="user-header" style="background: #111827">
                             <img src="{{ CRUDBooster::myPhoto() }}" class="img-circle" alt="User Image"/>
                             <p>
                                 {{ CRUDBooster::myName() }}
@@ -166,12 +171,13 @@
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-{{ cbLang('left') }}">
-                                <a href="{{ route('AdminCmsUsersControllerGetProfile') }}" class="btn btn-default btn-flat"><i
-                                            class='fa fa-user'></i> {{cbLang("label_button_profile")}}</a>
+                                <a style="border-radius: 7px;" href="{{ route('AdminCmsUsersControllerGetProfile') }}" class="btn btn-default btn-flat">
+                                    <i class='fa fa-user'></i> {{cbLang("label_button_profile")}}
+                                </a>
                             </div>
                             <div class="pull-{{ cbLang('right') }}">
-                                <a title='Lock Screen' href="{{ route('getLockScreen') }}" class='btn btn-default btn-flat'><i class='fa fa-key'></i></a>
-                                <a href="javascript:void(0)" onclick="swal({
+                                <a style="border-radius: 7px;" title='Lock Screen' href="{{ route('getLockScreen') }}" class='btn btn-default btn-flat'><i class='fa fa-key'></i></a>
+                                <a style="border-radius: 7px;" href="javascript:void(0)" onclick="swal({
                                         title: '{{cbLang('alert_want_to_logout')}}',
                                         type:'info',
                                         showCancelButton:true,
