@@ -6,37 +6,28 @@
     .content-header{
         display: none;
     }
+
+    
+    .content {
+        padding: 0;
+    }
+
+    .cust-ch {
+        margin-top: 50px !important;
+    }
+
+    @media (max-width: 767px) {
+        .cust-ch {
+            margin-top: 100px;
+        }
+    }
 </style>
 
-<main class="container-dash dashboard-dash">
-  <div class="dashboard-title-section">
-    <!-- Top section with breadcrumbs and actions -->
-    <div class="dashboard-header-top">
-      <div class="breadcrumbs">
-        <div class="breadcrumb-item">
-          <a href="#">Home</a>
-        </div>
-        <div class="breadcrumb-item">
-          <a href="#">Dashboard</a>
-        </div>
-        <div class="breadcrumb-item active">Head Technician</div>
-      </div>
-      
-      <div class="dashboard-actions">
-        <button class="action-button primary" style="display: none">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          Export Report
-        </button>
-      </div>
-    </div>
-    
+<main class="container-dash dashboard-dash cust-ch ">
+  <div class="dashboard-title-section" style="margin-bottom: 10px;">
     <!-- Title and subtitle with enhanced styling -->
     <div class="dashboard-title-content">
-      <h1 class="dashboard-title">
+      <h1 class="dashboard-title" style="margin-top: 8px">
         <span class="dashboard-title-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="7" height="7"></rect>
@@ -48,7 +39,6 @@
         Head Technician's Dashboard
       </h1>
       <p class="dashboard-subtitle">
-        Overview of Ongoing Repair Cases, Pending Customer's Payment, Total Count of In Warranty and Out of Warranty, Total Count of Carry-In and Mail-in and, Total Repair per Model.
       </p>
     </div>
   </div>

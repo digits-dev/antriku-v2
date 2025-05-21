@@ -104,7 +104,7 @@
 
                               <div class="col-md-12">
                                 <br>
-                                <div style="overflow: auto;">
+                                <div style="height: 390px; overflow: auto;">
                                   <table class="transactions-table" autofocus>
                                     <thead>
                                         <tr>
