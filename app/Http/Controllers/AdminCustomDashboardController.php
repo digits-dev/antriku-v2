@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Crypt;
 class AdminCustomDashboardController extends \crocodicstudio\crudbooster\controllers\CBController
 {
     private const CancelledClosed = 5;
+    private const Custodian = 9;
     private const Frontliner = 3;
     private const Technician = 4;
     private const LeadTechnician = 8;
@@ -307,9 +308,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
 
     public function managerDashboard(Request $request)
     {
-        $PBI = "https://app.powerbi.com/view?r=eyJrIjoiNzVhMTNmNTQtYjg4MS00YTQ1LTk4ZTctYmFjYjg5N2E5ODA2IiwidCI6ImVhNjUwNjA1LTVlOGQtNGRkNC1iNzhmLTAyZTNlZDVmZWQ5OCIsImMiOjEwfQ%3D%3D";
-        // $encrypted = Crypt::encryptString($PBI);
-        // $decrypted = Crypt::decryptString($encrypted);
+        $PBI = "https://app.powerbi.com/view?r=eyJrIjoiNzVhMTNmNTQtYjg4MS00YTQ1LTk4ZTctYmFjYjg5N2E5ODA2IiwidCI6ImVhNjUwNjA1LTVlOGQtNGRkNC1iNzhmLTAyZTNlZDVmZWQ5OCIsImMiOjEwfQ%3D%3D&pageName=62440140c8c03bc370a0";
         $data['PBI'] = $PBI;
         
         $data['branch'] = DB::table('branch')->where('branch_status', '=', 'ACTIVE')->get();
@@ -488,5 +487,36 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
                 'data' => $ytdSales->pluck('total')->toArray()
             ],
         ]);
+    }
+    
+    public function custodianDashboard(Request $request)
+    {
+        if (CRUDBooster::myPrivilegeId() != self::Custodian) {
+            return view('403_error_view.invalid_route');
+        }
+
+        $data = [];
+        $data['pending_mail_in_shipment_dash'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->whereIn('repair_status', [15, 16, 24, 25])
+            ->where('branch', CRUDBooster::me()->branch_id)
+            ->get();
+
+        $data['spare_parts_receiving_dash'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->whereIn('repair_status', [26, 33, 45, 47])
+            ->where('branch', CRUDBooster::me()->branch_id)
+            ->get();
+
+        $data['spare_parts_releasing_dash'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->whereIn('repair_status', [29, 39])
+            ->where('branch', CRUDBooster::me()->branch_id)
+            ->get();
+        
+        return view('custodian.custodian_dashboard_custom', $data);
     }
 }

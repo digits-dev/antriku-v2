@@ -159,6 +159,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/admin/manager-dashboard', [AdminCustomDashboardController::class, 'managerDashboard'])->name('manager.dashboard');
     Route::post('/admin/get-filtered-callouts-count', [AdminCustomDashboardController::class, 'getFilteredCalloutCount'])->name('get.filtered.callouts.count');
 
+    Route::get('/admin/custodian-dashboard', [AdminCustomDashboardController::class, 'custodianDashboard'])->name('custodian.dashboard');
+
     Route::get('/admin/frontliner-dashboard', [AdminCustomDashboardController::class, 'index'])->name('frontliner.dashboard');
     Route::get('/admin/technician-dashboard', [AdminCustomDashboardController::class, 'technicianDashboard'])->name('technician.dashboard');
     Route::get('/admin/headtechnician-dashboard', [AdminCustomDashboardController::class, 'headTechnicianDashboard']);

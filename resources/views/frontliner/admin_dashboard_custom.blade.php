@@ -82,7 +82,7 @@
                                         {{ $fl_pending_call_out_dash_count_all ?? 0 }}
                                     </div>
                                     <div class="m-dash-card-change m-dash-positive">
-                                        +12% from yesterday
+                                        {{-- +12% from yesterday --}}
                                     </div>
                                 </div>
                               </div>
@@ -97,7 +97,7 @@
                                         {{ $fl_abandoned_units_dash_count ?? 0 }}
                                     </div>
                                     <div class="m-dash-card-change m-dash-negative">
-                                        +12% from yesterday
+                                        {{-- +12% from yesterday --}}
                                     </div>
                                 </div>
                               </div>
