@@ -321,6 +321,7 @@
                                         <label for="model" class="label-cus">Unit Type</label>
                                         <select name="unit_type" autocomplete="off" class="js-example-basic-single input-cus"> 
                                             <option value="" selected disabled>Choose Unit type here...</option>
+                                            <option value="Accessories">Accessories</option>      
                                             <option value="iMac">iMac</option>      
                                             <option value="iPhone">iPhone</option>      
                                             <option value="macbook">MacBook</option>      
