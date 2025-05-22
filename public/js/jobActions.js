@@ -11,7 +11,8 @@ function assignTechnician(id, reference_no, branch_id, technician_id) {
             data.forEach(technician => {
 
                 if ((technician.id_cms_privileges == 8 || technician.branch_id == branch_id) && technician.id !== technician_id) {
-                    optionsHtml += `<option value="${technician.id}">${technician.name} - ${technician.id}</option>`;
+                      const techIdDisplay = technician.tech_id ?? 'N/A';
+                    optionsHtml += `<option value="${technician.id}">${technician.name} - ${techIdDisplay}</option>`;
                 }
             });
             

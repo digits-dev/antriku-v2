@@ -26,6 +26,7 @@ class AdminCmsUsersController extends CBController {
 		$this->col[] = array("label"=>"Privilege","name"=>"id_cms_privileges","join"=>"cms_privileges,name");
 		$this->col[] = array("label"=>"Branch","name"=>"branch_id");
 		$this->col[] = array("label"=>"Photo","name"=>"photo","image"=>1);	
+		$this->col[] = array("label"=>"Technician ID","name"=>"tech_id");	
 		$this->col[] = array("label"=>"Status","name"=>"status");
 		# END COLUMNS DO NOT REMOVE THIS LINE
 
@@ -37,6 +38,7 @@ class AdminCmsUsersController extends CBController {
 		$this->form[] = array("label"=>"Email","name"=>"email",'required'=>true,'type'=>'email','validation'=>'required|email|unique:cms_users,email,'.CRUDBooster::getCurrentId(),'readonly'=>false);		
 		$this->form[] = array("label"=>"Photo","name"=>"photo","type"=>"upload","help"=>"Recommended resolution is 200x200px",'required'=>true,'validation'=>'required|image|max:1000','resize_width'=>90,'resize_height'=>90);											
 		$this->form[] = array("label"=>"Privilege","name"=>"id_cms_privileges","type"=>"select","datatable"=>"cms_privileges,name",'required'=>false);						
+		$this->form[] = array("label"=>"Technician ID","name"=>"tech_id","type"=>"text",'required'=>false);						
 		$this->form[] = array("label"=>"Branch","name"=>"branch_id","type"=>"select2","datatable"=>"branch,branch_name","datatable_where"=>"branch_status='ACTIVE'");
 		$this->form[] = array("label"=>"Password","name"=>"password","type"=>"password","help"=>"Please leave empty if not change");
 		$this->form[] = array("label"=>"Password Confirmation","name"=>"password_confirmation","type"=>"password","help"=>"Please leave empty if not change");
