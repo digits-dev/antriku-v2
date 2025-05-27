@@ -181,29 +181,29 @@
             const branch_id = $('#branch option:selected').val();
             $('#selected_branch').text(selectedVal);
 
-            if(branch_id == '' || branch_id == null){
-                alert('Empty Branch');
-                return;
-            }
+            // if(branch_id == '' || branch_id == null){
+            //     alert('Empty Branch');
+            //     return;
+            // }
 
-            $.ajax({
-                url: "{{ route('get_manager_dashboard') }}",
-                type: "post",
-                data: {
-                    'branch_id': branch_id,
-                    _token: '{!! csrf_token() !!}',
-                },
-                success: function (response) {
+            // $.ajax({
+            //     url: "{{ route('get_manager_dashboard') }}",
+            //     type: "post",
+            //     data: {
+            //         'branch_id': branch_id,
+            //         _token: '{!! csrf_token() !!}',
+            //     },
+            //     success: function (response) {
                     
-                },
-                error: function () {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error Dashboard request",
-                        text: "An error occurred while filtering dashboard per branch. Please try again.",
-                    });
-                }
-            });
+            //     },
+            //     error: function () {
+            //         Swal.fire({
+            //             icon: "error",
+            //             title: "Error Dashboard request",
+            //             text: "An error occurred while filtering dashboard per branch. Please try again.",
+            //         });
+            //     }
+            // });
 
         }
 
