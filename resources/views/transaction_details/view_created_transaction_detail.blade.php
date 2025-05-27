@@ -69,9 +69,13 @@
                                     <div style="background: rgba(255, 255, 255, 0.3); padding: 5px; border-radius: 20%">
                                         <img src="https://cdn-icons-png.flaticon.com/128/7711/7711811.png" width="40" alt="">
                                     </div>
-                                    <h1>
-                                        Transaction Details
-                                    </h1>
+                                    <div>
+                                        <h1 style="margin: 0; font-size: 20px; color: white;">Transaction Details</h1>
+                                        <div style="font-size: 11px; color: #c0c0c0; line-height: 1.4;">
+                                            <div class="text-uppercase {{$transaction_details->fl_name == null ? 'hidden' : ''}}"><strong><i class="bi bi-person-workspace"></i> Frontliner:</strong> {{$transaction_details->fl_name}}</div>
+                                            <div class="text-uppercase {{$transaction_details->tech_name == null ? 'hidden' : ''}}"><strong><i class="bi bi-person-fill-gear"></i> Technician:</strong> {{$transaction_details->tech_name}}</div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="reference-badge-cust">
                                     Reference:
@@ -120,6 +124,22 @@
             @endif
 
                         
+            
+            
+            @if (!is_null($transaction_details->airwaybill_upload))
+            {{-- Airwaybill is hidden on Technician --}}
+            @if (!in_array(CRUDBooster::myPrivilegeId(), [4,8]))
+            @include('transaction_details.uploade_airwaybill')
+            @endif
+            @include('transaction_details.uploade_rpf')
+            @else
+            @include('transaction_details.uploade_rpf')
+            {{-- Airwaybill is hidden on Technician --}}
+            @if (!in_array(CRUDBooster::myPrivilegeId(), [4,8]))
+            @include('transaction_details.uploade_airwaybill')
+            @endif
+            @endif
+            
             {{-- Quotation --}}
             @if ($transaction_details->repair_status == 10)
                 @include('transaction_details.quotation')
@@ -128,23 +148,7 @@
             @elseif($transaction_details->case_status === 'CARRY-IN')
                 @include('carry_in.quotation')
             @endif
-
-                        
-       @if (!is_null($transaction_details->airwaybill_upload))
-                {{-- Airwaybill is hidden on Technician --}}
-            @if (!in_array(CRUDBooster::myPrivilegeId(), [4,8]))
-                @include('transaction_details.uploade_airwaybill')
-            @endif
-            @include('transaction_details.uploade_rpf')
-        @else
-            @include('transaction_details.uploade_rpf')
-                {{-- Airwaybill is hidden on Technician --}}
-            @if (!in_array(CRUDBooster::myPrivilegeId(), [4,8]))
-                @include('transaction_details.uploade_airwaybill')
-            @endif
-        @endif
-
-
+            
             @include('transaction_details.uploade_final_invoice')
 
 

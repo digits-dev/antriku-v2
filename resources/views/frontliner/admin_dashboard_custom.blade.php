@@ -70,13 +70,17 @@
             <div class="card-dash" style="border-top-left-radius:0%; border-top-right-radius:0%">
                 <div class="card-body-dash">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-7">
                             <div class="row">
                               <div class="col-md-6">
                                 <!-- Pending Call-outs Card -->
-                                <div class="m-dash-card m-dash-new-users" data-cardname="Pending Call-Outs"style="cursor: pointer;">
-                                    <div class="m-dash-card-header">
-                                        <div class="m-dash-card-title">Pending Call-outs</div>
+                                <div class="m-dash-card m-dash-default" data-cardname="Pending Call-Outs"style="cursor: pointer;">
+                                    <div class="m-dash-card-header" style="margin: 0">
+                                        <div class="m-dash-card-title">
+                                          <i class="bi bi-telephone-minus-fill" style="background: #948979; color:white; padding: 4px 5px 4px 5px; border-radius: 7px;"></i>
+                                          Pending Call-outs
+                                        </div>
+                                        <hr>
                                     </div>
                                     <div class="m-dash-card-value" id="filtered-callouts-value">
                                         {{ $fl_pending_call_out_dash_count_all ?? 0 }}
@@ -89,9 +93,13 @@
 
                               <div class="col-md-6">
                                 <!-- Abandoned Units Card -->
-                                <div class="m-dash-card m-dash-non-users" data-cardname="Pending Call-Outs"style="cursor: pointer;">
-                                    <div class="m-dash-card-header">
-                                        <div class="m-dash-card-title">Abandoned Units</div>
+                                <div class="m-dash-card m-dash-default" data-cardname="Pending Call-Outs"style="cursor: pointer;">
+                                    <div class="m-dash-card-header" style="margin: 0">
+                                        <div class="m-dash-card-title">
+                                          <i class="bi bi-emoji-frown-fill" style="background: #948979; color:white; padding: 4px 5px 4px 5px; border-radius: 7px;"></i>
+                                          Abandoned Units
+                                        </div>
+                                        <hr>
                                     </div>
                                     <div class="m-dash-card-value" id="filtered-callouts-value">
                                         {{ $fl_abandoned_units_dash_count ?? 0 }}
@@ -104,7 +112,28 @@
 
                               <div class="col-md-12">
                                 <br>
-                                <div style="height: 390px; overflow: auto;">
+                                <div class="transactions-container">
+                                  <div class="transactions-header" style="margin: 0%">
+                                      <h2 class="card-title-dash">
+                                          <div class="card-icon-dash icon-default">
+                                              <i class="bi bi-table" style="font-size: 12px"></i>
+                                          </div>
+                                          Summary of Data
+                                      </h2>
+                                      <div class="search-container">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                              viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                              class="search-icon">
+                                              <circle cx="11" cy="11" r="8"></circle>
+                                              <line x1="21" y1="21" x2="16.65" y2="16.65">
+                                              </line>
+                                          </svg>
+                                          <input type="text" class="search-input"
+                                              placeholder="Search transactions...">
+                                      </div>
+                                  </div>
+                                <div style="height: 295px; overflow: auto;">
                                   <table class="transactions-table" autofocus>
                                     <thead>
                                         <tr>
@@ -148,37 +177,26 @@
                                     </tbody>
                                   </table>
                                 </div>
+                                <div class="card-footer-dash">
+                                    <span class="card-footer-text-dash showing_data_tech_overview" id="showing_data_tech_overview">
+                                        Showing {{count($my_cases)}} Total of Data
+                                    </span>
+                                </div>
+                                </div>
                               </div>
                           </div>          
                         </div>
-                        <div class="col-md-6">
+
+                        <div class="col-md-5">
                           <!-- Total case/s handled -->
                           <div class="card-dash">
                               <div class="card-header-dash">
                                   <h2 class="card-title-dash">
-                                      <div class="card-icon-dash icon-employe-dash">
-                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                              stroke-linecap="round" stroke-linejoin="round">
-                                              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                              <circle cx="9" cy="7" r="4"></circle>
-                                              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                                          </svg>
+                                      <div class="card-icon-dash icon-default">
+                                        <i class="bi bi-file-text-fill" style="font-size: 15px"></i>
                                       </div>
                                       My Total Case/s Handled
                                   </h2>
-                                  <div class="card-actions-dash">
-                                      <button class="card-action-btn-dash">
-                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                              stroke-linecap="round" stroke-linejoin="round">
-                                              <circle cx="12" cy="12" r="1"></circle>
-                                              <circle cx="19" cy="12" r="1"></circle>
-                                              <circle cx="5" cy="12" r="1"></circle>
-                                          </svg>
-                                      </button>
-                                  </div>
                               </div>
                               <div class="card-body-dash">
                                 <div class="chart-container" style="position: relative; height: 240px; width: 100%; display: flex; flex-direction: column; align-items: center; padding: 10px 0;">
@@ -206,11 +224,11 @@
                                     <div style="font-size: 13px; color: #6b7280; margin-top: 4px;">Total Cases</div>
                                   </div>
                                   <div class="stat-item" style="text-align: center; padding: 0 10px;">
-                                    <div style="font-size: 28px; font-weight: 700; line-height: 1.2; color: #16a34a;" id="completedCases">0</div>
+                                    <div style="font-size: 28px; font-weight: 700; line-height: 1.2; color: #948979;" id="completedCases">0</div>
                                     <div style="font-size: 13px; color: #6b7280; margin-top: 4px;">Completed</div>
                                   </div>
                                   <div class="stat-item" style="text-align: center; padding: 0 10px;">
-                                    <div style="font-size: 28px; font-weight: 700; line-height: 1.2; color: #ea580c;" id="ongoingCases">0</div>
+                                    <div style="font-size: 28px; font-weight: 700; line-height: 1.2; color: #222831;" id="ongoingCases">0</div>
                                     <div style="font-size: 13px; color: #6b7280; margin-top: 4px;">Ongoing</div>
                                   </div>
                                 </div>
@@ -234,57 +252,73 @@
                         <div class="col-md-12">
                             <div class="row">
                               <div class="col-md-3">
-                                <div class="m-dash-card m-dash-new-users" data-cardname="Pending Call-Outs" style="cursor: pointer;">
-                                  <div class="m-dash-card-header">
-                                    <div class="m-dash-card-title">Normal</div>
+                                <div class="m-dash-card m-dash-default" data-cardname="Pending Call-Outs" style="cursor: pointer;">
+                                  <div class="m-dash-card-header" style="margin: 0">
+                                    <div class="m-dash-card-title">
+                                      <i class="bi bi-graph-up-arrow" style="background: #948979; color:white; padding: 4px 5px 4px 5px; border-radius: 7px;"></i>
+                                      Normal (0-7 days)
+                                    </div>
+                                    <hr>
                                   </div>
                                   <div class="m-dash-card-value">
                                     {{ $normalCount }}
                                   </div>
                                   <div class="m-dash-card-change m-dash-positive">
-                                    Range: (0-7 days)
+                                    {{-- Range: (0-7 days) --}}
                                   </div>
                                 </div>
                               </div>
 
                               <div class="col-md-3">
-                                <div class="m-dash-card m-dash-total-users" data-cardname="Pending Call-Outs" style="cursor: pointer;">
-                                  <div class="m-dash-card-header">
-                                    <div class="m-dash-card-title">Medium</div>
+                                <div class="m-dash-card m-dash-default" data-cardname="Pending Call-Outs" style="cursor: pointer;">
+                                  <div class="m-dash-card-header" style="margin: 0">
+                                    <div class="m-dash-card-title">
+                                      <i class="bi bi-graph-up-arrow" style="background: #948979; color:white; padding: 4px 5px 4px 5px; border-radius: 7px;"></i>
+                                      Medium (8-14 days)
+                                    </div>
+                                    <hr>
                                   </div>
                                   <div class="m-dash-card-value">
                                     {{ $mediumCount }}
                                   </div>
                                   <div class="m-dash-card-change m-dash-positive">
-                                    Range: (8-14 days)
+                                    {{-- Range: (8-14 days) --}}
                                   </div>
                                 </div>
                               </div>
 
                               <div class="col-md-3">
-                                <div class="m-dash-card m-dash-transactions" data-cardname="Pending Call-Outs" style="cursor: pointer;">
-                                  <div class="m-dash-card-header">
-                                    <div class="m-dash-card-title">High</div>
+                                <div class="m-dash-card m-dash-default" data-cardname="Pending Call-Outs" style="cursor: pointer;">
+                                  <div class="m-dash-card-header" style="margin: 0">
+                                    <div class="m-dash-card-title">
+                                      <i class="bi bi-graph-up-arrow" style="background: #948979; color:white; padding: 4px 5px 4px 5px; border-radius: 7px;"></i>
+                                      High (15-30 days)
+                                    </div>
+                                    <hr>
                                   </div>
                                   <div class="m-dash-card-value">
                                     {{ $highCount }}
                                   </div>
                                   <div class="m-dash-card-change m-dash-negative">
-                                    Range: (15-30 days)
+                                    {{-- Range: (15-30 days) --}}
                                   </div>
                                 </div>
                               </div>
 
                               <div class="col-md-3">
-                                <div class="m-dash-card m-dash-non-users" data-cardname="Pending Call-Outs" style="cursor: pointer;">
-                                  <div class="m-dash-card-header">
-                                    <div class="m-dash-card-title">Critical</div>
+                                <div class="m-dash-card m-dash-default" data-cardname="Pending Call-Outs" style="cursor: pointer;">
+                                  <div class="m-dash-card-header" style="margin: 0">
+                                    <div class="m-dash-card-title">
+                                      <i class="bi bi-graph-up-arrow" style="background: #948979; color:white; padding: 4px 5px 4px 5px; border-radius: 7px;"></i>
+                                      Critical (30+ days)
+                                    </div>
+                                    <hr>
                                   </div>
                                   <div class="m-dash-card-value">
                                     {{ $criticalCount }}
                                   </div>
                                   <div class="m-dash-card-change m-dash-negative">
-                                    Range: (30+ days)
+                                    {{-- Range: (30+ days) --}}
                                   </div>
                                 </div>
                               </div>
@@ -326,7 +360,7 @@
                 <div class="card-dash" style="border-radius: 0%">
                     <div class="card-header-dash">
                         <h2 class="card-title-dash">
-                            <div class="card-icon-dash icon-unit">
+                            <div class="card-icon-dash icon-default">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                     stroke-linecap="round" stroke-linejoin="round">
@@ -441,7 +475,7 @@
             <div class="transactions-container" style="border-top-left-radius: 0px;border-top-right-radius: 0px;">
                 <div class="transactions-header" style="margin-top: 0%">
                     <h2 class="card-title-dash">
-                        <div class="card-icon-dash icon-unit">
+                        <div class="card-icon-dash icon-default">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" style="color: white" height="14"
                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                 stroke-linecap="round" stroke-linejoin="round" class="time-icon">
@@ -723,15 +757,15 @@
     $('#filteredCount').text(caseData.length);
     
     const completedColor = {
-      background: 'rgba(22, 163, 74, 0.7)',
-      border: 'rgba(22, 163, 74, 1)',
-      hover: 'rgba(22, 163, 74, 0.9)'
+      background: '#B6B09F',
+      border: 'white',
+      hover: '#B6B09F'
     };
     
     const ongoingColor = {
-      background: 'rgba(234, 88, 12, 0.7)',
-      border: 'rgba(234, 88, 12, 1)',
-      hover: 'rgba(234, 88, 12, 0.9)'
+      background: '#222831',
+      border: 'white',
+      hover: '#222831'
     };
     
     // Create the pie chart
@@ -750,19 +784,19 @@
             completedColor.border,
             ongoingColor.border
           ],
-          borderWidth: 2,
           hoverBackgroundColor: [
             completedColor.hover,
             ongoingColor.hover
           ],
-          hoverBorderWidth: 0,
-          hoverOffset: 5
+          borderWidth: 5,
+          hoverOffset: 10,
+          borderRadius: 8
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        cutout: '70%',
+        cutout: '50%',
         layout: {
           padding: 20
         },
@@ -853,7 +887,7 @@
             color: '#111827',
             subColor: '#6b7280',
             fontFamily: 'Arial, sans-serif',
-            fontSize: 36,
+            fontSize: 30,
             subFontSize: 14
           };
           
@@ -955,15 +989,15 @@
         });
       } else if (buttonId === 'filterCompleted') {
         $(`#${buttonId}`).css({
-          'background-color': 'rgba(22, 163, 74, 0.1)',
-          'color': '#16a34a',
-          'border-color': 'rgba(22, 163, 74, 0.3)'
+          'background-color': '#948979',
+          'color': '#ffff',
+          'border-color': '#948979'
         });
       } else if (buttonId === 'filterOngoing') {
         $(`#${buttonId}`).css({
-          'background-color': 'rgba(234, 88, 12, 0.1)',
-          'color': '#ea580c',
-          'border-color': 'rgba(234, 88, 12, 0.3)'
+          'background-color': '#222831',
+          'color': '#ffff',
+          'border-color': '#222831'
         });
       }
     }
@@ -1001,10 +1035,10 @@
     
     // Modern color palette
     const colors = {
-      normal: 'rgba(56, 178, 172, 0.8)',    // Teal for 0-7 days
-      medium: 'rgba(246, 173, 85, 0.8)',    // Amber for 8-14 days
-      high: 'rgba(245, 101, 101, 0.8)',     // Red for 15-30 days
-      critical: 'rgba(159, 122, 234, 0.8)'  // Purple for 30+ days
+      normal: 'lightgrey',    // for 0-7 days
+      medium: '#948979',    // for 8-14 days
+      high: 'grey',     //  for 15-30 days
+      critical: '#222831'  // for 30+ days
     };
     
     // Create Aging Distribution Chart

@@ -79,6 +79,10 @@
       transform: translateY(-1px);
       transition: 0.3s ease;
     }
+
+    .sidebar-toggle:hover {
+        background: transparent !important;
+    }
 </style>
 
 <!-- Main Header -->

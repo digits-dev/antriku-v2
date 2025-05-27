@@ -402,7 +402,7 @@
                             <div class="item-name">${item.spare_parts}</div>
                             <div class="item-description">${item.item_description || ''}</div>
                             <div class="item-details">
-                                <span class="item-stock">${item.qty || '0 / N/A'} in stock</span>
+                                <span class="item-stock">${item.stock_qty || '0 / N/A'} in stock</span>
                                 <span class="item-cost">₱${item.cost || '0.00'}</span>
                             </div>
                         </div>

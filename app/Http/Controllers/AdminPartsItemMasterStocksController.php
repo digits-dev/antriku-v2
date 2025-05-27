@@ -90,21 +90,33 @@ class AdminPartsItemMasterStocksController extends \crocodicstudio\crudbooster\c
 
 	public function stockOrder()
 	{
-		$data['inventory_data'] = DB::table('parts_item_master')->where('gsx_item_status', '=', 'ACTIVE')->get();
+		$data['inventory_data'] = DB::table('parts_item_master')
+			->select('parts_item_master.*', 'bis.stock_qty')
+			->leftJoin('branch_item_stocks as bis', 'bis.parts_item_master_id', '=', 'parts_item_master.id')
+			->where('bis.branch_id', CRUDBooster::me()->branch_id)
+			->get();
 
 		return $this->view('inventory.stock_ordering', $data);
 	}
 
 	public function stockInManual()
 	{
-		$data['inventory_data'] = DB::table('parts_item_master')->where('gsx_item_status', '=', 'ACTIVE')->get();
+		$data['inventory_data'] = DB::table('parts_item_master')
+			->select('parts_item_master.*', 'bis.stock_qty')
+			->leftJoin('branch_item_stocks as bis', 'bis.parts_item_master_id', '=', 'parts_item_master.id')
+			->where('bis.branch_id', CRUDBooster::me()->branch_id)
+			->get();
 
 		return $this->view('inventory.stock_in_manual', $data);
 	}
 
 	public function disposeStocks()
 	{
-		$data['inventory_data'] = DB::table('parts_item_master')->where('gsx_item_status', '=', 'ACTIVE')->get();
+		$data['inventory_data'] = DB::table('parts_item_master')
+			->select('parts_item_master.*', 'bis.stock_qty')
+			->leftJoin('branch_item_stocks as bis', 'bis.parts_item_master_id', '=', 'parts_item_master.id')
+			->where('bis.branch_id', CRUDBooster::me()->branch_id)
+			->get();
 
 		return $this->view('inventory.stock_disposal', $data);
 	}

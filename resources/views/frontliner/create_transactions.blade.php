@@ -246,7 +246,7 @@
                                 <div class="warranty-options-cus">
                                     <label class="warranty-option-cus">
                                         <div class="radio-container-cus">
-                                        <input type="radio" name="warranty_status" value="IN WARRANTY">
+                                        <input type="radio" name="warranty_status" value="IN WARRANTY" checked>
                                         <span class="radio-custom"></span>
                                         </div>
                                         <div class="option-content-cus">
@@ -536,6 +536,18 @@
             }
         });
     });
+</script>
+<script>
+  const $input = $('#email');
+  $input.on('keydown', function(e) {
+    if (e.key === ' ' || e.keyCode === 32) {
+      e.preventDefault();
+    }
+  });
+
+  $input.on('input', function() {
+    this.value = this.value.replace(/\s/g, '');
+  });
 </script>
 <script>
   $(document).ready(function () {

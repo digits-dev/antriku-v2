@@ -47,7 +47,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
                     ->select('returns_header_id', DB::raw('MAX(transacted_at) as transacted_at'))
                     ->groupBy('returns_header_id'),
                 'latest_logs',
-                function($join) {
+                function ($join) {
                     $join->on('returns_header.id', '=', 'latest_logs.returns_header_id');
                 }
             )
@@ -61,13 +61,13 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         $criticalCount = 0;
 
         foreach ($data['aging_callouts'] as $callout) {
-            $lastUpdated = $callout->transacted_at 
-                ? Carbon::parse($callout->transacted_at) 
+            $lastUpdated = $callout->transacted_at
+                ? Carbon::parse($callout->transacted_at)
                 : Carbon::parse($callout->created_at);
-            
+
             // Calculate age in days
             $ageDays = $lastUpdated->diffInDays($today);
-            
+
             // Categorize based on age
             if ($ageDays <= 7) {
                 $normalCount++;
@@ -192,9 +192,29 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
 
         $data = [];
         $data['branchName'] = DB::table('branch')->where('id', CRUDBooster::me()->branch_id)->value('branch_name');;
-        $data['myOngoingDiagnosis'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingDiagnosis])->where('technician_id', CRUDBooster::myId())->count();
-        $data['myOngoingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OnGoingRepair, self::OnGoingRepairOOW])->where('technician_id', CRUDBooster::myId())->count();
-        $data['totalAwaitingRepair'] = DB::table('returns_header')->whereIn('repair_status', [self::AwaitingAppleRepair, self::AwaitingAppleRepairOOW, self::AwaitingAppleRepairIW])->where('technician_id', CRUDBooster::myId())->count();
+        $data['myOngoingDiagnosis'] =  DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->whereIn('returns_header.repair_status', [self::OngoingDiagnosis])
+            ->where('returns_header.technician_id', CRUDBooster::myId())
+            ->get();
+
+        $data['myOngoingRepair'] =  DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->whereIn('returns_header.repair_status', [self::OnGoingRepair, self::OnGoingRepairOOW])
+            ->where('returns_header.technician_id', CRUDBooster::myId())
+            ->get();
+
+        $data['totalAwaitingRepair'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->whereIn('returns_header.repair_status', [self::AwaitingAppleRepair, self::AwaitingAppleRepairOOW, self::AwaitingAppleRepairIW])
+            ->where('returns_header.technician_id', CRUDBooster::myId())
+            ->get();
 
         $data['totalRepairPerModel'] = DB::table('returns_header')
             ->join('model', 'returns_header.model', '=', 'model.id')
@@ -204,11 +224,41 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->orderByDesc('total_repairs')
             ->get();
 
-        $data['totalCarryIn'] = DB::table('returns_header')->where('case_status', 'CARRY-IN')->where('branch', CRUDBooster::me()->branch_id)->count();
-        $data['totalMailIn'] = DB::table('returns_header')->where('case_status', 'MAIL-IN')->where('branch', CRUDBooster::me()->branch_id)->count();
+        $data['totalCarryIn'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->where('returns_header.case_status', 'CARRY-IN')
+            ->where('returns_header.branch', CRUDBooster::me()->branch_id)
+            // ->where('returns_header.technician_id', CRUDBooster::myId())
+            ->get();
 
-        $data['totalIW'] = DB::table('returns_header')->where('warranty_status', 'IN WARRANTY')->where('branch', CRUDBooster::me()->branch_id)->count();
-        $data['totalOOW'] = DB::table('returns_header')->where('warranty_status', 'OUT OF WARRANTY')->where('branch', CRUDBooster::me()->branch_id)->count();
+        $data['totalMailIn'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->where('returns_header.case_status', 'MAIL-IN')
+            ->where('returns_header.branch', CRUDBooster::me()->branch_id)
+            // ->where('returns_header.technician_id', CRUDBooster::myId())
+            ->get();
+
+        $data['totalIW'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->where('returns_header.warranty_status', 'IN WARRANTY')
+            ->where('returns_header.branch', CRUDBooster::me()->branch_id)
+            // ->where('returns_header.technician_id', CRUDBooster::myId())
+            ->get();
+
+        $data['totalOOW'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->where('returns_header.warranty_status', 'OUT OF WARRANTY')
+            ->where('returns_header.branch', CRUDBooster::me()->branch_id)
+            // ->where('returns_header.technician_id', CRUDBooster::myId())
+            ->get();
 
         $data['time_motion'] = DB::table('returns_header')
             ->select(
@@ -252,16 +302,87 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
 
         $data['greenhillsOngoingDiagnosis'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingDiagnosis])->where('branch', 1)->count();
         $data['bonifacioOngoingDiagnosis'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingDiagnosis])->where('branch', 2)->count();
-        
+
         $data['greenhillsTotalRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OnGoingRepair, self::OnGoingRepairOOW])->where('branch', 1)->count();
         $data['bonifacioTotalRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OnGoingRepair, self::OnGoingRepairOOW])->where('branch', 2)->count();
 
         $data['greenhillsAwaitingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::AwaitingAppleRepair, self::AwaitingAppleRepairOOW, self::AwaitingAppleRepairIW])->where('branch', 1)->count();
         $data['bonifacioAwaitingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::AwaitingAppleRepair, self::AwaitingAppleRepairOOW, self::AwaitingAppleRepairIW])->where('branch', 2)->count();
 
-        $data['myOngoingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::OnGoingRepair, self::OnGoingRepairOOW])->where('technician_id', CRUDBooster::myId())->count();
-        $data['myAwaitingRepair'] =  DB::table('returns_header')->whereIn('repair_status', [self::AwaitingAppleRepair, self::AwaitingAppleRepairOOW, self::AwaitingAppleRepairIW])->where('technician_id', CRUDBooster::myId())->count();
-        $data['myOngoingDiagnosis'] =  DB::table('returns_header')->whereIn('repair_status', [self::OngoingDiagnosis])->where('technician_id', CRUDBooster::myId())->count();
+        $data['myOngoingRepair'] =  DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->whereIn('returns_header.repair_status', [self::OnGoingRepair, self::OnGoingRepairOOW])
+            ->where('returns_header.technician_id', CRUDBooster::myId())
+            ->get();
+
+        $data['myAwaitingRepair'] =  DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->whereIn('returns_header.repair_status', [self::AwaitingAppleRepair, self::AwaitingAppleRepairOOW, self::AwaitingAppleRepairIW])
+            ->where('returns_header.technician_id', CRUDBooster::myId())
+            ->get();
+
+        $data['myOngoingDiagnosis'] =  DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->whereIn('returns_header.repair_status', [self::OngoingDiagnosis])
+            ->where('returns_header.technician_id', CRUDBooster::myId())
+            ->get();
+
+        $data['totalCarryIn'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->where('returns_header.case_status', 'CARRY-IN')
+            ->get();
+
+        $data['totalMailIn'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->where('returns_header.case_status', 'MAIL-IN')
+            ->get();
+
+        $data['totalIW'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->where('returns_header.warranty_status', 'IN WARRANTY')
+            ->get();
+
+        $data['totalOOW'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->where('returns_header.warranty_status', 'OUT OF WARRANTY')
+            ->get();
+
+        $data['totalToAsign'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->where('returns_header.repair_status', 9)
+            ->get();
+
+        $data['totalPedningAssigned'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->where('returns_header.repair_status', 1)
+            ->get();
 
         $data['totalRepairPerModel'] = DB::table('returns_header')
             ->join('model', 'returns_header.model', '=', 'model.id')
@@ -269,13 +390,6 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->groupBy('model.model_name')
             ->orderByDesc('total_repairs')
             ->get();
-
-
-        $data['totalCarryIn'] = DB::table('returns_header')->where('case_status', 'CARRY-IN')->count();
-        $data['totalMailIn'] = DB::table('returns_header')->where('case_status', 'MAIL-IN')->count();
-
-        $data['totalIW'] = DB::table('returns_header')->where('warranty_status', 'IN WARRANTY')->count();
-        $data['totalOOW'] = DB::table('returns_header')->where('warranty_status', 'OUT OF WARRANTY')->count();
 
         $data['time_motion'] = DB::table('returns_header')
             ->select(
@@ -306,29 +420,43 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         return view('headtechnician.admin_dashboard_custom', $data);
     }
 
+    public function custodianDashboard(Request $request)
+    {
+        if (CRUDBooster::myPrivilegeId() != self::Custodian) {
+            return view('403_error_view.invalid_route');
+        }
+
+        $data = [];
+        $data['pending_mail_in_shipment_dash'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->whereIn('repair_status', [15, 16, 24, 25])
+            ->where('branch', CRUDBooster::me()->branch_id)
+            ->get();
+
+        $data['spare_parts_receiving_dash'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->whereIn('repair_status', [26, 33, 45, 47])
+            ->where('branch', CRUDBooster::me()->branch_id)
+            ->get();
+
+        $data['spare_parts_releasing_dash'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->whereIn('repair_status', [29, 39])
+            ->where('branch', CRUDBooster::me()->branch_id)
+            ->get();
+
+        return view('custodian.custodian_dashboard_custom', $data);
+    }
+
     public function managerDashboard(Request $request)
     {
         $PBI = "https://app.powerbi.com/view?r=eyJrIjoiNzVhMTNmNTQtYjg4MS00YTQ1LTk4ZTctYmFjYjg5N2E5ODA2IiwidCI6ImVhNjUwNjA1LTVlOGQtNGRkNC1iNzhmLTAyZTNlZDVmZWQ5OCIsImMiOjEwfQ%3D%3D&pageName=62440140c8c03bc370a0";
         $data['PBI'] = $PBI;
-        
-        $data['branch'] = DB::table('branch')->where('branch_status', '=', 'ACTIVE')->get();
-        $data['all_call_out_status'] = DB::table('transaction_status')
-            ->whereIn('id', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])
-            ->where('status', '=', 'ACTIVE')->get();
 
-        $data['fl_pending_call_out_dash_count_all'] = DB::table('returns_header')
-            ->addSelect('returns_header.*')
-            ->addSelect('transaction_status.status_name')
-            ->leftJoin('transaction_status', 'transaction_status.id', '=', 'returns_header.repair_status')
-            ->whereIn('repair_status', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])
-            ->get()
-            ->groupBy('branch')
-            ->map(function ($items) {
-                return [
-                    'total' => $items->count(),
-                    'data' => $items,
-                ];
-            });
+        $data['branch'] = DB::table('branch')->where('branch_status', '=', 'ACTIVE')->get();
 
         $data['fl_abandoned_units_dash_count_all'] = DB::table('returns_header')
             ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
@@ -365,155 +493,6 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->get()
             ->groupBy('branch');
 
-        $data['tech_ongoing_repair_cases'] = DB::table('returns_header')
-            ->select('branch', DB::raw('COUNT(*) as total'))
-            ->whereIn('repair_status', [self::OnGoingRepair, self::OnGoingRepairOOW])
-            ->groupBy('branch')
-            ->pluck('total', 'branch');
-
-        $data['tech_awaiting_repair_cases'] = DB::table('returns_header')
-            ->select('branch', DB::raw('COUNT(*) as total'))
-            ->whereIn('repair_status', [
-                self::AwaitingAppleRepair,
-                self::AwaitingAppleRepairOOW,
-                self::AwaitingAppleRepairIW
-            ])
-            ->groupBy('branch')
-            ->pluck('total', 'branch');
-
-        $data['totalIW'] = DB::table('returns_header')
-            ->select('branch', DB::raw('COUNT(*) as total'))
-            ->where('warranty_status', 'IN WARRANTY')
-            ->groupBy('branch')
-            ->pluck('total', 'branch');
-
-        $data['totalOOW'] = DB::table('returns_header')
-            ->select('branch', DB::raw('COUNT(*) as total'))
-            ->where('warranty_status', 'OUT OF WARRANTY')
-            ->groupBy('branch')
-            ->pluck('total', 'branch');
-
-        $data['totalCarryIn'] = DB::table('returns_header')
-            ->select('branch', DB::raw('COUNT(*) as total'))
-            ->where('case_status', 'CARRY-IN')
-            ->groupBy('branch')
-            ->pluck('total', 'branch');
-
-        $data['totalMailIn'] = DB::table('returns_header')
-            ->select('branch', DB::raw('COUNT(*) as total'))
-            ->where('case_status', 'MAIL-IN')
-            ->groupBy('branch')
-            ->pluck('total', 'branch');
-
-
         return view('manager.manager_custom_dashboard', $data);
-    }
-
-    public function getFilteredCalloutCount(Request $request)
-    {
-        $statusId = $request->status_id;
-        $branchId = $request->branch_id;
-
-        $query = DB::table('returns_header')
-            ->where('branch', $branchId)
-            ->where('repair_status', $statusId);
-
-        $count = (clone $query)->count();
-        $data = $query->get();
-
-        return response()->json([
-            'count' => $count,
-            'data' => $data,
-        ]);
-    }
-
-    public function getSalesData(Request $request)
-    {
-        $year = $request->input('year', date('Y'));
-        $branchId = $request->input('branch_id');
-
-        // Apply year filter for Weekly and Monthly
-        $weeklySales = DB::table('returns_header')
-            ->whereYear('created_at', $year)
-            ->where('branch', $branchId)
-            ->select(
-                DB::raw('YEARWEEK(created_at, 1) as year_week'),
-                DB::raw('WEEK(created_at) as week'),
-                DB::raw('YEAR(created_at) as year'),
-                DB::raw('SUM(COALESCE(`parts_total_cost`, 0) + COALESCE(`diagnostic_cost`, 0)) as total')
-            )
-            ->groupBy('year_week', 'week', 'year')
-            ->orderBy('year_week', 'asc')
-            ->get();
-
-        $monthlySales = DB::table('returns_header')
-            ->whereYear('created_at', $year)
-            ->where('branch', $branchId)
-            ->select(
-                DB::raw('MONTH(created_at) as month_number'),
-                DB::raw('MONTHNAME(created_at) as month'),
-                DB::raw('YEAR(created_at) as year'),
-                DB::raw('SUM(COALESCE(`parts_total_cost`, 0) + COALESCE(`diagnostic_cost`, 0)) as total')
-            )
-            ->groupBy('year', 'month_number', 'month')
-            ->orderBy('year', 'asc')
-            ->orderBy('month_number', 'asc')
-            ->get();
-
-        $ytdSales = DB::table('returns_header')
-            ->where('branch', $branchId)
-            ->select(
-                DB::raw('YEAR(created_at) as year'),
-                DB::raw('SUM(COALESCE(`parts_total_cost`, 0) + COALESCE(`diagnostic_cost`, 0)) as total')
-            )
-            ->groupBy('year')
-            ->orderBy('year', 'asc')
-            ->get();
-
-        return response()->json([
-            'weekly' => [
-                'labels' => $weeklySales->map(fn($w) => "Week {$w->week}, {$w->year}")->toArray(),
-                'data' => $weeklySales->pluck('total')->toArray()
-            ],
-            'monthly' => [
-                'labels' => $monthlySales->map(fn($m) => "{$m->month} {$m->year}")->toArray(),
-                'data' => $monthlySales->pluck('total')->toArray()
-            ],
-            'ytd' => [
-                'labels' => $ytdSales->pluck('year')->toArray(),
-                'data' => $ytdSales->pluck('total')->toArray()
-            ],
-        ]);
-    }
-    
-    public function custodianDashboard(Request $request)
-    {
-        if (CRUDBooster::myPrivilegeId() != self::Custodian) {
-            return view('403_error_view.invalid_route');
-        }
-
-        $data = [];
-        $data['pending_mail_in_shipment_dash'] = DB::table('returns_header')
-            ->select('returns_header.*', 'model.model_name')
-            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
-            ->whereIn('repair_status', [15, 16, 24, 25])
-            ->where('branch', CRUDBooster::me()->branch_id)
-            ->get();
-
-        $data['spare_parts_receiving_dash'] = DB::table('returns_header')
-            ->select('returns_header.*', 'model.model_name')
-            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
-            ->whereIn('repair_status', [26, 33, 45, 47])
-            ->where('branch', CRUDBooster::me()->branch_id)
-            ->get();
-
-        $data['spare_parts_releasing_dash'] = DB::table('returns_header')
-            ->select('returns_header.*', 'model.model_name')
-            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
-            ->whereIn('repair_status', [29, 39])
-            ->where('branch', CRUDBooster::me()->branch_id)
-            ->get();
-        
-        return view('custodian.custodian_dashboard_custom', $data);
     }
 }

@@ -630,6 +630,7 @@
                 $('#spare_parts_filter').hide();
                 $('.iw_cin_additional_spare_part').hide();
                 $('.oow_cin_no_additional_spare_part').show();
+                $('.oow_cin_additional_spare_part').hide();
                 $('.iw_cin_no_additional_spare_part').show();
                 $('#doa-toggle').removeAttr('disabled');
                 $('#additional-toggle').removeAttr('disabled');
@@ -974,19 +975,26 @@
         const is_available = item_qty_status.includes("available");
         const has_doa_jo = all_item_parts_type.includes("additional-standard-doa");
 
-        if(has_doa_jo && is_unavailable && [34, 42].includes(Number(transaction_status))){
-            $('.iw_cin_doa_unav').show();
-            $('.oow_cin_doa_unav').show();
-        } else if (has_doa_jo && is_available && [34, 42].includes(Number(transaction_status))){
-            $('.iw_cin_doa_av').show();
-            $('.oow_cin_doa_av').show();
+        if(has_doa_jo && [34, 42].includes(Number(transaction_status))){
+            $('.iw_cin_doa').show();
+            $('.oow_cin_doa').show();
         } else {
-            $('.iw_cin_doa_unav').hide();
-            $('.iw_cin_doa_av').hide();
-
-            $('.oow_cin_doa_unav').hide();
-            $('.oow_cin_doa_av').hide();
-
+            $('.iw_cin_doa').hide();
+            $('.oow_cin_doa').hide();
         }
+
+        // if(has_doa_jo && is_unavailable && [34, 42].includes(Number(transaction_status))){
+        //     $('.iw_cin_doa_unav').show();
+        //     $('.oow_cin_doa_unav').show();
+        // } else if (has_doa_jo && is_available && [34, 42].includes(Number(transaction_status))){
+        //     $('.iw_cin_doa_av').show();
+        //     $('.oow_cin_doa_av').show();
+        // } else {
+        //     $('.iw_cin_doa_unav').hide();
+        //     $('.iw_cin_doa_av').hide();
+        //     $('.oow_cin_doa_unav').hide();
+        //     $('.oow_cin_doa_av').hide();
+
+        // }
     });
 </script>

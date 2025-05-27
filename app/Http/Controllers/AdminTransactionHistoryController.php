@@ -229,7 +229,11 @@ class AdminTransactionHistoryController extends \crocodicstudio\crudbooster\cont
 		$data['transaction_details'] = DB::table('returns_header')
 			->leftJoin('model', 'returns_header.model', '=', 'model.id')
 			->leftJoin('model_group', 'model.model_group', '=', 'model_group.id')
-			->select('returns_header.*', 'returns_header.id as header_id', 'returns_header.created_by as user_id', 'model.id as model_id', 'model_name', 'model_photo', 'model_status', 'diagnostic_fee', 'software_fee', 'model_group')
+			->leftJoin('cms_users as frontliner', 'frontliner.id', '=', 'returns_header.created_by')
+			->leftJoin('cms_users as technician', 'technician.id', '=', 'returns_header.technician_id')
+			->select('returns_header.*', 'returns_header.id as header_id', 'returns_header.created_by as user_id', 
+				'model.id as model_id', 'model_name', 'model_photo', 'model_status', 'diagnostic_fee', 
+				'software_fee', 'model_group', 'frontliner.name as fl_name', 'technician.name as tech_name')
 			->where('returns_header.id', $id)->first();
 
 		$data['Comment'] = DB::table('returns_comments')
@@ -245,7 +249,9 @@ class AdminTransactionHistoryController extends \crocodicstudio\crudbooster\cont
 		$data['TechTesting'] = DB::table('tech_testing')->where('test_type_status', 'ACTIVE')->where('model_group_id', '!=', NULL)->orderBy('description', 'ASC')->get();
 		$data['quotation'] = DB::table('returns_body_item')->leftJoin('returns_serial', 'returns_body_item.id', '=', 'returns_serial.returns_body_item_id')
 			->select('returns_body_item.*', 'returns_body_item.returns_header_id as header_id', 'returns_serial.returns_header_id as serial_header_id', 'returns_serial.returns_body_item_id as serial_body_item_id', 'returns_serial.serial_number as serial_no')
-			->where('returns_body_item.returns_header_id', $id)->get();
+			->where('returns_body_item.returns_header_id', $id)
+			->whereNotIn('returns_body_item.item_spare_additional_type', ['Additional-Required-No', 'Additional-Standard-DOA-No'])
+			->get();
 		$data['defective_serial_numbers'] = DB::table('defective_serial_number')->where('returns_header_id', $id)->get();
 		$data['Branch'] = DB::table('branch')->leftJoin('cms_users', 'branch.id', '=', 'cms_users.branch_id')->where('cms_users.id', $data['transaction_details']->user_id)->first();
 		$data['imfs'] = DB::table('product_item_master')->where('status', 'ACTIVE')->get();

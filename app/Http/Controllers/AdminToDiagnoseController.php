@@ -132,7 +132,9 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		$data['TechTesting'] = DB::table('tech_testing')->where('test_type_status', 'ACTIVE')->where('model_group_id', '!=', NULL)->orderBy('description', 'ASC')->get();
 		$data['quotation'] = DB::table('returns_body_item')->leftJoin('returns_serial', 'returns_body_item.id', '=', 'returns_serial.returns_body_item_id')
 			->select('returns_body_item.*', 'returns_body_item.returns_header_id as header_id', 'returns_serial.returns_header_id as serial_header_id', 'returns_serial.returns_body_item_id as serial_body_item_id', 'returns_serial.serial_number as serial_no')
-			->where('returns_body_item.returns_header_id', $id)->get();
+			->where('returns_body_item.returns_header_id', $id)
+			->whereNotIn('returns_body_item.item_spare_additional_type', ['Additional-Required-No', 'Additional-Standard-DOA-No'])
+			->get();
 			
 		$data['defective_serial_numbers'] = DB::table('defective_serial_number')->where('returns_header_id', $id)->get();
 		$data['Branch'] = DB::table('branch')->leftJoin('cms_users', 'branch.id', '=', 'cms_users.branch_id')->where('cms_users.id', $data['transaction_details']->user_id)->first();
@@ -170,7 +172,9 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		$data['TechTesting'] = DB::table('tech_testing')->where('test_type_status', 'ACTIVE')->where('model_group_id', '!=', NULL)->orderBy('description', 'ASC')->get();
 		$data['quotation'] = DB::table('returns_body_item')->leftJoin('returns_serial', 'returns_body_item.id', '=', 'returns_serial.returns_body_item_id')
 			->select('returns_body_item.*', 'returns_body_item.returns_header_id as header_id', 'returns_serial.returns_header_id as serial_header_id', 'returns_serial.returns_body_item_id as serial_body_item_id', 'returns_serial.serial_number as serial_no')
-			->where('returns_body_item.returns_header_id', $id)->get();
+			->where('returns_body_item.returns_header_id', $id)
+			->whereNotIn('returns_body_item.item_spare_additional_type', ['Additional-Required-No', 'Additional-Standard-DOA-No'])
+			->get();
 			
 		$data['defective_serial_numbers'] = DB::table('defective_serial_number')->where('returns_header_id', $id)->get();
 		$data['Branch'] = DB::table('branch')->leftJoin('cms_users', 'branch.id', '=', 'cms_users.branch_id')->where('cms_users.id', $data['transaction_details']->user_id)->first();
@@ -467,21 +471,41 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 
 		if (in_array($request->status_id, [19, 28])) {
 			$header_data = DB::table('returns_header')->where('id', $request->header_id)->first();
-			if ($header_data->case_status == 'CARRY-IN') {
+
+			if ($header_data && $header_data->case_status == 'CARRY-IN') {
 				$get_jo_body_item = DB::table('returns_body_item')
 					->where('returns_header_id', $request->header_id)
-					->where('item_spare_additional_type', '=', 'Additional-Required-Pending')
+					->whereIn('item_spare_additional_type', ['Additional-Required-Pending', 'Additional-Standard-DOA'])
 					->get();
 
-				foreach ($get_jo_body_item as $per_item) {
-					DB::table('returns_body_item')->where('id', $per_item->id)
+					
+					foreach ($get_jo_body_item as $per_item) {
+						DB::table('returns_body_item')->where('id', $per_item->id)
 						->update([
-							'item_spare_additional_type' => 'Additional-Required-No',
+							'item_spare_additional_type' => $per_item->item_spare_additional_type == 'Additional-Required-Pending' 
+							? 'Additional-Required-No' : 'Additional-Standard-DOA-No',
+							'cost' => '0.00',
 							'updated_by' => CRUDBooster::myId(),
 							'updated_at' => now(),
 						]);
+						
+					$get_existing_jo_body_item = DB::table('returns_body_item')
+						->where('returns_header_id', $per_item->returns_header_id)
+						->where('item_parts_id', $per_item->item_parts_id)
+						->where('qty_status', '=', 'DOA')
+						->get();
+
+					foreach ($get_existing_jo_body_item as $existing_item) {
+						DB::table('returns_body_item')->where('id', $existing_item->id)
+							->update([
+								'cost' => $per_item->cost,
+								'updated_by' => CRUDBooster::myId(),
+								'updated_at' => now(),
+							]);
+					}
 				}
 			}
+
 		}
 
 		if ($request->status_id == 21) {
@@ -752,11 +776,19 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 					->orderBy('id', 'DESC')
 					->first();
 
+				$item_to_return = DB::table('returns_body_item')
+					->where('returns_header_id', $item->returns_header_id)
+					->where('item_parts_id', $item->item_parts_id)
+					->where('item_spare_additional_type', '=', 'Additional-Standard-DOA')
+					->orderBy('id', 'DESC')
+					->first();
+
 				DB::table('returns_body_item')
 					->where('id', $item_to_update->id)
 					->update([
 						'qty_status' => 'Available',
 						'doa_problem_desc' => null,
+						'cost' => $item_to_return->cost,
 						'updated_by' => CRUDBooster::myId(),
 						'updated_at' => now(),
 					]);
