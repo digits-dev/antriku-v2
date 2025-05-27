@@ -68,10 +68,10 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		}
 
 
-		$this->button_selected = array();
-		$this->button_selected[] = ['label' => 'Print Receive Form', 'icon' => 'fa fa-print', 'name' => 'print_receive_form'];
-		$this->button_selected[] = ['label' => 'Print Technical Report', 'icon' => 'fa fa-print', 'name' => 'print_technical_report'];
-		$this->button_selected[] = ['label' => 'Print Same Day Release Form', 'icon' => 'fa fa-print', 'name' => 'print_sameday_release_form'];
+		// $this->button_selected = array();
+		// $this->button_selected[] = ['label' => 'Print Receive Form', 'icon' => 'fa fa-print', 'name' => 'print_receive_form'];
+		// $this->button_selected[] = ['label' => 'Print Technical Report', 'icon' => 'fa fa-print', 'name' => 'print_technical_report'];
+		// $this->button_selected[] = ['label' => 'Print Same Day Release Form', 'icon' => 'fa fa-print', 'name' => 'print_sameday_release_form'];
 
 		$this->index_button = array();
 		if (CRUDBooster::myPrivilegeId() == 4) {
@@ -234,7 +234,6 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		$transaction_details = DB::table('returns_header')->leftJoin('model', 'returns_header.model', '=', 'model.id')
 			->select('returns_header.*', 'returns_header.id as header_id', 'returns_header.created_by as user_id', 'model.id as model_id', 'model_name', 'model_photo', 'model_status')
 			->where('returns_header.id', $all_data['header_id'])->get();
-
 		if (CRUDBooster::getModulePath() == 'to_diagnose') {
 			$all_cost = explode(",", $all_data['cost']);
 			$total_cost = 0;
@@ -509,10 +508,12 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		}
 
 		if ($request->status_id == 21) {
-
+			
 			DB::table('returns_header')->where('id', $request->header_id)->update([
 				'warranty_status'   => $all_data['warranty_status'],
+				'warranty_changed_at' => now(),
 			]);
+		
 		}
 
 		if (in_array($request->status_id, [22, 23, 39, 40]) && !in_array($all_data['recent_treansaction_status'], [45, 43, 42])) {

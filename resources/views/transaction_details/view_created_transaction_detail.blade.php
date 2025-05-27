@@ -199,7 +199,13 @@
                                 class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
                                 <i class="fa fa-phone"></i> CALL OUT ({{ $CallOutCount }})
                             </button>
-                      
+                            @if (in_array($transaction_details->repair_status, [13,22,38]))
+                                <button type="button" id="ntf" onclick="callOut({{ $transaction_details->repair_status }}, this)"
+                                    class="btn btn-success pull-right buttonSubmit" style="margin-left: 20px;">
+                                <i class="fa fa-phone"></i> CALL OUT NTF ({{ $CallOutCount }})
+                            </button>
+                            @endif
+                            
                             <input type="hidden" value="{{$transaction_details->repair_status}}" id="transaction_status">
                         </div>
                     @endif

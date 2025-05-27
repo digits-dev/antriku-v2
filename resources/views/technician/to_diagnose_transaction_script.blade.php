@@ -515,7 +515,12 @@
         }
     }
 
-    function callOut(status_id) {
+    function callOut(status_id, button = null) {
+        let ntf = null; 
+
+        if (button) {
+            ntf = button.id;
+        }
         let header_id = $('#header_id').val();
 
         Swal.fire({
@@ -529,23 +534,14 @@
             allowOutsideClick: false,
         }).then((result) => {
             if (result.isConfirmed) {
-                $.ajax({
+                let ajaxOptions = {
                     url: "/admin/call_out/call_out",
                     type: "POST",
                     data: {
                         returns_header_id: header_id,
                         status_id: status_id,
+                        is_ntf: ntf,
                         _token: $('meta[name="csrf-token"]').attr('content')
-                    },
-                      beforeSend: function () {
-                    Swal.fire({
-                        icon: "info",
-                        title: "Sending Email To Customer",
-                        text: "Please wait...",
-                        allowOutsideClick: false,
-                        showConfirmButton: false,
-                        didOpen: () => Swal.showLoading()
-                    });
                     },
                     success: function(response) {
                         Swal.fire({
@@ -559,7 +555,23 @@
                     error: function(xhr) {
                         Swal.fire("Error!", "Something went wrong. Please try again.", "error");
                     }
-                });
+                };
+
+                // Add beforeSend only for these statuses
+                if ([12,13,19,21,22,33,28,38,45,47].includes(status_id)) {
+                    ajaxOptions.beforeSend = function () {
+                        Swal.fire({
+                            icon: "info",
+                            title: "Sending Email To Customer",
+                            text: "Please wait...",
+                            allowOutsideClick: false,
+                            showConfirmButton: false,
+                            didOpen: () => Swal.showLoading()
+                        });
+                    };
+                }
+
+                $.ajax(ajaxOptions);
             } else {
                 Swal.fire("Cancelled", "Your call out has been cancelled.", "error");
             }

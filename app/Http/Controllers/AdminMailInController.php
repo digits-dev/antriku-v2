@@ -45,6 +45,14 @@ class AdminMailInController extends \crocodicstudio\crudbooster\controllers\CBCo
 		$this->col[] = ["label" => "Branch", "name" => "branch", 'join' => 'branch,branch_name'];
 		# END COLUMNS DO NOT REMOVE THIS LINE
 
+			$this->addaction = array();
+
+			$this->addaction[] = [
+				'title'   => 'Download Technical Report',
+				'icon'    => 'fa fa-download',
+				'url'     => CRUDBooster::mainpath('DownloadTechnicalReport/[id]'),
+				'color'   => 'info',
+			];
 
 	}
 
@@ -181,6 +189,40 @@ class AdminMailInController extends \crocodicstudio\crudbooster\controllers\CBCo
 		$data['CallOutCount'] = DB::table('call_out_recorder')->where('returns_header_id', $id)->where('status_id', $data['transaction_details']->repair_status)->count();
 
 		$this->cbView('transaction_details.view_created_transaction_detail', $data);
+	}
+
+		// PRINT TECHNICAL REPORT FORM
+	public function PrintTechnicalReport($id)
+	{
+		$data = array();
+		$data['page_title'] = 'Print Technical Report';
+		$data['transaction_details'] = DB::table('returns_header')
+			->leftJoin('model', 'returns_header.model', '=', 'model.id')
+			->leftJoin('model_group', 'model.model_group', '=', 'model_group.id')
+			->leftJoin('cms_users', 'returns_header.updated_by', '=', 'cms_users.id')
+			->select('returns_header.*', 'returns_header.id as header_id', 'returns_header.created_by as user_id', 'cms_users.name as name', 'model.id as model_id', 'model_name', 'model_photo', 'model_status', 'diagnostic_fee', 'model_group')
+			->where('returns_header.id', $id)->first();
+
+		$data['diagnostic_result'] = DB::table('returns_diagnostic_test')
+			->leftJoin('tech_testing', 'returns_diagnostic_test.test_type', '=', 'tech_testing.id')
+			->where('returns_header_id', $data['transaction_details']->header_id)->get();
+
+		$data['diagnostic_test'] = DB::table('returns_diagnostic_test')->leftJoin('tech_testing', 'returns_diagnostic_test.test_type', '=', 'tech_testing.id')
+			->select('returns_diagnostic_test.*', 'tech_testing.description as diagnostic_desc')
+			->where('returns_diagnostic_test.returns_header_id', $data['transaction_details']->header_id)->orderBy('returns_diagnostic_test.created_at', 'ASC')->get();
+
+		$data['TechTesting'] = DB::table('tech_testing')->where('test_type_status', 'ACTIVE')->where('model_group_id', '!=', NULL)->orderBy('description', 'ASC')->get();
+		$data['TechTestingResult'] = DB::table('tech_testing_result')->where('test_result_status', 'ACTIVE')->get();
+
+		$data['Quotation'] = DB::table('returns_body_item')
+			->leftJoin('returns_serial', 'returns_body_item.id', '=', 'returns_serial.returns_body_item_id')
+			->where('returns_body_item.cost', '!=', '0.00')
+			->whereNotIn('returns_body_item.item_spare_additional_type', ['Additional-Required-No', 'Additional-Standard-DOA-No'])
+			->where('returns_body_item.returns_header_id', $data['transaction_details']->header_id)->get();
+
+		$data['Model'] = DB::table('model')->orderBy('model_name', 'ASC')->get();
+		$data['Branch'] = DB::table('branch')->leftJoin('cms_users', 'branch.id', '=', 'cms_users.branch_id')->where('cms_users.id', $data['transaction_details']->user_id)->first();
+		$this->cbView("print_form.fl_print_technical_report", $data);
 	}
 
 

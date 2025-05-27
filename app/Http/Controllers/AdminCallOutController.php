@@ -183,8 +183,8 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 
 	public function callOut(Request $request)
 	{
-
 		$returns_header = DB::table('returns_header')->where('id', $request->returns_header_id)->first();
+		$model = DB::table('model')->where('id',  $returns_header->model)->value('model_name');
 		$branch = DB::table('branch')->where('id', CRUDBooster::me()->branch_id)->value('branch_name');
 		$call_out = DB::table('call_out_recorder')->where('returns_header_id', $request->returns_header_id)->where('status_id', $request->status_id)->first();
 		
@@ -193,9 +193,10 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 		$data['frontliner'] = CRUDBooster::me()->name;
 		$data['branch'] = $branch;
 		$data['amount'] = $returns_header->parts_total_cost + $returns_header->diagnostic_cost;
+		$data['model'] = $model;
 		$email = $returns_header->email;
 		
-		if (in_array($request->status_id, [12,21])) {
+		if ($request->status_id == 12) {
 		$template = $call_out ? 'waiting_for_approval_update' : 'waiting_for_approval';
 
 			CRUDBooster::sendEmail([
@@ -204,7 +205,32 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 				'template' => $template,
 				'attachments' => []
 			]);
-		}else if ($request->status_id == 47) {
+		}else if ($request->status_id == 21) {
+			
+			if ($returns_header->warranty_changed_at != null) {
+					$template = 'mail_in_void_warranty';
+			}else {
+				$template = $call_out ? 'waiting_for_approval_update' : 'waiting_for_approval';
+			}
+
+			CRUDBooster::sendEmail([
+				'to' => $email,
+				'data' => $data,
+				'template' => $template,
+				'attachments' => []
+			]);
+		}	
+		else if (in_array($request->status_id, [33, 45])) {
+		$template = $call_out ? 'awaiting_parts_update' : 'awaiting_parts';
+
+			CRUDBooster::sendEmail([
+				'to' => $email,
+				'data' => $data,
+				'template' => $template,
+				'attachments' => []
+			]);
+		}
+		else if ($request->status_id == 47) {
 		$template = $call_out ? 'mail_in_awaiting_parts_update' : 'mail_in_awaiting_parts';
 
 			CRUDBooster::sendEmail([
@@ -214,9 +240,23 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 				'attachments' => []
 			]);
 		}
-		//  else {
-		// 	CRUDBooster::sendEmail(['to'=>$email,'data'=>$data, 'template'=>'under_monitoring','attachments'=>[]]);
-		// }
+		else if (in_array($request->status_id, [13,19,22,28,38])) {
+			if ($request->is_ntf != null) {
+				$template = 'ntf_releasing';
+			} elseif (stripos($model, 'airpods') !== false) {
+    			// If 'airpods' is anywhere in the model name (case-insensitive)
+    			$template = 'airpods_releasing';
+			} else {
+				$template = $call_out ? 'releasing_update' : 'releasing';
+			}
+			CRUDBooster::sendEmail([
+				'to' => $email,
+				'data' => $data,
+				'template' => $template,
+				'attachments' => []
+			]);
+		}
+
 		
 		$callOut = DB::table('call_out_recorder')->insert([
 			'status_id' => $request->status_id,
@@ -237,7 +277,7 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 	public function refund($id)
 	{
 		$header = DB::table('returns_header')->where('id', $id)->first();
-		$items = DB::table('returns_body_item')->where('returns_header_id', $id)->get();
+		$items = DB::table('returns_body_item')->where('returns_header_id', $id)->whereNotIn('item_spare_additional_type', ['Additional-Required-No', 'Additional-Standard-DOA-No'])->get();
 
 		return response()->json([
 			'diagnostic_cost' => $header->diagnostic_cost,
