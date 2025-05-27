@@ -163,26 +163,6 @@
                     <div class="row">
                         @include('manager.manager_fl_dashboard')
                     </div>
-
-                    <div style="padding-bottom: 10px;">
-                        <small class="text-uppercase"> 
-                            <i class="bi bi-person-workspace"></i>
-                            Technician's Dashboard 
-                        </small>
-                    </div>
-                    <div class="row">
-
-                    </div>
-
-                    <div style="padding-bottom: 10px;">
-                        <small class="text-uppercase"> 
-                            <i class="bi bi-person-workspace"></i>
-                            Spare Custodian's Dashboard 
-                        </small>
-                    </div>
-                    <div class="row">
-
-                    </div>
                 </div>
             </div>
         </div>
@@ -200,6 +180,30 @@
             const selectedVal = $('#branch option:selected').data('val');
             const branch_id = $('#branch option:selected').val();
             $('#selected_branch').text(selectedVal);
+
+            if(branch_id == '' || branch_id == null){
+                alert('Empty Branch');
+                return;
+            }
+
+            $.ajax({
+                url: "{{ route('get_manager_dashboard') }}",
+                type: "post",
+                data: {
+                    'branch_id': branch_id,
+                    _token: '{!! csrf_token() !!}',
+                },
+                success: function (response) {
+                    
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error Dashboard request",
+                        text: "An error occurred while filtering dashboard per branch. Please try again.",
+                    });
+                }
+            });
 
         }
 

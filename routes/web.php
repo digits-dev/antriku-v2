@@ -157,6 +157,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/admin/get_timeline', [AdminCustomDashboardController::class, 'getTimeline'])->name('get_timeline');
 
     Route::get('/admin/manager-dashboard', [AdminCustomDashboardController::class, 'managerDashboard'])->name('manager.dashboard');
+    Route::post('/admin/manager-dashboard-per-branch', [AdminCustomDashboardController::class, 'managerDashboardPerBranch'])->name('get_manager_dashboard');
 
     Route::get('/admin/custodian-dashboard', [AdminCustomDashboardController::class, 'custodianDashboard'])->name('custodian.dashboard');
 

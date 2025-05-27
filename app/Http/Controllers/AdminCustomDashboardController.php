@@ -459,4 +459,27 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
 
         return view('manager.manager_custom_dashboard', $data);
     }
+
+    public function managerDashboardPerBranch(Request $request)
+    {
+        $get_parts_id = DB::table('parts_item_master')->get();
+
+        foreach ($get_parts_id as $per_item) {
+            $is_exist = DB::table('branch_item_stocks')
+                ->where('branch_id', $request->branch_id)
+                ->where('parts_item_master_id', $per_item->id)
+                ->exists();
+
+            if (!$is_exist) {
+                DB::table('branch_item_stocks')->insert([
+                    'branch_id' => $request->branch_id,
+                    'parts_item_master_id' => $per_item->id,
+                    'stock_qty' => 50,
+                    'status' => 'ACTIVE',
+                    'created_by' => CRUDBooster::myId(),
+                    'created_at' => now()
+                ]);
+            }
+        }
+    }
 }
