@@ -451,47 +451,11 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         return view('custodian.custodian_dashboard_custom', $data);
     }
 
-    public function managerDashboard(Request $request)
+    public function managerDashboard()
     {
         $PBI = "https://app.powerbi.com/view?r=eyJrIjoiNzVhMTNmNTQtYjg4MS00YTQ1LTk4ZTctYmFjYjg5N2E5ODA2IiwidCI6ImVhNjUwNjA1LTVlOGQtNGRkNC1iNzhmLTAyZTNlZDVmZWQ5OCIsImMiOjEwfQ%3D%3D&pageName=62440140c8c03bc370a0";
         $data['PBI'] = $PBI;
-
         $data['branch'] = DB::table('branch')->where('branch_status', '=', 'ACTIVE')->get();
-
-        $data['fl_abandoned_units_dash_count_all'] = DB::table('returns_header')
-            ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
-            ->select('returns_header.branch', DB::raw('COUNT(*) as total'))
-            ->whereIn('job_order_logs.status_id', [19, 28])
-            ->where('job_order_logs.transacted_at', '<=', Carbon::now()->subDays(90))
-            ->groupBy('returns_header.branch')
-            ->pluck('total', 'returns_header.branch');
-
-        $data['handle_overall_total'] = DB::table('returns_header')
-            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.created_by')
-            ->leftJoin('cms_privileges', 'cms_privileges.id', '=', 'cms_users.id_cms_privileges')
-            ->select('returns_header.branch', DB::raw('COUNT(*) as total'))
-            ->where('cms_users.id_cms_privileges', 3)
-            ->where('cms_users.status', '=', 'ACTIVE')
-            ->groupBy('returns_header.branch')
-            ->pluck('total', 'returns_header.branch');
-
-        $data['handle_per_employee'] = DB::table('returns_header')
-            ->select(
-                'cms_users.id as user_id',
-                'cms_users.name as created_by_user',
-                'cms_users.photo as user_profile',
-                'cms_privileges.name as privilege_name',
-                'returns_header.branch',
-                DB::raw('COUNT(*) as total_creations')
-            )
-            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.created_by')
-            ->leftJoin('cms_privileges', 'cms_privileges.id', '=', 'cms_users.id_cms_privileges')
-            ->where('cms_users.id_cms_privileges', 3)
-            ->where('cms_users.status', '=', 'ACTIVE')
-            ->groupBy('cms_users.id', 'cms_users.name', 'cms_privileges.name', 'returns_header.branch')
-            ->orderBy('total_creations', 'DESC')
-            ->get()
-            ->groupBy('branch');
 
         return view('manager.manager_custom_dashboard', $data);
     }

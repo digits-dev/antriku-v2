@@ -82,11 +82,6 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/admin/to_close/PrintReleaseForm/{id}', 'AdminReturnsHeaderController@PrintReleaseForm');
     Route::get('/admin/to_close/PrintSameDayReleaseForm/{id}', 'AdminReturnsHeaderController@PrintSameDayReleaseForm');
 
-    // CALL OUT PRINT
-     Route::get('/admin/mail_in/DownloadTechnicalReport/{id}', 'AdminMailInController@PrintTechnicalReport');
-     Route::get('/admin/carry_in/DownloadTechnicalReport/{id}', 'AdminCarryInController@PrintTechnicalReport');
-     Route::get('/admin/call_out_releasing/DownloadTechnicalReport/{id}', 'AdminCallOutReleasingController@PrintTechnicalReport');
-
     //TO TRANSACTION HISTORY
     Route::get('/admin/transaction_history/PrintReceivingForm/{id}', 'AdminReturnsHeaderController@PrintReceivingForm');
     Route::get('/admin/transaction_history/PrintTechnicalReport/{id}', 'AdminReturnsHeaderController@PrintTechnicalReport');
@@ -161,7 +156,7 @@ Route::group(['middleware' => ['web']], function () {
     // Timeline
     Route::post('/admin/get_timeline', [AdminCustomDashboardController::class, 'getTimeline'])->name('get_timeline');
 
-    Route::post('/admin/manager-dashboard', [AdminCustomDashboardController::class, 'managerDashboard'])->name('manager.dashboard.per.branch');
+    Route::get('/admin/manager-dashboard', [AdminCustomDashboardController::class, 'managerDashboard'])->name('manager.dashboard');
 
     Route::get('/admin/custodian-dashboard', [AdminCustomDashboardController::class, 'custodianDashboard'])->name('custodian.dashboard');
 

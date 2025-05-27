@@ -131,7 +131,7 @@
             </div>
         </div>
 
-        <div id="tab-system-dash" class="tab-content-dash active">
+        <div id="tab-system-dash" class="tab-content-dash active system_dashboard_content">
             <div class="card-dash" style="border-top-left-radius:0%; border-top-right-radius:0%">
                 <div class="card-header-dash" style="padding: 0px 20px 0px 20px;">
                     <h2 class="card-title-dash text-uppercase" style="color: white;">
@@ -163,6 +163,26 @@
                     <div class="row">
                         @include('manager.manager_fl_dashboard')
                     </div>
+
+                    <div style="padding-bottom: 10px;">
+                        <small class="text-uppercase"> 
+                            <i class="bi bi-person-workspace"></i>
+                            Technician's Dashboard 
+                        </small>
+                    </div>
+                    <div class="row">
+
+                    </div>
+
+                    <div style="padding-bottom: 10px;">
+                        <small class="text-uppercase"> 
+                            <i class="bi bi-person-workspace"></i>
+                            Spare Custodian's Dashboard 
+                        </small>
+                    </div>
+                    <div class="row">
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -180,36 +200,6 @@
             const selectedVal = $('#branch option:selected').data('val');
             const branch_id = $('#branch option:selected').val();
             $('#selected_branch').text(selectedVal);
-
-            if(branch_id == '' || branch_id == null){
-                alert('Empty Branch');
-                return;
-            }
-
-            $.ajax({
-                url: "{{ route('manager.dashboard.per.branch') }}",
-                type: "POST",
-                data: {
-                    'branch_id': branch_id,
-                    _token: '{!! csrf_token() !!}',
-                },
-                success: function (emailResponse) {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Transaction Complete, Email Sent Successfully!",
-                        html: emailResponse.message + "<br>" + "<b>To: </b>" + emailResponse.email + "<br><br> <small>Closing, A moment again please...</small>",
-                        allowOutsideClick: false,
-                        showConfirmButton: false,
-                    });
-                },
-                error: function () {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error Dashboard request",
-                        text: "An error occurred while filtering dashboard per branch. Please try again.",
-                    });
-                }
-            });
 
         }
 

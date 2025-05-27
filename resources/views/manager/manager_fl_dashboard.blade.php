@@ -1,4 +1,4 @@
-<div class="col-md-7">
+{{-- <div class="col-md-7">
     <div class="row">
         <div class="col-md-6">
             <div class="m-dash-card m-dash-default" data-cardname="Pending Call-Outs"style="cursor: pointer;">
@@ -10,9 +10,8 @@
                     </div>
                     <hr>
                 </div>
-                <div class="m-dash-card-value" id="filtered-callouts-value">
-                    {{-- {{ $fl_pending_call_out_dash_count_all ?? 0 }} --}}
-                    100,204
+                <div class="m-dash-card-value" id="fl_pending_call_out_dash_count_all">
+                    {{ $fl_pending_call_out_dash_count_all ?? 0 }}
                 </div>
             </div>
         </div>
@@ -27,9 +26,8 @@
                     </div>
                     <hr>
                 </div>
-                <div class="m-dash-card-value" id="filtered-callouts-value">
-                    {{-- {{ $fl_abandoned_units_dash_count ?? 0 }} --}}
-                    50,023
+                <div class="m-dash-card-value" id="fl_abandoned_units_dash_count_all">
+                    {{ $fl_abandoned_units_dash_count_all ?? 0 }}$pending_call_out_data
                 </div>
             </div>
         </div>
@@ -99,4 +97,4 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
