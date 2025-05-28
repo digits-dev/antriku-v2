@@ -36,7 +36,6 @@ class AdminPendingMailInShipmentController extends \crocodicstudio\crudbooster\c
 		$this->col = [];
 		$this->col[] = ["label" => "Status", "name" => "repair_status", 'join' => 'transaction_status,status_name'];
 		$this->col[] = ["label" => "Reference No", "name" => "reference_no"];
-		$this->col[] = ["label" => "GSX", "name" => "id"];
 		$this->col[] = ["label" => "Model Group", "name" => "model"];
 		$this->col[] = ["label" => "Warranty Status", "name" => "warranty_status"];
 		$this->col[] = ["label" => "Case Status", "name" => "case_status"];
