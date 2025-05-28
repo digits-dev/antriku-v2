@@ -23,15 +23,6 @@ class NotificationCount
         $call_out_releasing = DB::table('returns_header')->whereIn('repair_status', [13 ,19 ,22 ,28 , 39])->where('branch', CRUDBooster::me()->branch_id)->count();
         View::share('call_out_releasing', $call_out_releasing);
 
-        $mail_in = DB::table('returns_header')->whereIn('repair_status', [12, 21, 26, 47])->where('branch', CRUDBooster::me()->branch_id)->count();
-        View::share('mail_in', $mail_in);
-
-        $carry_in = DB::table('returns_header')->whereIn('repair_status', [33 ,35 ,43 ,45 ,48])->where('branch', CRUDBooster::me()->branch_id)->count();
-        View::share('carry_in', $carry_in);
-
-        $call_out_releasing = DB::table('returns_header')->whereIn('repair_status', [13 ,19 ,22 ,28 , 39])->where('branch', CRUDBooster::me()->branch_id)->count();
-        View::share('call_out_releasing', $call_out_releasing);
-
         $to_assign = DB::table('returns_header')
             ->where('repair_status', 9)
             ->count();
