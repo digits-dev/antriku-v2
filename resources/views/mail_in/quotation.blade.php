@@ -60,7 +60,7 @@
                                                         <input class="input-cus text-center getcsValue" type="text" id="cs_code_{{$qt->id}}" value="{{ $qt->cs_code }}" placeholder="Enter CS Code" {{ in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? '' : 'readonly'}}>
                                                     </td>
                                                     <td style="padding: 1px !important;">
-                                                        <input class="input-cus text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter KGB Serial Number" {{ in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? '' : 'readonly'}}>   
+                                                        <input class="input-cus text-center getserialValue" type="text" value="{{ $qt->serial_no }}" placeholder="Enter KGB Serial Number" {{ in_array(CRUDBooster::myPrivilegeId(), [4,8,9]) ? '' : 'readonly'}}>   
                                                     </td>
                                                     <td style="padding: 1px !important;">
                                                         <input class="input-cus text-center getitemValue" type="text" id="item_desc_{{$qt->id}}" value="{{ $qt->item_description }}" placeholder="Enter Item Description" readonly>
