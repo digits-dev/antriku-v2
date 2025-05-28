@@ -52,7 +52,7 @@
         </div>
 
         <div class="tabs-dash m-dash-new-users text-uppercase" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
-            <div class="tab-dash" data-tab="tab-jaymar-bi">
+            <div class="tab-dash active" data-tab="tab-jaymar-bi">
                 <svg xmlns="http://www.w3.org/2000/svg" role="presentation" width="15" height="15" viewBox="0 0 1600 1600" fill="none">
                     <mask id="mask0_8592:56198" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="200" y="0" width="1200" height="1600">
                     <path d="M1333.25 0C1370.11 0 1400 29.8849 1400 66.75V1533.25C1400 1570.11 1370.11 1600 1333.25 1600H266.667C229.848 1600 200 1570.15 200 1533.33V866.667C200 829.848 229.848 800 266.667 800H525V466.667C525 429.848 554.848 400 591.667 400H850V66.75C850 29.885 879.885 0 916.75 0H1333.25Z" fill="white"/>
@@ -101,13 +101,13 @@
                 System Dashboard
             </div>
 
-            <div class="tab-dash active" data-tab="tab-employee-dash">
+            <div class="tab-dash" data-tab="tab-employee-dash">
                 <img src="https://cdn-icons-png.flaticon.com/128/6186/6186048.png" alt="" width="18px">
                 Employee's Dashboard
             </div>
         </div>
 
-        <div id="tab-jaymar-bi" class="tab-content-dash">
+        <div id="tab-jaymar-bi" class="tab-content-dash active">
             <div class="card-dash" style="border-top-left-radius:0%; border-top-right-radius:0%">
                 <div class="card-header-dash hidden" style="padding: 0px 10px 0px 10px;">
                     <h2 class="card-title-dash text-uppercase" style="color: white;">
@@ -169,7 +169,7 @@
             </div>
         </div>
 
-        <div id="tab-employee-dash" class="tab-content-dash employee_dashboard_content active">
+        <div id="tab-employee-dash" class="tab-content-dash employee_dashboard_content">
             <div class="card-dash" style="border-top-left-radius:0%; border-top-right-radius:0%">
                 <div class="card-header-dash" style="padding: 0px 20px 0px 20px;">
                     <h2 class="card-title-dash text-uppercase" style="color: white;">

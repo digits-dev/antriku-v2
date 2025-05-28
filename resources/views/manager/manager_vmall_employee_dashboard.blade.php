@@ -82,7 +82,7 @@
 
     <div class="col-md-6">
         <div class="card-dash">
-            <div class="card-body-dash" style="height: 450px; overflow-y:auto; cursor:pointer;">
+            <div class="card-body-dash" style="height: 523px; overflow-y:auto; cursor:pointer;">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="m-dash-card m-dash-default" data-cardname="Pending Call-Outs"style="cursor: pointer;">
@@ -113,12 +113,36 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-md-12">
+                        <div class="card-body-dash">
+                            <div class="chart-container" style="position: relative; height: 240px; width: 100%; display: flex; flex-direction: column; align-items: center; padding: 10px 0;">
+                                <canvas id="caseStatusChart"></canvas>
+                            </div>
+                            
+                            <div class="filter-buttons" style="display: flex; gap: 10px; justify-content: center; margin: 20px 0;">
+                                <button id="filterAll" class="filter-btn active" style="padding: 8px 16px; border-radius: 8px; border: 1px solid #e5e7eb; background-color: #f9fafb; color: #4b5563; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                                All Cases
+                                </button>
+                                <button id="filterCompleted" class="filter-btn" style="padding: 8px 16px; border-radius: 8px; border: 1px solid #e5e7eb; background-color: #f9fafb; color: #4b5563; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                Completed
+                                </button>
+                                <button id="filterOngoing" class="filter-btn" style="padding: 8px 16px; border-radius: 8px; border: 1px solid #e5e7eb; background-color: #f9fafb; color: #4b5563; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                Ongoing
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+{{-- Technicians --}}
 <div style="padding-bottom: 10px; margin-top: 20px;">
     <hr>
     <small class="text-uppercase">
