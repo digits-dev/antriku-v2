@@ -40,7 +40,7 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 		$this->col[] = ["label" => "Warranty Status", "name" => "warranty_status"];
 		$this->col[] = ["label" => "Case Status", "name" => "case_status"];
 		$this->col[] = ["label" => "Technician Assigned", "name" => "technician_id", 'join' => 'cms_users,name'];
-		$this->col[] = ["label" => "Date Received", "name" => "technician_accepted_at"];
+		$this->col[] = ["label" => "Tech Accepted Date", "name" => "technician_accepted_at"];
 		$this->col[] = ["label" => "Branch", "name" => "branch", 'join' => 'branch,branch_name'];
 		# END COLUMNS DO NOT REMOVE THIS LINE
 
@@ -122,7 +122,9 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 		$data['transaction_details'] = DB::table('returns_header')
 			->leftJoin('model', 'returns_header.model', '=', 'model.id')
 			->leftJoin('model_group', 'model.model_group', '=', 'model_group.id')
-			->select('returns_header.*', 'returns_header.id as header_id', 'returns_header.created_by as user_id', 'model.id as model_id', 'model_name', 'model_photo', 'model_status', 'diagnostic_fee', 'software_fee', 'model_group')
+			->leftJoin('cms_users as frontliner', 'frontliner.id', '=', 'returns_header.created_by')
+			->leftJoin('cms_users as technician', 'technician.id', '=', 'returns_header.technician_id')
+			->select('returns_header.*', 'returns_header.id as header_id', 'returns_header.created_by as user_id', 'model.id as model_id', 'model_name', 'model_photo', 'model_status', 'diagnostic_fee', 'software_fee', 'model_group' , 'frontliner.name as fl_name', 'technician.name as tech_name')
 			->where('returns_header.id', $id)->first();
 
 		$data['Comment'] = DB::table('returns_comments')
@@ -161,7 +163,9 @@ class AdminPendingRepairController extends \crocodicstudio\crudbooster\controlle
 		$data['transaction_details'] = DB::table('returns_header')
 			->leftJoin('model', 'returns_header.model', '=', 'model.id')
 			->leftJoin('model_group', 'model.model_group', '=', 'model_group.id')
-			->select('returns_header.*', 'returns_header.id as header_id', 'returns_header.created_by as user_id', 'model.id as model_id', 'model_name', 'model_photo', 'model_status', 'diagnostic_fee', 'software_fee', 'model_group')
+			->leftJoin('cms_users as frontliner', 'frontliner.id', '=', 'returns_header.created_by')
+			->leftJoin('cms_users as technician', 'technician.id', '=', 'returns_header.technician_id')
+			->select('returns_header.*', 'returns_header.id as header_id', 'returns_header.created_by as user_id', 'model.id as model_id', 'model_name', 'model_photo', 'model_status', 'diagnostic_fee', 'software_fee', 'model_group', 'frontliner.name as fl_name', 'technician.name as tech_name')
 			->where('returns_header.id', $id)->first();
 
 		$data['Comment'] = DB::table('returns_comments')

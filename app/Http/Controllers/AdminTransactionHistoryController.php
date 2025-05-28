@@ -42,7 +42,7 @@ class AdminTransactionHistoryController extends \crocodicstudio\crudbooster\cont
 		$this->col[] = ["label" => "Warranty Status", "name" => "warranty_status"];
 		$this->col[] = ["label" => "Case Status", "name" => "case_status"];
 		$this->col[] = ["label" => "Technician Assigned", "name" => "technician_id", 'join' => 'cms_users,name'];
-		$this->col[] = ["label" => "Date Received", "name" => "technician_accepted_at"];
+		$this->col[] = ["label" => "Tech Accepted Date", "name" => "technician_accepted_at"];
 		$this->col[] = ["label" => "Branch", "name" => "branch", 'join' => 'branch,branch_name'];
 		$this->col[] = ["label" => "Print Receive Form", "name" => "print_receive_form"];
 		$this->col[] = ["label" => "Print Technical Report", "name" => "print_technical_report"];
