@@ -104,9 +104,6 @@
                                     <div class="m-dash-card-value" id="filtered-callouts-value">
                                         {{ $fl_abandoned_units_dash_count ?? 0 }}
                                     </div>
-                                    <div class="m-dash-card-change m-dash-negative">
-                                        {{-- +12% from yesterday --}}
-                                    </div>
                                 </div>
                               </div>
 

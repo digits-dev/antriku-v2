@@ -457,11 +457,441 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         $data['PBI'] = $PBI;
         $data['branch'] = DB::table('branch')->where('branch_status', '=', 'ACTIVE')->get();
 
-        return view('manager.manager_custom_dashboard', $data);
-    }
+        // V-Mall Dashboard
+        $vmall_branch = 1;
 
-    public function managerDashboardPerBranch(Request $request)
-    {
-        
+        $data['callout_type'] = DB::table('transaction_status')
+            ->whereIn('id', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])
+            ->where('status', '=', 'ACTIVE')->get();
+
+        $data['aging_callouts'] = DB::table('returns_header')
+            ->select('returns_header.*', 'latest_logs.transacted_at')
+            ->leftJoinSub(
+                DB::table('job_order_logs')
+                    ->select('returns_header_id', DB::raw('MAX(transacted_at) as transacted_at'))
+                    ->groupBy('returns_header_id'),
+                'latest_logs',
+                function ($join) {
+                    $join->on('returns_header.id', '=', 'latest_logs.returns_header_id');
+                }
+            )
+            ->whereIn('returns_header.repair_status', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])
+            ->where('returns_header.branch', $vmall_branch)
+            ->get();
+
+        $today = Carbon::now();
+        $normalCount = 0;
+        $mediumCount = 0;
+        $highCount = 0;
+        $criticalCount = 0;
+
+        foreach ($data['aging_callouts'] as $callout) {
+            $lastUpdated = $callout->transacted_at
+                ? Carbon::parse($callout->transacted_at)
+                : Carbon::parse($callout->created_at);
+
+            // Calculate age in days
+            $ageDays = $lastUpdated->diffInDays($today);
+
+            // Categorize based on age
+            if ($ageDays <= 7) {
+                $normalCount++;
+            } elseif ($ageDays <= 14) {
+                $mediumCount++;
+            } elseif ($ageDays <= 30) {
+                $highCount++;
+            } else {
+                $criticalCount++;
+            }
+            $callout->age_days = $ageDays;
+        }
+
+        // Add counts to the data array
+        $data['normalCount'] = $normalCount;
+        $data['mediumCount'] = $mediumCount;
+        $data['highCount'] = $highCount;
+        $data['criticalCount'] = $criticalCount;
+
+        $data['fl_pending_call_out_vmall'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->whereIn('returns_header.repair_status', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])
+            ->where('returns_header.branch', $vmall_branch)
+            ->get();
+
+        $data['fl_abandoned_units_vmall'] = DB::table('returns_header')
+            ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
+            ->whereIn('job_order_logs.status_id', [19, 28])
+            ->where('returns_header.branch', $vmall_branch)
+            ->where('job_order_logs.transacted_at', '<=', Carbon::now()->subDays(90))
+            ->get();
+
+        $data['myOngoingRepair'] =  DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->whereIn('returns_header.repair_status', [self::OnGoingRepair, self::OnGoingRepairOOW])
+            ->where('returns_header.branch', $vmall_branch)
+            ->get();
+
+        $data['myAwaitingRepair'] =  DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->whereIn('returns_header.repair_status', [self::AwaitingAppleRepair, self::AwaitingAppleRepairOOW, self::AwaitingAppleRepairIW])
+            ->where('returns_header.branch', $vmall_branch)
+            ->get();
+
+        $data['myOngoingDiagnosis'] =  DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->whereIn('returns_header.repair_status', [self::OngoingDiagnosis])
+            ->where('returns_header.branch', $vmall_branch)
+            ->get();
+
+        $data['totalCarryIn'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->where('returns_header.case_status', 'CARRY-IN')
+            ->where('returns_header.branch', $vmall_branch)
+            ->get();
+
+        $data['totalMailIn'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->where('returns_header.case_status', 'MAIL-IN')
+            ->where('returns_header.branch', $vmall_branch)
+            ->get();
+
+        $data['totalIW'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->where('returns_header.warranty_status', 'IN WARRANTY')
+            ->where('returns_header.branch', $vmall_branch)
+            ->get();
+
+        $data['totalOOW'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->where('returns_header.warranty_status', 'OUT OF WARRANTY')
+            ->where('returns_header.branch', $vmall_branch)
+            ->get();
+
+        $data['totalToAsign'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->where('returns_header.repair_status', 9)
+            ->where('returns_header.branch', $vmall_branch)
+            ->get();
+
+        $data['totalPedningAssigned'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->where('returns_header.repair_status', 1)
+            ->where('returns_header.branch', $vmall_branch)
+            ->get();
+
+        $data['pending_mail_in_shipment_dash'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->whereIn('returns_header.repair_status', [15, 16, 24, 25])
+            ->where('returns_header.branch', $vmall_branch)
+            ->get();
+
+        $data['spare_parts_receiving_dash'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->whereIn('returns_header.repair_status', [26, 33, 45, 47])
+            ->where('returns_header.branch', $vmall_branch)
+            ->get();
+
+        $data['spare_parts_releasing_dash'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->whereIn('returns_header.repair_status', [29, 39])
+            ->where('returns_header.branch', $vmall_branch)
+            ->get();
+
+        $data['handle_overall_total'] = DB::table('returns_header')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.created_by')
+            ->leftJoin('cms_privileges', 'cms_privileges.id', '=', 'cms_users.id_cms_privileges')
+            ->where('cms_users.id_cms_privileges', 3)
+            ->where('returns_header.branch', $vmall_branch)
+            ->where('cms_users.status', '=', 'ACTIVE')
+            ->count();
+
+         $data['handle_for_all_employee_vmall'] = DB::table('returns_header')
+            ->select(
+                'cms_users.id as user_id',
+                'cms_users.name as created_by_user',
+                'cms_privileges.name as privilege_name',
+                DB::raw('COUNT(*) as total_creations')
+            )
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.created_by')
+            ->leftJoin('cms_privileges', 'cms_privileges.id', '=', 'cms_users.id_cms_privileges')
+            ->where('cms_users.id_cms_privileges', 3)
+            ->where('cms_users.status', '=', 'ACTIVE')
+            ->where('returns_header.branch', $vmall_branch)
+            ->groupBy('cms_users.id', 'cms_users.name', 'cms_privileges.name')
+            ->orderBy('total_creations', 'DESC')
+            ->get();
+
+        $data['handle_overall_total_tech_vmall'] = DB::table('returns_header')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->leftJoin('cms_privileges', 'cms_privileges.id', '=', 'cms_users.id_cms_privileges')
+            ->where('cms_users.id_cms_privileges', 4)
+            ->where('returns_header.branch', $vmall_branch)
+            ->where('cms_users.status', '=', 'ACTIVE')
+            ->count();
+
+         $data['handle_for_all_employee_tech_vmall'] = DB::table('returns_header')
+            ->select(
+                'cms_users.id as user_id',
+                'cms_users.name as created_by_user',
+                'cms_privileges.name as privilege_name',
+                DB::raw('COUNT(*) as total_creations')
+            )
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->leftJoin('cms_privileges', 'cms_privileges.id', '=', 'cms_users.id_cms_privileges')
+            ->where('cms_users.id_cms_privileges', 4)
+            ->where('cms_users.status', '=', 'ACTIVE')
+            ->where('returns_header.branch', $vmall_branch)
+            ->groupBy('cms_users.id', 'cms_users.name', 'cms_privileges.name')
+            ->orderBy('total_creations', 'DESC')
+            ->get();
+
+        // BGC Dashboard
+        $bgc_branch = 2;
+        $data['aging_callouts_bgc'] = DB::table('returns_header')
+            ->select('returns_header.*', 'latest_logs.transacted_at')
+            ->leftJoinSub(
+                DB::table('job_order_logs')
+                    ->select('returns_header_id', DB::raw('MAX(transacted_at) as transacted_at'))
+                    ->groupBy('returns_header_id'),
+                'latest_logs',
+                function ($join) {
+                    $join->on('returns_header.id', '=', 'latest_logs.returns_header_id');
+                }
+            )
+            ->whereIn('returns_header.repair_status', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])
+            ->where('returns_header.branch', $bgc_branch)
+            ->get();
+
+        $today = Carbon::now();
+        $normalCount = 0;
+        $mediumCount = 0;
+        $highCount = 0;
+        $criticalCount = 0;
+
+        foreach ($data['aging_callouts_bgc'] as $callout) {
+            $lastUpdated = $callout->transacted_at
+                ? Carbon::parse($callout->transacted_at)
+                : Carbon::parse($callout->created_at);
+
+            // Calculate age in days
+            $ageDays = $lastUpdated->diffInDays($today);
+
+            // Categorize based on age
+            if ($ageDays <= 7) {
+                $normalCount++;
+            } elseif ($ageDays <= 14) {
+                $mediumCount++;
+            } elseif ($ageDays <= 30) {
+                $highCount++;
+            } else {
+                $criticalCount++;
+            }
+            $callout->age_days = $ageDays;
+        }
+
+        // Add counts to the data array
+        $data['normalCount_bgc'] = $normalCount;
+        $data['mediumCount_bgc'] = $mediumCount;
+        $data['highCount_bgc'] = $highCount;
+        $data['criticalCount_bgc'] = $criticalCount;
+
+        $data['fl_pending_call_out_bgc'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->whereIn('returns_header.repair_status', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])
+            ->where('returns_header.branch', $bgc_branch)
+            ->get();
+
+        $data['fl_abandoned_units_bgc'] = DB::table('returns_header')
+            ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
+            ->whereIn('job_order_logs.status_id', [19, 28])
+            ->where('returns_header.branch', $bgc_branch)
+            ->where('job_order_logs.transacted_at', '<=', Carbon::now()->subDays(90))
+            ->get();
+
+        $data['myOngoingRepair_bgc'] =  DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->whereIn('returns_header.repair_status', [self::OnGoingRepair, self::OnGoingRepairOOW])
+            ->where('returns_header.branch', $bgc_branch)
+            ->get();
+
+        $data['myAwaitingRepair_bgc'] =  DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->whereIn('returns_header.repair_status', [self::AwaitingAppleRepair, self::AwaitingAppleRepairOOW, self::AwaitingAppleRepairIW])
+            ->where('returns_header.branch', $bgc_branch)
+            ->get();
+
+        $data['myOngoingDiagnosis_bgc'] =  DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->whereIn('returns_header.repair_status', [self::OngoingDiagnosis])
+            ->where('returns_header.branch', $bgc_branch)
+            ->get();
+
+        $data['totalCarryIn_bgc'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->where('returns_header.case_status', 'CARRY-IN')
+            ->where('returns_header.branch', $bgc_branch)
+            ->get();
+
+        $data['totalMailIn_bgc'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->where('returns_header.case_status', 'MAIL-IN')
+            ->where('returns_header.branch', $bgc_branch)
+            ->get();
+
+        $data['totalIW_bgc'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->where('returns_header.warranty_status', 'IN WARRANTY')
+            ->where('returns_header.branch', $bgc_branch)
+            ->get();
+
+        $data['totalOOW_bgc'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->where('returns_header.warranty_status', 'OUT OF WARRANTY')
+            ->where('returns_header.branch', $bgc_branch)
+            ->get();
+
+        $data['totalToAsign_bgc'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->where('returns_header.repair_status', 9)
+            ->where('returns_header.branch', $bgc_branch)
+            ->get();
+
+        $data['totalPedningAssigned_bgc'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->where('returns_header.repair_status', 1)
+            ->where('returns_header.branch', $bgc_branch)
+            ->get();
+
+        $data['pending_mail_in_shipment_dash_bgc'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->whereIn('returns_header.repair_status', [15, 16, 24, 25])
+            ->where('returns_header.branch', $bgc_branch)
+            ->get();
+
+        $data['spare_parts_receiving_dash_bgc'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->whereIn('returns_header.repair_status', [26, 33, 45, 47])
+            ->where('returns_header.branch', $bgc_branch)
+            ->get();
+
+        $data['spare_parts_releasing_dash_bgc'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->whereIn('returns_header.repair_status', [29, 39])
+            ->where('returns_header.branch', $bgc_branch)
+            ->get();
+
+        $data['handle_overall_total_bgc'] = DB::table('returns_header')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.created_by')
+            ->leftJoin('cms_privileges', 'cms_privileges.id', '=', 'cms_users.id_cms_privileges')
+            ->where('cms_users.id_cms_privileges', 3)
+            ->where('returns_header.branch', $bgc_branch)
+            ->where('cms_users.status', '=', 'ACTIVE')
+            ->count();
+
+         $data['handle_for_all_employee_bgc'] = DB::table('returns_header')
+            ->select(
+                'cms_users.id as user_id',
+                'cms_users.name as created_by_user',
+                'cms_privileges.name as privilege_name',
+                DB::raw('COUNT(*) as total_creations')
+            )
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.created_by')
+            ->leftJoin('cms_privileges', 'cms_privileges.id', '=', 'cms_users.id_cms_privileges')
+            ->where('cms_users.id_cms_privileges', 3)
+            ->where('cms_users.status', '=', 'ACTIVE')
+            ->where('returns_header.branch', $bgc_branch)
+            ->groupBy('cms_users.id', 'cms_users.name', 'cms_privileges.name')
+            ->orderBy('total_creations', 'DESC')
+            ->get();
+
+        $data['handle_overall_total_tech_bgc'] = DB::table('returns_header')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->leftJoin('cms_privileges', 'cms_privileges.id', '=', 'cms_users.id_cms_privileges')
+            ->where('cms_users.id_cms_privileges', 4)
+            ->where('returns_header.branch', $bgc_branch)
+            ->where('cms_users.status', '=', 'ACTIVE')
+            ->count();
+
+         $data['handle_for_all_employee_tech_bgc'] = DB::table('returns_header')
+            ->select(
+                'cms_users.id as user_id',
+                'cms_users.name as created_by_user',
+                'cms_privileges.name as privilege_name',
+                DB::raw('COUNT(*) as total_creations')
+            )
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
+            ->leftJoin('cms_privileges', 'cms_privileges.id', '=', 'cms_users.id_cms_privileges')
+            ->where('cms_users.id_cms_privileges', 4)
+            ->where('cms_users.status', '=', 'ACTIVE')
+            ->where('returns_header.branch', $bgc_branch)
+            ->groupBy('cms_users.id', 'cms_users.name', 'cms_privileges.name')
+            ->orderBy('total_creations', 'DESC')
+            ->get();
+
+        return view('manager.manager_custom_dashboard', $data);
     }
 }
