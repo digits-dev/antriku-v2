@@ -536,9 +536,9 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
             ->where('returns_header.branch', $vmall_branch)
             ->whereIn('returns_header.repair_status', [19, 28])
-            ->where('job_order_logs.transacted_at', '<=', Carbon::now()->subDays(90)) 
+            ->where('job_order_logs.transacted_at', '>=', Carbon::now()->subDays(90)) 
             ->selectRaw('COUNT(*) as total_count, MAX(job_order_logs.transacted_at) as last_transacted_at')
-            ->first();
+            ->get();
 
         $data['myOngoingRepair'] =  DB::table('returns_header')
             ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
@@ -769,8 +769,8 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->where('returns_header.branch', $bgc_branch)
             ->whereIn('returns_header.repair_status', [19, 28])
             ->whereNotNull('job_order_logs.id') 
-            ->where('job_order_logs.transacted_at', '<=', Carbon::now()->subDays(90)) 
-            ->first();
+            ->where('job_order_logs.transacted_at', '>=', Carbon::now()->subDays(90)) 
+            ->get();
 
         $data['myOngoingRepair_bgc'] =  DB::table('returns_header')
             ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'cms_users.name as assigned_tech')
