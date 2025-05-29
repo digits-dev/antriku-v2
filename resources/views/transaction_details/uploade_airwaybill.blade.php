@@ -304,7 +304,7 @@
                         <div class="upload-icon">📄</div>
                         <div class="upload-text">Drop your PDF files here</div>
                         <div class="upload-hint">or click to browse from your computer</div>
-                        <input type="file" class="file-input" id="waybill" accept=".pdf" multiple>
+                        <input type="file" class="file-input" id="waybill" accept=".pdf" required>
                         <button type="button" class="browse-button" onclick="document.getElementById('waybill').click()">
                             Browse Files
                         </button>
@@ -402,66 +402,65 @@
         uploadArea.addEventListener('drop', (e) => {
             e.preventDefault();
             uploadArea.classList.remove('dragover');
+    
+            waybill.removeAttribute('required');
+   
             const files = Array.from(e.dataTransfer.files).filter(file => file.type === 'application/pdf');
+            waybill.files = e.target.files;
             addFiles(files);
+
+       
         });
 
         // File input change
         waybill.addEventListener('change', (e) => {
             const files = Array.from(e.target.files);
+
+            if (files.length === 0) {
+                waybill.setAttribute('required', '');
+            }
             addFiles(files);
+            
         });
 
-        function addFiles(files) {
-            hideMessages();
-            
-            const pdfFiles = files.filter(file => file.type === 'application/pdf');
-            
-            if (pdfFiles.length !== files.length) {
-                showError('Only PDF files are allowed');
-                return;
+       function addFiles(files) {
+            if (files.length > 0) {
+                selectedFiles = [files[0]]; // Only store the first file
+                renderFileList();
             }
-
-            pdfFiles.forEach(file => {
-                if (!selectedFiles.find(f => f.name === file.name && f.size === file.size)) {
-                    selectedFiles.push(file);
-                }
-            });
-
-            renderFileList();
-            updateUploadButton();
         }
+
 
         function renderFileList() {
             fileList.innerHTML = '';
-            
-            selectedFiles.forEach((file, index) => {
-                const fileItem = document.createElement('div');
-                fileItem.className = 'file-item';
-                fileItem.innerHTML = `
-                    <div class="file-info">
-                        <div class="file-icon">PDF</div>
-                        <div class="file-details">
-                            <div class="file-name">${file.name}</div>
-                            <div class="file-size">${formatFileSize(file.size)}</div>
-                        </div>
+
+            const file = selectedFiles[0];
+            if (!file) return;
+
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.innerHTML = `
+                <div class="file-info">
+                    <div class="file-icon">PDF</div>
+                    <div class="file-details">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${formatFileSize(file.size)}</div>
                     </div>
-                    <button type="button" class="remove-button" onclick="removeFile(${index})">×</button>
-                `;
-                fileList.appendChild(fileItem);
-            });
+                </div>
+                <button type="button" class="remove-button" onclick="removeFile()">×</button>
+            `;
+            fileList.appendChild(fileItem);
         }
 
-        function removeFile(index) {
-            selectedFiles.splice(index, 1);
+
+        function removeFile() {
+            selectedFiles = [];
+            waybill.value = '';
             renderFileList();
-            updateUploadButton();
-            hideMessages();
+
+            waybill.setAttribute('required','')
         }
 
-        function updateUploadButton() {
-            uploadButton.disabled = selectedFiles.length === 0;
-        }
 
         function formatFileSize(bytes) {
             if (bytes === 0) return '0 Bytes';
@@ -488,35 +487,7 @@
             successMessage.style.display = 'none';
         }
 
-        // Upload functionality
-        uploadButton.addEventListener('click', () => {
-            if (selectedFiles.length === 0) return;
-
-            progressBar.style.display = 'block';
-            uploadButton.disabled = true;
-            hideMessages();
-
-            // Simulate upload progress
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 15;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    
-                    setTimeout(() => {
-                        progressBar.style.display = 'none';
-                        progressFill.style.width = '0%';
-                        showSuccess(`Successfully uploaded ${selectedFiles.length} file(s)!`);
-                        selectedFiles = [];
-                        renderFileList();
-                        updateUploadButton();
-                        waybill.value = '';
-                    }, 500);
-                }
-                progressFill.style.width = progress + '%';
-            }, 200);
-        });
+  
         
 
     </script>

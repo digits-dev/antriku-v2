@@ -342,9 +342,9 @@
             formData.append("_token", '{!! csrf_token() !!}');
 
             if ([17, 26].includes(status_id)) {
-                const waybillInput = document.getElementById("waybill");
-                if (waybillInput && waybillInput.files.length > 0) {
-                    formData.append("waybill", waybillInput.files[0]);
+                const warranty_changed = @json($data['transaction_details']->warranty_changed_at);
+                if (warranty_changed == null) {
+                    formData.append("waybill", selectedFiles[0]);
                 }
             }
 
