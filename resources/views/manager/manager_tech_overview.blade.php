@@ -209,10 +209,10 @@
                     </table>
                 </div>
                 <div class="card-footer-dash">
-                    <span class="card-footer-text-dash showing_data_tech_overview"
+                    {{-- <span class="card-footer-text-dash showing_data_tech_overview"
                         id="showing_data_tech_overview">
                         Showing {{ count($allData) }} Total of Data
-                    </span>
+                    </span> --}}
                 </div>
             </div>
         </div>

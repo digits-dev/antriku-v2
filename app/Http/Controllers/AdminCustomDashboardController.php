@@ -30,11 +30,16 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
 
         $data['country'] = DB::table('refcountry')->get();
 
-        $data['fl_abandoned_units_dash_count'] = DB::table('returns_header')
+        $result = DB::table('returns_header')
             ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
-            ->whereIn('job_order_logs.status_id', [19, 28])->where('returns_header.branch', CRUDBooster::me()->branch_id)
+            ->whereIn('returns_header.repair_status', [19, 28])
+            ->where('returns_header.created_by', CRUDBooster::myId())
+            ->where('returns_header.branch', CRUDBooster::me()->branch_id)
             ->where('job_order_logs.transacted_at', '<=', Carbon::now()->subDays(90))
-            ->count();
+            ->selectRaw('COUNT(*) as total_count, MAX(job_order_logs.transacted_at) as last_transacted_at')
+            ->first();
+
+        $data['fl_abandoned_units_dash_count'] = $result->total_count;
 
         $data['callout_type'] = DB::table('transaction_status')
             ->whereIn('id', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])
@@ -453,6 +458,10 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
 
     public function managerDashboard()
     {
+        if (CRUDBooster::myPrivilegeId() != 10) {
+            return view('403_error_view.invalid_route');
+        }
+
         $PBI = "https://app.powerbi.com/view?r=eyJrIjoiNzVhMTNmNTQtYjg4MS00YTQ1LTk4ZTctYmFjYjg5N2E5ODA2IiwidCI6ImVhNjUwNjA1LTVlOGQtNGRkNC1iNzhmLTAyZTNlZDVmZWQ5OCIsImMiOjEwfQ%3D%3D&pageName=62440140c8c03bc370a0";
         $data['PBI'] = $PBI;
         $data['branch'] = DB::table('branch')->where('branch_status', '=', 'ACTIVE')->get();
@@ -521,10 +530,14 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->get();
 
         $data['fl_abandoned_units_vmall'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
             ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
-            ->whereIn('job_order_logs.status_id', [19, 28])
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
             ->where('returns_header.branch', $vmall_branch)
-            ->where('job_order_logs.transacted_at', '<=', Carbon::now()->subDays(90))
+            ->whereIn('returns_header.repair_status', [19, 28])
+            ->where('job_order_logs.transacted_at', '>=', Carbon::now()->subDays(90)) 
+            ->selectRaw('COUNT(*) as total_count, MAX(job_order_logs.transacted_at) as last_transacted_at')
             ->get();
 
         $data['myOngoingRepair'] =  DB::table('returns_header')
@@ -637,8 +650,9 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->where('cms_users.status', '=', 'ACTIVE')
             ->count();
 
-         $data['handle_for_all_employee_vmall'] = DB::table('returns_header')
+        $data['handle_for_all_employee_vmall'] = DB::table('returns_header')
             ->select(
+                'returns_header.created_by as created_by_id',
                 'cms_users.id as user_id',
                 'cms_users.name as created_by_user',
                 'cms_privileges.name as privilege_name',
@@ -656,13 +670,14 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         $data['handle_overall_total_tech_vmall'] = DB::table('returns_header')
             ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
             ->leftJoin('cms_privileges', 'cms_privileges.id', '=', 'cms_users.id_cms_privileges')
-            ->where('cms_users.id_cms_privileges', 4)
+            // ->where('cms_users.id_cms_privileges', 4)
             ->where('returns_header.branch', $vmall_branch)
             ->where('cms_users.status', '=', 'ACTIVE')
             ->count();
 
-         $data['handle_for_all_employee_tech_vmall'] = DB::table('returns_header')
+        $data['handle_for_all_employee_tech_vmall'] = DB::table('returns_header')
             ->select(
+                'returns_header.technician_id as assigned_tech',
                 'cms_users.id as user_id',
                 'cms_users.name as created_by_user',
                 'cms_privileges.name as privilege_name',
@@ -670,7 +685,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             )
             ->leftJoin('cms_users', 'cms_users.id', '=', 'returns_header.technician_id')
             ->leftJoin('cms_privileges', 'cms_privileges.id', '=', 'cms_users.id_cms_privileges')
-            ->where('cms_users.id_cms_privileges', 4)
+            // ->where('cms_users.id_cms_privileges', 4)
             ->where('cms_users.status', '=', 'ACTIVE')
             ->where('returns_header.branch', $vmall_branch)
             ->groupBy('cms_users.id', 'cms_users.name', 'cms_privileges.name')
@@ -735,11 +750,26 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->where('returns_header.branch', $bgc_branch)
             ->get();
 
+        // $data['fl_abandoned_units_bgc'] = DB::table('returns_header')
+        //     ->select('returns_header.*', 'model.model_name', 'ts.status_name')
+        //     ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+        //     ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
+        //     ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+        //     ->where('returns_header.branch', $bgc_branch)
+        //     ->whereIn('returns_header.repair_status', [19, 28])
+        //     ->where('job_order_logs.transacted_at', '>=', Carbon::now()->subDays(90)) 
+        //     ->selectRaw('COUNT(*) as total_count, MAX(job_order_logs.transacted_at) as last_transacted_at')
+        //     ->get();
+
         $data['fl_abandoned_units_bgc'] = DB::table('returns_header')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
             ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
-            ->whereIn('job_order_logs.status_id', [19, 28])
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
             ->where('returns_header.branch', $bgc_branch)
-            ->where('job_order_logs.transacted_at', '<=', Carbon::now()->subDays(90))
+            ->whereIn('returns_header.repair_status', [19, 28])
+            ->whereNotNull('job_order_logs.id') 
+            ->where('job_order_logs.transacted_at', '>=', Carbon::now()->subDays(90)) 
             ->get();
 
         $data['myOngoingRepair_bgc'] =  DB::table('returns_header')
@@ -852,8 +882,9 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->where('cms_users.status', '=', 'ACTIVE')
             ->count();
 
-         $data['handle_for_all_employee_bgc'] = DB::table('returns_header')
+        $data['handle_for_all_employee_bgc'] = DB::table('returns_header')
             ->select(
+                'returns_header.created_by as created_by_id',
                 'cms_users.id as user_id',
                 'cms_users.name as created_by_user',
                 'cms_privileges.name as privilege_name',
@@ -876,8 +907,9 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->where('cms_users.status', '=', 'ACTIVE')
             ->count();
 
-         $data['handle_for_all_employee_tech_bgc'] = DB::table('returns_header')
+        $data['handle_for_all_employee_tech_bgc'] = DB::table('returns_header')
             ->select(
+                'returns_header.technician_id as assigned_tech',
                 'cms_users.id as user_id',
                 'cms_users.name as created_by_user',
                 'cms_privileges.name as privilege_name',
@@ -893,5 +925,84 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->get();
 
         return view('manager.manager_custom_dashboard', $data);
+    }
+
+    public function managerDashboardPerEmployee(Request $request)
+    {
+        // Validate request
+        $validated = $request->validate([
+            'creator_id' => 'required|integer|exists:cms_users,id',
+        ]);
+
+        $creator_id = $validated['creator_id'];
+
+        // Fetch employee data
+        $employee_data = DB::table('returns_header')
+            ->where('returns_header.created_by', $creator_id)
+            ->get();
+
+        $result = DB::table('returns_header')
+            ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
+            ->whereIn('returns_header.repair_status', [19, 28])
+            ->where('returns_header.created_by', $creator_id)
+            ->where('job_order_logs.transacted_at', '<=', Carbon::now()->subDays(90))
+            ->selectRaw('COUNT(*) as total_count, MAX(job_order_logs.transacted_at) as last_transacted_at')
+            ->first();
+
+        $abandoned_units_count = $result->total_count;
+
+        // Count of pending callouts
+        $pending_callouts_count = DB::table('returns_header')
+            ->whereIn('repair_status', [12, 13, 19, 21, 22, 26, 28, 33, 35, 38, 43, 45, 47, 48])
+            ->where('created_by', $creator_id)
+            ->count();
+
+        return response()->json([
+            'success' => true,
+            'data' => $employee_data,
+            'abandoned_units_count' => $abandoned_units_count,
+            'pending_callouts_count' => $pending_callouts_count,
+        ]);
+    }
+
+    public function managerDashboardPerEmployeeTech(Request $request) {
+        // Validate request
+        $validated = $request->validate([
+            'assigned_id' => 'required|integer|exists:cms_users,id',
+        ]);
+
+        $assigned_id = $validated['assigned_id'];
+
+        $total_unaccepted_jo = DB::table('returns_header')
+            ->where('returns_header.technician_id', $assigned_id)
+            ->whereNull('returns_header.technician_accepted_at')
+            ->count();
+
+        $total_accepted_jo = DB::table('returns_header')
+            ->where('returns_header.technician_id', $assigned_id)
+            ->whereNotNull('returns_header.technician_accepted_at')
+            ->count();
+
+        $total_ongoing_jo = DB::table('returns_header')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->whereIn('returns_header.repair_status', [self::OnGoingRepair, self::OnGoingRepairOOW])
+            ->where('returns_header.technician_id', $assigned_id)
+            ->count();
+
+        $total_awaiting_jo = DB::table('returns_header')
+            ->leftJoin('model', 'model.id', '=', 'returns_header.model')
+            ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
+            ->whereIn('returns_header.repair_status', [self::AwaitingAppleRepair, self::AwaitingAppleRepairOOW, self::AwaitingAppleRepairIW])
+            ->where('returns_header.technician_id', $assigned_id)
+            ->count();
+
+        return response()->json([
+            'success' => true,
+            'total_unaccepted_jo' => $total_unaccepted_jo,
+            'total_accepted_jo' => $total_accepted_jo,
+            'total_ongoing_jo' => $total_ongoing_jo,
+            'total_awaiting_jo' => $total_awaiting_jo,
+        ]);
     }
 }

@@ -66,7 +66,7 @@
             <button type="submit" id="save" onclick="return changeStatus(30)" class="btn btn-danger pull-right proceed_yes_unav" style="margin-left: 10px">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, Yes
             </button>
-            <button type="submit" id="save" onclick="return changeStatus(19)" class="btn btn-primary pull-right">
+            <button type="submit" id="save" onclick="return changeStatus(19)" class="btn btn-danger pull-right">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Declined, No
             </button>
             <input type="hidden" value="{{$transaction_details->repair_status}}" id="transaction_status">
@@ -112,7 +112,7 @@
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, OOW Yes
             </button>
 
-            <button type="submit" id="save" onclick="return changeStatus(38)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+            <button type="submit" id="save" onclick="return changeStatus(38)" class="btn btn-danger pull-right buttonSubmit" style="margin-left: 20px;">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Declined, OOW No
             </button>
         </div>
@@ -182,7 +182,7 @@
             <button type="submit" id="save" onclick="return changeStatus(40)" class="btn btn-danger pull-right proceed_yes_unav" style="margin-left: 10px">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, Yes
             </button>
-            <button type="submit" id="save" onclick="return changeStatus(28)" class="btn btn-primary pull-right">
+            <button type="submit" id="save" onclick="return changeStatus(28)" class="btn btn-danger pull-right">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Declined, No
             </button>
         </div>

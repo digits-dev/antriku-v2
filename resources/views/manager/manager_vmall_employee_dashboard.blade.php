@@ -36,7 +36,7 @@
             <div class="card-body-dash" style="height: 450px; overflow-y:auto; cursor:pointer;">
                 <div class="employee-chart">
                     @foreach ($handle_for_all_employee_vmall as $per_employee)
-                        <div class="employee-row">
+                        <div class="employee-row fl_employee_row" data-creator_id="{{$per_employee->created_by_id}}">
                             <div
                                 class="employee-badge {{ $loop->iteration == 1 ? 'badge-1' : ($loop->iteration == 2 ? 'badge-2' : ($loop->iteration == 3 ? 'badge-3' : '')) }}">
                                 @if ($loop->iteration == 1)
@@ -83,9 +83,16 @@
     <div class="col-md-6">
         <div class="card-dash">
             <div class="card-body-dash" style="height: 523px; overflow-y:auto; cursor:pointer;">
-                <div class="row">
+                <div class="loading-area" style="display: none;">
+                    <br><br><br><br><br>
+                    <div style="display: flex; justify-content: center; align-items:center">
+                      <img width="100" src="https://cdn-icons-gif.flaticon.com/10282/10282620.gif"/>
+                    </div>
+                    <center><p style="text-align:center">Loading data, please wait...</p></center>
+                </div>
+                <div class="row main-content-vmall-fl">
                     <div class="col-md-6">
-                        <div class="m-dash-card m-dash-default" data-cardname="Pending Call-Outs"style="cursor: pointer;">
+                        <div class="m-dash-card m-dash-default" style="cursor: pointer;">
                             <div class="m-dash-card-header" style="margin: 0">
                                 <div class="m-dash-card-title">
                                     <i class="bi bi-telephone-minus-fill" style="background: #948979; color:white; padding: 4px 5px 4px 5px; border-radius: 7px;"></i>
@@ -93,14 +100,14 @@
                                 </div>
                                 <hr>
                             </div>
-                            <div class="m-dash-card-value" id="filtered-callouts-value">
+                            <div class="m-dash-card-value vmall-Pending-Call-outs">
                                 0
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-6">
-                        <div class="m-dash-card m-dash-default" data-cardname="Pending Call-Outs"style="cursor: pointer;">
+                        <div class="m-dash-card m-dash-default" style="cursor: pointer;">
                             <div class="m-dash-card-header" style="margin: 0">
                                 <div class="m-dash-card-title">
                                     <i class="bi bi-emoji-frown-fill" style="background: #948979; color:white; padding: 4px 5px 4px 5px; border-radius: 7px;"></i>
@@ -108,7 +115,7 @@
                                 </div>
                                 <hr>
                             </div>
-                            <div class="m-dash-card-value" id="filtered-callouts-value">
+                            <div class="m-dash-card-value vmall-abandoned-units">
                                 0
                             </div>
                         </div>
@@ -116,23 +123,16 @@
 
                     <div class="col-md-12">
                         <div class="card-body-dash">
-                            <div class="chart-container" style="position: relative; height: 240px; width: 100%; display: flex; flex-direction: column; align-items: center; padding: 10px 0;">
-                                <canvas id="caseStatusChart"></canvas>
-                            </div>
-                            
-                            <div class="filter-buttons" style="display: flex; gap: 10px; justify-content: center; margin: 20px 0;">
-                                <button id="filterAll" class="filter-btn active" style="padding: 8px 16px; border-radius: 8px; border: 1px solid #e5e7eb; background-color: #f9fafb; color: #4b5563; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-                                All Cases
-                                </button>
-                                <button id="filterCompleted" class="filter-btn" style="padding: 8px 16px; border-radius: 8px; border: 1px solid #e5e7eb; background-color: #f9fafb; color: #4b5563; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                Completed
-                                </button>
-                                <button id="filterOngoing" class="filter-btn" style="padding: 8px 16px; border-radius: 8px; border: 1px solid #e5e7eb; background-color: #f9fafb; color: #4b5563; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                                Ongoing
-                                </button>
+                            <div class="chart-container" style="position: relative; height: 320px; width: 100%; display: flex; flex-direction: column; align-items: center; padding: 10px 0;">
+                                <div id="fl-chart">
+                                    <canvas id="handledCasesChart"></canvas>
+                                </div>
+                                <div style="margin-bottom: 40px;" class="chart-empty-data">
+                                    <center>
+                                        <img src="https://cdn-icons-png.flaticon.com/128/13543/13543330.png" width="70px" alt="">
+                                        <p>Please select a Frontliner</p>
+                                    </center>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -183,7 +183,7 @@
             <div class="card-body-dash" style="height: 450px; overflow-y:auto; cursor:pointer;">
                 <div class="employee-chart">
                     @foreach ($handle_for_all_employee_tech_vmall as $per_employee)
-                        <div class="employee-row">
+                        <div class="employee-row tech_employee_row" data-assigned_id="{{$per_employee->assigned_tech}}">
                             <div
                                 class="employee-badge {{ $loop->iteration == 1 ? 'badge-1' : ($loop->iteration == 2 ? 'badge-2' : ($loop->iteration == 3 ? 'badge-3' : '')) }}">
                                 @if ($loop->iteration == 1)
@@ -226,7 +226,279 @@
             </div>
         </div>
     </div>
+
+    <div class="col-md-6">
+        <div class="card-dash">
+            <div class="card-body-dash" style="height: 523px; overflow-y:auto; cursor:pointer;">
+                <div class="loading-area-tech" style="display: none;">
+                    <br><br><br><br><br>
+                    <div style="display: flex; justify-content: center; align-items:center">
+                      <img width="100" src="https://cdn-icons-gif.flaticon.com/10282/10282620.gif"/>
+                    </div>
+                    <center><p style="text-align:center">Loading data, please wait...</p></center>
+                </div>
+                <div class="row main-content-vmall-tech">
+                    <div class="col-md-6">
+                        <div class="m-dash-card m-dash-default" style="cursor: pointer;">
+                            <div class="m-dash-card-header" style="margin: 0">
+                                <div class="m-dash-card-title">
+                                    <i class="bi bi-wrench-adjustable" style="background: #948979; color:white; padding: 4px 5px 4px 5px; border-radius: 7px;"></i>
+                                    Ongoing Repair Cases (Carry In)
+                                </div>
+                                <hr>
+                            </div>
+                            <div class="m-dash-card-value vmall-ongoin-repair">
+                                0
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="m-dash-card m-dash-default" style="cursor: pointer;">
+                            <div class="m-dash-card-header" style="margin: 0">
+                                <div class="m-dash-card-title">
+                                    <i class="bi bi-gear-wide-connected" style="background: #948979; color:white; padding: 4px 5px 4px 5px; border-radius: 7px;"></i>
+                                    Awaiting Repair Cases (Mail In)
+                                </div>
+                                <hr>
+                            </div>
+                            <div class="m-dash-card-value vmall-awaiting-repair">
+                                0
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="card-body-dash">
+                            <div class="chart-container" style="position: relative; height: 320px; width: 100%; display: flex; flex-direction: column; align-items: center; padding: 10px 0;">
+                                <div id="tech-chart">
+                                    <canvas id="assigningJO"></canvas>
+                                </div>
+                                <div style="margin-bottom: 40px;" class="chart-empty-data-tech">
+                                    <center>
+                                        <img src="https://cdn-icons-png.flaticon.com/128/13543/13543330.png" width="70px" alt="">
+                                        <p>Please select a Technician</p>
+                                    </center>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="row">
-</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let chartInstance = null;
+
+    // Custom plugin to draw total in center
+    const centerTextPlugin = {
+        id: 'centerText',
+        beforeDraw(chart) {
+            const { width, height, ctx } = chart;
+            const total = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+
+            ctx.save();
+            ctx.font = 'bold 30px sans-serif';
+            ctx.fillStyle = '#000';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(`${total}`, width / 2, height / 2.5);
+            ctx.restore();
+        }
+    };
+
+    $('.fl_employee_row').on('click', function () {
+        let creator_id = $(this).data('creator_id');
+        let csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+        $('.loading-area').show();
+        $('.main-content-vmall-fl').hide();
+
+        $.ajax({
+            url: '{{ route("manager_dash_per_employee") }}',
+            method: 'POST',
+            data: { creator_id: creator_id },
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function (response) {
+                $('.loading-area').hide();
+                $('.chart-empty-data').hide();
+                $('.main-content-vmall-fl').show();
+
+                if (response.success) {
+                    $('.vmall-Pending-Call-outs').text(response.pending_callouts_count);
+                    $('.vmall-abandoned-units').text(response.abandoned_units_count);
+
+                    // Count repair_status
+                    let completedCount = 0;
+                    let ongoingCount = 0;
+
+                    response.data.forEach(item => {
+                        if (item.repair_status == 6) {
+                            completedCount++;
+                        } else {
+                            ongoingCount++;
+                        }
+                    });
+
+                    const total = completedCount + ongoingCount;
+
+                    // Prepare chart data
+                    const chartData = {
+                        labels: [
+                            `COMPLETED (${completedCount})`,
+                            `PENDING/ONGOING (${ongoingCount})`
+                        ],
+                        datasets: [{
+                            data: [completedCount, ongoingCount],
+                            backgroundColor: ['#222831', '#B6B09F'],
+                            borderColor: ['#ffffff', '#ffffff'],
+                            borderWidth: 5,
+                            borderRadius: 8
+                        }]
+                    };
+
+                    const chartOptions = {
+                        responsive: true,
+                        cutout: '50%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 20,
+                                    padding: 15,
+                                    color: '#333',
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            }
+                        }
+                    };
+
+                    if (chartInstance) {
+                        chartInstance.destroy();
+                    }
+
+                    const ctx = document.getElementById('handledCasesChart').getContext('2d');
+                    chartInstance = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: chartData,
+                        options: chartOptions,
+                        plugins: [centerTextPlugin]
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                $('.loading-area').hide();
+                $('.chart-empty-data').hide();
+                $('.main-content-vmall-fl').show();
+                console.error('Error:', status, error);
+            }
+        });
+    });
+
+    $('.tech_employee_row').on('click', function () {
+        let assigned_id = $(this).data('assigned_id');
+        let csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+        $('.loading-area-tech').show();
+        $('.main-content-vmall-tech').hide();
+
+        $.ajax({
+            url: '{{ route("manager_dash_per_employee_tech") }}',
+            method: 'POST',
+            data: { assigned_id: assigned_id },
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function (response) {
+                $('.loading-area-tech').hide();
+                $('.chart-empty-data-tech').hide();
+                $('.main-content-vmall-tech').show();
+
+                if (response.success) {
+                    $('.vmall-ongoin-repair').text(response.total_ongoing_jo);
+                    $('.vmall-awaiting-repair').text(response.total_awaiting_jo);
+
+                    // Count for chart
+                    let acceptedJO = response.total_accepted_jo;
+                    let unacceptedJO = response.total_unaccepted_jo;
+                    let totalJO = acceptedJO + unacceptedJO;
+
+                    // Prepare chart data
+                    const assignJoData = {
+                        labels: [
+                            `ACCEPTED ASSIGNED JO (${acceptedJO})`,
+                            `PENDING ASSIGNED JO (${unacceptedJO})`
+                        ],
+                        datasets: [{
+                            data: [acceptedJO, unacceptedJO],
+                            backgroundColor: ['#222831', '#B6B09F'],
+                            borderColor: ['#fff', '#fff'],
+                            borderWidth: 5,
+                            borderRadius: 8
+                        }]
+                    };
+
+                    // Add total in the center
+                    const centerTextPluginAssignJO = {
+                        id: 'centerTextPluginAssignJO',
+                        beforeDraw: function(chart) {
+                            const width = chart.width,
+                                height = chart.height,
+                                ctx = chart.ctx;
+                            ctx.restore();
+                            const fontSize = (height / 120).toFixed(2);
+                            ctx.font = `${fontSize}em sans-serif`;
+                            ctx.textBaseline = "middle";
+                            ctx.textAlign = "center";
+                            const text = `${totalJO}`;
+                            const textX = width / 2;
+                            const textY = height / 2.5;
+                            ctx.fillText(text, textX, textY);
+                            ctx.save();
+                        }
+                    };
+
+                    // Destroy existing chart if needed
+                    if (window.assignJOChart) {
+                        window.assignJOChart.destroy();
+                    }
+
+                    // Create chart
+                    const assignJoCtx = document.getElementById('assigningJO').getContext('2d');
+                    window.assignJOChart = new Chart(assignJoCtx, {
+                        type: 'doughnut',
+                        data: assignJoData,
+                        options: {
+                            responsive: true,
+                            cutout: '50%',
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        boxWidth: 20,
+                                        padding: 15
+                                    }
+                                }
+                            }
+                        },
+                        plugins: [centerTextPluginAssignJO]
+                    });
+
+                }
+            },
+            error: function (xhr, status, error) {
+                $('.loading-area-tech').hide();
+                $('.chart-empty-data-tech').hide();
+                $('.main-content-vmall-tech').show();
+                console.error('Error:', status, error);
+            }
+        });
+    });
+</script>

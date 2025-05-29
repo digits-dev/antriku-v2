@@ -162,6 +162,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/admin/get_timeline', [AdminCustomDashboardController::class, 'getTimeline'])->name('get_timeline');
 
     Route::get('/admin/manager-dashboard', [AdminCustomDashboardController::class, 'managerDashboard'])->name('manager.dashboard');
+    Route::post('/admin/manager-dashboard/employee-data', [AdminCustomDashboardController::class, 'managerDashboardPerEmployee'])->name('manager_dash_per_employee');
+    Route::post('/admin/manager-dashboard/employee-data-tech', [AdminCustomDashboardController::class, 'managerDashboardPerEmployeeTech'])->name('manager_dash_per_employee_tech');
 
     Route::get('/admin/custodian-dashboard', [AdminCustomDashboardController::class, 'custodianDashboard'])->name('custodian.dashboard');
 

@@ -370,7 +370,7 @@
                     </div>
                     Time-in-motion
                 </h2>
-                <div class="search-container">
+                {{-- <div class="search-container">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round" class="search-icon">
@@ -378,7 +378,7 @@
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
                     <input type="text" class="search-input" placeholder="Search transactions...">
-                </div>
+                </div> --}}
             </div>
             <div style="overflow:auto" id="time_motion_data">
                 @include('frontliner.admin_dashboard_tm_table')

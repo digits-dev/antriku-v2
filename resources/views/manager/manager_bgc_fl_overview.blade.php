@@ -10,7 +10,7 @@
                     </div>
                     <hr>
                 </div>
-                <div class="m-dash-card-value" id="fl_pending_call_out_dash_count_all">
+                <div class="m-dash-card-value" id="fl_pending_call_out_bgc">
                     {{ count($fl_pending_call_out_bgc) ?? 0 }}
                 </div>
             </div>
@@ -27,7 +27,7 @@
                     </div>
                     <hr>
                 </div>
-                <div class="m-dash-card-value" id="fl_abandoned_units_dash_count_all">
+                <div class="m-dash-card-value" id="fl_abandoned_units_bgc">
                     {{ count($fl_abandoned_units_bgc) ?? 0 }}
                 </div>
             </div>
@@ -76,7 +76,7 @@
 
 <div class="col-md-9">
     <br>
-    <div class="transactions-container">
+    <div class="transactions-container summary-data-all-bgc">
         <div class="transactions-header" style="margin: 0%">
             <h2 class="card-title-dash">
                 <div class="card-icon-dash icon-default">
@@ -84,7 +84,7 @@
                 </div>
                 Summary of Data
             </h2>
-            <div class="search-container">
+            {{-- <div class="search-container">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                     stroke-linejoin="round" class="search-icon">
@@ -93,7 +93,7 @@
                     </line>
                 </svg>
                 <input type="text" class="search-input" placeholder="Search transactions...">
-            </div>
+            </div> --}}
         </div>
         <div style="height: 295px; overflow: auto;">
             <table class="transactions-table" autofocus>
@@ -177,9 +177,181 @@
             </table>
         </div>
         <div class="card-footer-dash">
-            <span class="card-footer-text-dash showing_data_tech_overview" id="showing_data_tech_overview">
-                Showing 100 Total of Data
-            </span>
         </div>
     </div>
+
+    <div class="transactions-container pending-call-out-fl-bgc" style="display: none">
+            <div class="transactions-header" style="margin: 0%">
+                <h2 class="card-title-dash">
+                    <div class="card-icon-dash icon-default">
+                        <i class="bi bi-table" style="font-size: 12px"></i>
+                    </div>
+                    Summary of Data
+                </h2>
+                {{-- <div class="search-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="search-icon">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65">
+                        </line>
+                    </svg>
+                    <input type="text" class="search-input" placeholder="Search transactions...">
+                </div> --}}
+            </div>
+            <div style="height: 295px; overflow: auto;">
+                <table class="transactions-table" autofocus>
+                    <thead>
+                        <tr>
+                            <th style="font-size: 12px" class="text-uppercase">
+                                Reference No.
+                            </th>
+                            <th style="font-size: 12px" class="text-uppercase">
+                                Warranty Type
+                            </th>
+                            <th style="font-size: 12px" class="text-uppercase">
+                                Case Type
+                            </th>
+                            <th style="font-size: 12px" class="text-uppercase">
+                                Model
+                            </th>
+                            <th style="font-size: 12px" class="text-uppercase">
+                                Customer
+                            </th>
+                            <th style="font-size: 12px" class="text-uppercase">
+                                Status
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody style="text-align: left; background: rgba(240, 246, 247, 0.7);">
+                        @foreach ($fl_pending_call_out_bgc as $item)
+                            <tr>
+                                <td style="font-size: 12px">{!! $item->reference_no ?? '<small class="m-dash-negative">Empty Data</small>' !!}</td>
+                                <td style="font-size: 12px">{!! $item->warranty_status ?? '<small class="m-dash-negative">Empty Data</small>' !!}</td>
+                                <td style="font-size: 12px">{!! $item->case_status ?? '<small class="m-dash-negative">Empty Data</small>' !!}</td>
+                                <td style="font-size: 12px">{!! $item->model_name ?? '<small class="m-dash-negative">Empty Data</small>' !!}</td>
+                                <td style="font-size: 12px">{!! $item->last_name . ', ' . $item->first_name ?? '<small class="m-dash-negative">Empty Data</small>' !!}</td>
+                                <td style="font-size: 12px; color:{{$item->status_name == 'COMPLETE' ? 'limegreen' : 'darkorange'}}">
+                                    {!! $item->status_name ?? '<small class="m-dash-negative">Empty</small>' !!}
+                                </td>
+                            </tr>
+                        @endforeach
+
+                        <tr class="no-data-row" style="display: none;">
+                            <td colspan="6"
+                                style="text-align: center; font-size: 14px; padding: 20px; color: #888;">
+                                <br>
+                                <center>
+                                    <img src="https://cdn-icons-png.flaticon.com/128/7486/7486747.png"
+                                        alt="">
+                                </center>
+                                <center>
+                                    <small class="text-uppercase">Empty Data. Please select
+                                        <br> what report you want to check.</small>
+                                </center>
+                                <br><br>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer-dash">
+            </div>
+        </div>
+
+        <div class="transactions-container abandoned-unit-fl-bgc" style="display: none">
+            <div class="transactions-header" style="margin: 0%">
+                <h2 class="card-title-dash">
+                    <div class="card-icon-dash icon-default">
+                        <i class="bi bi-table" style="font-size: 12px"></i>
+                    </div>
+                    Summary of Data
+                </h2>
+                {{-- <div class="search-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="search-icon">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65">
+                        </line>
+                    </svg>
+                    <input type="text" class="search-input" placeholder="Search transactions...">
+                </div> --}}
+            </div>
+            <div style="height: 295px; overflow: auto;">
+                <table class="transactions-table" autofocus>
+                    <thead>
+                        <tr>
+                            <th style="font-size: 12px" class="text-uppercase">
+                                Reference No.
+                            </th>
+                            <th style="font-size: 12px" class="text-uppercase">
+                                Warranty Type
+                            </th>
+                            <th style="font-size: 12px" class="text-uppercase">
+                                Case Type
+                            </th>
+                            <th style="font-size: 12px" class="text-uppercase">
+                                Model
+                            </th>
+                            <th style="font-size: 12px" class="text-uppercase">
+                                Customer
+                            </th>
+                            <th style="font-size: 12px" class="text-uppercase">
+                                Status
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody style="text-align: left; background: rgba(240, 246, 247, 0.7);">
+                        @foreach ($fl_abandoned_units_bgc as $item)
+                            <tr>
+                                <td style="font-size: 12px">{!! $item->reference_no ?? '<small class="m-dash-negative">Empty Data</small>' !!}</td>
+                                <td style="font-size: 12px">{!! $item->warranty_status ?? '<small class="m-dash-negative">Empty Data</small>' !!}</td>
+                                <td style="font-size: 12px">{!! $item->case_status ?? '<small class="m-dash-negative">Empty Data</small>' !!}</td>
+                                <td style="font-size: 12px">{!! $item->model_name ?? '<small class="m-dash-negative">Empty Data</small>' !!}</td>
+                                <td style="font-size: 12px">{!! $item->last_name . ', ' . $item->first_name ?? '<small class="m-dash-negative">Empty Data</small>' !!}</td>
+                                <td style="font-size: 12px; color:{{$item->status_name == 'COMPLETE' ? 'limegreen' : 'darkorange'}}">
+                                    {!! $item->status_name ?? '<small class="m-dash-negative">Empty</small>' !!}
+                                </td>
+                            </tr>
+                        @endforeach
+
+                        <tr class="no-data-row" style="display: none;">
+                            <td colspan="6"
+                                style="text-align: center; font-size: 14px; padding: 20px; color: #888;">
+                                <br>
+                                <center>
+                                    <img src="https://cdn-icons-png.flaticon.com/128/7486/7486747.png"
+                                        alt="">
+                                </center>
+                                <center>
+                                    <small class="text-uppercase">Empty Data. Please select
+                                        <br> what report you want to check.</small>
+                                </center>
+                                <br><br>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer-dash">
+            </div>
+        </div>
+
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('fl_pending_call_out_bgc').addEventListener('click', function () {
+            document.querySelector('.pending-call-out-fl-bgc').style.display = 'block';
+            document.querySelector('.abandoned-unit-fl-bgc').style.display = 'none';
+            document.querySelector('.summary-data-all-bgc').style.display = 'none';
+        });
+
+        document.getElementById('fl_abandoned_units_bgc').addEventListener('click', function () {
+            document.querySelector('.abandoned-unit-fl-bgc').style.display = 'block';
+            document.querySelector('.pending-call-out-fl-bgc').style.display = 'none';
+            document.querySelector('.summary-data-all-bgc').style.display = 'none';
+        });
+    });
+</script>
