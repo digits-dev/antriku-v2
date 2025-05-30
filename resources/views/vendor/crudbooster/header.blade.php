@@ -38,12 +38,16 @@
     }
 
     .content-header{
-        margin-top: 50px;
+        margin-top: 70px;
     }
 
     @media (max-width: 767px) {
         .content-header {
-            margin-top: 100px;
+            margin-top: 110px;
+        }
+
+        .time-date-card-cust {
+            display: none !important;
         }
     }
 
@@ -86,12 +90,13 @@
 </style>
 
 <!-- Main Header -->
-<header class="main-header" style="position: fixed; width: 100%; background: linear-gradient(to bottom, #111827, #374151) !important;">
+<header class="main-header" style="position: fixed; width: 100%; background: #111827 !important; padding: 10px 0 10px 0">
 
     <!-- Logo -->
-    <a href="{{url(config('crudbooster.ADMIN_PATH'))}}" title='{{Session::get('appname')}}' class="logo" style="background: linear-gradient(to bottom, #111827, #374151);">
+    <a href="{{url(config('crudbooster.ADMIN_PATH'))}}" title='{{Session::get('appname')}}' class="logo" style="background: #111827;">
         <center>
-            <i class="bi bi-box-fill"></i>
+            {{-- <i class="bi bi-box-fill"></i> --}}
+            <img src="{{ asset('/img/btbt.png') }}" width="35px" alt="">
             <small style="font-size: 17px;">
                 {{CRUDBooster::getSetting('appname')}}
             </small>
@@ -99,7 +104,7 @@
     </a>
 
     <!-- Header Navbar -->
-    <nav class="navbar navbar-static-top" role="navigation" style="background: linear-gradient(to bottom, #111827, #374151);">
+    <nav class="navbar navbar-static-top" role="navigation" style="background: #111827;">
         <!-- Sidebar toggle button-->
         <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
             <span class="sr-only">Toggle navigation</span>
@@ -109,7 +114,7 @@
             <ul class="nav navbar-nav">
 
                 <li>
-                    <div class="datetime-card">
+                    <div class="datetime-card time-date-card-cust">
                         <div class="datetime-item">
                           <i class="bi bi-clock-fill"></i>
                           <span id="time">--:--:-- --</span>
@@ -159,9 +164,9 @@
                     <!-- Menu Toggle Button -->
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <!-- The user image in the navbar-->
-                        <img src="{{ CRUDBooster::myPhoto() }}" class="user-image" alt="User Image"/>
+                        <img src="{{ CRUDBooster::myPhoto() }}" class="user-image" alt="User Image" style="border: 2px solid rgba(128, 128, 128, 0.788); border-radius: 50%;"/>
                         <!-- hidden-xs hides the username on small devices so only the image appears. -->
-                        <span class="hidden-xs">{{ CRUDBooster::myName() }}</span>
+                        {{-- <span class="hidden-xs">{{ CRUDBooster::myName() }}</span> --}}
                     </a>
                     <ul class="dropdown-menu">
                         <!-- The user image in the menu -->

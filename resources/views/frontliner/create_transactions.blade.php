@@ -8,7 +8,7 @@
 @endpush
 
 @section('content') 
-    <div class="container-cus" style="margin-top: 50px">
+    <div class="container-cus" style="margin-top: 70px">
         <div class="form-card-cus">
             <div class="header-cus-2">
                 <div class="title-section-cus">

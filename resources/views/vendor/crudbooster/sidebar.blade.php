@@ -69,14 +69,14 @@
 </style>
 
 <!-- Left side column. contains the sidebar -->
-<aside class="main-sidebar" style="background: #222831;">
+<aside class="main-sidebar" style="background: #111827;">
 
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-
+        <hr style="border: #24293377 1px solid; margin-bottom: 0%">
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel">
-            <div class="pull-{{ cbLang('left') }} image">
+            <div class="pull-{{ cbLang('left') }} image" style="border: 5px solid rgba(128, 128, 128, 0.788); border-radius: 50%;">
                 <img src="{{ CRUDBooster::myPhoto() }}" class="img-circle" style="height: 45px;" alt="{{ cbLang('user_image') }}"/>
             </div>
             <div class="pull-{{ cbLang('left') }} info">
@@ -99,7 +99,7 @@
                     <li data-id='{{$dashboard->id}}' class="{{ (Request::is(config('crudbooster.ADMIN_PATH'))) ? 'active' : '' }}"><a
                         href='{{CRUDBooster::adminPath()}}' class='{{($dashboard->color)?"text-".$dashboard->color:""}}'>
                         {{-- <i class='fa fa-dashboard'></i> --}}
-                        <img src="https://cdn-icons-png.flaticon.com/128/1828/1828673.png" alt="dash_icon" width="18">
+                        <img src="https://cdn-icons-png.flaticon.com/128/1828/1828673.png" style="padding: 4px; background: white; border-radius: 30%;" alt="dash_icon" width="25px">
                         <span>{{cbLang("text_dashboard")}}</span> </a></li>
                 @endif
 
@@ -110,19 +110,23 @@
                             @if ($menu->name == 'Pending Repair')
                                 <span>⚙️</span>
                             @elseif ($menu->name == 'To Diagnose')
-                                <img src="https://cdn-icons-png.flaticon.com/128/675/675579.png" alt="dash_icon" width="18">
+                                <img src="https://cdn-icons-png.flaticon.com/128/675/675579.png" alt="dash_icon" style="padding: 4px; background: white; border-radius: 30%;" alt="dash_icon" width="25px">
                             @elseif ($menu->name == 'Transaction History')
-                                <img src="https://cdn-icons-png.flaticon.com/128/11411/11411453.png" width="18" alt="">
+                                <img src="https://cdn-icons-png.flaticon.com/128/11411/11411453.png" style="padding: 4px; background: white; border-radius: 30%;" alt="dash_icon" width="25px" alt="">
                             @elseif ($menu->name == 'Submaster Module')
-                                <img src="https://cdn-icons-png.flaticon.com/128/10848/10848122.png" width="18" alt="">
+                                <img src="https://cdn-icons-png.flaticon.com/128/10848/10848122.png" style="padding: 4px; background: white; border-radius: 30%;" alt="dash_icon" width="25px" alt="">
                             @elseif ($menu->name == 'Call Out')
-                                <img src="https://cdn-icons-png.flaticon.com/128/1256/1256652.png" width="18" alt="">
+                                <img src="https://cdn-icons-png.flaticon.com/128/1256/1256652.png" style="padding: 4px; background: white; border-radius: 30%;" alt="dash_icon" width="25px" alt="">
                             @elseif ($menu->name == 'To Pay Diagnostic')
-                                <img src="https://cdn-icons-png.flaticon.com/128/8984/8984290.png" width="18" alt="">
+                                <img src="https://cdn-icons-png.flaticon.com/128/8984/8984290.png" style="padding: 4px; background: white; border-radius: 30%;" alt="dash_icon" width="25px" alt="">
                             @elseif ($menu->name == 'Create Transactions')
-                                <img src="https://cdn-icons-png.flaticon.com/128/2921/2921226.png" width="18" alt="">
+                                <img src="https://cdn-icons-png.flaticon.com/128/2921/2921226.png" style="padding: 4px; background: white; border-radius: 30%;" alt="dash_icon" width="25px" alt="">
                             @elseif ($menu->name == 'Inventory')
-                                <img src="https://cdn-icons-png.flaticon.com/128/10951/10951872.png" width="18" alt="">
+                                <img src="https://cdn-icons-png.flaticon.com/128/10951/10951872.png" style="padding: 4px; background: white; border-radius: 30%;" alt="dash_icon" width="25px" alt="">
+                            @elseif ($menu->name == 'Pending Mail-In Shipment')
+                                <img src="https://cdn-icons-png.flaticon.com/128/5177/5177602.png" style="padding: 4px; background: white; border-radius: 30%;" alt="dash_icon" width="25px" alt="">
+                            @elseif ($menu->name == 'Spare Parts Module')
+                                <img src="https://cdn-icons-png.flaticon.com/128/17072/17072255.png" style="padding: 4px; background: white; border-radius: 30%;" alt="dash_icon" width="25px" alt="">
                             @else
                                 <i class='{{$menu->icon}} {{($menu->color)?"text-".$menu->color:""}}'></i> 
                             @endif  
@@ -179,8 +183,16 @@
                                     <li data-id='{{$child->id}}' class='{{(Request::is($child->url_path .= !Str::endsWith(Request::decodedPath(), $child->url_path) ? "/*" : ""))?"active":""}}'>
                                         <a href='{{ ($child->is_broken)?"javascript:alert('".cbLang('controller_route_404')."')":$child->url}}'
                                            class='{{($child->color)?"text-".$child->color:""}}'>
-                                            @if (in_array($child->name, ['Stocks', 'Stock Reservations', 'Stock-In', 'Stock Dispose', 'Stock Receiving', 'Stock Disposal Request']))
-                                                <img src="https://cdn-icons-png.flaticon.com/128/10951/10951869.png" width="18px" alt="">
+                                            @if (in_array($child->name, ['Stocks', 'Stock Reservations', 'Stock-In', 'Stock Disposed', 'Stock Receiving', 'Stock Disposal Request']))
+                                                <img src="https://cdn-icons-png.flaticon.com/128/11449/11449740.png" style="padding: 4px; background: white; border-radius: 30%;" alt="dash_icon" width="25px">
+                                            @elseif ($child->name == 'Mail In')
+                                                <img src="https://cdn-icons-png.flaticon.com/128/7286/7286142.png" style="padding: 4px; background: white; border-radius: 30%;" alt="dash_icon" width="25px">
+                                            @elseif ($child->name == 'Carry In')
+                                                <img src="https://cdn-icons-png.flaticon.com/128/10317/10317001.png" style="padding: 4px; background: white; border-radius: 30%;" alt="dash_icon" width="25px">
+                                            @elseif ($child->name == 'Releasing')
+                                                <img src="https://cdn-icons-png.flaticon.com/128/16962/16962989.png" style="padding: 4px; background: white; border-radius: 30%;" alt="dash_icon" width="25px">
+                                            @elseif ($child->name == 'Receiving')
+                                                <img src="https://cdn-icons-png.flaticon.com/128/7263/7263669.png" style="padding: 4px; background: white; border-radius: 30%;" alt="dash_icon" width="25px">
                                             @else
                                                 <i class='{{$child->icon}}'></i> 
                                             @endif

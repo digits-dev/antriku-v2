@@ -17,12 +17,12 @@
     }
     
     .cust-ch{
-        margin-top: 50px;
+        margin-top: 70px;
     }
     
     @media (max-width: 767px) {
         .cust-ch {
-            margin-top: 100px;
+            margin-top: 110px;
         }
     }
 </style>

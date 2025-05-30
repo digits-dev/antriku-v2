@@ -32,7 +32,8 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
 
         $data['fl_abandoned_units_dash_count'] = DB::table('returns_header')
             ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
-            ->whereIn('job_order_logs.status_id', [19, 28])->where('returns_header.branch', CRUDBooster::me()->branch_id)
+            ->whereIn('returns_header.repair_status', [19, 28])
+            ->where('returns_header.branch', CRUDBooster::me()->branch_id)
             ->where('job_order_logs.transacted_at', '<=', Carbon::now()->subDays(90))
             ->where('returns_header.created_by', CRUDBooster::myId())
             ->count();
@@ -526,11 +527,11 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->get();
 
         $data['fl_abandoned_units_vmall'] = DB::table('returns_header')
-            ->select('returns_header.*', 'model.model_name', 'ts.status_name')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'job_order_logs.transacted_at')
             ->leftJoin('model', 'model.id', '=', 'returns_header.model')
             ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
             ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
-            ->whereIn('job_order_logs.status_id', [19, 28])
+            ->whereIn('returns_header.repair_status', [19, 28])
             ->where('returns_header.branch', $vmall_branch)
             ->where('job_order_logs.transacted_at', '<=', Carbon::now()->subDays(90))
             ->get();
@@ -746,11 +747,11 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->get();
 
         $data['fl_abandoned_units_bgc'] = DB::table('returns_header')
-            ->select('returns_header.*', 'model.model_name', 'ts.status_name')
+            ->select('returns_header.*', 'model.model_name', 'ts.status_name', 'job_order_logs.transacted_at')
             ->leftJoin('model', 'model.id', '=', 'returns_header.model')
             ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
             ->leftJoin('transaction_status as ts', 'ts.id', '=', 'returns_header.repair_status')
-            ->whereIn('job_order_logs.status_id', [19, 28])
+            ->whereIn('returns_header.repair_status', [19, 28])
             ->where('returns_header.branch', $bgc_branch)
             ->where('job_order_logs.transacted_at', '<=', Carbon::now()->subDays(90))
             ->get();
@@ -927,7 +928,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
         // Count of abandoned units older than 90 days
         $abandoned_units_count = DB::table('returns_header')
             ->leftJoin('job_order_logs', 'job_order_logs.returns_header_id', '=', 'returns_header.id')
-            ->whereIn('job_order_logs.status_id', [19, 28])
+            ->whereIn('returns_header.repair_status', [19, 28])
             ->where('returns_header.created_by', $creator_id)
             ->where('job_order_logs.transacted_at', '<=', Carbon::now()->subDays(90))
             ->count();
