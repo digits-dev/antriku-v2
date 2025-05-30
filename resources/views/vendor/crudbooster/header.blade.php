@@ -164,7 +164,7 @@
                     <!-- Menu Toggle Button -->
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <!-- The user image in the navbar-->
-                        <img src="{{ CRUDBooster::myPhoto() }}" class="user-image" alt="User Image" style="border: 2px solid rgba(128, 128, 128, 0.788); border-radius: 50%;"/>
+                        <img src="{{ CRUDBooster::myPhoto() }}" class="user-image" alt="User Image"/>
                         <!-- hidden-xs hides the username on small devices so only the image appears. -->
                         {{-- <span class="hidden-xs">{{ CRUDBooster::myName() }}</span> --}}
                     </a>
