@@ -195,7 +195,7 @@
             const has_additional_required = all_item_parts_type.includes("additional-required-pending");
             const has_new_spare_req = new_spare_req.includes("additional-required-pending");
 
-            if (!has_additional_required && !has_new_spare_req) {
+            if (has_additional_required && has_new_spare_req) {
                 setTimeout(function() {
                     $('#top-loader').hide();
                     swal('Info!',
