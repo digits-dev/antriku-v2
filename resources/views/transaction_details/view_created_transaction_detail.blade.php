@@ -263,6 +263,15 @@
         
 
         $(document).ready(function() {
+            @if(isset($lastCallOutNotice))
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Notice',
+                    text: '{{ $lastCallOutNotice }}'
+                });
+            @endif
+        
+
             $('.copy-icon').on('click', function() {
                 var $icon = $(this);
                 var reference = $icon.siblings('strong').text().trim();

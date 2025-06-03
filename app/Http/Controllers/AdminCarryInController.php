@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use crocodicstudio\crudbooster\helpers\CRUDBooster;
+use Carbon\Carbon;
 
 class AdminCarryInController extends \crocodicstudio\crudbooster\controllers\CBController
 {
@@ -191,6 +192,19 @@ class AdminCarryInController extends \crocodicstudio\crudbooster\controllers\CBC
 		$data['ProblemDetails'] = DB::table('problem_details')->where('status', 'ACTIVE')->orderBy('problem_details', 'ASC')->get();
 		$data['TechTesting'] = DB::table('tech_testing')->where('test_type_status', 'ACTIVE')->where('model_group_id','!=',NULL)->orderBy('description', 'ASC')->get();
 		$data['CallOutCount'] = DB::table('call_out_recorder')->where('returns_header_id', $id)->where('status_id', $data['transaction_details']->repair_status)->count();
+
+		$latestCallOut = DB::table('call_out_recorder')
+		->where('returns_header_id', $id)
+		->where('status_id', $data['transaction_details']->repair_status)
+		->orderBy('call_out_at', 'desc')
+		->first();
+
+		$lastCallOutDate = $latestCallOut ? Carbon::parse($latestCallOut->call_out_at) : null;
+
+		if ($lastCallOutDate && $lastCallOutDate->diffInDays(Carbon::now()) >= 3) {
+			$data['lastCallOutNotice'] = "Last call-out was " . $lastCallOutDate->diffInDays(Carbon::now()) . " days ago.";
+		}
+
 
 		$this->cbView('transaction_details.view_created_transaction_detail', $data);
 	}

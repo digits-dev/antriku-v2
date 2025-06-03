@@ -159,11 +159,12 @@ class AdminTransactionHistoryController extends \crocodicstudio\crudbooster\cont
 		//Your code here
 		if (CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6 || CRUDBooster::myPrivilegeId() == 7 || CRUDBooster::myPrivilegeId() == 8) {
 			$query->orderBy('id', 'desc');
-		} else {
-			$query->where('branch', CRUDBooster::me()->branch_id);
+		} else if (CRUDBooster::myPrivilegeId() == 4) {
+			$query->where('technician_id', CRUDBooster::myId())->orderBy('id', 'desc');
+		}else {
+			$query->where('branch', CRUDBooster::me()->branch_id)->orderBy('id', 'desc');
 		}
 	}
-
 	public function hook_row_index($column_index, &$column_value)
 	{
 		//Your code here
