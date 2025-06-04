@@ -68,9 +68,9 @@
                     <p class="text-uppercase">🪛 <b>First Diagnosis</b></p>
                     <div class="original_marked_model">
                         @if ($transaction_details->inspected_model_photo)
-                            <img src="{{ Storage::url($transaction_details->inspected_model_photo) }}" alt="model photo" id="original_editable_model">
+                            <img src="{{ Storage::url($transaction_details->inspected_model_photo) }}" alt="model photo" id="{{in_array(CRUDBooster::myPrivilegeId(), [4, 8]) && $transaction_details->repair_status == 10 ? 'original_editable_model' : ''}}">
                         @else
-                            <img src="{{ URL::to('/') }}/{{ $transaction_details->model_photo }}" alt="model photo" id="original_editable_model">
+                            <img src="{{ URL::to('/') }}/{{ $transaction_details->model_photo }}" alt="model photo" id="{{in_array(CRUDBooster::myPrivilegeId(), [4, 8]) && $transaction_details->repair_status == 10 ? 'original_editable_model' : ''}}">
                         @endif
                     </div>
                 </div>

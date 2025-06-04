@@ -440,23 +440,20 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 
 		$status_array = [1, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 33, 34, 35, 38, 39, 40, 41, 42, 43, 45, 47, 48];
 		    if(in_array($request->status_id, $status_array)){
-			DB::table('returns_header')->where('id', $request->header_id)->update([
-				'repair_status' 			=> $request->status_id,
-				'updated_by'            	=> CRUDBooster::myId()
-			]);
-			DB::table('job_order_logs')->insert([
-			'returns_header_id' 		=> $request->header_id,
-			'status_id'            		=> $request->current_status,
-			'transacted_by'            	=>  CRUDBooster::myId(),
-			'transacted_at'            	=>  now()
-			]);
+				DB::table('returns_header')->where('id', $request->header_id)->update([
+					'repair_status' 			=> $request->status_id,
+					'updated_by'            	=> CRUDBooster::myId()
+				]);
+				DB::table('job_order_logs')->insert([
+				'returns_header_id' 		=> $request->header_id,
+				'status_id'            		=> $request->current_status,
+				'transacted_by'            	=>  CRUDBooster::myId(),
+				'transacted_at'            	=>  now()
+				]);
 
-		}
-
-		if($all_data['current_status'] == 10){
-			$get_tracking = DB::table('returns_header')->where('id', $request->header_id)->first();
-			$this->save_second_inspected_model($all_data['second_marked_image_base64'], $get_tracking->reference_no, $request->header_id);
-		}
+				$get_tracking = DB::table('returns_header')->where('id', $request->header_id)->first();
+				$this->save_second_inspected_model($all_data['second_marked_image_base64'], $get_tracking->reference_no, $request->header_id);
+			}
 
 		if (in_array($request->status_id, [16, 25])) {
 			DB::table('returns_header')->where('id', $request->header_id)->update([
