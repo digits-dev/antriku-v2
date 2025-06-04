@@ -41,15 +41,15 @@
             <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
         </button>
         @elseif ($transaction_details->repair_status == 14)
-        <button type="submit" id="save" onclick="return changeStatus(15)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+        <button type="submit" id="save" onclick="return validateBeforeChangeStatus(15)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
             <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
         </button>
         @elseif ($transaction_details->repair_status == 17)
-        <button type="submit" id="save" onclick="return changeStatus(47)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+        <button type="submit" id="save" onclick="return validateBeforeChangeStatus(47)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
             <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
         </button>
         @elseif ($transaction_details->repair_status == 18)
-        <button type="submit" id="save" onclick="return changeStatus(19)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+        <button type="submit" id="save" onclick="return validateBeforeChangeStatus(19)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
             <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
         </button>
         @endif
@@ -98,21 +98,21 @@
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
             </button>
         @elseif ($transaction_details->repair_status == 17)
-            <button type="submit" id="save" onclick="return changeStatus(21)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+            <button type="submit" id="save" onclick="return validateBeforeChangeStatus(21)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
             </button>
         @elseif($transaction_details->repair_status == 23)
             @if (is_null($transaction_details->airwaybill_upload))
-                <button type="submit" id="save" onclick="return changeStatus(24)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+                <button type="submit" id="save" onclick="return validateBeforeChangeStatus(24)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
                     <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
                 </button>
             @else
-                <button type="submit" id="save" onclick="return changeStatus(26)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+                <button type="submit" id="save" onclick="return validateBeforeChangeStatus(26)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
                     <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
                 </button>
             @endif
         @elseif ($transaction_details->repair_status == 27)
-            <button type="submit" id="save" onclick="return changeStatus(28)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
+            <button type="submit" id="save" onclick="return validateBeforeChangeStatus(28)" class="btn btn-primary pull-right buttonSubmit" style="margin-left: 20px;">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
             </button>
             @endif

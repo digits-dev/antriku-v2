@@ -15,6 +15,21 @@
         e.preventDefault();
     });
 
+    $(document).ready(function() {
+    // Check if any row with class 'nr row_num' has an ID
+    var hasRowWithID = $("tr.nr.row_num").filter(function() {
+        return $(this).attr("id");
+    }).length > 0;
+
+    // If at least one row has an ID, remove 'required' attributes
+    if (hasRowWithID) {
+        $("#gsx_ref").removeAttr("required");
+        $("#cs_code").removeAttr("required");
+        $("#service_code").removeAttr("required");
+    }
+    });
+
+
     // auto format of cost
     function AutoFormatCost(cost_id)
     {
@@ -201,6 +216,10 @@
                         $("#cost").val('');
                         $('table .nr:last').before(showData); 
 
+                        $("#gsx_ref").removeAttr("required");
+                        $("#cs_code").removeAttr("required");
+                        $("#service_code").removeAttr("required");
+
                         // display buttons logic 
                         let caseStatus = $('input[name="case_status"]:checked').val()
                         let warrantyStatus = $('#warranty_status').val();
@@ -291,7 +310,6 @@
                     $('.iw_cin_available_btn').hide();
                 }
                 // end of buttons display logic
-
                 
                 $('#additional-toggle').attr('disabled', false);
                 $('#doa-toggle').attr('disabled', false);
@@ -320,6 +338,7 @@
                     if(result.length > 0){
                         $("#item_desc").val(result[0].item_description);
                         $("#gsx_ref").attr('required', true);
+                        $("#cs_code").attr('required', true);
                         $("#qty").val(result[0].stock_qty).css('color', (result[0].stock_qty > 0 ? '#16a34a' : '#ef4444'));
                         $("#item_parts_id").val(result[0].id);
                         $("#cost").val(result[0].cost);
@@ -560,6 +579,8 @@
         $('.getitemparstidValue2').val('');
         $('.getcostValue2').val('');
         $("#gsx_ref").attr('required', false);
+        $("#cs_code").attr('required', false);
+        $("#service_code").attr('required', false);
 
     }
 
@@ -937,6 +958,8 @@
             return false;
         }
     }
+
+    
 </script>
 
 <script>

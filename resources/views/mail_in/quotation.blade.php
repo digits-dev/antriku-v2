@@ -89,13 +89,13 @@
                                     <tr class="nr row_num" {{ in_array(CRUDBooster::myPrivilegeId(), [4,8]) ? '' : 'hidden' }}>
                                         <input type="hidden"class="getidValue" value="">
                                         <td style="padding: 1px !important;position: relative;">
-                                            <input class="input-cus text-center getscValue getscValue2"  type="text" value="" id="service_code" oninput="gsx_data('service_code')" placeholder="Enter Spare Part Number">
+                                            <input class="input-cus text-center getscValue getscValue2"  type="text" value="" id="service_code" oninput="gsx_data('service_code')" placeholder="Enter Spare Part Number" required>
                                             <ul class="form-control ui-front sparepartlist ui-menu ui-widget ui-widget-content">
                                                 <li class="li-padding">Loading...</li>
                                             </ul>
                                         </td>
-                                        <td style="padding: 1px !important;"><input class="input-cus text-center getgsxValue getgsxValue2" type="text" value="" id="gsx_ref"  placeholder="Enter GSX Reference"></td>
-                                        <td style="padding: 1px !important;"><input class="input-cus text-center getcsValue getcsValue2" type="text" value="" id="cs_code" placeholder="Enter CS Code"></td>
+                                        <td style="padding: 1px !important;"><input class="input-cus text-center getgsxValue getgsxValue2" type="text" value="" id="gsx_ref"  placeholder="Enter GSX Reference" required></td>
+                                        <td style="padding: 1px !important;"><input class="input-cus text-center getcsValue getcsValue2" type="text" value="" id="cs_code" placeholder="Enter CS Code" required></td>
                                         <td style="padding: 1px !important;"><input class="input-cus text-center getserialValue getserialValue2" type="text" value="" id="serial_no" placeholder="Enter KGB Serial Number"></td>
                                         <td style="padding: 1px !important;"><input class="input-cus text-center getitemValue getitemValue2" type="text" value="" id="item_desc" placeholder="Enter Item Description" readonly></td>
                                         <td style="padding: 1px !important;"><input class="input-cus text-center getqtyValue getqtyValue2" type="text" value="" id="qty" placeholder="Search Item" readonly style="background: lightgrey"></td>
