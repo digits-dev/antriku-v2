@@ -698,11 +698,9 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 
 		// Set encryption ZIP key
 		$contactNo = $request->contact_no;
-		$lastFourDigits = substr($contactNo, -4);
-		$firstLetterFirstName = strtoupper(substr($request->first_name, 0, 1));
-		$firstLetterLastName = strtoupper(substr($request->last_name, 0, 1));
-		$lastLetterLastName = strtoupper(substr($request->last_name, -1));
-		$zipPassword = $lastFourDigits . $firstLetterFirstName . $firstLetterLastName . $lastLetterLastName;
+		$last2Digits = substr($contactNo, -2);
+		$first3LetterFirstName = strtoupper(substr($request->first_name, 0, 3));
+		$zipPassword = $last2Digits . $first3LetterFirstName;
 
 		// ZIP archive and add the PDF with encryption
 		$zip = new ZipArchive();
@@ -739,6 +737,28 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 					'file_name' => $fileName
 				], 200);
 			}
+		}
+	}
+
+	public function updateInvoicesConfigViewing(Request $request){
+		$viewing_status = $request->viewing_status;
+		if($viewing_status == 'hidden_off'){
+			DB::table('uploaded_invoices_config')->update([
+				'invoices_viewing' => 'HIDE',
+				'updated_by' => CRUDBooster::myId(),
+				'updated_at' => now(),
+			]);
+
+			return response()->json(['success' => true, 'message' => 'Uploaded Invoices is now HIDDEN.']);
+		}
+
+		if($viewing_status == 'hidden_on'){
+			DB::table('uploaded_invoices_config')->update([
+				'invoices_viewing' => 'SHOW',
+				'updated_by' => CRUDBooster::myId(),
+				'updated_at' => now(),
+			]);
+			return response()->json(['success' => true, 'message' => 'Uploaded Invoices is now SHOWING.']);
 		}
 	}
 }

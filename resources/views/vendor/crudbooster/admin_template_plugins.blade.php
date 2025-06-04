@@ -47,7 +47,6 @@
 <script src="{{ asset('vendor/crudbooster/assets/adminlte/plugins/datatables/dataTables.bootstrap.min.js') }}">
 </script>
 
-{{-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> --}}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css">
 <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.2-rc.1/dist/js/select2.min.js"></script>
@@ -354,6 +353,92 @@
         padding: 15px;
       }
     }
+
+    .custom-swal-popup {
+      border-radius: 15px !important;
+    }
+
 </style>
 
+
+{{-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.10.1/lottie.min.js"></script>
+
+<script>
+  const nottalkingimg = "{{ asset('/img/talking.png') }}";
+  const talkinglottiePath = "{{ asset('/img/talking_json.json') }}";
+
+  Swal.fire({
+    position: "top-end",
+    html: `
+      <div class="row">
+        <div class="col-md-4">
+          <span id="lottie-animation" class="talking-lottie" style="width: 300px; height: 300px;"></span>
+          <img src="${nottalkingimg}" style="width: 125px; height: 90px; display:none;" class="stop_talking" />
+        </div>
+        <div class="col-md-8">
+          <h5 style="font-size: 13px; text-align: left; display: block;"><b>Welcomeback Fronliner!</b></h5>
+          <small style="font-size: 13px; text-align: left; display: block;">
+            You currently have active tasks to do, let's tackle <br> them efficiently and stay on track.
+            Thank you, <br> have a Good day. 
+          </small>
+        </div>
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-4">
+              <div style="background: #222831; border-radius: 10px; padding: 5px 8px 8px 8px;">
+                <small style="font-size: 13px; color: white;" class="text-uppercase">
+                  Mail-In 20
+                </small>
+                <div class="notification-container-cus" style="padding: 0px;">
+                    <div class="icon-cus">🔔</div>
+                    <div class="notif-count-cus" style="height: 10px; width: 10px"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div style="background: #222831; border-radius: 10px; padding: 5px 8px 8px 8px;">
+                <small style="font-size: 13px; color: white;" class="text-uppercase">
+                  Carry-In 20
+                </small>
+                <div class="notification-container-cus" style="padding: 0px;">
+                    <div class="icon-cus">🔔</div>
+                    <div class="notif-count-cus" style="height: 10px; width: 10px"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div style="background: #222831; border-radius: 10px; padding: 5px 8px 8px 8px;">
+                <small style="font-size: 13px; color: white;" class="text-uppercase">
+                  Releasing 20
+                </small>
+                <div class="notification-container-cus" style="padding: 0px;">
+                    <div class="icon-cus">🔔</div>
+                    <div class="notif-count-cus" style="height: 10px; width: 10px"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+    `,
+    showConfirmButton: false,
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    customClass: {
+      popup: 'custom-swal-popup'
+    },
+
+    didOpen: () => {
+      lottie.loadAnimation({
+        container: document.getElementById('lottie-animation'),
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: talkinglottiePath
+      });
+    }
+  });
+</script> --}}
 

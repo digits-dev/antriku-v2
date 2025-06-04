@@ -27,8 +27,9 @@
             @endif
         </div>
 
-        <div class="product-section-cust">
-            <div class="product-details-cust">
+        {{-- <div class="product-section-cust">
+            <div class="product-details-cust"> --}}
+            <div class="info-grid-cust">
                 <div class="info-item-cust">
                     <div class="info-label-cust">UPC Code</div>
                     <div class="info-value-cust">{{ $transaction_details->header_upc_code }}</div>
@@ -59,12 +60,32 @@
                     <div class="info-value-cust">{{ $transaction_details->summary_of_concern }}</div>
                 </div>
             </div>
-            <div class="product-image-cust">
-                @if ($transaction_details->inspected_model_photo)
-                    <img src="{{ Storage::url($transaction_details->inspected_model_photo) }}" alt="iPhone 13 Pro">
-                @else
-                    <img src="{{ URL::to('/') }}/{{ $transaction_details->model_photo }}" alt="iPhone 13 Pro">
-                @endif
+            {{-- </div>
+        </div> --}}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="product-image-cust">
+                    <p class="text-uppercase">🪛 <b>First Diagnosis</b></p>
+                    <div class="original_marked_model">
+                        @if ($transaction_details->inspected_model_photo)
+                            <img src="{{ Storage::url($transaction_details->inspected_model_photo) }}" alt="model photo" id="original_editable_model">
+                        @else
+                            <img src="{{ URL::to('/') }}/{{ $transaction_details->model_photo }}" alt="model photo" id="original_editable_model">
+                        @endif
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="product-image-cust">
+                    <p class="text-uppercase">🪛 <b>Second Diagnosis</b></p>
+                    <div class="second_marked_model">
+                        @if ($transaction_details->second_inspected_model_photo)
+                            <img src="{{ Storage::url($transaction_details->second_inspected_model_photo) }}" alt="model photo" id="saved_2nd_inpeted_model_photo">
+                            <div id="second_marked_model"></div>
+                        @else
+                        @endif
+                    </div>
+                </div>
             </div>
         </div>
     </div>

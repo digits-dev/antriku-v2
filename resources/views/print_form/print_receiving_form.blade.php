@@ -312,31 +312,35 @@
                     {{-- <h4 align="center" style="margin-top: 17px; margin-bottom: 0px;"><strong>TERMS & CONDITIONS</strong></h4>  --}}
                     {{-- <br> --}}
                     @include('include.terms_and_condition')
-                        <div style="display: flex; align-items: center; justify-content: center;" id="signature_container">
-                            <canvas id="signature-pad" class="signature-pad" width="500" height="130" 
-                                style="border: 1px solid #ddd; margin: 0 auto;">
-                            </canvas>
-                        </div>
-                        <center>
-                            <b><p style="margin-bottom: 0px"> {{$data['transaction_details']->last_name}}, {{$data['transaction_details']->first_name}} / {{now()}}</p></b>
-                            <p>Customer’s Signature over Printed Name</p> 
-                            <button type="button" id="clear-signature" class="no-print">Clear Signature</button>
-                            <input type="hidden" name="signatureData" id="signatureData">
-                        </center>
                 </div>
                 <div style="page-break-after: always !important;"></div>
-                <br>
+                {{-- <br> --}}
                 <div style="text-align:justify;font-size: 11px;">
                     <h4 align="center" style="margin-top: 17px;"><strong>DATA PRIVACY CONSENT FORM</strong></h4> 
                     @include('include.data_privacy_act')
                         By signing this form, you acknowledge and consent to the collection and use of your personal data as described. If you have any questions, feel free to contact us at service@beyondthebox.ph.
-                        <br>
-                        Customer Name: <span><u> {{$data['transaction_details']->last_name}}, {{$data['transaction_details']->first_name}} </u></span>
-                        <br>
-                        Signature: <span id="e_signed"></span>
-                        <br>
-                        Date: <span> <u>{{now()}}</u> </span>
+                        <div style="display: none">
+                            <br>
+                            Customer Name: <span><u> {{$data['transaction_details']->last_name}}, {{$data['transaction_details']->first_name}} </u></span>
+                            <br>
+                            Signature: <span id="e_signed"></span>
+                            <br>
+                            Date: <span> <u>{{now()}}</u> </span>
+                        </div>
                 </div>
+
+                <br><br>
+                <div style="display: flex; align-items: center; justify-content: center;" id="signature_container">
+                    <canvas id="signature-pad" class="signature-pad" width="500" height="130" 
+                        style="border: 1px solid #ddd; margin: 0 auto;">
+                    </canvas>
+                </div>
+                <center>
+                    <b><p style="margin-bottom: 0px"> {{$data['transaction_details']->last_name}}, {{$data['transaction_details']->first_name}} / {{now()}}</p></b>
+                    <p>Customer’s Signature over Printed Name</p> 
+                    <button type="button" id="clear-signature" class="no-print">Clear Signature</button>
+                    <input type="hidden" name="signatureData" id="signatureData">
+                </center>
             </div>
             <div class='no-print' style="margin-top: 10px; border-top: 1px solid lightgrey; padding-top: 10px;">
                 <form method="" id="myform" action="">

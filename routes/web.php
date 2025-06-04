@@ -176,6 +176,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/admin/callout/refund/{id}', 'AdminCallOutController@refund');
     Route::post('/admin/callout/update-refund', 'AdminCallOutController@updateRefund');
 
+    // Manager uploaded invoices config
+    Route::post('/admin/returns-header/config-invoices', 'AdminReturnsHeaderController@updateInvoicesConfigViewing')->name('invoices-config');
 
 });
 

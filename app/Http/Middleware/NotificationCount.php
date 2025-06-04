@@ -59,6 +59,10 @@ class NotificationCount
             ->count();
         View::share('releasing', $releasing);
 
+        // FOR MANAHER ONLY
+        $manager_invoices_viewing_config = DB::table('uploaded_invoices_config')->pluck('invoices_viewing')->first();
+        View::share('manager_invoices_viewing_config', $manager_invoices_viewing_config);
+
         return $next($request);
     }
 }

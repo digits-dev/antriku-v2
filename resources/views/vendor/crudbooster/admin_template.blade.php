@@ -106,13 +106,15 @@
                 <h1 class="title-cus">
                     <!--Now you can define $page_icon alongside $page_tite for custom forms to follow CRUDBooster theme style -->
                     
-                    @if(ucwords(($page_title)?:$module->name) == 'Pending Repair')
-                        <span class="gear-icon">⚙️</span>
+                    @if(ucwords(($page_title)?:$module->name) != '')
+                        <span class="gear-icon" style="background: #111827; border-radius: 5px;">
+                            <img src="{{ asset('/img/btbt.png') }}" width="30px" alt="">
+                        </span>
                     @else
                         <i class='{!! ($page_icon)?:$module->icon !!}'></i> 
                     @endif
                     
-                    {!! ucwords(($page_title)?:$module->name) !!} &nbsp;&nbsp;
+                    &nbsp; {!! ucwords(($page_title)?:$module->name) !!} &nbsp;&nbsp;
 
                     <!--START BUTTON -->
 

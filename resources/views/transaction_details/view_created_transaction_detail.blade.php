@@ -101,7 +101,10 @@
             @endif
             @include('transaction_details.customer_details')
             @include('transaction_details.service_details')
-            @include('transaction_details.uploade_invoice')
+
+            @if ($manager_invoices_viewing_config == "SHOW")
+                @include('transaction_details.uploade_invoice')
+            @endif
 
                 {{-- Technical Report --}}
             @if ($transaction_details->repair_status == 10)
@@ -122,22 +125,25 @@
                     @include('carry_in.diagnostic_results')
                 @endif
             @endif
-
-                        
-            
             
             @if (!is_null($transaction_details->airwaybill_upload))
-            {{-- Airwaybill is hidden on Technician --}}
-            @if (!in_array(CRUDBooster::myPrivilegeId(), [4,8]))
-            @include('transaction_details.uploade_airwaybill')
-            @endif
-            @include('transaction_details.uploade_rpf')
+                {{-- Airwaybill is hidden on Technician --}}
+                @if (!in_array(CRUDBooster::myPrivilegeId(), [4,8]))
+                    @include('transaction_details.uploade_airwaybill')
+                @endif
+
+                @if ($manager_invoices_viewing_config == "SHOW")
+                    @include('transaction_details.uploade_rpf')
+                @endif
             @else
-            @include('transaction_details.uploade_rpf')
-            {{-- Airwaybill is hidden on Technician --}}
-            @if (!in_array(CRUDBooster::myPrivilegeId(), [4,8]))
-            @include('transaction_details.uploade_airwaybill')
-            @endif
+                @if ($manager_invoices_viewing_config == "SHOW")
+                    @include('transaction_details.uploade_rpf')
+                @endif
+            
+                {{-- Airwaybill is hidden on Technician --}}
+                @if (!in_array(CRUDBooster::myPrivilegeId(), [4,8]))
+                    @include('transaction_details.uploade_airwaybill')
+                @endif
             @endif
             
             {{-- Quotation --}}
@@ -149,8 +155,9 @@
                 @include('carry_in.quotation')
             @endif
             
-            @include('transaction_details.uploade_final_invoice')
-
+            @if ($manager_invoices_viewing_config == "SHOW")
+                @include('transaction_details.uploade_final_invoice')
+            @endif
 
             <section class="card-cust" style="border-radius: 0rem; padding: 1.2rem; border-top: 2px solid #e2e8f0">
               
@@ -163,6 +170,8 @@
                     <input type="hidden" id="case_status" value="{{$transaction_details->case_status}}">
                     <input type="hidden" id="repair_status" value="{{ $transaction_details->repair_status }}">
                     <input type="hidden" name="action" id="action" value="">
+
+                    <input type="hidden" name="second_marked_image_base64" id="second_marked_image_base64">
                     
                     @if (request()->segment(3) == "edit")
                         <div id="mailin" style="display: {{ $transaction_details->case_status === 'MAIL-IN' ? 'block' : 'none' }};">
@@ -218,10 +227,10 @@
 @endsection
 
 @push('bottom')
-
-        @include('technician.to_diagnose_transaction_script')
+@include('technician.to_diagnose_transaction_script')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
       
-    <script>
+<script>
 
         function toggleCaseStatus() {
             const selectedCase = $('input[name="case_status"]:checked').val() ?? $('#case_status').val();
@@ -362,5 +371,169 @@
             }
             });
     }
-    </script>        
+</script>   
+
+<script>
+    $(document).ready(function () {
+        $('#original_editable_model').on('click', function () {
+            const imageUrl = $(this).attr('src');
+
+            Swal.fire({
+                html: `
+                <div class="app-container" id="app">
+                    <div class="app-header">
+                        <h1 class="app-title">
+                            <i class="fa fa-search"></i> Model Inspection
+                        </h1>
+                        <div class="mode-toggle">
+                            <span class="mode-label">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mode-icon mark-icon"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                                Mark
+                            </span>
+                            <label class="switch">
+                                <input type="checkbox" id="eraseToggle">
+                                <span class="slider"></span>
+                            </label>
+                            <span class="mode-label">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mode-icon erase-icon"><path d="M20 20H7L3 16a1 1 0 0 1 0-1.41l9.71-9.71a1 1 0 0 1 1.41 0l6.88 6.88a1 1 0 0 1 0 1.41L12.7 20"></path></svg>
+                                Erase
+                            </span>
+                        </div>
+                    </div>
+                    <div id="canvas-container">
+                        <canvas id="canvas"></canvas>
+                        <div class="tooltip" id="tooltip"></div>
+                    </div>
+                </div>
+                `,
+                width: 1000,
+                showCancelButton: true,
+                showConfirmButton: true,
+                allowOutsideClick: false,
+                cancelButtonText: '<i class="fa fa-times"></i> No, Cancel',
+                confirmButtonText: '<i class="fa fa-save"></i> Save Inspection',
+                backdrop: true,
+                customClass: {
+                    popup: 'swal2-rounded'
+                },
+                willClose: () => {
+                    if (window.activeCanvas) {
+                        window.activeCanvas.dispose();
+                        window.activeCanvas = null;
+                    }
+                },
+                didOpen: () => {
+                    const canvasEl = document.getElementById("canvas");
+                    const appEl = document.getElementById("app");
+
+                    if (window.activeCanvas) {
+                        window.activeCanvas.dispose();
+                    }
+
+                    const canvas = new fabric.Canvas("canvas");
+                    window.activeCanvas = canvas;
+
+                    let isEraseMode = false;
+                    const marks = [];
+
+                    fabric.Image.fromURL(imageUrl, (imgObj) => {
+                        const maxWidth = Math.min(window.innerWidth * 0.6, 800);
+                        const scale = maxWidth / imgObj.width;
+
+                        canvas.setWidth(imgObj.width * scale);
+                        canvas.setHeight(imgObj.height * scale);
+
+                        imgObj.scale(scale);
+                        canvas.add(imgObj);
+
+                        imgObj.set({ selectable: false, evented: false });
+                        canvas.sendToBack(imgObj);
+                    });
+
+                    document.getElementById("eraseToggle").addEventListener("change", (event) => {
+                        isEraseMode = event.target.checked;
+                        updateMode();
+                    });
+
+                    function updateMode() {
+                        if (isEraseMode) {
+                            appEl.classList.add("erase-mode");
+                            canvasEl.style.cursor = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"...') 3 28, pointer`;
+                        } else {
+                            appEl.classList.remove("erase-mode");
+                            canvasEl.style.cursor = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"...') 1 30, pointer`;
+                        }
+                    }
+
+                    canvas.on("mouse:down", (event) => {
+                        const pointer = canvas.getPointer(event.e);
+                        const x = pointer.x;
+                        const y = pointer.y;
+
+                        if (isEraseMode) {
+                            let removed = false;
+                            canvas.forEachObject((obj) => {
+                                if (obj.type === "line" && obj.containsPoint(new fabric.Point(x, y))) {
+                                    canvas.remove(obj);
+                                    removed = true;
+                                }
+                            });
+                            if (removed) showTooltip(x, y, "Mark removed!");
+                        } else {
+                            const line1 = new fabric.Line([x - 10, y - 10, x + 10, y + 10], {
+                                stroke: "darkorange", strokeWidth: 3, strokeLineCap: "round"
+                            });
+                            const line2 = new fabric.Line([x + 10, y - 10, x - 10, y + 10], {
+                                stroke: "darkorange", strokeWidth: 3, strokeLineCap: "round"
+                            });
+                            canvas.add(line1, line2);
+                            marks.push(line1, line2);
+                            canvas.bringToFront(line1);
+                            canvas.bringToFront(line2);
+                            showTooltip(x, y, "Mark placed!");
+                        }
+                    });
+
+                    function showTooltip(x, y, message) {
+                        const tooltip = document.getElementById("tooltip");
+                        tooltip.textContent = message;
+                        tooltip.style.left = `${x + 10}px`;
+                        tooltip.style.top = `${y + 10}px`;
+                        tooltip.style.opacity = "1";
+                        setTimeout(() => { tooltip.style.opacity = "0"; }, 1500);
+                    }
+
+                    updateMode();
+                    window.addEventListener("resize", () => {
+                        const maxWidth = Math.min(window.innerWidth * 0.6, 800);
+                        if (canvas.width > maxWidth) {
+                            const scale = maxWidth / canvas.width;
+                            canvas.setZoom(scale);
+                            canvas.setDimensions({
+                                width: canvas.width * scale,
+                                height: canvas.height * scale,
+                            });
+                        }
+                    });
+                },
+                preConfirm: () => {
+                    if (window.activeCanvas) {
+                        const base64Image = window.activeCanvas.toDataURL("image/png");
+                        document.getElementById("second_marked_image_base64").value = base64Image;
+                        jQuery("#second_marked_model").html(`<img src="${base64Image}" />`);
+                        $('#saved_2nd_inpeted_model_photo').hide();
+                    }
+                },
+                willClose: () => {
+                    // Clean up when the modal closes
+                    if (window.activeCanvas) {
+                        window.activeCanvas.dispose()
+                        window.activeCanvas = null
+                    }
+                },
+            });
+        });
+    });
+</script>
+
 @endpush

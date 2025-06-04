@@ -19,7 +19,8 @@
 
     @media (max-width: 767px) {
         .cust-ch {
-            margin-top: 110px;
+            margin-top: 11
+            0px;
         }
     }
 </style>

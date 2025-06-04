@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 
 class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\CBController
@@ -452,6 +453,11 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 
 		}
 
+		if($all_data['current_status'] == 10){
+			$get_tracking = DB::table('returns_header')->where('id', $request->header_id)->first();
+			$this->save_second_inspected_model($all_data['second_marked_image_base64'], $get_tracking->reference_no, $request->header_id);
+		}
+
 		if (in_array($request->status_id, [16, 25])) {
 			DB::table('returns_header')->where('id', $request->header_id)->update([
 				'airwaybill_tn'   => $all_data['airwaybill_tn'],
@@ -668,7 +674,6 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		return response()->json(['success' => true, 'message' => 'Final invoice saved successfully.']);
 	}
 
-
 	// ADD ROW IN QUOTATION
 	public function AddQuotation(Request $request)
 	{
@@ -878,5 +883,21 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		}
 
 		return response()->json(['success' => true]);
+	}
+
+	private function save_second_inspected_model($marked_image_base64, $tracking_number, $headerID)
+	{
+		if (isset($marked_image_base64) && !empty($marked_image_base64)) {
+			$base64Image = $marked_image_base64;
+			[$type, $data] = explode(',', $base64Image);
+			$imageData = base64_decode($data);
+			$fileName = $tracking_number . '_2nd_inspected_' . time() . '.png';
+			Storage::put("public/2nd_inspections/$fileName", $imageData);
+			DB::table('returns_header')->where('id', $headerID)->update([
+				'second_inspected_model_photo' => '2nd_inspections/' . $fileName,
+			]);
+		} else {
+			Log::error("Missing or invalid 'marked_image_base64' data.");
+		}
 	}
 }

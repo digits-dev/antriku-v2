@@ -199,10 +199,8 @@
                 <span>{{ str_repeat('*', strlen($zipPassword)) }}</span>
                 <ul style="list-style:square">
                     <p style="color: #333336; font-size: 15px;">Follow the pattern below to get your Zip Key:</p>
-                    <li>Last 4 digits of your Contact No.</li>
-                    <li>First letter of your First Name (UPPERCASE)</li>
-                    <li>First letter of your Last Name (UPPERCASE)</li>
-                    <li>Last letter of your Last Name (UPPERCASE)</li>
+                    <li>Last 2 digits of your Contact No.</li>
+                    <li>First 3 letters of your First Name (UPPERCASE)</li>
                 </ul>
             </p>
 

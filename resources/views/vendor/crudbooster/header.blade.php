@@ -87,6 +87,72 @@
     .sidebar-toggle:hover {
         background: transparent !important;
     }
+
+    .card-invo {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      /* box-shadow: 0 2px 10px rgba(0,0,0,0.1); */
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .card-invo h2 {
+      margin-bottom: 20px;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .switch-invo {
+      position: relative;
+      display: inline-block;
+      width: 55px;
+      height: 29px;
+      margin-right: 10px;
+    }
+
+    .switch-invo input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider-invo {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 34px;
+    }
+
+    .slider-invo:before {
+      position: absolute;
+      content: "";
+      height: 21px;
+      width: 21px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider-invo {
+      background-color: #f52f2f;
+    }
+
+    input:checked + .slider-invo:before {
+      transform: translateX(26px);
+    }
+
+    .status-text-invo {
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 16px;
+    }
 </style>
 
 <!-- Main Header -->
@@ -126,6 +192,14 @@
                         </div>
                     </div>
                 </li>
+
+                @if (CRUDBooster::myPrivilegeId() == 10)
+                    <li>
+                        <div style="color: white; margin: 15px 8px 15px 8px; cursor:pointer;" id="invoices_config">
+                            <i class="bi bi-gear-fill"></i>
+                        </div>
+                    </li>
+                @endif
 
                 <li class="dropdown notifications-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" title='Notifications' aria-expanded="false" id="notification_bell">
@@ -257,4 +331,81 @@
 
     updateDateTime(); // Initial run
     setInterval(updateDateTime, 1000);
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $('#invoices_config').on('click', function(){
+        Swal.fire({
+            html: `
+            <center>
+                <div class="card-invo">
+                    <img src="https://cdn-icons-png.flaticon.com/128/3643/3643948.png" alt="sheild_icon"/>
+                    <h2>Uploaded Invoices Configuration</h2>
+                    <small>
+                        Please make sure you want to hide all the uploaded invoces,
+                        Once you turn it on here, all of the uploaded invoices will disappear. 
+                        If you want to make it visible again, just turn it off here. Thanks
+                    </small>
+                    <br><br>
+                    <form>
+                    <label class="switch-invo">
+                        <input type="checkbox" name="user_viewing_enabled" id="user_viewing_enabled" value="{{ $manager_invoices_viewing_config == 'SHOW' ? 'hidden_off' : 'hidden_on' }}" {{ $manager_invoices_viewing_config == 'SHOW' ? '' : 'checked' }}>
+                        <span class="slider-invo"></span>
+                    </label>
+                    <span class="status-text-invo"><b>Disabled Viewing</b></span>
+                    </form>
+                </div>
+            </center>
+            `,
+            cancelButtonText: '<i class="fa fa-times"></i> No, Cancel',
+            confirmButtonText: '<i class="fa fa-save"></i> Save Configuration',
+            showCancelButton: true,
+            showConfirmButton: true,
+            allowOutsideClick: false,
+            preConfirm: () => {
+                const viewing_status = $('#user_viewing_enabled').val();
+
+                if(viewing_status !== null || viewing_status !== " "){
+                    $.ajax({ 
+                        url: "{{ route('invoices-config') }}",
+                        type: "POST",
+                        data: {
+                            'viewing_status': viewing_status,
+                            _token: '{!! csrf_token() !!}'
+                            },
+                        success: function(response)
+                        {
+                            if(response.success == true) {
+                                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Success',
+                                    text: response.message,
+                                    allowOutsideClick: false,
+                                    confirmButtonText: 'Okay, Got it',
+                                    preConfirm: () => {
+                                        location.reload();
+                                    },
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Error request, Please try again. Thank you!',
+                                });
+                            }
+                        }                    
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: `Empty viewing toogle status, 
+                        please turn it Off or On based on your needs. Thanks!`
+                    });
+                }
+            },
+        });
+    });
 </script>
