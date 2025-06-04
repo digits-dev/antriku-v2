@@ -83,6 +83,7 @@
                             <img src="{{ Storage::url($transaction_details->second_inspected_model_photo) }}" alt="model photo" id="saved_2nd_inpeted_model_photo">
                             <div id="second_marked_model"></div>
                         @else
+                            <div id="second_marked_model"></div>
                         @endif
                     </div>
                 </div>
