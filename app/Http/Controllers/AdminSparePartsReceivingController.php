@@ -50,7 +50,7 @@ class AdminSparePartsReceivingController extends \crocodicstudio\crudbooster\con
 
 	public function hook_query_index(&$query)
 	{
-		$query->whereIn('repair_status', [26, 33, 45, 47])->where('branch', CRUDBooster::me()->branch_id)->orderBy('id', 'ASC');
+		$query->whereIn('repair_status', [26, 33, 45, 47])->where('branch', CRUDBooster::me()->branch_id);
 
 		if (request()->filled('search_gsx')) {
 			$searchInput = request()->get('search_gsx');

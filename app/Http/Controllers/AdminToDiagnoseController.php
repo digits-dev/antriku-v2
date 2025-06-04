@@ -192,9 +192,9 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		//Your code here
 
 		if (CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6) {
-			$query->whereIn('repair_status', [1, 10, 14, 17, 18, 20,23,27])->where('print_receive_form', 'YES')->orderBy('id', 'ASC');
+			$query->whereIn('repair_status', [1, 10, 14, 17, 18, 20,23,27])->where('print_receive_form', 'YES');
 		} else if (in_array(CRUDBooster::myPrivilegeId(), [4, 8])) {
-			$query->whereIn('repair_status', [1, 10, 14, 17, 18, 20,23,27])->where('print_receive_form', 'YES')->where('technician_id', CRUDBooster::myId())->orderBy('id', 'ASC');
+			$query->whereIn('repair_status', [1, 10, 14, 17, 18, 20,23,27])->where('print_receive_form', 'YES')->where('technician_id', CRUDBooster::myId());
 		} 
 	}
 

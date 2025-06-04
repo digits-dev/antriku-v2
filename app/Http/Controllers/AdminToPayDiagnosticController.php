@@ -326,9 +326,9 @@
 	    public function hook_query_index(&$query) {
 			//Your code here 
 			if(CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 6){
-			    $query->where('repair_status', 8)->orderBy('id', 'asc'); 
+			    $query->where('repair_status', 8);
 			}else{
-			    $query->where('repair_status', 8)->where('branch', CRUDBooster::me()->branch_id)->orderBy('id', 'asc'); 
+			    $query->where('repair_status', 8)->where('branch', CRUDBooster::me()->branch_id);
 			}
 			
 			

@@ -49,19 +49,16 @@ class AdminSparePartsReleasingController extends \crocodicstudio\crudbooster\con
 		if (CRUDBooster::isSuperadmin() || CRUDBooster::myPrivilegeId() == 9) {
 			$query->whereIn('repair_status', [29, 39])
 				->where('print_receive_form', 'YES')
-				->where('branch', CRUDBooster::me()->branch_id)
-				->orderBy('id', 'ASC');
+				->where('branch', CRUDBooster::me()->branch_id);
 		} else if (in_array(CRUDBooster::myPrivilegeId(), [9])) {
-			$query->whereIn('repair_status', [29, 39])->where('print_receive_form', 'YES')->where('technician_id', CRUDBooster::myId())->orderBy('id', 'ASC');
+			$query->whereIn('repair_status', [29, 39])->where('print_receive_form', 'YES')->where('technician_id', CRUDBooster::myId());
 		} else {
 			$query->whereIn('repair_status', [29, 39])->where('branch', CRUDBooster::me()->branch_id);
 			if (!empty(Session::get('toggle')) && Session::get('toggle') == "ON") {
 				$query->where('updated_by', CRUDBooster::me()->id)
-					->where('branch', CRUDBooster::me()->branch_id)
-					->orderBy('id', 'ASC');
+					->where('branch', CRUDBooster::me()->branch_id);
 			} else {
-				// $query->where('branch', CRUDBooster::me()->branch_id)->orderBy('id', 'ASC'); 
-				$query->orderBy('id', 'ASC');
+				$query->orderBy('id', 'DESC');
 			}
 		}
 	}
