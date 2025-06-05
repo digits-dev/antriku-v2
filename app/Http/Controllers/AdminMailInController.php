@@ -36,7 +36,7 @@ class AdminMailInController extends \crocodicstudio\crudbooster\controllers\CBCo
 
 		# START COLUMNS DO NOT REMOVE THIS LINE
 		$this->col = [];
-		$this->col[] = ["label" => "Status", "name" => "repair_status"];
+		$this->col[] = ["label" => "Status", "name" => "repair_status", 'join' => 'transaction_status,status_name'];
 		$this->col[] = ["label" => "Reference No", "name" => "reference_no"];
 		$this->col[] = ["label" => "Model Group", "name" => "model"];
 		$this->col[] = ["label" => "Warranty Status", "name" => "warranty_status"];
@@ -68,19 +68,11 @@ class AdminMailInController extends \crocodicstudio\crudbooster\controllers\CBCo
 
 	 
 		public function hook_row_index($column_index, &$column_value) {
-			if ($column_index == 1) {
-		
-				$statuses = DB::table('transaction_status')->pluck('status_name', 'id');
-		
-				$cancelled = [13, 22, 38];
-		
-				if (isset($statuses[$column_value])) {
-					$labelClass = in_array($column_value, $cancelled) ? 'label-danger' : 'label-info';
-					$statusText = $statuses[$column_value];
-					$column_value = '<span class="label ' . $labelClass . '">' . $statusText . '</span>';
-				}
-				
-			}
+		if ($column_index == 1) {
+
+			$column_value = '<span class="label label-info">' . $column_value . '</span>';
+		}
+
 		if ($column_index == 3) {
 			$models = DB::table('model')->where('id', $column_value)->first();
 			if ($models) {

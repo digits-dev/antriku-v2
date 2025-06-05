@@ -36,7 +36,7 @@ class AdminTransactionHistoryController extends \crocodicstudio\crudbooster\cont
 
 		# START COLUMNS DO NOT REMOVE THIS LINE
 		$this->col = [];
-		$this->col[] = ["label" => "Status", "name" => "repair_status"];
+		$this->col[] = ["label" => "Status", "name" => "repair_status", 'join' => 'transaction_status,status_name'];
 		$this->col[] = ["label" => "Reference No", "name" => "reference_no"];
 		$this->col[] = ["label" => "Model Group", "name" => "model"];
 		$this->col[] = ["label" => "Warranty Status", "name" => "warranty_status"];
@@ -168,24 +168,21 @@ class AdminTransactionHistoryController extends \crocodicstudio\crudbooster\cont
 		//Your code here
 		if ($column_index == 1) {
 
-			$statuses = DB::table('transaction_status')->pluck('status_name', 'id');
+        $cancelled = DB::table('transaction_status')->whereIn('id', [13, 22, 38])->pluck('status_name')->toArray();
+        $complete = DB::table('transaction_status')->whereIn('id', [6])->pluck('status_name')->toArray();
 
-			$cancelled = [13, 22, 38];
-			$success = [6];
+        // Apply label based on status name
+        if (in_array($column_value, $cancelled)) {
+            $labelClass = 'label-danger';
+        } elseif (in_array($column_value, $complete)) {
+            $labelClass = 'label-success';
+        } else {
+            $labelClass = 'label-warning';
+        }
 
-			if (isset($statuses[$column_value])) {
-				if (in_array($column_value, $cancelled)) {
-					$labelClass = 'label-danger';
-				} elseif (in_array($column_value, $success)) {
-					$labelClass = 'label-success';
-				} else {
-					$labelClass = 'label-warning';
-				}
-
-				$statusText = $statuses[$column_value];
-				$column_value = '<span class="label ' . $labelClass . '">' . $statusText . '</span>';
-			}
-		}
+        // Wrap the status name with a span label
+        $column_value = '<span class="label ' . $labelClass . '">' . $column_value . '</span>';
+    }
 
 		if ($column_index == 3) {
 			$models = DB::table('model')->where('id', $column_value)->first();
