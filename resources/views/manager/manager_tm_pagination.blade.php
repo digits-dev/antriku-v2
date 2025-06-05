@@ -50,31 +50,34 @@
 </div>
 
 <script>
-  $(document).ready(function() {
-      $('.pagination-link').on('click', function(e) {
-          e.preventDefault();
-          
-          let url = $(this).data('url');
-          if (!url) return;
+    $(document).on('click', '.pagination-link', function(e) {
+        e.preventDefault();
+        
+        let url = $(this).data('url');
+        if (!url) return;
 
-          $.ajax({
-              url: url,
-              type: 'GET',
-              beforeSend: function() {
+        const search_value = $('#tnm_search_input').val();
+        if (search_value) {
+            url += (url.includes('?') ? '&' : '?') + 'search_value=' + encodeURIComponent(search_value);
+        }
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            beforeSend: function() {
                 $('#time_motion_data').html(`
-                    <div style="display: flex; justify-content: center">
-                      <img width="100" src="https://cdn-icons-gif.flaticon.com/10282/10282620.gif"/>
-                    </div>
-                    <center><p style="text-align:center">Loading data, please wait...</p></center>`);
-              },
-              success: function(data) {
-                  $('#time_motion_data').html($(data.table));
-                  $('#pagination_time_motion').html($(data.pagination));
-              },
-              error: function() {
-                  alert('Error loading data.');
-              }
-          });
-      });
-  });
+                <div style="display: flex; justify-content: center">
+                    <img width="100" src="https://cdn-icons-gif.flaticon.com/10282/10282620.gif"/>
+                </div>
+                <center><p style="text-align:center">Loading data, please wait...</p></center>`);
+            },
+            success: function(data) {
+                $('#time_motion_data').html($(data.table));
+                $('#pagination_time_motion').html($(data.pagination));
+            },
+            error: function() {
+                alert('Error loading data.');
+            }
+        });
+    });
 </script>

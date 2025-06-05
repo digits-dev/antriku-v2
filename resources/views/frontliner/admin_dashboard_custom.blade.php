@@ -49,7 +49,7 @@
         </div>
 
         <div class="tabs-dash text-uppercase" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
-            <div class="tab-dash active" data-tab="overview">
+            <div class="tab-dash" data-tab="overview">
               <img src="https://cdn-icons-png.flaticon.com/128/7756/7756168.png" alt="" width="20px">
               Overview
             </div>
@@ -57,7 +57,7 @@
               <img src="https://cdn-icons-png.flaticon.com/128/4943/4943769.png" alt="" width="20px">
               Aging Callouts
             </div>
-            <div class="tab-dash" data-tab="time_and_motion">
+            <div class="tab-dash active" data-tab="time_and_motion">
               <img src="https://cdn-icons-png.flaticon.com/128/3652/3652191.png" alt="" width="20px">
               Job Order Time-in-Motion
             </div>
@@ -67,7 +67,7 @@
             </div>
         </div>
 
-        <div id="overview" class="tab-content-dash active">
+        <div id="overview" class="tab-content-dash">
             <div class="card-dash" style="border-top-left-radius:0%; border-top-right-radius:0%">
                 <div class="card-body-dash">
                     <div class="row">
@@ -469,7 +469,7 @@
             </div>
         </div>
 
-        <div id="time_and_motion" class="tab-content-dash">
+        <div id="time_and_motion" class="tab-content-dash active">
             <div class="transactions-container" style="border-top-left-radius: 0px;border-top-right-radius: 0px;">
                 <div class="transactions-header" style="margin-top: 0%">
                     <h2 class="card-title-dash">
@@ -483,15 +483,24 @@
                         </div>
                         Time-in-motion
                     </h2>
-                    {{-- <div class="search-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="search-icon">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                        <input type="text" class="search-input" placeholder="Search transactions...">
-                    </div> --}}
+                    <div class="row" style="margin-right: 3px">
+                      <div class="col-md-10">
+                        <div class="search-container">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="search-icon">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <input type="text" class="search-input" id="tnm_search_input" placeholder="Search reference_no here...">                        
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <button class="btn" style="border-radius: 5px;" id="tnm_search_filter">
+                          <i class="bi bi-search"></i>
+                        </button>
+                      </div>
+                    </div>
                 </div>
                 <div style="overflow:auto" id="time_motion_data">
                     @include('frontliner.admin_dashboard_tm_table')
@@ -700,31 +709,34 @@
 
 {{-- Time-in-Motion  --}}
 <script>
-  $(document).ready(function() {
-      $('.pagination-link').on('click', function(e) {
-          e.preventDefault();
-          
-          let url = $(this).data('url');
-          if (!url) return;
+  $(document).on('click', '.pagination-link', function(e) {
+      e.preventDefault();
+      
+      let url = $(this).data('url');
+      if (!url) return;
 
-          $.ajax({
-              url: url,
-              type: 'GET',
-              beforeSend: function() {
-                  $('#time_motion_data').html(`
-                    <div style="display: flex; justify-content: center">
-                      <img width="100" src="https://cdn-icons-gif.flaticon.com/10282/10282620.gif"/>
-                    </div>
-                    <center><p style="text-align:center">Loading data, please wait...</p></center>`);
-              },
-              success: function(data) {
-                  $('#time_motion_data').html($(data.table));
-                  $('#pagination_time_motion').html($(data.pagination));
-              },
-              error: function() {
-                  alert('Error loading data.');
-              }
-          });
+      const search_value = $('#tnm_search_input').val();
+      if (search_value) {
+          url += (url.includes('?') ? '&' : '?') + 'search_value=' + encodeURIComponent(search_value);
+      }
+
+      $.ajax({
+          url: url,
+          type: 'GET',
+          beforeSend: function() {
+              $('#time_motion_data').html(`
+                <div style="display: flex; justify-content: center">
+                  <img width="100" src="https://cdn-icons-gif.flaticon.com/10282/10282620.gif"/>
+                </div>
+                <center><p style="text-align:center">Loading data, please wait...</p></center>`);
+          },
+          success: function(data) {
+              $('#time_motion_data').html($(data.table));
+              $('#pagination_time_motion').html($(data.pagination));
+          },
+          error: function() {
+              alert('Error loading data.');
+          }
       });
   });
 </script>
@@ -1376,6 +1388,47 @@
         }
       },
       plugins: [ChartDataLabels]
+    });
+  });
+</script>
+
+{{-- time in mOtion search filter  --}}
+<script>
+  $(document).ready(function() {
+    function performSearch() {
+      const search_value = $('#tnm_search_input').val();
+      $.ajax({ 
+        url: "{{ route('frontliner.time.motion') }}",
+        type: "GET",
+        beforeSend: function() {
+            $('#time_motion_data').html(`
+              <div style="display: flex; justify-content: center">
+                <img width="100" src="https://cdn-icons-gif.flaticon.com/10282/10282620.gif"/>
+              </div>
+              <center><p style="text-align:center">Loading data, please wait...</p></center>`);
+        },
+        data: {
+          'search_value': search_value,
+          _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+          $('#time_motion_data').html($(response.table));
+          $('#pagination_time_motion').html($(response.pagination));
+        }
+      });
+    }
+
+    // Handle click on filter button
+    $('#tnm_search_filter').on('click', function() {
+      performSearch();
+    });
+
+    // Handle Enter key in search input
+    $('#tnm_search_input').on('keypress', function(e) {
+      if (e.which === 13) { 
+        e.preventDefault(); 
+        performSearch();
+      }
     });
   });
 </script>

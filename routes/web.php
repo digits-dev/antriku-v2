@@ -123,6 +123,7 @@ Route::group(['middleware' => ['web']], function () {
         Session::forget('just_logged_in');
         return response()->json(['status' => 'cleared']);
     });
+
     Route::post('/admin/transaction_history/ExportData','AdminTransactionHistoryController@getExportData')->name('exportData');
     Route::get('/admin/returns_appointment/getTime','AdminReturnsAppointmentController@getTime')->name('get_time'); 
     Route::get('/admin/transaction_history/getDetailView/{id}','AdminTransactionHistoryController@getDetailView')->name('getDetailView');
@@ -160,6 +161,7 @@ Route::group(['middleware' => ['web']], function () {
 
     // Timeline
     Route::post('/admin/get_timeline', [AdminCustomDashboardController::class, 'getTimeline'])->name('get_timeline');
+    Route::post('/admin/get_timeline_callouts_details', [AdminCustomDashboardController::class, 'getCalloutsDetails'])->name('view-callout-details');
 
     Route::get('/admin/manager-dashboard', [AdminCustomDashboardController::class, 'managerDashboard'])->name('manager.dashboard');
     Route::post('/admin/manager-dashboard/employee-data', [AdminCustomDashboardController::class, 'managerDashboardPerEmployee'])->name('manager_dash_per_employee');
@@ -168,6 +170,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/admin/custodian-dashboard', [AdminCustomDashboardController::class, 'custodianDashboard'])->name('custodian.dashboard');
 
     Route::get('/admin/frontliner-dashboard', [AdminCustomDashboardController::class, 'index'])->name('frontliner.dashboard');
+    Route::get('/admin/frontliner-dashboard/filter-time-n-motion', [AdminCustomDashboardController::class, 'index'])->name('frontliner.time.motion');
     Route::get('/admin/technician-dashboard', [AdminCustomDashboardController::class, 'technicianDashboard'])->name('technician.dashboard');
     Route::get('/admin/headtechnician-dashboard', [AdminCustomDashboardController::class, 'headTechnicianDashboard']);
     Route::post('/admin/filter_customers_units', [AdminCustomDashboardController::class, 'filterCustomerUnit'])->name('filter_customers_units');

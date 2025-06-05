@@ -3354,7 +3354,7 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
 
 .search-container {
     position: relative;
-    width: 250px;
+    width: 300px;
 }
 
 .search-input {
@@ -3474,7 +3474,7 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 10000;
+    z-index: 1000;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
@@ -3487,10 +3487,11 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
 
 .modal-content-cust {
     background-color: #ffffff;
-    border-radius: 12px;
+    border-radius: 5px;
     width: 100%;
+    margin-top: 75px;
     max-width: 900px;
-    max-height: 90vh;
+    max-height: 85vh;
     overflow-y: auto;
     padding: 30px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
@@ -3506,8 +3507,8 @@ input[type="radio"]:checked ~ .option-content-cus .option-title-cus {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
     border-bottom: 1px solid #e9ecef;
 }
 

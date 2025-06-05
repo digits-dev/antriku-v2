@@ -137,13 +137,17 @@
             display: none;
         }
     }
+
+    .swal2-topmost {
+        z-index: 100000 !important;
+    }
 </style>
 <table class="transactions-table">
     <thead>
         <tr>
             <th>Reference No.</th>
             <th>Customer Name</th>
-            <th>Created Date Date</th>
+            <th>Created Date</th>
             <th>Release Date</th>
             <th>Duration</th>
             <th>Current Status</th>
@@ -352,6 +356,15 @@
                                             <p><b>🧑‍💻</b> ${item.name}</p>
                                             <p><b>📅</b> ${item.transacted_at}</p>
                                             <p><b>⌚</b> DURATION: ${durationText}</p>
+                                            ${item.callout_total ? `
+                                                <p><b>📞</b> CALLOUT: <b>${item.callout_total}</b> 
+                                                    <small onclick="view_callouts(${item.returns_header_id}, ${item.status_id})" 
+                                                        class="text-uppercase text-info" 
+                                                        style="cursor:pointer;">
+                                                        <i>view details</i>
+                                                    </small> 
+                                                 </p>`
+                                            : ''}
                                         </div>
                                     </div>
                                 `);
@@ -378,4 +391,76 @@
             }
         });
     });
+
+    function view_callouts(header_id, status_id){
+
+        $.ajax({ 
+            url: "{{ route('view-callout-details') }}",
+            type: "POST",
+            data: {
+                'header_id': header_id,
+                'status_id': status_id,
+                _token: '{!! csrf_token() !!}'
+            },
+            success: function(response)
+            {
+                if(response.success == true) {
+                   let tableRows = '';
+                    response.data.forEach((item, index) => {
+                        tableRows += `
+                            <tr>
+                                <td style="text-align: left;">CallOut No.${index + 1}</td> 
+                                <td style="text-align: left;">${item.callout_by_name}</td>
+                                <td style="text-align: left;">${item.call_out_at}</td>
+                            </tr>`;
+                    });
+
+                    Swal.fire({
+                        html: `
+                            <div class="transactions-header" style="margin-top: 0%;">
+                                <h2 class="card-title-dash" style="margin:0%">
+                                    <div class="card-icon-dash icon-default">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" style="color: white" height="14"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="time-icon">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12 6 12 12 16 14"></polyline>
+                                        </svg>
+                                    </div>
+                                    Call Outs Logs
+                                </h2>
+                            </div>
+                            <div style="max-height: 400px; overflow-y: auto; border: 1px solid lightgrey;">
+                                <table class="transactions-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-uppercase">No.</th>
+                                            <th class="text-uppercase">CallOut By</th>
+                                            <th class="text-uppercase">CallOut At</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="transactions-body">
+                                        ${tableRows}
+                                    </tbody>
+                                </table>
+                            </div>
+                        `,
+                        width: '70%', 
+                        allowOutsideClick: false,
+                        confirmButtonText: 'Okay, Close',
+                        customClass: {
+                            popup: 'swal2-topmost',
+                            confirmButton: 'btn btn-info btn-sm',
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Error request, Please try again. Thank you!',
+                    });
+                }
+            }                    
+        });
+    }
 </script>

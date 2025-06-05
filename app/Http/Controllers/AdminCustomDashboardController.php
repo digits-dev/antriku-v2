@@ -106,7 +106,7 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->where('created_by', CRUDBooster::myId())
             ->count();
 
-        $data['time_motion'] = DB::table('returns_header')
+        $query = DB::table('returns_header')
             ->select(
                 'returns_header.*',
                 'createdby.name as creator',
@@ -122,8 +122,16 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->leftJoin('cms_users as tech', 'tech.id', '=', 'returns_header.technician_id')
             ->where('branch', CRUDBooster::me()->branch_id)
             ->groupBy('returns_header.id', 'transaction_status.status_name')
-            ->orderBy('returns_header.id', 'DESC')
-            ->paginate(10);
+            ->orderBy('returns_header.id', 'DESC');
+
+        if ($request->filled('search_value')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('returns_header.reference_no', 'like', '%' . $request->search_value . '%')
+                ->orWhere('transaction_status.status_name', 'like', '%' . $request->search_value . '%');
+            });
+        }
+
+        $data['time_motion'] = $query->paginate(10);
 
         if ($request->ajax()) {
             return response()->json([
@@ -132,11 +140,17 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ]);
         }
 
-        return view('frontliner.admin_dashboard_custom', compact('salesData'), $data);
+        return view('frontliner.admin_dashboard_custom', $data);
     }
 
     function getTimeline(Request $request)
     {
+        $calloutCounts = DB::table('call_out_recorder')
+            ->select('status_id', DB::raw('COUNT(*) as total'))
+            ->where('returns_header_id', $request->id)
+            ->groupBy('status_id')
+            ->get()
+            ->keyBy('status_id');
 
         $get_timeline_data = DB::table('job_order_logs')
             ->select('job_order_logs.*', 'transaction_status.status_name', 'cms_users.name')
@@ -145,8 +159,29 @@ class AdminCustomDashboardController extends \crocodicstudio\crudbooster\control
             ->where('returns_header_id', $request->id)
             ->get();
 
-        if ($get_timeline_data) {
-            return response()->json(['success' => true, 'data' => $get_timeline_data]);
+        $timeline_with_counts = $get_timeline_data->map(function ($item) use ($calloutCounts) {
+            $item->callout_total = $calloutCounts[$item->status_id]->total ?? 0;
+            return $item;
+        });
+
+        if ($timeline_with_counts) {
+            return response()->json(['success' => true, 'data' => $timeline_with_counts]);
+        }
+    }
+
+    public function getCalloutsDetails(Request $request){
+        $header_id = $request->header_id; 
+        $status_id = $request->status_id;
+
+        $callout_details_data = DB::table('call_out_recorder')
+            ->select('call_out_recorder.*', 'cms_users.name as callout_by_name')
+            ->leftJoin('cms_users', 'cms_users.id', '=', 'call_out_recorder.call_out_by')
+            ->where('call_out_recorder.returns_header_id', $header_id)
+            ->where('call_out_recorder.status_id', $status_id)
+            ->get();
+        
+        if($callout_details_data){
+            return response()->json(['success' => true, 'data' => $callout_details_data]);
         }
     }
 
