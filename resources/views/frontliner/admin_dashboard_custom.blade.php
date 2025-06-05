@@ -49,7 +49,7 @@
         </div>
 
         <div class="tabs-dash text-uppercase" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
-            <div class="tab-dash" data-tab="overview">
+            <div class="tab-dash active" data-tab="overview">
               <img src="https://cdn-icons-png.flaticon.com/128/7756/7756168.png" alt="" width="20px">
               Overview
             </div>
@@ -57,7 +57,7 @@
               <img src="https://cdn-icons-png.flaticon.com/128/4943/4943769.png" alt="" width="20px">
               Aging Callouts
             </div>
-            <div class="tab-dash active" data-tab="time_and_motion">
+            <div class="tab-dash" data-tab="time_and_motion">
               <img src="https://cdn-icons-png.flaticon.com/128/3652/3652191.png" alt="" width="20px">
               Job Order Time-in-Motion
             </div>
@@ -67,7 +67,7 @@
             </div>
         </div>
 
-        <div id="overview" class="tab-content-dash">
+        <div id="overview" class="tab-content-dash active">
             <div class="card-dash" style="border-top-left-radius:0%; border-top-right-radius:0%">
                 <div class="card-body-dash">
                     <div class="row">
@@ -469,7 +469,7 @@
             </div>
         </div>
 
-        <div id="time_and_motion" class="tab-content-dash active">
+        <div id="time_and_motion" class="tab-content-dash">
             <div class="transactions-container" style="border-top-left-radius: 0px;border-top-right-radius: 0px;">
                 <div class="transactions-header" style="margin-top: 0%">
                     <h2 class="card-title-dash">
