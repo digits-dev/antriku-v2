@@ -442,6 +442,7 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 		    if(in_array($request->status_id, $status_array)){
 				DB::table('returns_header')->where('id', $request->header_id)->update([
 					'repair_status' 			=> $request->status_id,
+					'updated_at'            	=> now(),
 					'updated_by'            	=> CRUDBooster::myId()
 				]);
 				DB::table('job_order_logs')->insert([
@@ -451,9 +452,11 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 				'transacted_at'            	=>  now()
 				]);
 
-				$get_tracking = DB::table('returns_header')->where('id', $request->header_id)->first();
-				$this->save_second_inspected_model($all_data['second_marked_image_base64'], $get_tracking->reference_no, $request->header_id);
 			}
+		
+		// Saving second model img inspection
+		$get_tracking = DB::table('returns_header')->where('id', $request->header_id)->first();
+		$this->save_second_inspected_model($all_data['second_marked_image_base64'], $get_tracking->reference_no, $request->header_id);
 
 		if (in_array($request->status_id, [16, 25])) {
 			DB::table('returns_header')->where('id', $request->header_id)->update([

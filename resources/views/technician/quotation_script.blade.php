@@ -687,6 +687,20 @@
     });
 
     function receive_parts(item_parts_id) {
+        let row = $('tr').filter(function() {
+            return $(this).find('.getitemparstidValue').val() == item_parts_id;
+        });
+        
+        let spare_parts_id = item_parts_id;
+        let header_id = $('#header_id').val();
+        let kgb_serial = row.find('.getserialValue').val();
+
+        if (!kgb_serial || kgb_serial.trim() === "") {
+            row.find('.getserialValue').attr('required', true).focus();
+            Swal.fire('Error', 'KGB Serial is required.', 'error');
+            return;
+        }
+
         Swal.fire({
             title: 'Confirm Receive',
             text: 'Are you sure you want to receive this item?',
@@ -696,15 +710,13 @@
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
-                let spare_parts_id = item_parts_id;
-                let header_id = $('#header_id').val();
-
                 $.ajax({
                     url: "{{ route('receive_spare_part') }}",
                     type: "POST",
                     data: {
                         'spare_parts_id': spare_parts_id,
                         'header_id': header_id,
+                        'kgb_serial': kgb_serial,
                         _token: '{!! csrf_token() !!}',
                     },
                     headers: {

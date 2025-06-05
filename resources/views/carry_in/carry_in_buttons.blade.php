@@ -16,7 +16,7 @@
     @endif
     @if ($transaction_details->repair_status == 29)
         <div>
-            <button type="submit" id="save" onclick="return changeStatus(31)" class="btn btn-primary pull-right buttonSubmit iw_cin_spare_part_release">
+            <button type="submit" id="save" onclick="return validateBeforeChangeStatus(31)" class="btn btn-primary pull-right buttonSubmit iw_cin_spare_part_release">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
             </button>
         </div>
@@ -77,7 +77,7 @@
             <i class="fa fa-phone"></i> CALL OUT ({{ $CallOutCount }})
         </button>
 
-        <button type="submit" id="save" onclick="return changeStatus(29)" class="btn btn-success pull-right for_spare_part_release_unav" style="display: none">
+        <button type="submit" id="save" onclick="return validateBeforeChangeStatus(29)" class="btn btn-success pull-right for_spare_part_release_unav" style="display: none">
             <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, For Spare Release
         </button>
     @endif
@@ -92,11 +92,11 @@
     @endif
 
     @if ($transaction_details->repair_status == 40)
-    <div>
-        <button type="submit" id="save" onclick="return changeStatus(45)" class="btn btn-primary pull-right buttonSubmit">
-            <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, To Callout
-        </button>
-    </div>
+        <div>
+            <button type="submit" id="save" onclick="return changeStatus(45)" class="btn btn-primary pull-right buttonSubmit">
+                <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, To Callout
+            </button>
+        </div>
     @endif
 
     @if ($transaction_details->repair_status == 48)
@@ -128,14 +128,14 @@
             <i class="fa fa-phone"></i> CALL OUT ({{ $CallOutCount }})
         </button>
 
-        <button type="submit" id="save" onclick="return changeStatus(39)" class="btn btn-success pull-right for_spare_part_release_unav_oow" style="display: none">
+        <button type="submit" id="save" onclick="return validateBeforeChangeStatus(39)" class="btn btn-success pull-right for_spare_part_release_unav_oow" style="display: none">
             <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed, For Spare Release
         </button>
     @endif
 
     @if ($transaction_details->repair_status == 39)
         <div>
-            <button type="submit" id="save" onclick="return changeStatus(41)" class="btn btn-primary pull-right buttonSubmit iw_cin_spare_part_release_oow">
+            <button type="submit" id="save" onclick="return validateBeforeChangeStatus(41)" class="btn btn-primary pull-right buttonSubmit iw_cin_spare_part_release_oow">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Proceed
             </button>
         </div>

@@ -209,6 +209,7 @@ class AdminSparePartsReceivingController extends \crocodicstudio\crudbooster\con
 	{
 		$spare_parts_id = $request->spare_parts_id;
 		$header_id = $request->header_id;
+		$kgb_serial = $request->kgb_serial;
 
 		$get_order_branch = DB::table('returns_header')->where('id', $header_id)->first();
 		if (!$get_order_branch) {
@@ -250,6 +251,14 @@ class AdminSparePartsReceivingController extends \crocodicstudio\crudbooster\con
 					'updated_by' => CRUDBooster::myId(),
 					'updated_at' => now(),
 				]);
+
+			DB::table('returns_serial')->where('returns_header_id', $header_id)
+				->where('returns_body_item_id', $get_item_if_exist->id)
+				->update([
+					'serial_number' => $kgb_serial,
+					'updated_by' => CRUDBooster::myId(),
+					'updated_at' => now(),
+			]);
 
 			DB::table('inventory_reservations')->insert([
 				'branch_id' => $get_order_branch->branch,
