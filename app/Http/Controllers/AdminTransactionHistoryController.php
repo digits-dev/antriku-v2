@@ -168,7 +168,7 @@ class AdminTransactionHistoryController extends \crocodicstudio\crudbooster\cont
 		//Your code here
 		if ($column_index == 1) {
 
-        $cancelled = DB::table('transaction_status')->whereIn('id', [13, 22, 38])->pluck('status_name')->toArray();
+        $cancelled = DB::table('transaction_status')->whereIn('id', [3, 13, 22, 38])->pluck('status_name')->toArray();
         $complete = DB::table('transaction_status')->whereIn('id', [6])->pluck('status_name')->toArray();
 
         // Apply label based on status name
