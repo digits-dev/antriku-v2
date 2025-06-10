@@ -116,7 +116,7 @@
                             @elseif ($menu->name == 'Transaction History')
                                 <img src="https://cdn-icons-png.flaticon.com/128/11411/11411453.png" alt="dash_icon" width="20px" style="margin-right: 5px;" alt="">
                             @elseif ($menu->name == 'Submaster Module')
-                                <img src="https://cdn-icons-png.flaticon.com/128/10848/10848122.png" alt="dash_icon" width="20px" style="margin-right: 5px;" alt="">
+                                <img src="https://cdn-icons-png.flaticon.com/128/6785/6785229.png" alt="dash_icon" width="20px" style="margin-right: 5px;" alt="">
                             @elseif ($menu->name == 'Call Out')
                                 <img src="https://cdn-icons-png.flaticon.com/128/1256/1256652.png" alt="dash_icon" width="20px" style="margin-right: 5px;" alt="">
                             @elseif ($menu->name == 'To Pay Diagnostic')
@@ -187,6 +187,8 @@
                                            class='{{($child->color)?"text-".$child->color:""}}'>
                                             @if (in_array($child->name, ['Stocks', 'Stock Reservations', 'Stock-In', 'Stock Disposed', 'Stock Receiving', 'Stock Disposal Request']))
                                                 <img src="https://cdn-icons-png.flaticon.com/128/11449/11449740.png" alt="dash_icon" width="18px" style="margin-right: 5px;">
+                                            @elseif(in_array($child->name, ['Branch', 'Product Item Master', 'Parts Item Master', 'Model', 'Model Group', 'Operating Schedule', 'Problem Details', 'Test Type', 'Transaction Status']))
+                                                <img src="https://cdn-icons-png.flaticon.com/128/10773/10773886.png" alt="dash_icon" width="14px" style="margin-right: 5px;">
                                             @elseif ($child->name == 'Mail In')
                                                 <img src="https://cdn-icons-png.flaticon.com/128/7286/7286142.png" alt="dash_icon" width="20px" style="margin-right: 5px;">
                                             @elseif ($child->name == 'Carry In')
