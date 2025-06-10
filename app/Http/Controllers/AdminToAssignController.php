@@ -80,7 +80,7 @@
 	    }
 
 		public function hook_query_index(&$query) {
-			$query->whereNotIn('repair_status', [6, 8, 11, 13, 19, 22, 28, 38])
+			$query->whereNotIn('repair_status', [3, 6, 8, 11, 13, 19, 22, 28, 38])
 				->where('print_receive_form', 'YES')
 				->orderByRaw("CASE WHEN repair_status = 9 THEN 0 ELSE 1 END")
 				->orderBy('id', 'DESC');
