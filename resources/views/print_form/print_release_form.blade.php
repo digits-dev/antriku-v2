@@ -167,12 +167,14 @@
                 <table class="print-friendly" style="border-spacing:unset !important;width:100%;">
                     <tbody>
                         <tr style="font-size: 13px;">
+                            <th width="20%" class="text-center table-bordered-display" style="border-width: 1px 1px 1px 1px !important;padding:5px;">Digits Code</th>
                             <th width="20%" class="text-center table-bordered-display" style="border-width: 1px 1px 1px 1px !important;padding:5px;">UPC Code</th>
                             <th width="30%" class="text-center table-bordered-display" style="border-width: 1px 1px 1px 0 !important;padding:5px;">{{ trans('labels.table.item_description') }}</th>
                             <th width="10%" class="text-center table-bordered-display" style="border-width: 1px 1px 1px 0 !important;padding:5px;">{{ trans('labels.table.serial_no') }}</th>
                             <th width="40%" class="text-center table-bordered-display" style="border-width: 1px 1px 1px 0 !important;padding:5px;">{{ trans('labels.table.problem_details') }}</th>
                         </tr>
                         <tr style="font-size: 13px;">
+                            <td class="table-bordered-display" style="border-width: 0 1px 1px 1px !important;padding:5px;text-align:center;">{{ $data['transaction_details']->header_digits_code }}</td>
                             <td class="table-bordered-display" style="border-width: 0 1px 1px 1px !important;padding:5px;text-align:center;">{{ $data['transaction_details']->header_upc_code }}</td>
                             <td class="table-bordered-display" style="border-width: 0 1px 1px 0 !important;padding:5px;text-align:center;">{{ $data['transaction_details']->header_item_description }}</td>
                             <td class="table-bordered-display" style="border-width: 0 1px 1px 0 !important;padding:5px;text-align:center;">{{ $data['transaction_details']->header_serial_no }}</td>

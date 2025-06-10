@@ -319,7 +319,7 @@
                                     </div>
                                     <div class="col-md-4" id="unitt_type_class">
                                         <label for="model" class="label-cus">Unit Type</label>
-                                        <select name="unit_type" autocomplete="off" class="js-example-basic-single input-cus"> 
+                                        <select name="unit_type" autocomplete="off" class="js-example-basic-single input-cus" required> 
                                             <option value="" selected disabled>Choose Unit type here...</option>
                                             <option value="Accessories">Accessories</option>      
                                             <option value="iMac">iMac</option>      

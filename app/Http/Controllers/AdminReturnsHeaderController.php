@@ -265,6 +265,7 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 			'other_remarks'		        => $data['other_remarks'],
 			'files_backed_up'			=> $data['files-backed'],
 			'icloud_sign_out'			=> $data['icloud-signed'],
+			'header_digits_code'		=> $data['digits_code'],
 			'header_upc_code'			=> $data['upc_code'],
 			'header_serial_no'			=> $data['serial_no'],
 			'created_by'            	=> CRUDBooster::myId(),
