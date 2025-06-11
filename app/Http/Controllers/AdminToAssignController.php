@@ -30,7 +30,7 @@
 
 			# START COLUMNS DO NOT REMOVE THIS LINE
 			$this->col = [];
-			$this->col[] = ["label" => "Status", "name" => "repair_status"];
+			$this->col[] = ["label" => "Status", "name" => "repair_status", 'join' => 'transaction_status,status_name'];
 			$this->col[] = ["label" => "Reference No", "name" => "reference_no"];
 			$this->col[] = ["label" => "Model Group", "name" => "model"];
 			$this->col[] = ["label" => "Warranty Status", "name" => "warranty_status"];
@@ -88,20 +88,21 @@
  
 		public function hook_row_index($column_index, &$column_value) 
 		{
+			
 			if ($column_index == 1) {
-				
-				$statuses = DB::table('transaction_status')
-								->pluck('status_name', 'id');
 
-				$custom_styles = [
-					9 => 'background-color: #00c0ef !important', 
-				];
-	
-				if (isset($statuses[$column_value])) {
-					$style = $custom_styles[$column_value] ?? '';
-					$column_value = '<span class="label label-warning" style="'.$style.'">'.$statuses[$column_value].'</span>';
+				$toAssign = DB::table('transaction_status')->whereIn('id', [9])->pluck('status_name')->toArray();
+
+				// Apply label based on status name
+				if (in_array($column_value, $toAssign)) {
+					$labelClass = 'label-info';
+				}  else {
+					$labelClass = 'label-warning';
 				}
-			}
+
+				// Wrap the status name with a span label
+				$column_value = '<span class="label ' . $labelClass . '">' . $column_value . '</span>';
+			}	
 
             if($column_index == 3){
 				$models = DB::table('model')->where('id',$column_value)->first();

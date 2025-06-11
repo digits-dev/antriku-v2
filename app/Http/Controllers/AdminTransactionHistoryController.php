@@ -184,7 +184,7 @@ class AdminTransactionHistoryController extends \crocodicstudio\crudbooster\cont
 
         // Wrap the status name with a span label
         $column_value = '<span class="label ' . $labelClass . '">' . $column_value . '</span>';
-    }
+    	}	
 
 		if ($column_index == 3) {
 			$models = DB::table('model')->where('id', $column_value)->first();
@@ -206,7 +206,7 @@ class AdminTransactionHistoryController extends \crocodicstudio\crudbooster\cont
 			$column_value = '<span style="color: #1266F1"><strong>' . $column_value . '</strong></span>';
 		}
 
-		if ($column_index >= 9 && $column_index <= 11) {
+		if ($column_index >= 11 && $column_index <= 13) {
 			if ($column_value == 'YES') {
 				$column_value = '<span class="label label-success">' . $column_value . '</span>';
 			} elseif ($column_value == 'NO') {
