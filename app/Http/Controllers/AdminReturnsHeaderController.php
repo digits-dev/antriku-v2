@@ -242,6 +242,8 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 			'address'					=> $data['address'],
 			'contact_no'   				=> $data['contact_no'],
 			'customer_type'				=> $data['customer_type'],
+			'das_reference'				=> $data['das_reference'],
+			'order_no'					=> $data['order_no'],
 			'company_name'   			=> $data['company_name'],
 			'company_contact_no'   		=> $data['company_contact_no'],
 			'unit_type'					=> $data['unit_type'],

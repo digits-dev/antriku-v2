@@ -169,6 +169,14 @@
                                 <label class="label-cus">Company Name:</label>
                                 <input type="input" name="company_name" placeholder="Enter Company Name" class="input-cus" autocomplete="off"/>
                             </div>
+                            <div class="form-group-cus" style="display: none;" id="comp_order_no">
+                                <label class="label-cus">Order No.:</label>
+                                <input type="input" name="order_no" placeholder="Enter Order No." class="input-cus" autocomplete="off"/>
+                            </div>
+                            <div class="form-group-cus" style="display: none;" id="retail_das_ref">
+                                <label class="label-cus">DAS Reference:</label>
+                                <input type="input" name="das_reference" placeholder="Enter DAS Reference" class="input-cus" autocomplete="off"/>
+                            </div>
                         </div>
                         <div class="form-column-cus">
                             <div class="form-group-cus" style="display: none" id="comp_contact">
@@ -528,11 +536,19 @@
     $(document).ready(function() {
         $('input[name="customer_type"]').on('change', function() {
             if ($(this).val() === 'Enterprise') {
-                $('#comp_name').show();                
+                $('#comp_name').show();   
                 $('#comp_contact').show();
+                $('#comp_order_no').show();             
             } else {
-                $('#comp_name').hide();                
+                $('#comp_name').hide();    
                 $('#comp_contact').hide();
+                $('#comp_order_no').hide();             
+            }
+
+            if ($(this).val() === 'Retail') {
+                $('#retail_das_ref').show().prop('required', true);
+            } else {
+                $('#retail_das_ref').hide().prop('required', false);
             }
         });
     });
@@ -835,6 +851,33 @@
             });
             return;
         }
+
+        const customer_type_value = $('input[name="customer_type"]:checked').val();
+        const das_reference = $('input[name="das_reference"]').val();
+        const order_no = $('input[name="order_no"]').val();
+
+        if (customer_type_value === 'Retail') {
+            if (das_reference == "" || das_reference == null) {
+                Swal.fire({
+                    title: "Required!",
+                    text: "Please enter DAS reference.",
+                    icon: "warning",
+                });
+                return;
+            }
+        }
+
+        if (customer_type_value === 'Enterprise') {
+            if (order_no == "" || order_no == null) {
+                Swal.fire({
+                    title: "Required!",
+                    text: "Please enter Order No..",
+                    icon: "warning",
+                });
+                return;
+            }
+        }
+
 
         // let email = $('#email').val();
 
