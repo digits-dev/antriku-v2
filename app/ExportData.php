@@ -27,7 +27,7 @@ class ExportData implements FromCollection, WithHeadings
                 'purchase_date', 'warranty_expiration_date', 'memo_no', 'model_name',
                 'summary_of_concern', 'header_upc_code', 'header_item_description', 'header_serial_no', 'device_issue_description', 'findings', 'resolution', 'other_diagnostic',
                 'problem_details', 'problem_details_other', 
-                'created.name AS createdby','returns_header.created_at AS datecreated', 'AssignedTechnician.name AS assignedTechnician',
+                'created.name AS createdby','returns_header.created_at AS datecreated', 'AssignedTechnician.name AS assignedTechnician', 'AssignedTechnician.tech_id' ,
             ];
 
         $all_data = DB::table('returns_header')
@@ -43,15 +43,12 @@ class ExportData implements FromCollection, WithHeadings
                 $this->filter_column['date_to']
             ]);
         }
-        if(CRUDBooster::isSuperadmin() || in_array(CRUDBooster::myPrivilegeId(), [8, 9])){
-            $export_all_data = $all_data->select($showcolumn)->orderBy('returns_header.id')->get();
-            \Log::debug($all_data->select($showcolumn)->orderBy('returns_header.id')->toSql());
-        }else if (CRUDBooster::myPrivilegeId() == 4){
-            $export_all_data = $all_data->select($showcolumn)->where('returns_header.technician_id', CRUDBooster::myId())->orderBy('returns_header.id')->get();
-            \Log::debug($all_data->select($showcolumn)->where('returns_header.technician_id', CRUDBooster::myId())->orderBy('returns_header.id')->toSql());
-        }else {
-            $export_all_data = $all_data->select($showcolumn)->where('returns_header.branch', CRUDBooster::me()->branch_id)->orderBy('returns_header.id')->get();
+        if(in_array(CRUDBooster::myPrivilegeId(), [3, 9, 4])){
+             $export_all_data = $all_data->select($showcolumn)->where('returns_header.branch', CRUDBooster::me()->branch_id)->orderBy('returns_header.id')->get();
             \Log::debug($all_data->select($showcolumn)->where('returns_header.branch', CRUDBooster::me()->branch_id)->orderBy('returns_header.id')->toSql());
+        }else {
+              $export_all_data = $all_data->select($showcolumn)->orderBy('returns_header.id')->get();
+            \Log::debug($all_data->select($showcolumn)->orderBy('returns_header.id')->toSql());
         }
 
         return $export_all_data;
@@ -67,7 +64,7 @@ class ExportData implements FromCollection, WithHeadings
                 "LAST NAME","FIRST NAME","EMAIL","ADDRESS","CONTACT NUMBER","COMPANY NAME","COMPANY CONTACT",
                 "PURCHASE DATE","WARRANTY EXPIRATION","MEMO NUMBER","MODEL","SUMMARY OF CONCERN"," "," "," ",
                 "DEVICE ISSUE","FINDINGS","RESOLUTION","OTHER DIAGNOSIS","PROBLEM DETAILS","PROBLEM DETAILS (OTHERS)",
-                "CREATED BY","CREATED DATE","ASSIGNED TECHNICIAN",
+                "CREATED BY","CREATED DATE","ASSIGNED TECHNICIAN", 'TECHNICIAN ID',
             ];
 
         return $headings;
