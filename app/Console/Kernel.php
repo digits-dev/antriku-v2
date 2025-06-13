@@ -2,10 +2,9 @@
 
 namespace App\Console;
 
+use App\Http\Controllers\AdminProductItemMasterController;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use DB;
-use CRUDBooster;
 
 class Kernel extends ConsoleKernel
 {
@@ -27,6 +26,13 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('task:cron')->everyFiveMinutes();
+        
+        $schedule->call(function(){
+            $productSync = new AdminProductItemMasterController();
+            $productSync->getPartsItemsCreatedAPI();
+            $productSync->getItemsCreatedAPI();
+        })->hourly()->between('9:00', '23:00');
+
     }
 
     /**

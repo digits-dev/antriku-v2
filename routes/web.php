@@ -145,6 +145,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/admin/save_doa_spare_part','AdminPendingRepairController@saveDoaSparePart')->name('save_add_doa_parts');
 
     //Inventory
+    Route::get('/admin/parts_item_master/parts_manual_sync','AdminPartsItemMasterController@partsManualSync');
     Route::get('/admin/parts_item_master_stocks/stock_ordering','AdminPartsItemMasterStocksController@stockOrder');
     Route::get('/admin/parts_item_master_stocks/stock_in_manual','AdminPartsItemMasterStocksController@stockInManual');
     Route::get('/admin/parts_item_master_stocks/dispose_stocks','AdminPartsItemMasterStocksController@disposeStocks');
@@ -154,10 +155,6 @@ Route::group(['middleware' => ['web']], function () {
     
     Route::post('/admin/stock_disposal_request/reject-disposal','AdminStockDisposalRequestController@rejectDisposalRequest')->name('reject-disposal');
     Route::post('/admin/stock_disposal_request/approve-disposal','AdminStockDisposalRequestController@approveDisposalRequest')->name('approve-disposal');
-
-
-    // ITEM MASTER API
-    // Route::get('/admin/apple_items_created', [AdminProductItemMasterController::class, 'getItemsCreatedAPI']);
 
     // Timeline
     Route::post('/admin/get_timeline', [AdminCustomDashboardController::class, 'getTimeline'])->name('get_timeline');
@@ -181,6 +178,13 @@ Route::group(['middleware' => ['web']], function () {
 
     // Manager uploaded invoices config
     Route::post('/admin/returns-header/config-invoices', 'AdminReturnsHeaderController@updateInvoicesConfigViewing')->name('invoices-config');
+
+    // ITEM MASTER API
+    // Route::get('/admin/parts_items_created', [AdminProductItemMasterController::class, 'getPartsItemsCreatedAPI']);
+    // Route::get('/admin/apple_items_created', [AdminProductItemMasterController::class, 'getItemsCreatedAPI']);
+
+    Route::post('/admin/manual_get_apple_items_created', [AdminProductItemMasterController::class, 'manualGetItemsCreatedAPI'])->name('manual_sync_get_apple_items');
+    Route::post('/admin/save_manual_get_apple_items_created', [AdminProductItemMasterController::class, 'saveManualGetItemsCreatedAPI'])->name('save_manual_sync_get_apple_items');
 
 });
 
