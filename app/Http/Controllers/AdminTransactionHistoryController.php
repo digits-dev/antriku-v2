@@ -69,9 +69,20 @@ class AdminTransactionHistoryController extends \crocodicstudio\crudbooster\cont
 		
 		$this->addaction = array();
 		$this->addaction[] = ['title'=>'View','url'=>CRUDBooster::mainpath('getDetailView/[id]'),'icon'=>'fa fa-eye'];
+		if (CRUDBooster::myPrivilegeId() == 10) {
+			$this->addaction[] = [
+				'title'   => 'VOID',
+				'icon'    => 'fa fa-ban',
+				'url'     => 'javascript:showVoidAlert([id])', 
+				'color'   => 'danger',
+				'showIf'  => "[repair_status] != 3",
+			];
+		}
+
 
 		$admin_path = CRUDBooster::adminPath();
 		$this->script_js = "
+
 	            function showExport() {
 					$('#modal-export').modal('show');
 				}	
@@ -144,13 +155,15 @@ class AdminTransactionHistoryController extends \crocodicstudio\crudbooster\cont
                         </div>
                     </div>
                 </div>
-
-	        ";
+			<script src=''.asset('js/voidTransaction.js').''></script>
+	        "
+			;
 
 
 		$this->load_js = array();
 		$this->load_js[] = '//cdn.jsdelivr.net/npm/sweetalert2@11';
 		$this->load_js[] = asset('js/print-action-buttons.js');
+		$this->load_js[] = asset('js/voidTransaction.js');
 
 		$this->load_css = array();
 		$this->load_css[] = asset('css/custom.css');
@@ -273,6 +286,33 @@ class AdminTransactionHistoryController extends \crocodicstudio\crudbooster\cont
 	public function AssignedTechnician(Request $request)
 	{
 		return back()->with('toggle', 'ON');
+	}
+
+	public function voidTransaction(Request $request)
+	{
+		$request->validate([
+			'id' => 'required|integer',
+			'reason' => 'required|string|max:255',
+		]);
+
+		$transaction = DB::table('returns_header')->where('id', $request->id)->first();
+
+		if (!$transaction) {
+			return response()->json(['success' => false, 'message' => 'Transaction not found.']);
+		}
+
+		DB::table('returns_header')
+			->where('id', $request->id)
+			->update([
+				'repair_status' => 3,
+				'void_reason' => $request->reason,
+				'diagnostic_cost' => null,
+				'parts_total_cost' => null
+			]);
+		
+		DB::table('returns_body_item')->where('returns_header_id', $request->id)->delete();
+		
+		return response()->json(['success' => true, 'message' => 'Transaction successfully voided.']);
 	}
 
 	public function PrintReceivingForm($id)

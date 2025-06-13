@@ -98,6 +98,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/admin/to_pay_parts/AssignedTechnician', 'AdminTransactionHistoryController@AssignedTechnician');
     Route::get('/admin/repair_in_process/AssignedTechnician', 'AdminTransactionHistoryController@AssignedTechnician');
     Route::get('/admin/transaction_history/AssignedTechnician', 'AdminTransactionHistoryController@AssignedTechnician');
+    Route::post('/admin/transaction_history/voidTransaction', 'AdminTransactionHistoryController@voidTransaction');
 
     //Route::get('/admin/transaction_history/ExportData','AdminTransactionHistoryController@ExportData');
     Route::post('/admin/transaction_history/ExportData', 'AdminTransactionHistoryController@getExportData')->name('exportData');
