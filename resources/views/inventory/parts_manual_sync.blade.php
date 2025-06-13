@@ -752,7 +752,7 @@
                     ui.updateStatusBadge();
                     ui.showAlert('error');
                     ui.hideProgress();
-                    console.error("Sync error:", error);
+                    // console.error("Sync error:", error);
                 }
             });
         }
@@ -808,7 +808,7 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('Error loading preview data:', error);
+                    // console.error('Error loading preview data:', error);
                     ui.hidePreviewLoading();
                     ui.showPreviewEmpty();
                     
