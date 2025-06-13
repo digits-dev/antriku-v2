@@ -113,7 +113,7 @@ class AdminProductItemMasterController extends \crocodicstudio\crudbooster\contr
 		$page = 1;
 		$perPage = 10000;
 		$client = new Client();
-		$dateFrom = Carbon::now()->subDays(10)->format('Y-m-d H:i:s');
+		$dateFrom = Carbon::now()->format('Y-m-d H:i:s');
 		$dateTo = Carbon::now()->format('Y-m-d H:i:s');
 
 		$response = $client->get(config('api.dimfs_api_created_link'), [
@@ -177,7 +177,7 @@ class AdminProductItemMasterController extends \crocodicstudio\crudbooster\contr
 		$page = 1;
 		$perPage = 10000;
 		$client = new Client();
-		$dateFrom = Carbon::now()->subDays(10)->format('Y-m-d H:i:s');
+		$dateFrom = Carbon::now()->format('Y-m-d H:i:s');
 		$dateTo = Carbon::now()->format('Y-m-d H:i:s');
 
 		$response = $client->get(config('api.dimfs_parts_item_api_created_link'), [
@@ -255,14 +255,13 @@ class AdminProductItemMasterController extends \crocodicstudio\crudbooster\contr
 		$xAuthorizationToken = md5($secretKey . $uniqueString . $userAgent);
 		$xAuthorizationTime = $uniqueString;
 
-		$dateFrom = Carbon::parse($request->dateFrom)->format('Y-m-d H:i:s');
-		$dateTo = Carbon::parse($request->dateTo)->format('Y-m-d H:i:s');
-
 		$page = 1;
 		$perPage = 10000;
 		$client = new Client();
-
-		$response = $client->get(config('api.dimfs_parts_item_api_created_link'), [
+		$dateFrom = Carbon::parse($request->dateFrom)->format('Y-m-d H:i:s');
+		$dateTo = Carbon::parse($request->dateTo)->format('Y-m-d H:i:s');
+		
+		$response = $client->get('https://dimfs.digitstrading.ph/public/api/tickects_btb_parts_item_created', [
 			'headers' => [
 				'X-Authorization-Token' => $xAuthorizationToken,
 				'X-Authorization-Time' => $xAuthorizationTime,
