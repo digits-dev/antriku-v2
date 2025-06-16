@@ -537,6 +537,7 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 	{
 		$data = $request->all();
 		$header_id = $data['header_id'];
+		$current_status = DB::table('returns_header')->where('id', $header_id)->value('repair_status');
 
 		if ($data['print_form_type'] == 1) {
 			DB::table('returns_header')->where('id', $header_id)->update([
@@ -550,6 +551,14 @@ class AdminReturnsHeaderController extends \crocodicstudio\crudbooster\controlle
 				'updated_by'	     		=> CRUDBooster::myId()
 			]);
 		} elseif ($data['print_form_type'] == 3) {
+			
+			DB::table('job_order_logs')->insert([
+				'returns_header_id' 		=> $header_id,
+				'status_id'            		=> $current_status,
+				'transacted_by'            	=>  CRUDBooster::myId(),
+				'transacted_at'            	=>  now()
+			]);
+
 			DB::table('returns_header')->where('id', $header_id)->update([
 				'repair_status' 			=> 6,
 				'print_release_form' 	 	=> "YES",
