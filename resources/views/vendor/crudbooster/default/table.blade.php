@@ -109,9 +109,9 @@
 
                     // Preserve existing GET parameters except search_gsx
                     foreach ($_GET as $key => $val) {
-                        if ($key != 'search_gsx') {
-                            echo "<input type='hidden' name='".htmlspecialchars($key)."' value='".htmlspecialchars($val)."'/>";
-                        }
+                        // if ($key != 'search_gsx') {
+                        //     echo "<input type='hidden' name='".htmlspecialchars($key)."' value='".htmlspecialchars($val)."'/>";
+                        // }
                     }
 
                     echo"

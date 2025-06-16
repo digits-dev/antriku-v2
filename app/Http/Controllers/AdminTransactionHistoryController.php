@@ -301,19 +301,65 @@ class AdminTransactionHistoryController extends \crocodicstudio\crudbooster\cont
 			return response()->json(['success' => false, 'message' => 'Transaction not found.']);
 		}
 
-		DB::table('returns_header')
-			->where('id', $request->id)
-			->update([
-				'repair_status' => 3,
-				'void_reason' => $request->reason,
-				'diagnostic_cost' => null,
-				'parts_total_cost' => null
-			]);
-		
-		DB::table('returns_body_item')->where('returns_header_id', $request->id)->delete();
-		
-		return response()->json(['success' => true, 'message' => 'Transaction successfully voided.']);
+		DB::beginTransaction();
+
+		try {
+			DB::table('returns_header')
+				->where('id', $request->id)
+				->update([
+					'repair_status' => 3,
+					'void_reason' => $request->reason,
+					'diagnostic_cost' => null,
+					'parts_total_cost' => null
+				]);
+
+			DB::table('returns_body_item')
+				->where('returns_header_id', $request->id)
+				->delete();
+			
+			// Handle Pending Reservations
+			$is_stocks_reserved = DB::table('inventory_reservations')
+				->where('return_header_id', $request->id)
+				->where('status', '=', 'Pending')
+				->get();
+
+			if ($is_stocks_reserved->isNotEmpty()) {
+				DB::table('inventory_reservations')
+					->whereIn('id', $is_stocks_reserved->pluck('id'))
+					->delete();
+			}
+
+			// Handle Confirmed / Deducted Reservations
+			$is_stocks_deducted = DB::table('inventory_reservations')
+				->where('return_header_id', $request->id)
+				->where('status', '=', 'Confirmed / Deducted')
+				->get();
+
+			if ($is_stocks_deducted->isNotEmpty()) {
+				foreach ($is_stocks_deducted as $per_deducted_stock) {
+					$is_returned_stocks = DB::table('branch_item_stocks')
+						->where('branch_id', $per_deducted_stock->branch_id)
+						->where('parts_item_master_id', $per_deducted_stock->parts_item_master_id)
+						->update([
+							'stock_qty' => DB::raw('stock_qty + ' . $per_deducted_stock->reserved_qty)
+						]);
+
+					if ($is_returned_stocks) {
+						DB::table('inventory_reservations')
+							->where('id', $per_deducted_stock->id)
+							->delete();
+					}
+				}
+			}
+
+			DB::commit();
+			return response()->json(['success' => true, 'message' => 'Transaction successfully voided.']);
+		} catch (\Exception $e) {
+			DB::rollBack();
+			return response()->json(['success' => false, 'message' => 'Failed to void transaction.', 'error' => $e->getMessage()], 500);
+		}
 	}
+
 
 	public function PrintReceivingForm($id)
 	{
