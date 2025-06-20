@@ -196,16 +196,7 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 		$data['model'] = $model;
 		$email = $returns_header->email;
 		
-		if ($request->status_id == 12) {
-		$template = $call_out ? 'waiting_for_approval_update' : 'waiting_for_approval';
-
-			CRUDBooster::sendEmail([
-				'to' => $email,
-				'data' => $data,
-				'template' => $template,
-				'attachments' => []
-			]);
-		}else if ($request->status_id == 21) {
+		if ($request->status_id == 21) {
 			
 			if ($returns_header->warranty_changed_at != null) {
 					$template = 'mail_in_void_warranty';
