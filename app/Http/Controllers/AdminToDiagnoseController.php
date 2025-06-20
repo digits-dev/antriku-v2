@@ -517,13 +517,11 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 
 		}
 
-		if ($request->status_id == 21) {
-			
+		if ($transaction_details[0]->warranty_status == "IN WARRANTY" && $request->status_id == 21) {
 			DB::table('returns_header')->where('id', $request->header_id)->update([
 				'warranty_status'   => $all_data['warranty_status'],
 				'warranty_changed_at' => now(),
 			]);
-		
 		}
 
 		if (in_array($request->status_id, [22, 23, 39, 40]) && !in_array($all_data['recent_treansaction_status'], [45, 43, 42])) {
