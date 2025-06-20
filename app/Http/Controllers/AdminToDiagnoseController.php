@@ -815,33 +815,69 @@ class AdminToDiagnoseController extends \crocodicstudio\crudbooster\controllers\
 	}
 
 	// checking if gsx is existing
+	// public function CheckGSX(Request $request)
+	// {
+	// 	$getJO = DB::table('returns_header')->where('id', $request->header_id)->first();
+
+	// 	$data = DB::table('parts_item_master as pim')
+	// 		->select('pim.*', 'bis.stock_qty')
+	// 		->leftJoin('branch_item_stocks as bis', 'bis.parts_item_master_id', '=', 'pim.id')
+	// 		->where('bis.branch_id', $getJO->branch)
+	// 		->where('bis.status', '=', 'ACTIVE')
+	// 		->where('pim.spare_parts', $request->gsx)
+	// 		->get()
+	// 		->map(function ($item) use ($getJO) {
+	// 			// Get total "Pending" reservation qty
+	// 			$pendingReservedQty = DB::table('inventory_reservations')
+	// 				->where('branch_id', $getJO->branch)
+	// 				->where('parts_item_master_id', $item->id)
+	// 				->where('status', 'Pending')
+	// 				->sum('reserved_qty');
+
+	// 			// Subtract pending reserved qty from current qty
+	// 			$item->stock_qty = max(0, $item->stock_qty - $pendingReservedQty);
+
+	// 			return $item;
+	// 		});
+
+	// 	return $data;
+	// }
+
 	public function CheckGSX(Request $request)
 	{
 		$getJO = DB::table('returns_header')->where('id', $request->header_id)->first();
 
-		$data = DB::table('parts_item_master as pim')
+		if (!$getJO) {
+			return response()->json(['error' => 'Invalid header ID.'], 404);
+		}
+
+		// Get all items
+		$items = DB::table('parts_item_master as pim')
 			->select('pim.*', 'bis.stock_qty')
 			->leftJoin('branch_item_stocks as bis', 'bis.parts_item_master_id', '=', 'pim.id')
 			->where('bis.branch_id', $getJO->branch)
 			->where('bis.status', '=', 'ACTIVE')
 			->where('pim.spare_parts', $request->gsx)
-			->get()
-			->map(function ($item) use ($getJO) {
-				// Get total "Pending" reservation qty
-				$pendingReservedQty = DB::table('inventory_reservations')
-					->where('branch_id', $getJO->branch)
-					->where('parts_item_master_id', $item->id)
-					->where('status', 'Pending')
-					->sum('reserved_qty');
+			->get();
 
-				// Subtract pending reserved qty from current qty
-				$item->stock_qty = max(0, $item->stock_qty - $pendingReservedQty);
+		// Get all pending reservation qtys
+		$reservationSums = DB::table('inventory_reservations')
+			->select('parts_item_master_id', DB::raw('SUM(reserved_qty) as total_reserved'))
+			->where('branch_id', $getJO->branch)
+			->where('status', 'Pending')
+			->groupBy('parts_item_master_id')
+			->pluck('total_reserved', 'parts_item_master_id');
 
-				return $item;
-			});
+		// Map stock_qty with pending reserved
+		$items->transform(function ($item) use ($reservationSums) {
+			$reserved = $reservationSums[$item->id] ?? 0;
+			$item->stock_qty = max(0, ($item->stock_qty ?? 0) - $reserved);
+			return $item;
+		});
 
-		return $data;
+		return $items;
 	}
+
 
 	// checking if search spare part number
 	public function SearchSparePartNo(Request $request)

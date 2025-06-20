@@ -1,9 +1,6 @@
 <?php namespace App\Http\Controllers;
 
-	use Session;
-	use Request;
-	use DB;
-	use CRUDBooster;
+use crocodicstudio\crudbooster\helpers\CRUDBooster;
 
 	class AdminInventoryStockInController extends \crocodicstudio\crudbooster\controllers\CBController {
 
@@ -42,7 +39,13 @@
 	    }
 
 	    public function hook_query_index(&$query) {
-	        $query->where('stock_in_status', '=', 'Received');
+			if(in_array(CRUDBooster::myPrivilegeId(), [9])){
+				$query->leftJoin('cms_users as usr', 'usr.id', '=', 'inventory_stock_in.created_by')
+					->where('inventory_stock_in.stock_in_status', '=', 'Received')
+					->where('usr.branch_id', CRUDBooster::me()->branch_id);
+			} else {
+				$query->where('stock_in_status', '=', 'Received');
+			}
 	            
 	    }
 
