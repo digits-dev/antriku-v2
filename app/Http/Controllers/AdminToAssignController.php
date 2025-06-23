@@ -35,6 +35,8 @@
 			$this->col[] = ["label" => "Model Group", "name" => "model"];
 			$this->col[] = ["label" => "Warranty Status", "name" => "warranty_status"];
 			$this->col[] = ["label" => "Case Status", "name" => "case_status"];
+			$this->col[] = ["label" => "Created By", "name" => "created_by", 'join' => 'cms_users,name'];
+			$this->col[] = ["label" => "Created Date", "name" => "created_at"];
 			$this->col[] = ["label" => "Technician Assigned", "name" => "technician_id", 'join' => 'cms_users,name'];
 			$this->col[] = ["label" => "Tech Accepted Date", "name" => "technician_accepted_at"];
 			$this->col[] = ["label" => "Branch", "name" => "branch", 'join' => 'branch,branch_name'];

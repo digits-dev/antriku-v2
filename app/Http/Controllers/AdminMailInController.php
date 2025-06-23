@@ -44,6 +44,25 @@ class AdminMailInController extends \crocodicstudio\crudbooster\controllers\CBCo
 		$this->col[] = ["label" => "Technician Assigned", "name" => "technician_id", 'join' => 'cms_users,name'];
 		$this->col[] = ["label" => "Tech Accepted Date", "name" => "technician_accepted_at"];
 		$this->col[] = ["label" => "Branch", "name" => "branch", 'join' => 'branch,branch_name'];
+		$this->col[] = ["label" => "Branch", "name" => "branch", 'join' => 'branch,branch_name'];
+			$this->col[] = [
+			"label" => "Latest Callout",
+			"name" => "id", 
+			"callback" => function($row) {
+			
+
+			   $latestCallout = DB::table('call_out_recorder')
+					->where('returns_header_id', $row->id)
+					->orderBy('call_out_at', 'desc')
+					->first();
+
+				if ($latestCallout && $latestCallout->call_out_at) {
+					return date('Y-m-d H:i', strtotime($latestCallout->call_out_at));
+				}
+
+				return 'No Callout';
+			}
+		];
 		# END COLUMNS DO NOT REMOVE THIS LINE
 
 			$this->addaction = array();
@@ -68,6 +87,7 @@ class AdminMailInController extends \crocodicstudio\crudbooster\controllers\CBCo
 
 	 
 		public function hook_row_index($column_index, &$column_value) {
+
 		if ($column_index == 1) {
 
 			$column_value = '<span class="label label-info">' . $column_value . '</span>';

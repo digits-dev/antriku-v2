@@ -190,7 +190,7 @@ class AdminCallOutController extends \crocodicstudio\crudbooster\controllers\CBC
 		
 		$data = [];
 		$data['reference_no'] = $returns_header->reference_no;
-		$data['frontliner'] = CRUDBooster::me()->name;
+		$data['frontliner'] = CRUDBooster::me()->first_name;
 		$data['branch'] = $branch;
 		$data['amount'] = $returns_header->parts_total_cost + $returns_header->diagnostic_cost;
 		$data['model'] = $model;
