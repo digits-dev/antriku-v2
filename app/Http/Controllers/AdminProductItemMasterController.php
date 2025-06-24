@@ -116,7 +116,7 @@ class AdminProductItemMasterController extends \crocodicstudio\crudbooster\contr
 		$dateFrom = Carbon::now()->format('Y-m-d H:i:s');
 		$dateTo = Carbon::now()->format('Y-m-d H:i:s');
 
-		$response = $client->get('https://dimfs.digitstrading.ph/public/api/tickects_btb_created', [
+		$response = $client->get('https://dimfs.digitstrading.ph/api/tickects_btb_created', [
 			'headers' => [
 				'X-Authorization-Token' => $xAuthorizationToken,
 				'X-Authorization-Time' => $xAuthorizationTime,
@@ -180,7 +180,7 @@ class AdminProductItemMasterController extends \crocodicstudio\crudbooster\contr
 		$dateFrom = Carbon::now()->format('Y-m-d H:i:s');
 		$dateTo = Carbon::now()->format('Y-m-d H:i:s');
 
-		$response = $client->get('https://dimfs.digitstrading.ph/public/api/tickects_btb_parts_item_created', [
+		$response = $client->get('https://dimfs.digitstrading.ph/api/tickects_btb_parts_item_created', [
 			'headers' => [
 				'X-Authorization-Token' => $xAuthorizationToken,
 				'X-Authorization-Time' => $xAuthorizationTime,
@@ -261,7 +261,7 @@ class AdminProductItemMasterController extends \crocodicstudio\crudbooster\contr
 		$dateFrom = Carbon::parse($request->dateFrom)->format('Y-m-d H:i:s');
 		$dateTo = Carbon::parse($request->dateTo)->format('Y-m-d H:i:s');
 		
-		$response = $client->get('https://dimfs.digitstrading.ph/public/api/tickects_btb_parts_item_created', [
+		$response = $client->get('https://dimfs.digitstrading.ph/api/tickects_btb_parts_item_created', [
 			'headers' => [
 				'X-Authorization-Token' => $xAuthorizationToken,
 				'X-Authorization-Time' => $xAuthorizationTime,
