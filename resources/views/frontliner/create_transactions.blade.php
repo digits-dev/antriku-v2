@@ -179,6 +179,10 @@
                             </div>
                         </div>
                         <div class="form-column-cus">
+                            <div class="form-group-cus" style="display: none;" id="retail_received_date">
+                                <label class="label-cus">Store Received Date:</label>
+                                <input type="date" name="store_received_date" class="input-cus" autocomplete="off"/>
+                            </div>
                             <div class="form-group-cus" style="display: none" id="comp_contact">
                                 <label class="label-cus">Company Contact#:</label>
                                 <input 
@@ -545,10 +549,12 @@
                 $('#comp_order_no').hide();             
             }
 
-            if ($(this).val() === 'Retail') {
+            if ($(this).val() === 'Retail' || $(this).val() === 'E-Commerce') {
                 $('#retail_das_ref').show().prop('required', true);
+                $('#retail_received_date').show().prop('required', true);
             } else {
                 $('#retail_das_ref').hide().prop('required', false);
+                $('#retail_received_date').hide().prop('required', false);
             }
         });
     });
@@ -854,13 +860,14 @@
 
         const customer_type_value = $('input[name="customer_type"]:checked').val();
         const das_reference = $('input[name="das_reference"]').val();
+        const store_received_date = $('input[name="store_received_date"]').val();
         const order_no = $('input[name="order_no"]').val();
 
-        if (customer_type_value === 'Retail') {
-            if (das_reference == "" || das_reference == null) {
+        if (customer_type_value === 'Retail' || customer_type_value === 'E-Commerce') {
+            if (das_reference == "" || das_reference == null || store_received_date == "" || store_received_date == null) {
                 Swal.fire({
                     title: "Required!",
-                    text: "Please enter DAS reference.",
+                    text: "Please enter DAS reference/Store received date.",
                     icon: "warning",
                 });
                 return;
