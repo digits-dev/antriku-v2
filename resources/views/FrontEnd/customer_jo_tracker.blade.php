@@ -230,51 +230,53 @@
                             @endforeach
 
                             {{-- Current Status  --}}
-                            <div class="timeline-item-CLD">
-                                <div class="timeline-icon-CLD">
-                                    <i class="fas fa-tools" style="color: #2563eb; font-size: 1.25rem; animation: pulse 2s infinite;"></i>
-                                    <div class="timeline-connector-CLD pending-CLD"></div>
-                                </div>
-                                <div class="timeline-content-CLD">
-                                    <div class="timeline-header-CLD">
-                                        <p class="timeline-title-CLD current-CLD">
-                                            @if(in_array($jo_details->repair_status, [1, 10, 18, 27, 29, 31, 34, 39, 41, 42]))
-                                                Technical Test Ongoing
-                                            @elseif($jo_details->repair_status == 3)
-                                                Repair Cancelled
-                                            @elseif($jo_details->repair_status == 5)
-                                                Case Completed
-                                            @elseif($jo_details->repair_status == 6)
-                                                Repair completed
-                                            @elseif($jo_details->repair_status == 8)
-                                                Diagnostic fee required
-                                            @elseif($jo_details->repair_status == 9)
-                                                Diagnose in queue - Technician
-                                            @elseif($jo_details->repair_status == 11)
-                                                Sign now - Receiving Form
-                                            @elseif(in_array($jo_details->repair_status, [12, 21, 48]))
-                                                Customer Approval Required
-                                            @elseif(in_array($jo_details->repair_status, [13, 19, 22, 28, 38]))
-                                                Claim Now
-                                            @elseif(in_array($jo_details->repair_status, [14, 15]))
-                                                Apple Dispatch - Ready
-                                            @elseif(in_array($jo_details->repair_status, [16, 25]))
-                                                Pick-Up in Progress
-                                            @elseif(in_array($jo_details->repair_status, [17]))
-                                                Undergoing Repair
-                                            @elseif(in_array($jo_details->repair_status, [26, 47]))
-                                                Undergoing Repair - Apple
-                                            @elseif($jo_details->repair_status == 20)
-                                                Payment Required
-                                            @elseif(in_array($jo_details->repair_status, [30, 33, 35, 40, 43, 45]))
-                                                Parts on the Way
-                                            @endif
-                                        </p>
-                                        <span class="badge-CLD badge-blue-CLD">In Progress</span>
+                            @if (!in_array($jo_details->repair_status, [3,5,6]))
+                                <div class="timeline-item-CLD">
+                                    <div class="timeline-icon-CLD">
+                                        <i class="fas fa-tools" style="color: #2563eb; font-size: 1.25rem; animation: pulse 2s infinite;"></i>
+                                        <div class="timeline-connector-CLD pending-CLD"></div>
                                     </div>
-                                    <p class="timeline-note-CLD">Current Repair Status</p>
+                                    <div class="timeline-content-CLD">
+                                        <div class="timeline-header-CLD">
+                                            <p class="timeline-title-CLD current-CLD">
+                                                @if(in_array($jo_details->repair_status, [1, 10, 18, 27, 29, 31, 34, 39, 41, 42]))
+                                                    Technical Test Ongoing
+                                                @elseif($jo_details->repair_status == 3)
+                                                    Repair Cancelled
+                                                @elseif($jo_details->repair_status == 5)
+                                                    Case Completed
+                                                @elseif($jo_details->repair_status == 6)
+                                                    Repair completed
+                                                @elseif($jo_details->repair_status == 8)
+                                                    Diagnostic fee required
+                                                @elseif($jo_details->repair_status == 9)
+                                                    Diagnose in queue - Technician
+                                                @elseif($jo_details->repair_status == 11)
+                                                    Sign now - Receiving Form
+                                                @elseif(in_array($jo_details->repair_status, [12, 21, 48]))
+                                                    Customer Approval Required
+                                                @elseif(in_array($jo_details->repair_status, [13, 19, 22, 28, 38]))
+                                                    Claim Now
+                                                @elseif(in_array($jo_details->repair_status, [14, 15]))
+                                                    Apple Dispatch - Ready
+                                                @elseif(in_array($jo_details->repair_status, [16, 25]))
+                                                    Pick-Up in Progress
+                                                @elseif(in_array($jo_details->repair_status, [17]))
+                                                    Undergoing Repair
+                                                @elseif(in_array($jo_details->repair_status, [26, 47]))
+                                                    Undergoing Repair - Apple
+                                                @elseif($jo_details->repair_status == 20)
+                                                    Payment Required
+                                                @elseif(in_array($jo_details->repair_status, [30, 33, 35, 40, 43, 45]))
+                                                    Parts on the Way
+                                                @endif
+                                            </p>
+                                            <span class="badge-CLD badge-blue-CLD">In Progress</span>
+                                        </div>
+                                        <p class="timeline-note-CLD">Current Repair Status</p>
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
 
                             @if (!in_array($jo_details->repair_status, [3,5,6]))
                                 <div class="timeline-item-CLD">
