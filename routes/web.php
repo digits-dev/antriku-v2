@@ -189,4 +189,7 @@ Route::group(['middleware' => ['web']], function () {
 
 });
 
+    // Customer Jo Tracker FrontEnd
+    Route::get('/customer-jo-tracker', 'CustomerJoTracker@credentials');
+    Route::get('/customer-jo-tracker/tracking', 'CustomerJoTracker@startTracking')->name('start-tracking-jo');
  
